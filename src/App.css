@@ -1,3 +1,6 @@
+:root {
+  --primary: rgb(145, 40, 250)
+}
 .App {
   display: grid;
   grid-template-columns: [sidebar-start] 20vw [main] auto [right-sidebar-start] 300px;
@@ -73,4 +76,31 @@
 .App-nav ul a {
   color: white;
   text-decoration: none;
+}
+
+input {
+  padding: 6px;
+  border: 0;
+  border-bottom: 2px solid #282c34;
+}
+input:focus-visible {
+  outline-width: 0;
+  border-bottom: 2px solid var(--primary);
+  transition: border-bottom 0.2s ease-in-out;
+}
+
+button {
+  padding: 6px;
+  border: 1px solid #282c34;
+  margin: 3px;
+  background-color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+button:hover {
+  background-color: var(--primary);
+  color: white;
+  border-color: white;
+  transition: all 0.125s ease-in-out;
+  cursor: pointer;
 }
