@@ -25,11 +25,11 @@ export const betSlice = createSlice({
             state.betList = [];
         },
         saveBets: (state) => {
-            window.localStorage.setItem("bets", JSON.stringify(state.betList));
+            window.localStorage.setItem("bet-list", JSON.stringify(state.betList));
         },
         loadBets: (state) => {
             state.betList = [];
-            let x = JSON.parse(window.localStorage.getItem("bets") || "[]") as BetEntry[];
+            let x = JSON.parse(window.localStorage.getItem("bet-list") || "[]") as BetEntry[];
             x.forEach(b => state.betList.push(Object.assign(new BetEntry(b.title, b.betOption1, b.betOption2), b)));
         }
     }

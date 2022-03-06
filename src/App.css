@@ -1,6 +1,10 @@
-:root {
-  --primary: rgb(145, 40, 250)
+:root{
+  --mainColor: rgb(37, 37, 37);
+  --firstColor: rgb(255 87 36);
+  --secondColor: rgb(40 201 171);
+  --disabledColor: gray;
 }
+
 .App {
   display: grid;
   grid-template-columns: [sidebar-start] 20vw [main] auto [right-sidebar-start] 300px;
@@ -78,29 +82,52 @@
   text-decoration: none;
 }
 
-input {
-  padding: 6px;
-  border: 0;
-  border-bottom: 2px solid #282c34;
-}
-input:focus-visible {
-  outline-width: 0;
-  border-bottom: 2px solid var(--primary);
-  transition: border-bottom 0.2s ease-in-out;
+.wesoły-div-😂{
+  width: 45%;
+  margin: 1rem;
+  background-color: white;
+  border-radius: 3px;
+  box-shadow: 0px 0px 10px grey;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-button {
-  padding: 6px;
-  border: 1px solid #282c34;
-  margin: 3px;
-  background-color: white;
-  text-transform: uppercase;
-  font-weight: bold;
+.bet-id{
+  color: var(--disabledColor);
+  margin-left: 1rem;
 }
-button:hover {
-  background-color: var(--primary);
-  color: white;
-  border-color: white;
-  transition: all 0.125s ease-in-out;
-  cursor: pointer;
+
+.wesoły-div-😂 .flex{
+  display: flex;
+  justify-content: space-between;
+}
+
+.bet-info{
+  align-items: center;
+}
+
+.wesoły-div-😂 .options div{
+  width: 44%;
+  padding: 1rem;
+  border-radius: 2px;
+  filter: grayscale(1);
+}
+
+.wesoły-div-😂 .options div:first-child{
+  background-color: var(--firstColor);
+}
+.wesoły-div-😂 .options div:last-child{
+  background-color: var(--secondColor);
+}
+
+main ul{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.winner{
+  filter: grayscale(0);
 }
