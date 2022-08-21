@@ -1,3 +1,5 @@
+import React from 'react';
+
 import logo from '../logo.svg';
 const Loading: React.FC = () => {
     return (

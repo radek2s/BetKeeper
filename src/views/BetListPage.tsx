@@ -1,20 +1,26 @@
-
 import React, { useEffect } from "react";
 import BetCreator from "../components/BetCreator";
-import { useAppDispatch, useAppSelector } from "../hooks";
 import BetElement from "../components/BetElement";
-import { loadBets } from "../features/bet/betSlice";
+import BetApi from "../features/BetApi";
 
-const BetPage: React.FC = () => {
-  let dispatch = useAppDispatch();
-  useEffect(() => {dispatch(loadBets())}, []);
+interface IBetPage {
+  serviceApi: BetApi;
+}
+const BetPage: React.FC<IBetPage> = (props: IBetPage) => {
+
+  let [bets, setBets] = React.useState<any>(); //zmienna do wszystkich betów
+
+  useEffect(() => {
+    setBets(props.serviceApi.getAllBets());
+  }, []);
 
     return (
       <div>
         <h1>All Bets</h1>
         <ul>
-          {useAppSelector(state => state.bet.betList).map((bet, i) => (
-          <BetElement bet={bet} key={i} />))}
+          {bets.map(bet, i) => {
+            <BetElement bet={bet} key={i} />
+          }}
         </ul>
         {
           /*<textarea placeholder="Enter a bet title" id="bet-title" onChange={e => this.setState({ title: e.target.value })}></textarea>
