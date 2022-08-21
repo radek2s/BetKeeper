@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express"
+import cors from "cors"
 import bodyParser from "body-parser";
 import { BetEntity } from "./model/BetEntity";
 
@@ -6,6 +7,7 @@ const app:Application = express();
 const PORT = process.env.PORT || 8000
 
 app.use(bodyParser.json())
+app.use(cors())
 
 app.get("/api/bets", (req: Request, res: Response): void => {
     const mockResponse:BetEntity[] = []

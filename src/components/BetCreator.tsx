@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { addBet, saveBets } from "../features/bet/betSlice";
 import { useAppDispatch } from "../hooks"
 import BetEntry from "../models/BetEntry";
@@ -10,9 +10,9 @@ const BetCreator: React.FC = () => {
     const [betOption1, setBetOption1] = useState<string>("");
     const [betOption2, setBetOption2] = useState<string>("");
 
-    let createBet = ():void => {
+    const createBet = ():void => {
         if(!!betTitle && !!betOption1 && !!betOption2) {
-            dispatch(addBet(new BetEntry(betTitle, betOption1, betOption2)));
+            // dispatch(addBet(new BetEntry(betTitle, betOption1, betOption2)));
             dispatch(saveBets());
             clearInputs();
         } else {
@@ -20,7 +20,7 @@ const BetCreator: React.FC = () => {
         }
     };
 
-    let clearInputs = ():void => {
+    const clearInputs = ():void => {
         setBetTitle("");
         setBetOption1("");
         setBetOption2("");

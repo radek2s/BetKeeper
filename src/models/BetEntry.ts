@@ -1,21 +1,20 @@
-type BetState = 0 | 1 | 2;
-
 export default class BetEntry {
 
+    id: number;
     title: string;
-    resolved: BetState;
-    betOption1: string;
-    betOption2: string;
+    description: string;
+    option1: string;
+    option2: string;
+    isFinished: boolean;
+    winner: boolean;
     
-    constructor(title: string, betOption1: string, betOption2: string) {
+    constructor(id: number, title: string, description: string, option1: string, option2: string) {
+        this.id = id;
         this.title = title;
-        this.betOption1 = betOption1;
-        this.betOption2 = betOption2;
-        this.resolved = 0;
+        this.description = description;
+        this.option1 = option1;
+        this.option2 = option2;
+        this.isFinished = false;
+        this.winner = false;
     }
-
-    resolve(winner: 1 | 2): void {    
-        this.resolved = winner;
-    }
-
 }

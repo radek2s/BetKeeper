@@ -1,47 +1,28 @@
 import axios from "axios";
-const path : string = "http://localhost:8080";
+import BetEntry from "../models/BetEntry";
+const path = "http://localhost:8000";
 
 export default class BetApi {
-    constructor() {}
 
-
-    getAllBets : any = () => {
-        return axios.get(`${path}/api/bets`)
-        .then(function ( response:any) {
-            console.log(response);
-        })
-        .catch(error => console.log(error));
+    async getAllBets(): Promise<BetEntry[]> {
+      const result = await axios.get(`${path}/api/bets`)
+      return result.data.map((data: any) => new BetEntry(data.id, data.title, "", data.option1, data.option2))
       }
       
-    getBetsById : any = (betId: number) => {
-        return axios.get(`${path}/api/bet?ID=${betId}}`)
-        .then(function ( response:any) {
-            console.log(response);
-        })
-        .catch(error => console.log(error));
-      }
+    async getBetById (betId: number) {
+      return await axios.get(`${path}/api/bet/${betId}`)
+    }
       
-    addNewBet : any = (request: string) => {
-        return axios.post(`${path}/api/bet`, request)
-        .then(function ( response:any) {
-            console.log(response);
-        })
-        .catch(error => console.log(error));
-      }
+    async addNewBet (request: JSON){
+      console.log(request);
+      return await axios.post(`${path}/api/bet`, request)
+    }
        
-    updateBetById : any = (betId: number, request:string) => {
-        return axios.put(`${path}/api/bet?ID=${betId}}`, request)
-        .then(function ( response:any) {
-            console.log(response);
-        })
-        .catch(error => console.log(error));
+    async updateBetById (betId: number, request:string) {
+        return await axios.put(`${path}/api/bet/${betId}`, request)
       }
          
-    deleteBetById : any = (betId: number) => {
-        return axios.delete(`${path}/api/bet?ID=${betId}}`)
-        .then(function ( response:any) {
-            console.log(response);
-        })
-        .catch(error => console.log(error));
-      }
+    deleteBetById (betId: number) {
+        return axios.delete(`${path}/api/bet/${betId}`)
+    }
 }

@@ -1,77 +1,43 @@
+import { title } from "process";
 import React, { useEffect } from "react";
-import BetCreator from "../components/BetCreator";
 import BetElement from "../components/BetElement";
 import BetApi from "../features/BetApi";
+import BetEntry from "../models/BetEntry";
 
 interface IBetPage {
   serviceApi: BetApi;
 }
 const BetPage: React.FC<IBetPage> = (props: IBetPage) => {
 
-  let [bets, setBets] = React.useState<any>(); //zmienna do wszystkich betów
+  const [bets, setBets] = React.useState<any>([]); //zmienna do wszystkich betów
+  const request: any = {};
 
   useEffect(() => {
-    setBets(props.serviceApi.getAllBets());
+    props.serviceApi.getAllBets().then(res => setBets(res)) //wyciągnięcie wartości z koniecznego Promisea
   }, []);
-
+  
     return (
       <div>
         <h1>All Bets</h1>
-        <ul>
-          {bets.map(bet, i) => {
-            <BetElement bet={bet} key={i} />
-          }}
+         <ul>
+          { bets.map((bet: BetEntry, i: number) => {
+            return <BetElement bet={bet} key = {i}
+            betDelete = {() => props.serviceApi.deleteBetById(bet.id)}
+            betUpdate = {() => props.serviceApi.updateBetById(bet.id, "")}/>
+          })}
         </ul>
-        {
-          /*<textarea placeholder="Enter a bet title" id="bet-title" onChange={e => this.setState({ title: e.target.value })}></textarea>
-        <textarea placeholder="Enter Radek's demand" id="bet-option" onChange={e => this.setState({ firstOption: e.target.value })}></textarea>
-        <textarea placeholder="Enter Gosia's demand" id="bet-option" onChange={e => this.setState({ secondOption: e.target.value })}></textarea>
-        <button onClick={e => this.addBetToLocalStorage(this.state.title, this.state.firstOption,  this.state.secondOption)}>Add a bet</button> */}
-        <BetCreator></BetCreator>
+        
+        <textarea placeholder="Enter a bet title" id="bet-title" onChange={e => request["title"] = e.target.value}></textarea>
+        <textarea placeholder="Enter a bet description" id="bet-title" onChange={e => request["description"] = e.target.value}></textarea>
+        <textarea placeholder="Enter Radek's demand" id="bet-option" onChange={e => request["option1"] = e.target.value}></textarea>
+        <textarea placeholder="Enter Gosia's demand" id="bet-option" onChange={e => request["option2"] = e.target.value}></textarea>
+
+        { request["isFinished"] = false}
+        { request["winner"] = false}
+        <button onClick={e => props.serviceApi.addNewBet(request)}>Add a bet</button>
+        {/* {<BetCreator></BetCreator>} */}
       </div>
     )
-  
-
-
-  // renderAllBets() {
-  //   let betList = this.getBetListFromLocalStorage();
-  //   let result: JSX.Element[] = [];
-  //   console.log(betList);
-
-  //   if (betList.length > 0){
-  //     betList.forEach(i => {
-  //       result.push(<BetComponent bet={i}></BetComponent>);
-  //     })
-  //   }
-
-  //   return result;
-  // }
-
-  // getBetListFromLocalStorage(): BetI[] {
-  //   return JSON.parse(window.localStorage.getItem("bet-list") || "[]");
-  // }
-
-  // addBetToLocalStorage(title: string, firstOption: string, secondOption: string) {
-  //   let betList: any[] = this.getBetListFromLocalStorage();
-
-  //   let bet:BetI= {
-  //     id: this.autoIncrementBetId(),
-  //     title, //on to ogarnia :D
-  //     firstOption,
-  //     secondOption,
-  //     betState: 0
-  //   }
-
-  //   betList.push(bet);
-
-  //   let result: string = JSON.stringify(betList);
-  //   window.localStorage.setItem("bet-list", result);
-  // }
-
-  // autoIncrementBetId() {
-  //   let newId = this.getBetListFromLocalStorage().length + 1;
-  //   return newId;
-  // }
 }
 
 export default BetPage;

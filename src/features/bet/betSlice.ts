@@ -9,7 +9,7 @@ interface BetState {
 
 const initialState: BetState = {
     betList: [
-        new BetEntry("Are we meet someone in the Cinema?", "Girlfriend wears pink blouse", "Boyfriend goes to the hairdresser"),
+        // new BetEntry("Are we meet someone in the Cinema?", "Girlfriend wears pink blouse", "Boyfriend goes to the hairdresser"),
     ]
 
 }
@@ -29,8 +29,8 @@ export const betSlice = createSlice({
         },
         loadBets: (state) => {
             state.betList = [];
-            let x = JSON.parse(window.localStorage.getItem("bet-list") || "[]") as BetEntry[]; //TODO: zmiana na zewnętrzną bazę danych
-            x.forEach(b => state.betList.push(Object.assign(new BetEntry(b.title, b.betOption1, b.betOption2), b)));
+            // let x = JSON.parse(window.localStorage.getItem("bet-list") || "[]") as BetEntry[]; //TODO: zmiana na zewnętrzną bazę danych
+            // x.forEach(b => state.betList.push(Object.assign(new BetEntry(b.title, b.betOption1, b.betOption2), b)));
         },
         loadBet: (betId) => {
             axios.get(`http://localhost:8080/bet?ID=${betId}}`)
