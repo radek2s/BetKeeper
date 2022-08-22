@@ -1,44 +1,65 @@
 import express, { Application, Request, Response } from "express"
 import bodyParser from "body-parser";
 import { BetEntity } from "./model/BetEntity";
+import { SqLiteService } from "./sqLiteService";
 
 const app:Application = express();
 const PORT = process.env.PORT || 8000
 
+const dbService = new SqLiteService("./betKeeper.db")
+
 app.use(bodyParser.json())
 
 app.get("/api/bets", (req: Request, res: Response): void => {
-    const mockResponse:BetEntity[] = []
-    mockResponse.push(new BetEntity(1, "Main Title",
-    "Option 1", "Option 2", false, false))
-    mockResponse.push(new BetEntity(2,"Secondary bet",
-    "Wear dress", "Wear skirt", true, true))
-    res.send(JSON.stringify(mockResponse))
+    dbService.getAllBets()
+    .then((bets) => {
+        res.send(JSON.stringify(bets))
+    })
+    .catch(() => {
+        res.status(200).send(JSON.stringify([]))
+    })
 })
 
 app.post("/api/bet", (req: Request, res: Response): void => {
     const bet = req.body
-    console.log("Saving bet: ", bet)
-    res.send(JSON.stringify({operation: "saved"}))
+    dbService.saveBet(bet).then(() => {
+        res.send(JSON.stringify({operation: "saved"}))
+    }).catch(() => {
+        res.status(500).send()
+    })
 })
 
 app.get("/api/bet/:id", (req: Request, res: Response): void => {
     console.log("Get by ID", req.params.id)
+    //TODO: Add dbService.get(id)
     const bet: BetEntity = new BetEntity(
-        1, "Main Bet", "Option 1", "Option 2",
+        1, "Main Bet", ":)", "Option 1", "Option 2",
         false, false
     )
     res.send(JSON.stringify(bet))
 })
 
 app.put("/api/bet/:id", (req: Request, res: Response): void => {
-    console.log("Update ID", req.params.id, req.body)
-    res.send(JSON.stringify({operation: "updated"}))
+    const id = req.params.id
+    if(!id) res.status(400).send()
+
+    dbService.updateBet(req.body).then(()=> {
+        res.send(JSON.stringify({operation: "updated"}))
+    }).catch(() => {
+        res.status(500).send()
+    })
+
 })
 
 app.delete("/api/bet/:id", (req: Request, res: Response): void => {
-    console.log("Delete ID", req.params.id)
-    res.send(JSON.stringify({operation: "deleted"}))
+    const id = req.params.id
+    if(!id) res.status(400).send()
+
+    dbService.deleteBet(+id).then(()=> {
+        res.send(JSON.stringify({operation: "deleted"}))
+    }).catch(() => {
+        res.status(500).send()
+    })
 })
 
 app.listen(PORT, ():void => {
