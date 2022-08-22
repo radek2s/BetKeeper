@@ -13,13 +13,13 @@ export default class BetApi {
       return await axios.get(`${path}/api/bet/${betId}`)
     }
       
-    async addNewBet (request: JSON){
+    async addNewBet (request: BetEntry){
       console.log(request);
       return await axios.post(`${path}/api/bet`, request)
     }
        
-    async updateBetById (betId: number, request:string) {
-        return await axios.put(`${path}/api/bet/${betId}`, request)
+    async updateBetById (bet: BetEntry) {
+        return await axios.put(`${path}/api/bet/${bet.id}`, bet)
       }
          
     deleteBetById (betId: number) {

@@ -16,6 +16,12 @@
   animation: App-logo-spin infinite 20s linear;
 }
 
+h1>input{
+  font-size: 1em;
+  width: 100%;
+  border: none;
+}
+
 .App-loader {
   display: flex;
   flex-direction: column;
