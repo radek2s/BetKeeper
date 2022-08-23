@@ -13,21 +13,43 @@ export class SqLiteService {
 
     constructor(databaseLocation: string) {
         this.db = new Database(databaseLocation)
-        console.log(`Database ${databaseLocation} opened correctly`)
+        this.initDb().then(() => {
+            console.log(`Database ${databaseLocation} opened correctly`)
+        }).catch(() => {
+            console.log(`Database ${databaseLocation} could not be opened!`)
+        })
+    }
+
+    async initDb(): Promise<void> {
+        try {
+            console.log("Checking database connection...")
+            await this.getAllBets()
+        } catch (e: any) {
+            if(e.code === 'SQLITE_ERROR') {
+                console.log("Trying to initialize schema...")
+                await this.createBetTable()
+                try {
+                    console.log("Schema validation...")
+                    await this.getAllBets()
+                } catch (e2) {
+                    console.error(e2)
+                }
+            }
+        }
     }
 
     createBetTable(): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.db.run(`CRETAE TABLE bets(
+            this.db.run(`CREATE TABLE bets(
                 [id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 [title] TEXT NOT NULL, 
                 [description] TEXT,
                 [option1] TEXT,
                 [option2] TEXT,
                 [finished] INTEGER,
-                [winner] INTEGER
+                [winner] INTEGER);
             `, (error) => {
-                console.error(error)
+                if (error) reject (error)
                 resolve()
             })
         })
@@ -36,19 +58,22 @@ export class SqLiteService {
     getAllBets(): Promise<BetEntity[]> {
         return new Promise((resolve, reject) => {
             this.db.all("SELECT id, title, description, option1, option2, finished, winner FROM bets", (error, rows) => {
-                const response: BetEntity[] = []
-                rows.forEach((row) => {
-                    response.push(new BetEntity(
-                        row.id,
-                        row.title,
-                        row.description,
-                        row.option1,
-                        row.option2,
-                        row.finished == 1,
-                        row.winner == 1
-                    ))
-                })
-                resolve(response)
+                if (error) { reject(error) }
+                else {
+                    const response: BetEntity[] = []
+                    rows.forEach((row) => {
+                        response.push(new BetEntity(
+                            row.id,
+                            row.title,
+                            row.description,
+                            row.option1,
+                            row.option2,
+                            row.finished == 1,
+                            row.winner == 1
+                        ))
+                    })
+                    resolve(response)
+                }
             })
         })
     }
@@ -58,7 +83,8 @@ export class SqLiteService {
             this.db.get("SELECT id, title, description, option1, option2, finished, winner FROM bets WHERE id=$id", {
                 $id: id
             }, (error, row) => {
-                if(row) {
+                if (error) reject (error)
+                if (row) {
                     const response = new BetEntity(
                         row.id,
                         row.title,
@@ -71,7 +97,7 @@ export class SqLiteService {
                     resolve(response)
                 } else {
                     reject(new BetNotFoundError(id))
-                }                
+                }
             })
         })
     }
@@ -79,23 +105,26 @@ export class SqLiteService {
     saveBet(bet: BetEntity): Promise<BetEntity> {
         return new Promise((resolve, reject) => {
             this.db.run(`INSERT INTO bets(title, description, option1, option2, finished, winner) VALUES(?, ?, ?, ?, ?, ?)`,
-            [bet.title, bet.description, bet.option1, bet.option2, bet.isFinished ? 1 : 0, bet.winner ? 1 : 0],
-            function (error) {
-                console.log(`Added with id=${this.lastID}`)
-                bet.id = this.lastID
-                resolve(bet)
-            })
+                [bet.title, bet.description, bet.option1, bet.option2, bet.isFinished ? 1 : 0, bet.winner ? 1 : 0],
+                function (error) {
+                    if (error) reject (error)
+                    console.log(`Added with id=${this.lastID}`)
+                    bet.id = this.lastID
+                    resolve(bet)
+                })
         })
     }
 
     deleteBet(betId: number): Promise<void> {
-        return new Promise((resolve,reject) => {
-            this.db.run(`DELETE FROM bets where id=$id`, {$id: betId}, function (error) {
-                if(this.changes == 0) reject(new BetNotFoundError(betId))
+        return new Promise((resolve, reject) => {
+            this.db.run(`DELETE FROM bets where id=$id`, { $id: betId }, function (error) {
+                if (error) reject (error)
+                if (this.changes == 0) reject(new BetNotFoundError(betId))
                 console.log("Deleted row", betId)
                 resolve()
             }
-        )})
+            )
+        })
     }
 
     updateBet(bet: BetEntity): Promise<void> {
@@ -116,10 +145,12 @@ export class SqLiteService {
                 $finished: bet.isFinished ? 1 : 0,
                 $winner: bet.winner ? 1 : 0
             }, function (error) {
-                if(this.changes == 0) reject(new BetNotFoundError(bet.id))
+                if (error) reject (error)
+                if (this.changes == 0) reject(new BetNotFoundError(bet.id))
                 console.log("Updated row", bet.id)
                 resolve()
             }
-        )})
+            )
+        })
     }
 }
