@@ -16,10 +16,44 @@
   animation: App-logo-spin infinite 20s linear;
 }
 
-h1>input{
+button{
+  padding: 0.1rem;
+  border-radius: 2px;
+}
+
+button.accept{
+  background-color: #35b44f;
+  border: solid 2px #3d8d4d;
+}
+
+button.delete{
+  background-color: #b43546;
+  border: solid 2px #86424b;
+}
+
+.checkbox{
+  scale: 1.5;
+}
+
+.bet-card h2>input{
   font-size: 1em;
+}
+
+.bet-card input:not(.checkbox, textarea) {
   width: 100%;
   border: none;
+  background-color: initial;
+  padding: 0.5rem;
+}
+
+.bet-card h2{
+  width: 80%;
+}
+
+.form textarea{
+  padding: 0.5rem;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  width: 20%;
 }
 
 .App-loader {
@@ -88,7 +122,7 @@ h1>input{
   text-decoration: none;
 }
 
-.wesoły-div-😂{
+.bet-card{
   width: 45%;
   margin: 1rem;
   background-color: white;
@@ -105,26 +139,29 @@ h1>input{
   margin-left: 1rem;
 }
 
-.wesoły-div-😂 .flex{
+.flex{
   display: flex;
+}
+.space-between{
   justify-content: space-between;
 }
-
-.bet-info{
+.align-center{
   align-items: center;
 }
 
-.wesoły-div-😂 .options div{
+.bet-card .options div{
   width: 44%;
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 2px;
+}
+.notFinished{
   filter: grayscale(1);
 }
 
-.wesoły-div-😂 .options div:first-child{
+.bet-card .options div:first-child{
   background-color: var(--firstColor);
 }
-.wesoły-div-😂 .options div:last-child{
+.bet-card .options div:last-child{
   background-color: var(--secondColor);
 }
 
@@ -136,4 +173,5 @@ main ul{
 
 .winner{
   filter: grayscale(0);
+  font-size: 2rem;
 }

@@ -40,13 +40,13 @@ const BetPage: React.FC<IBetPage> = (props) => {
           })}
         </ul>
         
-        <textarea placeholder="Enter a bet title" id="bet-title" onChange={e => setRequest({...request, title: e.target.value})}></textarea>
-        <textarea placeholder="Enter a bet description" id="bet-title" onChange={e => setRequest({...request, description: e.target.value})}></textarea>
-        <textarea placeholder="Enter Radek's demand" id="bet-option" onChange={e => setRequest({...request, option1: e.target.value})}></textarea>
-        <textarea placeholder="Enter Gosia's demand" id="bet-option" onChange={e => setRequest({...request, option2: e.target.value})}></textarea>
-
-        <button onClick={saveBet}>Add a bet</button>
-        {/* {<BetCreator></BetCreator>} */}
+        <div className="form flex space-between">
+          <textarea placeholder="Enter a bet title" id="bet-title" onChange={e => setRequest({...request, title: e.target.value})}></textarea>
+          <textarea placeholder="Enter a bet description" id="bet-title" onChange={e => setRequest({...request, description: e.target.value})}></textarea>
+          <textarea placeholder="Enter Radek's demand" id="bet-option" onChange={e => setRequest({...request, option1: e.target.value})}></textarea>
+          <textarea placeholder="Enter Gosia's demand" id="bet-option" onChange={e => setRequest({...request, option2: e.target.value})}></textarea>
+          <button onClick={saveBet}>Add a bet</button>
+        </div>
       </div>
     )
 }
