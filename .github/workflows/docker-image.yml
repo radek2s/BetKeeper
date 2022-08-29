@@ -27,4 +27,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: themajerr/betkeeeper:latest
+          tags: themajerr/betkeeper:latest
