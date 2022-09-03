@@ -1,69 +1,94 @@
 import express, { Application, Request, Response } from "express"
 import cors from "cors"
 import bodyParser from "body-parser";
-import { BetEntity } from "./model/BetEntity";
-import { SqLiteService } from "./sqLiteService";
+import * as dotenv from 'dotenv'
 
-const app:Application = express();
+import { BetNotFoundError, SqLiteService } from "./sqLiteService";
+
+dotenv.config()
+
+const app: Application = express();
+
 const PORT = process.env.PORT || 8000
+const HOSTNAME = process.env.HOST || "localhost"
+const DB_LOCATION = process.env.DB_LOCATION || "./betKeeper.db"
 
-const dbService = new SqLiteService("./betKeeper.db")
+const dbService = new SqLiteService(DB_LOCATION)
 
 app.use(bodyParser.json())
 app.use(cors())
 
-app.get("/api/bets", (req: Request, res: Response): void => {
-    dbService.getAllBets()
-    .then((bets) => {
-        res.send(JSON.stringify(bets))
-    })
-    .catch(() => {
-        res.status(200).send(JSON.stringify([]))
-    })
-})
-
-app.post("/api/bet", (req: Request, res: Response): void => {
-    const bet = req.body
-    dbService.saveBet(bet).then(() => {
-        res.send(JSON.stringify({operation: "saved"}))
-    }).catch(() => {
+app.get("/api/bet", async (req: Request, res: Response) => {
+    try {
+        console.log(`${new Date().toISOString()} [GET] /api/bet`)
+        const response = await dbService.getAllBets()
+        res.send(response)
+    } catch (e) {
+        console.error(e)
         res.status(500).send()
-    })
+    }
 })
 
-app.get("/api/bet/:id", (req: Request, res: Response): void => {
-    console.log("Get by ID", req.params.id)
-    //TODO: Add dbService.get(id)
-    const bet: BetEntity = new BetEntity(
-        1, "Main Bet", ":)", "Option 1", "Option 2",
-        false, false
-    )
-    res.send(JSON.stringify(bet))
-})
-
-app.put("/api/bet/:id", (req: Request, res: Response): void => {
-    const id = req.params.id
-    if(!id) res.status(400).send()
-
-    dbService.updateBet(req.body).then(()=> {
-        res.send(JSON.stringify({operation: "updated"}))
-    }).catch(() => {
+app.post("/api/bet", async (req: Request, res: Response) => {
+    try {
+        console.log(`${new Date().toISOString()} [POST] /api/bet`)
+        const bet = req.body
+        const response = await dbService.saveBet(bet)
+        res.send(response)
+    } catch (e) {
+        console.error(e)
         res.status(500).send()
-    })
-
+    }
 })
 
-app.delete("/api/bet/:id", (req: Request, res: Response): void => {
-    const id = req.params.id
-    if(!id) res.status(400).send()
-
-    dbService.deleteBet(+id).then(()=> {
-        res.send(JSON.stringify({operation: "deleted"}))
-    }).catch(() => {
+app.get("/api/bet/:id", async (req: Request, res: Response) => {
+    try {
+        console.log(`${new Date().toISOString()} [GET] /api/bet/${req.params.id}`)
+        const response = await dbService.getBet(+req.params.id)
+        res.send(response)
+    } catch (e) {
+        console.error(e)
+        if (e instanceof BetNotFoundError) {
+            res.status(404).send()
+        }
         res.status(500).send()
-    })
+    }
 })
 
-app.listen(PORT, ():void => {
-    console.log("Server is running...")
+app.put("/api/bet/:id", async (req: Request, res: Response) => {
+    try {
+        console.log(`${new Date().toISOString()} [PUT] /api/bet/${req.params.id}`)
+        const id = req.params.id
+        if (!id) res.status(400).send()
+        await dbService.updateBet(req.body)
+        res.status(204).send()
+    } catch (e) {
+        console.error(e)
+        if (e instanceof BetNotFoundError) {
+            res.status(404).send()
+        }
+        res.status(500).send()
+    }
+})
+
+app.delete("/api/bet/:id", async (req: Request, res: Response) => {
+    try {
+        console.log(`${new Date().toISOString()} [DELETE] /api/bet/${req.params.id}`)
+        const id = req.params.id
+        if (!id) res.status(400).send()
+
+        await dbService.deleteBet(+id)
+        res.status(204).send()
+        //https://dev.to/pragativerma18/youre-not-using-http-status-codes-right-pc6
+    } catch (e) {
+        console.error(e)
+        if (e instanceof BetNotFoundError) {
+            res.status(404).send()
+        }
+        res.status(500).send()
+    }
+})
+
+app.listen(+PORT, HOSTNAME, () => {
+    console.log(`Server is running on http://${HOSTNAME}:${PORT}`)
 })
