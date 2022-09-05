@@ -1,14 +1,14 @@
-import { useState } from "react"
-import { addBet, saveBets } from "../features/bet/betSlice"
-import { useAppDispatch } from "../hooks"
-import BetEntry from "../models/BetEntry"
+import { useState } from 'react'
+import { addBet, saveBets } from '../features/bet/betSlice'
+import { useAppDispatch } from '../hooks'
+import BetEntry from '../models/BetEntry'
 
 const BetCreator: React.FC = () => {
   const dispatch = useAppDispatch()
 
-  const [betTitle, setBetTitle] = useState<string>("")
-  const [betOption1, setBetOption1] = useState<string>("")
-  const [betOption2, setBetOption2] = useState<string>("")
+  const [betTitle, setBetTitle] = useState<string>('')
+  const [betOption1, setBetOption1] = useState<string>('')
+  const [betOption2, setBetOption2] = useState<string>('')
 
   let createBet = (): void => {
     if (!!betTitle && !!betOption1 && !!betOption2) {
@@ -16,14 +16,14 @@ const BetCreator: React.FC = () => {
       dispatch(saveBets())
       clearInputs()
     } else {
-      console.error("Invalid bet!")
+      console.error('Invalid bet!')
     }
   }
 
   let clearInputs = (): void => {
-    setBetTitle("")
-    setBetOption1("")
-    setBetOption2("")
+    setBetTitle('')
+    setBetOption1('')
+    setBetOption2('')
   }
 
   return (

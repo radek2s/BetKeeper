@@ -1,6 +1,6 @@
-import React from "react"
+import React from 'react'
 
-import logo from "../logo.svg"
+import logo from '../logo.svg'
 const Loading: React.FC = () => {
   return (
     <div className="App-loader">

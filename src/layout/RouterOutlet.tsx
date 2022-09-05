@@ -1,7 +1,7 @@
-import React, { lazy } from "react"
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-const BetPage = lazy(() => import("../views/BetListPage"))
-const MainPage = lazy(() => import("../views/MainPage"))
+import React, { lazy } from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+const BetPage = lazy(() => import('../views/BetListPage'))
+const MainPage = lazy(() => import('../views/MainPage'))
 
 const RouterOutlet: React.FC = () => {
   return (

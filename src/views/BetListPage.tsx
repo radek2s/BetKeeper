@@ -1,7 +1,7 @@
-import React, { useEffect } from "react"
-import BetCreator from "../components/BetCreator"
-import BetElement from "../components/BetElement"
-import BetApi from "../features/BetApi"
+import React, { useEffect } from 'react'
+import BetCreator from '../components/BetCreator'
+import BetElement from '../components/BetElement'
+import BetApi from '../features/BetApi'
 
 interface IBetPage {
   serviceApi: BetApi
@@ -17,9 +17,9 @@ const BetPage: React.FC<IBetPage> = (props: IBetPage) => {
     <div>
       <h1>All Bets</h1>
       <ul>
-        {/* {bets.map(bet, i) => {
-            <BetElement bet={bet} key={i} />
-          }} */}
+        {bets.map((bet: any, i: number) => {
+          ;<BetElement bet={bet} key={i} />
+        })}
       </ul>
       {/*<textarea placeholder="Enter a bet title" id="bet-title" onChange={e => this.setState({ title: e.target.value })}></textarea>
         <textarea placeholder="Enter Radek's demand" id="bet-option" onChange={e => this.setState({ firstOption: e.target.value })}></textarea>

@@ -3,15 +3,19 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["plugin:react/recommended", "plugin:@typescript-eslint/recommended"],
-  parser: "@typescript-eslint/parser",
+  extends: ['plugin:react/recommended', 'plugin:@typescript-eslint/recommended'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: "latest",
+    ecmaVersion: 'latest',
     ecmaFeatures: {
       jsx: true,
     },
-    sourceType: "module",
+    sourceType: 'module',
   },
-  plugins: ["react", "@typescript-eslint"],
-  rules: {},
+  plugins: ['react', '@typescript-eslint'],
+  rules: {
+    '@typescript-eslint/no-extra-semi': ['off'],
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-magic-numbers': ['warn', { ignore: [1, 2], ignoreDefaultValues: true }],
+  },
 }

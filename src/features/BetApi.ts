@@ -1,5 +1,5 @@
-import axios from "axios"
-const path: string = "http://localhost:8080"
+import axios from 'axios'
+const path: string = 'http://localhost:8080'
 
 export default class BetApi {
   constructor() {}
@@ -9,6 +9,7 @@ export default class BetApi {
       .get(`${path}/api/bets`)
       .then(function (response: any) {
         console.log(response)
+        console.debug('')
       })
       .catch((error) => console.log(error))
   }

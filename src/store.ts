@@ -1,5 +1,5 @@
-import { configureStore } from "@reduxjs/toolkit"
-import betSlice from "./features/bet/betSlice"
+import { configureStore } from '@reduxjs/toolkit'
+import betSlice from './features/bet/betSlice'
 
 export const store = configureStore({
   reducer: {

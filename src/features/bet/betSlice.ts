@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import BetEntry from "../../models/BetEntry"
-import axios from "axios"
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import BetEntry from '../../models/BetEntry'
+import axios from 'axios'
 interface BetState {
   //It would be nice to have
   // a BetEntry class defined
@@ -10,15 +10,15 @@ interface BetState {
 const initialState: BetState = {
   betList: [
     new BetEntry(
-      "Are we meet someone in the Cinema?",
-      "Girlfriend wears pink blouse",
-      "Boyfriend goes to the hairdresser"
+      'Are we meet someone in the Cinema?',
+      'Girlfriend wears pink blouse',
+      'Boyfriend goes to the hairdresser'
     ),
   ],
 }
 
 export const betSlice = createSlice({
-  name: "bet",
+  name: 'bet',
   initialState,
   reducers: {
     addBet: (state, action: PayloadAction<BetEntry>) => {
@@ -28,11 +28,11 @@ export const betSlice = createSlice({
       state.betList = []
     },
     saveBets: (state) => {
-      window.localStorage.setItem("bet-list", JSON.stringify(state.betList))
+      window.localStorage.setItem('bet-list', JSON.stringify(state.betList))
     },
     loadBets: (state) => {
       state.betList = []
-      let x = JSON.parse(window.localStorage.getItem("bet-list") || "[]") as BetEntry[] //TODO: zmiana na zewnętrzną bazę danych
+      let x = JSON.parse(window.localStorage.getItem('bet-list') || '[]') as BetEntry[] //TODO: zmiana na zewnętrzną bazę danych
       x.forEach((b) =>
         state.betList.push(
           Object.assign(new BetEntry(b.title, b.betOption1, b.betOption2), b)
