@@ -1,3 +1,4 @@
+import React from "react"
 import BetEntry from "../models/BetEntry"
 
 const BetElement: React.FC<{ bet: BetEntry }> = ({ bet }) => {
