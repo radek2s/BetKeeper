@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react';
-import './App.css';
-import { BrowserRouter as Router } from "react-router-dom";
-import Navigation from './layout/Navigation';
-import RouterOutlet from './layout/RouterOutlet';
-import Loading from './layout/Loading';
+import React, { Suspense } from "react"
+import "./App.css"
+import { BrowserRouter as Router } from "react-router-dom"
+import Navigation from "./layout/Navigation"
+import RouterOutlet from "./layout/RouterOutlet"
+import Loading from "./layout/Loading"
 
 function App() {
   return (
@@ -13,13 +13,13 @@ function App() {
       </header>
 
       <Router>
-        <Suspense fallback={<Loading/>}>
+        <Suspense fallback={<Loading />}>
           <Navigation />
           <RouterOutlet />
         </Suspense>
       </Router>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

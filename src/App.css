@@ -1,4 +1,4 @@
-:root{
+:root {
   --mainColor: rgb(37, 37, 37);
   --firstColor: rgb(255 87 36);
   --secondColor: rgb(40 201 171);
@@ -25,10 +25,13 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg);}
-  to { transform: rotate(360deg);}
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
-
 
 .App-header {
   grid-column-start: 1;
@@ -42,7 +45,7 @@
   font-size: 24px;
   color: white;
   z-index: 10;
-  box-shadow: 1px 2px 5px 0px #000000a1
+  box-shadow: 1px 2px 5px 0px #000000a1;
 }
 
 .App-main {
@@ -71,10 +74,9 @@
   border: 1px solid #282c34;
 }
 
-.App-nav ul  li:hover {
+.App-nav ul li:hover {
   border: 1px solid white;
   transition: border 0.2s ease-in-out;
-  
 }
 
 .App-nav ul a {
@@ -82,7 +84,7 @@
   text-decoration: none;
 }
 
-.wesoły-div-😂{
+.wesoły-div-😂 {
   width: 45%;
   margin: 1rem;
   background-color: white;
@@ -94,40 +96,40 @@
   justify-content: space-between;
 }
 
-.bet-id{
+.bet-id {
   color: var(--disabledColor);
   margin-left: 1rem;
 }
 
-.wesoły-div-😂 .flex{
+.wesoły-div-😂 .flex {
   display: flex;
   justify-content: space-between;
 }
 
-.bet-info{
+.bet-info {
   align-items: center;
 }
 
-.wesoły-div-😂 .options div{
+.wesoły-div-😂 .options div {
   width: 44%;
   padding: 1rem;
   border-radius: 2px;
   filter: grayscale(1);
 }
 
-.wesoły-div-😂 .options div:first-child{
+.wesoły-div-😂 .options div:first-child {
   background-color: var(--firstColor);
 }
-.wesoły-div-😂 .options div:last-child{
+.wesoły-div-😂 .options div:last-child {
   background-color: var(--secondColor);
 }
 
-main ul{
+main ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
-.winner{
+.winner {
   filter: grayscale(0);
 }
