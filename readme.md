@@ -6,6 +6,7 @@ Progressive Web App so it can be installed on any device.
 ### Scripts
 
 - `npm install`: install project dependencies
+- `npm prepare`: install husky 🐶 - pre-commit hooks
 - `npm run start`: Starts the application
 - `npm run build`: Builds the application for production
 
