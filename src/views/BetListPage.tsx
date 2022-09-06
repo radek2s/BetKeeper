@@ -1,37 +1,33 @@
-import React, { useEffect } from "react";
-import BetCreator from "../components/BetCreator";
-import BetElement from "../components/BetElement";
-import BetApi from "../features/BetApi";
+import React, { useEffect } from 'react'
+import BetCreator from '../components/BetCreator'
+import BetElement from '../components/BetElement'
+import BetApi from '../features/BetApi'
 
 interface IBetPage {
-  serviceApi: BetApi;
+  serviceApi: BetApi
 }
 const BetPage: React.FC<IBetPage> = (props: IBetPage) => {
-
-  let [bets, setBets] = React.useState<any>(); //zmienna do wszystkich betów
+  let [bets, setBets] = React.useState<any>() //zmienna do wszystkich betów
 
   useEffect(() => {
-    setBets(props.serviceApi.getAllBets());
-  }, []);
+    setBets(props.serviceApi.getAllBets())
+  }, [])
 
-    return (
-      <div>
-        <h1>All Bets</h1>
-        <ul>
-          {bets.map(bet, i) => {
-            <BetElement bet={bet} key={i} />
-          }}
-        </ul>
-        {
-          /*<textarea placeholder="Enter a bet title" id="bet-title" onChange={e => this.setState({ title: e.target.value })}></textarea>
+  return (
+    <div>
+      <h1>All Bets</h1>
+      <ul>
+        {bets.map((bet: any, i: number) => {
+          ;<BetElement bet={bet} key={i} />
+        })}
+      </ul>
+      {/*<textarea placeholder="Enter a bet title" id="bet-title" onChange={e => this.setState({ title: e.target.value })}></textarea>
         <textarea placeholder="Enter Radek's demand" id="bet-option" onChange={e => this.setState({ firstOption: e.target.value })}></textarea>
         <textarea placeholder="Enter Gosia's demand" id="bet-option" onChange={e => this.setState({ secondOption: e.target.value })}></textarea>
         <button onClick={e => this.addBetToLocalStorage(this.state.title, this.state.firstOption,  this.state.secondOption)}>Add a bet</button> */}
-        <BetCreator></BetCreator>
-      </div>
-    )
-  
-
+      <BetCreator></BetCreator>
+    </div>
+  )
 
   // renderAllBets() {
   //   let betList = this.getBetListFromLocalStorage();
@@ -74,4 +70,4 @@ const BetPage: React.FC<IBetPage> = (props: IBetPage) => {
   // }
 }
 
-export default BetPage;
+export default BetPage
