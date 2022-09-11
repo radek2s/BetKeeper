@@ -7,7 +7,7 @@ export default class BetEntry {
     option2: string;
     isFinished: boolean;
     winner: boolean;
-    
+
     constructor(id: number, title: string, description: string, option1: string, option2: string, isFinished = false, winner = false) {
         this.id = id;
         this.title = title;

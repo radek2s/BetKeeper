@@ -1,4 +1,4 @@
-:root{
+:root {
   --mainColor: rgb(37, 37, 37);
   --firstColor: rgb(255 87 36);
   --secondColor: rgb(40 201 171);
@@ -16,26 +16,26 @@
   animation: App-logo-spin infinite 20s linear;
 }
 
-button{
+button {
   padding: 0.1rem;
   border-radius: 2px;
 }
 
-button.accept{
+button.accept {
   background-color: #35b44f;
   border: solid 2px #3d8d4d;
 }
 
-button.delete{
+button.delete {
   background-color: #b43546;
   border: solid 2px #86424b;
 }
 
-.checkbox{
+.checkbox {
   scale: 1.5;
 }
 
-.bet-card h2>input{
+.bet-card h2>input {
   font-size: 1em;
 }
 
@@ -46,13 +46,13 @@ button.delete{
   padding: 0.5rem;
 }
 
-.bet-card h2{
+.bet-card h2 {
   width: 80%;
 }
 
-.form textarea{
+.form textarea {
   padding: 0.5rem;
-  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   width: 20%;
 }
 
@@ -65,10 +65,14 @@ button.delete{
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg);}
-  to { transform: rotate(360deg);}
-}
+  from {
+    transform: rotate(0deg);
+  }
 
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .App-header {
   grid-column-start: 1;
@@ -82,7 +86,7 @@ button.delete{
   font-size: 24px;
   color: white;
   z-index: 10;
-  box-shadow: 1px 2px 5px 0px #000000a1
+  box-shadow: 1px 2px 5px 0px #000000a1;
 }
 
 .App-main {
@@ -90,6 +94,7 @@ button.delete{
   grid-column-start: main;
   grid-column-end: -1;
 }
+
 .App-nav {
   grid-column-start: sidebar-start;
   background-color: #282c34;
@@ -97,6 +102,7 @@ button.delete{
   grid-row-end: -1;
   max-width: 250px;
 }
+
 .App-nav ul {
   list-style: none;
   margin: 16px 0 0 0;
@@ -111,10 +117,9 @@ button.delete{
   border: 1px solid #282c34;
 }
 
-.App-nav ul  li:hover {
+.App-nav ul li:hover {
   border: 1px solid white;
   transition: border 0.2s ease-in-out;
-  
 }
 
 .App-nav ul a {
@@ -122,7 +127,7 @@ button.delete{
   text-decoration: none;
 }
 
-.bet-card{
+.bet-card {
   width: 45%;
   margin: 1rem;
   background-color: white;
@@ -134,44 +139,48 @@ button.delete{
   justify-content: space-between;
 }
 
-.bet-id{
+.bet-id {
   color: var(--disabledColor);
   margin-left: 1rem;
 }
 
-.flex{
+.flex {
   display: flex;
 }
-.space-between{
+
+.space-between {
   justify-content: space-between;
 }
-.align-center{
+
+.align-center {
   align-items: center;
 }
 
-.bet-card .options div{
+.bet-card .options div {
   width: 44%;
   padding: 0.5rem;
   border-radius: 2px;
 }
-.notFinished{
+
+.notFinished {
   filter: grayscale(1);
 }
 
-.bet-card .options div:first-child{
+.bet-card .options div:first-child {
   background-color: var(--firstColor);
 }
-.bet-card .options div:last-child{
+
+.bet-card .options div:last-child {
   background-color: var(--secondColor);
 }
 
-main ul{
+main ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
-.winner{
+.winner {
   filter: grayscale(0);
   font-size: 2rem;
 }

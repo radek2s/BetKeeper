@@ -7,21 +7,21 @@ const MainPage = lazy(() => import('../views/MainPage'));
 
 const RouterOutlet: React.FC = () => {
   const [serviceApi] = React.useState<BetApi>(new BetApi()); //zmienna do wszystkich betów
-    return (
-        <main className="App-main">
-            <Switch>
+  return (
+    <main className="App-main">
+      <Switch>
 
-              <Route path="/list">
-                <BetPage serviceApi={serviceApi}></BetPage>
-              </Route>
+        <Route path="/list">
+          <BetPage serviceApi={serviceApi}></BetPage>
+        </Route>
 
-              <Route path="/">
-                <MainPage />
-              </Route>
+        <Route path="/">
+          <MainPage />
+        </Route>
 
-            </Switch>
-          </main>
-    )
+      </Switch>
+    </main>
+  )
 }
 
-export default RouterOutlet;
+export default RouterOutlet
