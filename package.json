@@ -41,7 +41,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "npx prettier --write .",
-    "prepare": "husly install"
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
