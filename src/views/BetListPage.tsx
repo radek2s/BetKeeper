@@ -17,8 +17,7 @@ const BetPage: React.FC<IBetPage> = (props) => {
   }, []);
 
     const saveBet = () => {
-      props.serviceApi.addNewBet(request);
-      props.serviceApi.getAllBets().then(r => setBets(r))
+      props.serviceApi.addNewBet(request).then(bet => setBets([...bets, bet]));
     }
     const deleteBet = async(bet: BetEntry) => {
       await props.serviceApi.deleteBetById(bet.id);
