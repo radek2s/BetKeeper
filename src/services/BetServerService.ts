@@ -14,7 +14,8 @@ export default class BetServerService implements BetDataService {
     //      into this files. 
     
     getAllBets(): Promise<BetEntry[]> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve) => resolve([]))
+        // throw new Error("Method not implemented.");
     }
     getBetById(id: number): Promise<BetEntry> {
         throw new Error("Method not implemented.");

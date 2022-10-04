@@ -17,7 +17,7 @@ const BetPage: React.FC<IBetPage> = (props) => {
 
   useEffect(() => {
     props.serviceApi.getAllBets().then(res => setBets(res)) //wyciągnięcie wartości z koniecznego Promisea
-    // betConsumer.getAllBets().then(res => setBets(res)) // Using betConsumer we can load all bets into this component like before
+    betConsumer.getAllBets().then(res => setBets(res)) // Using betConsumer we can load all bets into this component like before
   }, []);
 
     const saveBet = () => {
