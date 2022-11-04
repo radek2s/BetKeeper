@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import BetElement from "../components/BetElement";
 import BetApi from "../features/BetApi";
 import BetEntry from "../models/BetEntry";
+import { BetDataContext } from "../providers/BetDataProvider";
 interface IBetPage {
   serviceApi: BetApi;
 }
@@ -11,9 +12,12 @@ const BetPage: React.FC<IBetPage> = (props) => {
   const [bets, setBets] = React.useState<BetEntry[]>([]); //zmienna do wszystkich betów
   
   const [request, setRequest] = React.useState<BetEntry>(new BetEntry(-1, "", "", "", "" ));
+  
+  const betConsumer = React.useContext(BetDataContext) // Get betConsumer -> Service that handle logic that provide data into component
 
   useEffect(() => {
     props.serviceApi.getAllBets().then(res => setBets(res)) //wyciągnięcie wartości z koniecznego Promisea
+    betConsumer.getAllBets().then(res => setBets(res)) // Using betConsumer we can load all bets into this component like before
   }, []);
 
     const saveBet = () => {
