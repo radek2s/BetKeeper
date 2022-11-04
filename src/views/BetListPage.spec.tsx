@@ -1,35 +1,13 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/ban-types */
 import React from 'react'
 import { render, RenderResult } from '@testing-library/react'
 import BetPage from './BetListPage'
-import BetApi from '../features/BetApi'
 import { act } from 'react-dom/test-utils'
 import { BetDataContext, BetDataService } from '../providers/BetDataProvider'
 
 describe('initialization', () => {
-  test('Should get all bets once', async () => {
-    //Arrange
-    const Mock = jest.fn<BetApi, any>(() => ({
-      getAllBets: jest.fn().mockResolvedValue([]),
-      getBetById: jest.fn(),
-      addNewBet: jest.fn(),
-      updateBetById: jest.fn(),
-      deleteBetById: jest.fn(),
-    }))
-    //In future replace with ReactContextMock instead of providing serviceApi
-
-    const mock = new Mock()
-
-    //Act
-    await act(async () => {
-      render(<BetPage serviceApi={mock} />)
-    })
-
-    //Assert
-    expect(mock.getAllBets).toHaveBeenCalledTimes(1)
-  })
-
   test('Should render 2 bets with [Example Bet, Example Second Bet] titles', async () => {
     //Arrange
     const MockDataService = jest.fn<BetDataService, any>(() => ({
@@ -59,25 +37,13 @@ describe('initialization', () => {
       deleteBet: jest.fn(),
     }))
     const dataServiceMock = new MockDataService()
-
-    /* TO DELETE it when BetApi.ts will be deleted */
-    const Mock = jest.fn<BetApi, any>(() => ({
-      getAllBets: jest.fn().mockResolvedValue([]),
-      getBetById: jest.fn(),
-      addNewBet: jest.fn(),
-      updateBetById: jest.fn(),
-      deleteBetById: jest.fn(),
-    }))
-    const mock = new Mock()
-    /* ------------------------------------------- */
-
     let data: RenderResult
 
     //Act
     await act(async () => {
       data = render(
         <BetDataContext.Provider value={dataServiceMock}>
-          <BetPage serviceApi={mock} />
+          <BetPage />
         </BetDataContext.Provider>
       )
     })

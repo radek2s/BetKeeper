@@ -1,3 +1,4 @@
+import axios from 'axios'
 import BetEntry from '../models/BetEntry'
 import { BetDataService } from '../providers/BetDataProvider'
 
@@ -7,25 +8,39 @@ import { BetDataService } from '../providers/BetDataProvider'
  * Fetch and upload data into dedicated local backend service.
  */
 export default class BetServerService implements BetDataService {
-  private path = 'http://localhost:8000' //TODO: load from env variable
+  private path = process.env.REACT_APP_SERVER_URL || 'http://localhost:8000'
 
-  //TODO: Move all method implementations from "src/features/BetApi.ts"
-  //      into this files.
+  async getAllBets(): Promise<BetEntry[]> {
+    //return new Promise((resolve) => resolve([]))
+    const { data } = await axios.get(`${this.path}/api/bet`)
+    return data.map(
+      (bet: BetEntry) =>
+        new BetEntry(
+          bet.id,
+          bet.title,
+          bet.description,
+          bet.option1,
+          bet.option2,
+          bet.isFinished,
+          bet.winner
+        )
+    )
+  }
 
-  getAllBets(): Promise<BetEntry[]> {
-    return new Promise((resolve) => resolve([]))
-    // throw new Error("Method not implemented.");
+  async getBetById(id: number): Promise<BetEntry> {
+    return await axios.get(`${this.path}/api/bet/${id}`)
   }
-  getBetById(id: number): Promise<BetEntry> {
-    throw new Error('Method not implemented.')
+
+  async addNewBet(bet: BetEntry): Promise<BetEntry> {
+    const { data } = await axios.post(`${this.path}/api/bet`, bet)
+    return new BetEntry(data.id, data.title, '', data.option1, data.option2)
   }
-  addNewBet(bet: BetEntry): Promise<BetEntry> {
-    throw new Error('Method not implemented.')
-  }
+
   updateBet(bet: BetEntry): Promise<BetEntry> {
-    throw new Error('Method not implemented.')
+    return axios.put(`${this.path}/api/bet/${bet.id}`, bet)
   }
-  deleteBet(id: number): void {
-    throw new Error('Method not implemented.')
+
+  deleteBet(id: number): Promise<void> {
+    return axios.delete(`${this.path}/api/bet/${id}`)
   }
 }

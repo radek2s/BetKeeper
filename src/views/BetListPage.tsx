@@ -1,44 +1,42 @@
 import React, { useEffect } from 'react'
 import BetElement from '../components/BetElement'
-import BetApi from '../features/BetApi'
 import BetEntry from '../models/BetEntry'
 import { BetDataContext } from '../providers/BetDataProvider'
-interface IBetPage {
-  serviceApi: BetApi
-}
+const newId = -1
 
-const BetPage: React.FC<IBetPage> = (props) => {
+const BetPage: React.FC = () => {
   const [bets, setBets] = React.useState<BetEntry[]>([]) //zmienna do wszystkich betów
 
-  const [request, setRequest] = React.useState<BetEntry>(new BetEntry(-1, '', '', '', ''))
+  const [request, setRequest] = React.useState<BetEntry>(
+    new BetEntry(newId, '', '', '', '')
+  )
 
   const betConsumer = React.useContext(BetDataContext) // Get betConsumer -> Service that handle logic that provide data into component
 
   useEffect(() => {
-    props.serviceApi.getAllBets().then((res) => setBets(res)) //wyciągnięcie wartości z koniecznego Promisea
     betConsumer.getAllBets().then((res) => setBets(res)) // Using betConsumer we can load all bets into this component like before
   }, [])
 
   const saveBet = () => {
-    props.serviceApi.addNewBet(request).then((bet) => setBets([...bets, bet]))
+    betConsumer.addNewBet(request).then((bet) => setBets([...bets, bet]))
   }
   const deleteBet = async (bet: BetEntry) => {
-    await props.serviceApi.deleteBetById(bet.id)
-    props.serviceApi.getAllBets().then((r) => setBets(r))
+    await betConsumer.deleteBet(bet.id)
+    betConsumer.getAllBets().then((r) => setBets(r))
   }
   const updateBet = async (bet: BetEntry) => {
-    await props.serviceApi.updateBetById(bet)
+    await betConsumer.updateBet(bet)
   }
 
   return (
     <div>
       <h1>All Bets</h1>
       <ul>
-        {bets.map((bet: BetEntry, i: number) => {
+        {bets.map((bet: BetEntry) => {
           return (
             <BetElement
               bet={bet}
-              key={i}
+              key={bet.id}
               betDelete={() => deleteBet(bet)}
               betUpdate={updateBet}
             />
@@ -46,6 +44,7 @@ const BetPage: React.FC<IBetPage> = (props) => {
         })}
       </ul>
 
+      {/* TODO: wydzielić do osobnego komponentu BetCreatorForm */}
       <div className="form flex space-between">
         <textarea
           placeholder="Enter a bet title"

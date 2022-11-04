@@ -19,7 +19,11 @@ export interface BetDataService {
 
   updateBet(bet: BetEntry): Promise<BetEntry>
 
-  deleteBet(id: number): void
+  /**
+   *
+   * @param id bet id number
+   */
+  deleteBet(id: number): Promise<void>
 }
 
 export const BetDataContext = React.createContext<BetDataService>(new BetServerService())

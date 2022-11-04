@@ -21,7 +21,7 @@ export default class BetFirebaseService implements BetDataService {
   updateBet(bet: BetEntry): Promise<BetEntry> {
     throw new Error('Method not implemented.')
   }
-  deleteBet(id: number): void {
+  deleteBet(id: number): Promise<void> {
     throw new Error('Method not implemented.')
   }
 }
