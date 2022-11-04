@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express"
+import cors from "cors"
 import bodyParser from "body-parser";
 import * as dotenv from 'dotenv'
 
@@ -15,6 +16,7 @@ const DB_LOCATION = process.env.DB_LOCATION || "./betKeeper.db"
 const dbService = new SqLiteService(DB_LOCATION)
 
 app.use(bodyParser.json())
+app.use(cors())
 
 app.get("/api/bet", async (req: Request, res: Response) => {
     try {
