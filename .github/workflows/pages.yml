@@ -21,7 +21,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-      PUBLIC_URL: ${{ steps.deployment.outputs.page_url }}
+    env:
+      PUBLIC_URL: https://radek2s.github.io/BetKeeper/
     steps:
       - name: Checkout
         uses: actions/checkout@v3
