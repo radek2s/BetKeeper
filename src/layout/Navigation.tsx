@@ -11,6 +11,9 @@ const Navigation: React.FC = () => {
         <Link to="/list">
           <li>Bet List</li>
         </Link>
+        <Link to="/settings">
+          <li>Settings</li>
+        </Link>
       </ul>
     </nav>
   )
