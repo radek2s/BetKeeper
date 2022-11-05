@@ -50,7 +50,7 @@ export const DatabaseProvider: React.FC<Props> = ({ children }) => {
         service = new BetFirebaseService(config as FirebaseConfig)
         break
       default:
-        throw 'Not recognized!'
+        service = new BetServerService()
     }
     setBetDataProvider(service)
   }
