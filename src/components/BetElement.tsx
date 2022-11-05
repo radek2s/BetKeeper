@@ -34,7 +34,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
           <button
             className="delete"
             onClick={(e) => {
-              betDelete(bet.id)
+              betDelete(+bet.id)
             }}>
             ❌
           </button>

@@ -1,6 +1,7 @@
 import React from 'react'
 import BetEntry from '../models/BetEntry'
 import BetServerService from '../services/BetServerService'
+import { DatabaseContext } from './DatabaseProvider'
 
 /**
  * BetDataService interface
@@ -13,7 +14,7 @@ import BetServerService from '../services/BetServerService'
 export interface BetDataService {
   getAllBets(): Promise<BetEntry[]>
 
-  getBetById(id: number): Promise<BetEntry>
+  getBetById(id: number | string): Promise<BetEntry>
 
   addNewBet(bet: BetEntry): Promise<BetEntry>
 
@@ -23,7 +24,22 @@ export interface BetDataService {
    *
    * @param id bet id number
    */
-  deleteBet(id: number): Promise<void>
+  deleteBet(id: number | string): Promise<void>
 }
 
 export const BetDataContext = React.createContext<BetDataService>(new BetServerService())
+
+interface Props {
+  children: React.ReactNode
+}
+export const BetDataProvider: React.FC<Props> = ({ children }) => {
+  const dbConsumer = React.useContext(DatabaseContext)
+  return (
+    <>
+      <BetDataContext.Provider value={dbConsumer.service}>
+        {children}
+      </BetDataContext.Provider>
+    </>
+  )
+}
+export default BetDataProvider

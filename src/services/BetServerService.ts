@@ -1,5 +1,6 @@
 import axios from 'axios'
 import BetEntry from '../models/BetEntry'
+import { DedicatedConfig } from '../models/DatabaseConnector'
 import { BetDataService } from '../providers/BetDataProvider'
 
 /**
@@ -8,7 +9,12 @@ import { BetDataService } from '../providers/BetDataProvider'
  * Fetch and upload data into dedicated local backend service.
  */
 export default class BetServerService implements BetDataService {
-  private path = process.env.REACT_APP_SERVER_URL || 'http://localhost:8000'
+  private path: string
+
+  constructor(config?: DedicatedConfig) {
+    this.path =
+      config?.serverUrl || process.env.REACT_APP_SERVER_URL || 'http://localhost:8000'
+  }
 
   async getAllBets(): Promise<BetEntry[]> {
     //return new Promise((resolve) => resolve([]))
