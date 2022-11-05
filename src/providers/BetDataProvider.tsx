@@ -1,6 +1,5 @@
 import React from 'react'
 import BetEntry from '../models/BetEntry'
-import BetFirebaseService from '../services/BetFirebaseService'
 import BetServerService from '../services/BetServerService'
 import { DatabaseContext } from './DatabaseProvider'
 

@@ -1,37 +1,78 @@
-import React from 'react'
+import { DefaultButton, Stack, TextField } from '@fluentui/react'
+import React, { useEffect } from 'react'
 import { FirebaseConfig } from '../models/DatabaseConnector'
+import { loadDatabaseConfig, saveDatabaseConfig } from '../utils/LocalStorageUtils'
+
+const initialConfig: FirebaseConfig = {
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: '',
+}
 
 interface Props {
   save: (config: FirebaseConfig) => void
 }
 export const SettingsFirebase: React.FC<Props> = ({ save }) => {
-  const handleClick = () => {
-    save({
-      apiKey: (document.getElementById('cnf-firebase-apikey') as HTMLInputElement).value,
-      authDomain: (document.getElementById('cnf-firebase-auth') as HTMLInputElement)
-        .value,
-      projectId: (document.getElementById('cnf-firebase-project-id') as HTMLInputElement)
-        .value,
-      storageBucket: (document.getElementById('cnf-firebase-storage') as HTMLInputElement)
-        .value,
-      messagingSenderId: (
-        document.getElementById('cnf-firebase-message') as HTMLInputElement
-      ).value,
-      appId: (document.getElementById('cnf-firebase-app-id') as HTMLInputElement).value,
-    })
+  const [config, setConfig] = React.useState<FirebaseConfig>(initialConfig)
+
+  useEffect(() => {
+    const conf = loadDatabaseConfig('firebase')
+    if ('apiKey' in conf) {
+      setConfig(conf as FirebaseConfig)
+    }
+  }, [])
+
+  const handleChange = (value: string | undefined, key: keyof FirebaseConfig) => {
+    const updateValue = { [key]: value || '' }
+    setConfig((conf) => ({
+      ...conf,
+      ...updateValue,
+    }))
   }
+
+  const handleApply = () => {
+    saveDatabaseConfig(config, 'firebase')
+    save(config)
+  }
+
   return (
     <>
-      <h2>Firebase connector settings</h2>
-      <div>
-        <input id="cnf-firebase-apikey" placeholder="Api key" />
-        <input id="cnf-firebase-auth" placeholder="authDomain" />
-        <input id="cnf-firebase-project-id" placeholder="projectId" />
-        <input id="cnf-firebase-storage" placeholder="storageBucket" />
-        <input id="cnf-firebase-message" placeholder="messagingSenderId" />
-        <input id="cnf-firebase-app-id" placeholder="appId" />
-      </div>
-      <button onClick={handleClick}>Save</button>
+      <Stack tokens={{ childrenGap: 10 }}>
+        <TextField
+          label="API Key"
+          value={config.apiKey}
+          onChange={(_, e) => handleChange(e, 'apiKey')}
+        />
+        <TextField
+          label="Authentication Domain"
+          value={config.authDomain}
+          onChange={(_, e) => handleChange(e, 'authDomain')}
+        />
+        <TextField
+          label="Project ID"
+          value={config.projectId}
+          onChange={(_, e) => handleChange(e, 'projectId')}
+        />
+        <TextField
+          label="Storage Bucket"
+          value={config.storageBucket}
+          onChange={(_, e) => handleChange(e, 'storageBucket')}
+        />
+        <TextField
+          label="Messaging Sender ID"
+          value={config.messagingSenderId}
+          onChange={(_, e) => handleChange(e, 'messagingSenderId')}
+        />
+        <TextField
+          label="Application ID"
+          value={config.appId}
+          onChange={(_, e) => handleChange(e, 'appId')}
+        />
+        <DefaultButton text="Save" onClick={handleApply} />
+      </Stack>
     </>
   )
 }

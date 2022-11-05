@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { Dropdown, Icon, IDropdownOption, PrimaryButton, Stack } from '@fluentui/react'
 import React from 'react'
 import { SettingsDedicated } from '../components/SettingsDedicated'
 import { SettingsFirebase } from '../components/SettingsFirebase'
-import {
-  DatabaseConfig,
-  DatabaseType,
-  DedicatedConfig,
-  FirebaseConfig,
-} from '../models/DatabaseConnector'
+import { DatabaseConfig, DatabaseType } from '../models/DatabaseConnector'
 import { DatabaseContext } from '../providers/DatabaseProvider'
+
+const databaseOptions: IDropdownOption[] = [
+  {
+    key: 'dedicated',
+    text: 'Node server',
+  },
+  {
+    key: 'firebase',
+    text: 'Firebase',
+  },
+]
 
 export const SettingsPage: React.FC = () => {
   const dbConsumer = React.useContext(DatabaseContext)
@@ -16,33 +23,77 @@ export const SettingsPage: React.FC = () => {
     dbConsumer.database.type
   )
 
-  const handleChange = () => {
-    if (dbConsumer.database.type === 'firebase') {
-      dbConsumer.setConnection({ type: 'dedicated', config: { serverUrl: 'hans' } })
-    } else {
-      dbConsumer.setConnection({ type: 'firebase', config: { apiKey: 'testing' } })
-    }
+  const [preConfig, setPreConfig] = React.useState<DatabaseConfig | null>()
+  const [selectedDatabase, setSelectedDatabase] = React.useState<
+    IDropdownOption | undefined
+  >(findActiveDatabaseOption())
+
+  function findActiveDatabaseOption(): IDropdownOption | undefined {
+    return databaseOptions.find((option) => option.key === dbConsumer.database.type)
   }
 
-  const toggleSettings = () => {
-    const nextSection = configType === 'dedicated' ? 'firebase' : 'dedicated'
-    setConfigType(nextSection)
+  const onChange = (e: React.FormEvent<HTMLDivElement>, item?: IDropdownOption): void => {
+    setPreConfig(null)
+    setSelectedDatabase(item)
   }
 
   const handleSave = (config: DatabaseConfig) => {
-    dbConsumer.setConnection({ type: configType, config })
+    setPreConfig(config)
+    if ('apiKey' in config) {
+      setConfigType('firebase')
+    } else if ('serverUrl' in config) {
+      setConfigType('dedicated')
+    }
+  }
+
+  const handleConnect = () => {
+    if (!preConfig) return
+    dbConsumer.setConnection({ type: configType, config: preConfig })
+    setPreConfig(null)
+  }
+
+  const getIconName = (): string => {
+    if (dbConsumer.database.type === 'firebase') {
+      return 'firebase-svg'
+    }
+    return 'database-svg'
+  }
+  const getServiceName = (): string => {
+    if (dbConsumer.database.type === 'firebase') {
+      return 'Firebase'
+    }
+    return 'Node server'
   }
 
   return (
-    <div>
+    <div className="settings-page">
       <h1>Settings</h1>
-      <p>Using type: {dbConsumer.database.type}</p>
-      <button onClick={toggleSettings}>Change type</button>
-      {configType === 'dedicated' ? (
-        <SettingsDedicated save={handleSave} />
-      ) : (
-        <SettingsFirebase save={handleSave} />
-      )}
+      <header className="flex flex-space-between">
+        <h2>Database source</h2>
+        <div className="connection-status">
+          <p className="label">Active connection</p>
+          <div className="type">
+            <Icon iconName={getIconName()} />
+            <span>{getServiceName()}</span>
+          </div>
+        </div>
+      </header>
+
+      <Stack tokens={{ childrenGap: 20 }}>
+        <Dropdown
+          placeholder="Select"
+          label="Database connection"
+          selectedKey={selectedDatabase ? selectedDatabase.key : undefined}
+          onChange={onChange}
+          options={databaseOptions}
+        />
+        {selectedDatabase?.key === 'dedicated' ? (
+          <SettingsDedicated save={handleSave} />
+        ) : (
+          <SettingsFirebase save={handleSave} />
+        )}
+        <PrimaryButton text="Connect" disabled={!preConfig} onClick={handleConnect} />
+      </Stack>
     </div>
   )
 }

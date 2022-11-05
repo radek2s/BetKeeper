@@ -4,18 +4,12 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import Navigation from './layout/Navigation'
 import RouterOutlet from './layout/RouterOutlet'
 import Loading from './layout/Loading'
-import BetDataProvider, { BetDataContext } from './providers/BetDataProvider'
-import BetFirebaseService from './services/BetFirebaseService'
-import {
-  DatabaseContext,
-  DatabaseProvider,
-  defaultConnection,
-} from './providers/DatabaseProvider'
+import BetDataProvider from './providers/BetDataProvider'
+import { DatabaseProvider } from './providers/DatabaseProvider'
+
+import './Icons'
 
 function App() {
-  //Initialize BetServerService to get data from REST API
-  // const betDataService = new BetServerService()
-
   return (
     <div className="App">
       <DatabaseProvider>

@@ -11,7 +11,6 @@ import {
   setDoc,
   deleteDoc,
   Firestore,
-  CollectionReference,
 } from 'firebase/firestore/lite'
 import { FirebaseConfig } from '../models/DatabaseConnector'
 
@@ -36,7 +35,7 @@ export default class BetFirebaseService implements BetDataService {
   private connect(config: FirebaseConfig) {
     try {
       this.firestore = getFirestore(initializeApp(config))
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e)
     }
   }
@@ -64,7 +63,7 @@ export default class BetFirebaseService implements BetDataService {
     return bets
   }
   getBetById(id: string): Promise<BetEntry> {
-    throw new Error('Method not implemented.')
+    throw new Error(`Method not implemented. getById(${id})`)
   }
 
   async addNewBet(bet: BetEntry): Promise<BetEntry> {
@@ -83,18 +82,13 @@ export default class BetFirebaseService implements BetDataService {
       collection(this.firestore, BetFirebaseService.BET_COLLECTION_NAME),
       bet.id.toString()
     )
-    setDoc(betRef, bet)
-      .then(() => {
-        console.log('Updated')
-      })
-      .catch((e: any) => {
-        console.error('failed', e)
-      })
+    setDoc(betRef, bet).catch((e: unknown) => {
+      console.error('failed', e)
+    })
     return bet
   }
   async deleteBet(id: string): Promise<void> {
     if (!this.firestore) throw 'Firestore not initialized!'
-    console.log(id)
     await deleteDoc(
       doc(this.firestore, BetFirebaseService.BET_COLLECTION_NAME, id.toString())
     )
