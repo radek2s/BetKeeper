@@ -1,36 +1,9 @@
-<style>
-.header {
-    display:flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 8px;
-    border-bottom: 1px solid
-}
-.header .flex{
-    display: flex;
-    align-items: center;
-}
-.header img {
-    height: 3em;
-    margin-right: 8px
-}
-.header h1  {
-    margin: 0;
-    padding: 0;
-    border: none;
-    font-size: 2.5em
-}
-</style>
-<a class="header" src="https://radek2s.github.io/BetKeeper">
-<div class="flex">
-    <img src='https://github.com/radek2s/BetKeeper/raw/main/public/logo192.png'>
-    <h1>Bet Keeper</h1>
-    </div>
-    <img src="https://github.com/radek2s/Company-People-Management/raw/master/doc/pwa.png">
-</a>
+# Bet Keeper
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/radek2s/BetKeeper?style=for-the-badge)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/radek2s/BetKeeper/pages?label=GitHub%20pages&style=for-the-badge)
+<img src='https://github.com/radek2s/BetKeeper/raw/main/public/logo192.png' height='32'/>
+<img src="https://github.com/radek2s/Company-People-Management/raw/master/doc/pwa.png" height='32'/>
 
 Progressive Web Application (PWA) build with React and Typescript to manage and display
 bets between two people. Store data on local database by using dedicated Node Server or
