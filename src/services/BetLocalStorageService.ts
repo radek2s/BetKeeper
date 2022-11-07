@@ -12,7 +12,7 @@ export default class BetLocalStorageService implements BetDataService {
     return data.map((bet: BetEntry) => BetEntry.fromObject(bet))
   }
   getBetById(id: number): Promise<BetEntry> {
-    throw new Error('Method not implemented.')
+    throw new Error(`Method not implemented. getById(${id})`)
   }
   async addNewBet(bet: BetEntry): Promise<BetEntry> {
     const bets = await this.getAllBets()

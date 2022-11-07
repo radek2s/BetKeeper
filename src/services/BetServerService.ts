@@ -12,25 +12,12 @@ export default class BetServerService implements BetDataService {
   private path: string
 
   constructor(config?: DedicatedConfig) {
-    this.path =
-      config?.serverUrl || process.env.REACT_APP_SERVER_URL || 'http://localhost:8000'
+    this.path = config?.serverUrl || 'http://localhost:8000'
   }
 
   async getAllBets(): Promise<BetEntry[]> {
-    //return new Promise((resolve) => resolve([]))
     const { data } = await axios.get(`${this.path}/api/bet`)
-    return data.map(
-      (bet: BetEntry) =>
-        new BetEntry(
-          bet.id,
-          bet.title,
-          bet.description,
-          bet.option1,
-          bet.option2,
-          bet.isFinished,
-          bet.winner
-        )
-    )
+    return data.map((bet: BetEntry) => BetEntry.fromObject(bet))
   }
 
   async getBetById(id: number): Promise<BetEntry> {
