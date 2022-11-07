@@ -3,10 +3,15 @@ import { Dropdown, Icon, IDropdownOption, PrimaryButton, Stack } from '@fluentui
 import React from 'react'
 import { SettingsDedicated } from '../components/SettingsDedicated'
 import { SettingsFirebase } from '../components/SettingsFirebase'
+import { SettingsLocal } from '../components/SettingsLocal'
 import { DatabaseConfig, DatabaseType } from '../models/DatabaseConnector'
 import { DatabaseContext } from '../providers/DatabaseProvider'
 
 const databaseOptions: IDropdownOption[] = [
+  {
+    key: 'local',
+    text: 'Local Storage',
+  },
   {
     key: 'dedicated',
     text: 'Node server',
@@ -43,6 +48,8 @@ export const SettingsPage: React.FC = () => {
       setConfigType('firebase')
     } else if ('serverUrl' in config) {
       setConfigType('dedicated')
+    } else {
+      setConfigType('local')
     }
   }
 
@@ -53,16 +60,35 @@ export const SettingsPage: React.FC = () => {
   }
 
   const getIconName = (): string => {
-    if (dbConsumer.database.type === 'firebase') {
-      return 'firebase-svg'
+    switch (dbConsumer.database.type) {
+      case 'firebase':
+        return 'firebase-svg'
+      case 'dedicated':
+        return 'database-svg'
+      default:
+        return 'local-svg'
     }
-    return 'database-svg'
   }
   const getServiceName = (): string => {
-    if (dbConsumer.database.type === 'firebase') {
-      return 'Firebase'
+    switch (dbConsumer.database.type) {
+      case 'firebase':
+        return 'Firebase'
+      case 'dedicated':
+        return 'Node server'
+      default:
+        return 'Local storage'
     }
-    return 'Node server'
+  }
+
+  const renderSettings = (option: string | number | undefined): JSX.Element => {
+    switch (option) {
+      case 'dedicated':
+        return <SettingsDedicated save={handleSave} />
+      case 'firebase':
+        return <SettingsFirebase save={handleSave} />
+      default:
+        return <SettingsLocal save={handleSave} />
+    }
   }
 
   return (
@@ -73,8 +99,8 @@ export const SettingsPage: React.FC = () => {
         <div className="connection-status">
           <p className="label">Active connection</p>
           <div className="type">
-            <Icon iconName={getIconName()} />
             <span>{getServiceName()}</span>
+            <Icon iconName={getIconName()} />
           </div>
         </div>
       </header>
@@ -87,11 +113,7 @@ export const SettingsPage: React.FC = () => {
           onChange={onChange}
           options={databaseOptions}
         />
-        {selectedDatabase?.key === 'dedicated' ? (
-          <SettingsDedicated save={handleSave} />
-        ) : (
-          <SettingsFirebase save={handleSave} />
-        )}
+        {renderSettings(selectedDatabase?.key)}
         <PrimaryButton text="Connect" disabled={!preConfig} onClick={handleConnect} />
       </Stack>
     </div>

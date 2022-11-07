@@ -1,4 +1,4 @@
-export type DatabaseType = 'dedicated' | 'firebase'
+export type DatabaseType = 'local' | 'dedicated' | 'firebase'
 
 export interface DatabaseConnector {
   type: DatabaseType
