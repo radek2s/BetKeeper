@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Dropdown, Icon, IDropdownOption, PrimaryButton, Stack } from '@fluentui/react'
 import React from 'react'
-import { SettingsDedicated } from '../components/SettingsDedicated'
+import { SettingsServer } from '../components/SettingsServer'
 import { SettingsFirebase } from '../components/SettingsFirebase'
 import { SettingsLocal } from '../components/SettingsLocal'
 import { DatabaseConfig, DatabaseType } from '../models/DatabaseConnector'
@@ -47,7 +47,7 @@ export const SettingsPage: React.FC = () => {
     if ('apiKey' in config) {
       setConfigType('firebase')
     } else if ('serverUrl' in config) {
-      setConfigType('dedicated')
+      setConfigType('server')
     } else {
       setConfigType('local')
     }
@@ -63,7 +63,7 @@ export const SettingsPage: React.FC = () => {
     switch (dbConsumer.database.type) {
       case 'firebase':
         return 'firebase-svg'
-      case 'dedicated':
+      case 'server':
         return 'database-svg'
       default:
         return 'local-svg'
@@ -73,7 +73,7 @@ export const SettingsPage: React.FC = () => {
     switch (dbConsumer.database.type) {
       case 'firebase':
         return 'Firebase'
-      case 'dedicated':
+      case 'server':
         return 'Node server'
       default:
         return 'Local storage'
@@ -83,7 +83,7 @@ export const SettingsPage: React.FC = () => {
   const renderSettings = (option: string | number | undefined): JSX.Element => {
     switch (option) {
       case 'dedicated':
-        return <SettingsDedicated save={handleSave} />
+        return <SettingsServer save={handleSave} />
       case 'firebase':
         return <SettingsFirebase save={handleSave} />
       default:

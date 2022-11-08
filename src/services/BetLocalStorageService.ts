@@ -1,7 +1,6 @@
 import BetEntry from '../models/BetEntry'
 import { BetDataService } from '../providers/BetDataProvider'
 
-const newId = 0
 export default class BetLocalStorageService implements BetDataService {
   private static STORAGE_KEY = 'bets'
 
@@ -17,7 +16,7 @@ export default class BetLocalStorageService implements BetDataService {
   async addNewBet(bet: BetEntry): Promise<BetEntry> {
     const bets = await this.getAllBets()
     const lastId = bets[bets.length - 1]?.id as number
-    bet.id = (+lastId || newId) + 1
+    bet.id = (+lastId || 0) + 1
     bets.push(bet)
     this.saveAllBets(bets)
     return bet

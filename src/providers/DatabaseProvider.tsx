@@ -4,7 +4,7 @@ import {
   DatabaseConfig,
   DatabaseConnector,
   DatabaseType,
-  DedicatedConfig,
+  ServerConfig,
   FirebaseConfig,
 } from '../models/DatabaseConnector'
 import BetFirebaseService from '../services/BetFirebaseService'
@@ -44,8 +44,8 @@ export const DatabaseProvider: React.FC<Props> = ({ children }) => {
   const initDatabaseConnector = (config: DatabaseConfig, dbType: DatabaseType) => {
     let service
     switch (dbType) {
-      case 'dedicated':
-        service = new BetServerService(config as DedicatedConfig)
+      case 'server':
+        service = new BetServerService(config as ServerConfig)
         break
       case 'firebase':
         service = new BetFirebaseService(config as FirebaseConfig)

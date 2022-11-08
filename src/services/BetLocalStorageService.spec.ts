@@ -28,6 +28,11 @@ class LocalStorageMock {
     delete this.store[key]
   }
 
+  /**
+   * Get element from LocalStorage mock by its key order
+   * @param n key position
+   * @returns Store entry
+   */
   key(n: number): any {
     if (typeof n === 'undefined') {
       throw new Error(

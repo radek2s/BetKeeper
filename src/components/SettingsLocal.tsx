@@ -9,7 +9,7 @@ interface Props {
 // eslint-disable-next-line react/prop-types
 export const SettingsLocal: React.FC<Props> = ({ save }) => {
   const handleApply = () => {
-    saveDatabaseConfig({}, 'dedicated')
+    saveDatabaseConfig({}, 'local')
     save({})
   }
   return (

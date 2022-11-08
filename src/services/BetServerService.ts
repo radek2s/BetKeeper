@@ -1,6 +1,6 @@
 import axios from 'axios'
 import BetEntry from '../models/BetEntry'
-import { DedicatedConfig } from '../models/DatabaseConnector'
+import { ServerConfig } from '../models/DatabaseConnector'
 import { BetDataService } from '../providers/BetDataProvider'
 
 /**
@@ -11,7 +11,7 @@ import { BetDataService } from '../providers/BetDataProvider'
 export default class BetServerService implements BetDataService {
   private path: string
 
-  constructor(config?: DedicatedConfig) {
+  constructor(config?: ServerConfig) {
     this.path = config?.serverUrl || 'http://localhost:8000'
   }
 
