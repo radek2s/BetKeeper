@@ -1,6 +1,6 @@
 import React from 'react'
 import BetEntry from '../models/BetEntry'
-import BetServerService from '../services/BetServerService'
+import BetLocalStorageService from '../services/BetLocalStorageService'
 import { DatabaseContext } from './DatabaseProvider'
 
 /**
@@ -27,7 +27,9 @@ export interface BetDataService {
   deleteBet(id: number | string): Promise<void>
 }
 
-export const BetDataContext = React.createContext<BetDataService>(new BetServerService())
+export const BetDataContext = React.createContext<BetDataService>(
+  new BetLocalStorageService()
+)
 
 interface Props {
   children: React.ReactNode

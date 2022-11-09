@@ -1,4 +1,4 @@
-# Bet Keeper
+# [Bet Keeper](https://radek2s.github.io/BetKeeper/)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/radek2s/BetKeeper?style=for-the-badge)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/radek2s/BetKeeper/pages?label=GitHub%20pages&style=for-the-badge)
@@ -13,6 +13,9 @@ connect to your own Firebase store.
 
 Stable version of application is hosted on GitHub Pages. To check how it looks like just
 open the running environment.
+
+By default all your data is stored inside your browser memory. But you can connect to
+external data provider like firebase or dedicated REST Node server.
 
 You can also run it on your own computer
 
@@ -47,6 +50,10 @@ provide all required configuration data directly on "Settings" page. Save, and a
 changes.
 
 ## Development
+
+Application was developed using custom styles. But we added
+[FluentUI Controlls](https://developer.microsoft.com/en-us/fluentui#/controls/web) to
+speed up the develpment provess.
 
 ### Scripts
 

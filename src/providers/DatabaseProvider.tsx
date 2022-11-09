@@ -4,10 +4,11 @@ import {
   DatabaseConfig,
   DatabaseConnector,
   DatabaseType,
-  DedicatedConfig,
+  ServerConfig,
   FirebaseConfig,
 } from '../models/DatabaseConnector'
 import BetFirebaseService from '../services/BetFirebaseService'
+import BetLocalStorageService from '../services/BetLocalStorageService'
 import BetServerService from '../services/BetServerService'
 import { loadDatabaseConncecotr, saveDatabaseConnector } from '../utils/LocalStorageUtils'
 import { BetDataService } from './BetDataProvider'
@@ -19,13 +20,13 @@ export interface DatabaseService {
 }
 
 const defautlConnector: DatabaseConnector = {
-  type: 'dedicated',
-  config: { serverUrl: 'http://localhost:8000' },
+  type: 'local',
+  config: {},
 }
 
 export const defaultConnection: DatabaseService = {
   database: defautlConnector,
-  service: new BetServerService(),
+  service: new BetLocalStorageService(),
   setConnection: () => {},
 }
 
@@ -37,20 +38,20 @@ interface Props {
 export const DatabaseProvider: React.FC<Props> = ({ children }) => {
   const [connector, setConnector] = useState<DatabaseConnector>(loadDatabaseConncecotr())
   const [betDataProvider, setBetDataProvider] = useState<BetDataService>(
-    new BetServerService()
+    new BetLocalStorageService()
   )
 
   const initDatabaseConnector = (config: DatabaseConfig, dbType: DatabaseType) => {
     let service
     switch (dbType) {
-      case 'dedicated':
-        service = new BetServerService(config as DedicatedConfig)
+      case 'server':
+        service = new BetServerService(config as ServerConfig)
         break
       case 'firebase':
         service = new BetFirebaseService(config as FirebaseConfig)
         break
       default:
-        service = new BetServerService()
+        service = new BetLocalStorageService()
     }
     setBetDataProvider(service)
   }

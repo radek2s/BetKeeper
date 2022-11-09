@@ -24,4 +24,17 @@ export default class BetEntry {
     this.isFinished = isFinished
     this.winner = winner
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static fromObject(obj: any): BetEntry {
+    return new this(
+      obj.id,
+      obj.title,
+      obj.description,
+      obj.option1,
+      obj.option2,
+      obj.isFinished,
+      obj.winner
+    )
+  }
 }

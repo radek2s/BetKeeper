@@ -1,26 +1,26 @@
 import { DefaultButton, Stack, TextField } from '@fluentui/react'
 import React, { useEffect } from 'react'
-import { DedicatedConfig } from '../models/DatabaseConnector'
+import { ServerConfig } from '../models/DatabaseConnector'
 import { loadDatabaseConfig, saveDatabaseConfig } from '../utils/LocalStorageUtils'
 
-const initialConfig: DedicatedConfig = {
+const initialConfig: ServerConfig = {
   serverUrl: 'http://localhost:8000',
 }
 
 interface Props {
-  save: (config: DedicatedConfig) => void
+  save: (config: ServerConfig) => void
 }
-export const SettingsDedicated: React.FC<Props> = ({ save }) => {
-  const [config, setConfig] = React.useState<DedicatedConfig>(initialConfig)
+export const SettingsServer: React.FC<Props> = ({ save }) => {
+  const [config, setConfig] = React.useState<ServerConfig>(initialConfig)
 
   useEffect(() => {
-    const conf = loadDatabaseConfig('dedicated')
+    const conf = loadDatabaseConfig('server')
     if ('serverUrl' in conf) {
-      setConfig(conf as DedicatedConfig)
+      setConfig(conf as ServerConfig)
     }
   }, [])
 
-  const handleChange = (value: string | undefined, key: keyof DedicatedConfig) => {
+  const handleChange = (value: string | undefined, key: keyof ServerConfig) => {
     const updateValue = { [key]: value || '' }
     setConfig((conf) => ({
       ...conf,
@@ -29,7 +29,7 @@ export const SettingsDedicated: React.FC<Props> = ({ save }) => {
   }
 
   const handleApply = () => {
-    saveDatabaseConfig(config, 'dedicated')
+    saveDatabaseConfig(config, 'server')
     save(config)
   }
   return (

@@ -24,8 +24,6 @@ import { FirebaseConfig } from '../models/DatabaseConnector'
 export default class BetFirebaseService implements BetDataService {
   private static BET_COLLECTION_NAME = 'bets'
 
-  // private firebaseService = new FirebaseService()
-
   constructor(config: FirebaseConfig) {
     this.connect(config)
   }
@@ -48,17 +46,7 @@ export default class BetFirebaseService implements BetDataService {
     const bets: BetEntry[] = []
     results.forEach((doc) => {
       const bet = doc.data()
-      bets.push(
-        new BetEntry(
-          doc.id,
-          bet.title,
-          bet.description,
-          bet.option1,
-          bet.option2,
-          bet.isFinished,
-          bet.winner
-        )
-      )
+      bets.push(BetEntry.fromObject(bet))
     })
     return bets
   }
@@ -77,7 +65,6 @@ export default class BetFirebaseService implements BetDataService {
   }
   async updateBet(bet: BetEntry): Promise<BetEntry> {
     if (!this.firestore) throw 'Firestore not initialized!'
-    // const doc = firestore()
     const betRef = doc(
       collection(this.firestore, BetFirebaseService.BET_COLLECTION_NAME),
       bet.id.toString()
@@ -92,6 +79,5 @@ export default class BetFirebaseService implements BetDataService {
     await deleteDoc(
       doc(this.firestore, BetFirebaseService.BET_COLLECTION_NAME, id.toString())
     )
-    return
   }
 }

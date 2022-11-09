@@ -1,4 +1,4 @@
-export type DatabaseType = 'dedicated' | 'firebase'
+export type DatabaseType = 'local' | 'server' | 'firebase'
 
 export interface DatabaseConnector {
   type: DatabaseType
@@ -8,7 +8,7 @@ export interface DatabaseConnector {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DatabaseConfig {}
 
-export interface DedicatedConfig extends DatabaseConfig {
+export interface ServerConfig extends DatabaseConfig {
   serverUrl: string
 }
 
