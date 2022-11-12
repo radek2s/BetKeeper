@@ -1,3 +1,4 @@
+import { TextField } from '@fluentui/react'
 import React from 'react'
 import BetEntry from '../models/BetEntry'
 import { BetDataContext } from '../providers/BetDataProvider'
@@ -22,24 +23,22 @@ const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
   }
   return (
     <div className="form flex space-between">
-      <textarea
+      <TextField
         placeholder="Enter a bet title"
         id="bet-title"
-        onChange={(e) => setRequest({ ...request, title: e.target.value })}></textarea>
-      <textarea
+        onChange={(_, e) => setRequest({ ...request, title: e || '' })}></TextField>
+      <TextField
         placeholder="Enter a bet description"
         id="bet-title"
-        onChange={(e) =>
-          setRequest({ ...request, description: e.target.value })
-        }></textarea>
-      <textarea
+        onChange={(_, e) => setRequest({ ...request, description: e || '' })}></TextField>
+      <TextField
         placeholder="Enter Radek's demand"
         id="bet-option"
-        onChange={(e) => setRequest({ ...request, option1: e.target.value })}></textarea>
-      <textarea
+        onChange={(_, e) => setRequest({ ...request, option1: e || '' })}></TextField>
+      <TextField
         placeholder="Enter Gosia's demand"
         id="bet-option"
-        onChange={(e) => setRequest({ ...request, option2: e.target.value })}></textarea>
+        onChange={(_, e) => setRequest({ ...request, option2: e || '' })}></TextField>
       <button onClick={addBet}>Add a bet</button>
     </div>
   )
