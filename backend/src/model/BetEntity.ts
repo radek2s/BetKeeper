@@ -6,9 +6,15 @@ export class BetEntity {
         public description: string,
         public option1: string,
         public option2: string,
-        public isFinished: boolean,
-        public winner: boolean
+        public betResolve: BetResolve
     ) {
 
     }
+}
+
+export enum BetResolve {
+    Person1,
+    Person2,
+    Draw,
+    Pending
 }

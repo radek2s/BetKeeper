@@ -13,7 +13,7 @@ const databaseOptions: IDropdownOption[] = [
     text: 'Local Storage',
   },
   {
-    key: 'dedicated',
+    key: 'server',
     text: 'Node server',
   },
   {
@@ -82,7 +82,7 @@ export const SettingsPage: React.FC = () => {
 
   const renderSettings = (option: string | number | undefined): JSX.Element => {
     switch (option) {
-      case 'dedicated':
+      case 'server':
         return <SettingsServer save={handleSave} />
       case 'firebase':
         return <SettingsFirebase save={handleSave} />

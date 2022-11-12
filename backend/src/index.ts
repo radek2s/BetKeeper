@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable no-magic-numbers */
 import express, { Application, Request, Response } from "express"
 import cors from "cors"
 import bodyParser from "body-parser";
