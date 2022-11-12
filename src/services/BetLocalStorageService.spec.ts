@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BetLocalStorageService from './BetLocalStorageService'
-import BetEntry from '../models/BetEntry'
+import BetEntry, { BetResolve } from '../models/BetEntry'
 
 type Store = any
 class LocalStorageMock {
@@ -73,8 +73,7 @@ describe('Storage Service', () => {
         'Additional description',
         'Option 1',
         'Option 2',
-        false,
-        false
+        BetResolve.Pending
       )
 
       //Act
@@ -92,8 +91,7 @@ describe('Storage Service', () => {
         'Additional description',
         'Option I',
         'Option II',
-        false,
-        false
+        BetResolve.Pending
       )
 
       //Act
@@ -110,11 +108,11 @@ describe('Storage Service', () => {
 
       //Act
       if (bet) {
-        bet.isFinished = true
+        bet.betResolve = BetResolve.Person1
         const result = await service.updateBet(bet)
 
         //Assert
-        expect(result.isFinished).toBeTruthy()
+        expect(result.betResolve).toBe(BetResolve.Person1)
       } else {
         fail
       }
