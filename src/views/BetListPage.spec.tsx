@@ -3,12 +3,20 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/ban-types */
 import React from 'react'
-import { render, RenderResult } from '@testing-library/react'
-import BetPage from './BetListPage'
+import { createRoot } from 'react-dom/client'
 import { act } from 'react-dom/test-utils'
-import { BetDataContext, BetDataService } from '../providers/BetDataProvider'
+import { RenderResult } from '@testing-library/react'
 
+import BetPage from './BetListPage'
+import { BetDataContext, BetDataService } from '../providers/BetDataProvider'
+;(global as any).IS_REACT_ACT_ENVIRONMENT = true
+
+let container: HTMLDivElement | null = null
 describe('initialization', () => {
+  beforeEach(() => {
+    container = document.createElement('div')
+    document.body.appendChild(container)
+  })
   test('Should render 2 bets with [Example Bet, Example Second Bet] titles', async () => {
     //Arrange
     const MockDataService = jest.fn<BetDataService, any>(() => ({
@@ -42,7 +50,9 @@ describe('initialization', () => {
 
     //Act
     await act(async () => {
-      data = render(
+      if (!container) throw new Error('Not found')
+      const root = createRoot(container)
+      root.render(
         <BetDataContext.Provider value={dataServiceMock}>
           <BetPage />
         </BetDataContext.Provider>
@@ -51,8 +61,8 @@ describe('initialization', () => {
 
     //Assert
     expect(dataServiceMock.getAllBets).toBeCalledTimes(1) //move to previous one
-    expect(data!.baseElement.getElementsByClassName('bet-card')).toHaveLength(2) //has two rendered bet-cards
-    expect(data!.baseElement.innerHTML).toContain('Example Bet')
-    expect(data!.baseElement.innerHTML).toContain('Example Second Bet')
+    expect(container!.getElementsByClassName('bet-card')).toHaveLength(2) //has two rendered bet-cards
+    expect(container!.innerHTML).toContain('Example Bet')
+    expect(container!.innerHTML).toContain('Example Second Bet')
   })
 })
