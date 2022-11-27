@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TextField } from '@fluentui/react'
 import React from 'react'
 import BetEntry from '../models/BetEntry'
