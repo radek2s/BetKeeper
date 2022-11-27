@@ -1,5 +1,5 @@
 import BetEntry, { BetResolve } from '../models/BetEntry'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 interface IBetElement {
   bet: BetEntry
   betDelete: (id: number) => void
@@ -7,6 +7,7 @@ interface IBetElement {
 }
 
 const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
+  const [didMount, setDidMount] = useState<number>(1)
   const [request, setRequest] = React.useState<BetEntry>({ ...bet })
 
   // Provide two new state variables to handle checkboxes values.
@@ -31,8 +32,11 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
     } else {
       betResolve = person1Checked ? BetResolve.Person1 : BetResolve.Person2
     }
-    setRequest({ ...request, betResolve }) //save to local state variable
-    betUpdate({ ...request, betResolve }) //emit change to parent component
+    setDidMount((mount) => mount - 1)
+    if (didMount < 0) {
+      setRequest({ ...request, betResolve }) //save to local state variable
+      betUpdate({ ...request, betResolve }) //emit change to parent component
+    }
   }, [person1Checked, person2Checked])
 
   const handleCheck = (person: 1 | 2) => {
