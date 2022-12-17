@@ -55,5 +55,18 @@ registerIcons({
         />
       </svg>
     ),
+    'mobile-menu': (
+      <svg
+        width="24"
+        height="24"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 2048 2048"
+        className="svg_dd790ee3"
+        focusable="false">
+        <path
+          fill="white"
+          d="M128 768V640h1792v128H128zm0-640h1792v128H128V128zm0 1152v-128h1792v128H128zm0 512v-128h1792v128H128z"></path>
+      </svg>
+    ),
   },
 })

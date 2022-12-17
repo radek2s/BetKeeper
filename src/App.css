@@ -35,7 +35,7 @@ button.delete {
   scale: 1.5;
 }
 
-.bet-card h2>input {
+.bet-card h2 > input {
   font-size: 1em;
 }
 
@@ -52,7 +52,8 @@ button.delete {
 
 .form textarea {
   padding: 0.5rem;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   width: 20%;
 }
 
@@ -80,7 +81,7 @@ button.delete {
   background-color: #282c34;
   height: 56px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: 24px;
@@ -183,4 +184,47 @@ main ul {
 .winner {
   filter: grayscale(0);
   font-size: 2rem;
+}
+
+.App-header i {
+  display: none;
+}
+
+/* MEDIA SCREEN */
+/* TABLET */
+@media only screen and (max-width: 768px) {
+  .App-nav {
+    z-index: 1;
+    grid-row: span 2 / -1;
+    grid-column-end: 2;
+  }
+  .App-main {
+    grid-row: 2;
+    grid-column-start: 1;
+  }
+  .App {
+    grid-template-columns: [sidebar-start] 40vw [main] auto [right-sidebar-start] 0px;
+    grid-template-rows: [header-start] 56px [main] calc(100vh - 112px) [footer-start] 56px;
+  }
+  .App-nav ul li {
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .App-header i {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    margin: 16px 0 0 16px;
+  }
+
+  .App-nav.visible {
+    display: block;
+  }
+  .App-nav.visible {
+    display: none;
+  }
+}
+/* MOBILE */
+@media only screen and (max-width: 425px) {
 }
