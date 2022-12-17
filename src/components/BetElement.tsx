@@ -60,14 +60,14 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
         <div className="">
           <button
             className="accept"
-            onClick={(e) => {
+            onClick={() => {
               betUpdate(request)
             }}>
             ✅
           </button>
           <button
             className="delete"
-            onClick={(e) => {
+            onClick={() => {
               betDelete(+bet.id)
             }}>
             ❌

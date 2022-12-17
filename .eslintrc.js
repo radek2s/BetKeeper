@@ -18,4 +18,9 @@ module.exports = {
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-magic-numbers': ['warn', { ignore: [0, 1, 2], ignoreDefaultValues: true }],
   },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
 }
