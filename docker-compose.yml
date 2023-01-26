@@ -2,6 +2,7 @@ version: "3.9"
 services:
   frontend:
     build: .
+    image: "radek2s/betkeeper_frontend:latest"
     ports:
       - "3000:3000"
     links:
@@ -9,5 +10,6 @@ services:
 
   backend:
     build: ./backend
+    image: "radek2s/betkeeper_backend:latest"
     ports:
       - "8000:8000"
