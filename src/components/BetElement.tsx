@@ -1,5 +1,15 @@
 import BetEntry, { BetResolve } from '../models/BetEntry'
 import React, { useEffect, useState } from 'react'
+import { FontIcon } from '@fluentui/react/lib/Icon'
+import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog'
+import {
+  Checkbox,
+  DefaultButton,
+  IconButton,
+  PrimaryButton,
+  TextField,
+} from '@fluentui/react'
+
 interface IBetElement {
   bet: BetEntry
   betDelete: (id: number) => void
@@ -8,15 +18,26 @@ interface IBetElement {
 
 const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
   const [didMount, setDidMount] = useState<number>(1)
-  const [request, setRequest] = React.useState<BetEntry>({ ...bet })
+  const [editMode, setEditMode] = useState<boolean>(false)
+  const [internalBet, setInternalBet] = React.useState<BetEntry>({ ...bet })
+  const [tempBet, setTempBet] = React.useState<BetEntry>({ ...bet })
+  const [hideDialog, toggleHideDialog] = useState(true)
+  const dialogContentProps = {
+    type: DialogType.normal,
+    title: 'Delete Bet',
+    closeButtonAriaLabel: 'Close',
+    subText: 'Are you sure?',
+  }
 
   // Provide two new state variables to handle checkboxes values.
   // Initialize their state based on the request.betResolve value
   const [person1Checked, setPerson1Checked] = React.useState<boolean>(
-    request.betResolve === BetResolve.Person1 || request.betResolve === BetResolve.Draw
+    internalBet.betResolve === BetResolve.Person1 ||
+      internalBet.betResolve === BetResolve.Draw
   )
   const [person2Checked, setPerson2Checked] = React.useState<boolean>(
-    request.betResolve === BetResolve.Person2 || request.betResolve === BetResolve.Draw
+    internalBet.betResolve === BetResolve.Person2 ||
+      internalBet.betResolve === BetResolve.Draw
   )
 
   //Using useEffect(() => {...}, [x, y]) hook we can perform some actions when one
@@ -34,8 +55,8 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
     }
     setDidMount((mount) => mount - 1)
     if (didMount < 0) {
-      setRequest({ ...request, betResolve }) //save to local state variable
-      betUpdate({ ...request, betResolve }) //emit change to parent component
+      setInternalBet({ ...internalBet, betResolve }) //save to local state variable
+      betUpdate({ ...internalBet, betResolve }) //emit change to parent component
     }
   }, [person1Checked, person2Checked])
 
@@ -48,66 +69,135 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
     method((perviousValue: boolean) => !perviousValue)
   }
 
+  function handleEditChange(updateBet?: boolean) {
+    setEditMode((isEditMode) => {
+      if (isEditMode && updateBet) {
+        setInternalBet(tempBet)
+        betUpdate(tempBet)
+      } else {
+        setTempBet(internalBet)
+      }
+      return !isEditMode
+    })
+  }
+
   return (
     <div className="bet-card">
       <header className="flex align-center space-between">
-        <h2>
-          <input
-            onChange={(e) => setRequest({ ...request, title: e.target.value })}
-            value={request.title}
-          />
-        </h2>
         <div className="">
-          <button
-            className="accept"
+          <IconButton
+            disabled={editMode}
             onClick={() => {
-              betUpdate(request)
+              handleEditChange()
             }}>
-            ✅
-          </button>
-          <button
+            <FontIcon iconName="Edit" />
+          </IconButton>
+          <IconButton
             className="delete"
             onClick={() => {
-              betDelete(+bet.id)
+              toggleHideDialog(false)
             }}>
-            ❌
-          </button>
+            <FontIcon iconName="Delete" />
+          </IconButton>
         </div>
+        <h2>
+          {editMode ? (
+            <TextField
+              onChange={(_, e) => setTempBet({ ...tempBet, title: e || '' })}
+              value={tempBet.title}
+            />
+          ) : (
+            <p>{internalBet.title}</p>
+          )}
+        </h2>
       </header>
+      <div>
+        {editMode ? (
+          <TextField
+            onChange={(_, e) => setTempBet({ ...tempBet, description: e || '' })}
+            value={tempBet.description}
+          />
+        ) : (
+          <p>{internalBet.description}</p>
+        )}
+      </div>
       <div className="options flex space-between">
         <div className="flex space-between align-center">
-          <input
-            type="textarea"
-            className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}
-            onChange={(e) => setRequest({ ...request, option1: e.target.value })}
-            value={request.option1}
-          />
-          <input
-            checked={person1Checked}
-            type="checkbox"
-            className="checkbox"
-            onChange={() => {
-              handleCheck(1)
-            }}
-          />
+          {editMode ? (
+            <TextField
+              className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}
+              onChange={(_, e) => setTempBet({ ...tempBet, option1: e || '' })}
+              value={tempBet.option1}
+            />
+          ) : (
+            <>
+              <span className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}>
+                {internalBet.option1}
+              </span>
+              <Checkbox
+                checked={person1Checked}
+                onChange={() => {
+                  handleCheck(1)
+                }}
+              />
+            </>
+          )}
         </div>
         <div className="flex space-between align-center">
-          <input
-            type="textarea"
-            className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}
-            onChange={(e) => setRequest({ ...request, option2: e.target.value })}
-            value={request.option2}
-          />
-          <input
-            checked={person2Checked}
-            type="checkbox"
-            className="checkbox"
-            onChange={() => {
-              handleCheck(2)
-            }}
-          />
+          {editMode ? (
+            <TextField
+              className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}
+              onChange={(_, e) => setTempBet({ ...tempBet, option2: e || '' })}
+              value={tempBet.option2}
+            />
+          ) : (
+            <>
+              <span className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}>
+                {tempBet.option2}
+              </span>
+              <Checkbox
+                checked={person2Checked}
+                onChange={() => {
+                  handleCheck(2)
+                }}
+              />
+            </>
+          )}
         </div>
       </div>
+      {editMode && (
+        <div>
+          <PrimaryButton
+            onClick={() => {
+              handleEditChange(true)
+            }}>
+            Save
+          </PrimaryButton>
+          <DefaultButton
+            onClick={() => {
+              handleEditChange(false)
+            }}>
+            Cancel
+          </DefaultButton>
+        </div>
+      )}
+      <Dialog
+        hidden={hideDialog}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onDismiss={() => {}}
+        dialogContentProps={dialogContentProps}
+        modalProps={undefined}>
+        <DialogFooter>
+          <PrimaryButton
+            onClick={() => {
+              toggleHideDialog(true)
+              betDelete(+bet.id)
+            }}
+            text="OK"
+          />
+          <DefaultButton onClick={() => toggleHideDialog(true)} text="Cancel" />
+        </DialogFooter>
+      </Dialog>
     </div>
   )
 }

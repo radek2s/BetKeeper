@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TextField } from '@fluentui/react'
+import { DefaultButton, TextField } from '@fluentui/react'
 import React from 'react'
 import BetEntry from '../models/BetEntry'
 import { BetDataContext } from '../providers/BetDataProvider'
@@ -40,7 +40,7 @@ const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
         placeholder="Enter Gosia's demand"
         id="bet-option"
         onChange={(_, e) => setRequest({ ...request, option2: e || '' })}></TextField>
-      <button onClick={addBet}>Add a bet</button>
+      <DefaultButton onClick={addBet}>Add a bet</DefaultButton>
     </div>
   )
 }
