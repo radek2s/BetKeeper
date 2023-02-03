@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TextField } from '@fluentui/react'
+import { DefaultButton, TextField } from '@fluentui/react'
 import React from 'react'
 import BetEntry from '../models/BetEntry'
 import { BetDataContext } from '../providers/BetDataProvider'
@@ -10,7 +10,7 @@ interface Props {
 }
 const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
   const [request, setRequest] = React.useState<BetEntry>(
-    new BetEntry(newId, '', '', '', '')
+    new BetEntry(newId, '', `Creation date: ${new Date().toLocaleDateString()}`, '', '')
   )
   const betConsumer = React.useContext(BetDataContext)
 
@@ -23,7 +23,7 @@ const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
     }
   }
   return (
-    <div className="form flex space-between">
+    <div className="form flex justify-center wrap">
       <TextField
         placeholder="Enter a bet title"
         id="bet-title"
@@ -31,16 +31,19 @@ const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
       <TextField
         placeholder="Enter a bet description"
         id="bet-title"
+        value={request.description}
         onChange={(_, e) => setRequest({ ...request, description: e || '' })}></TextField>
       <TextField
-        placeholder="Enter Radek's demand"
+        placeholder="Enter first person demand"
         id="bet-option"
         onChange={(_, e) => setRequest({ ...request, option1: e || '' })}></TextField>
       <TextField
-        placeholder="Enter Gosia's demand"
+        placeholder="Enter second person demand"
         id="bet-option"
         onChange={(_, e) => setRequest({ ...request, option2: e || '' })}></TextField>
-      <button onClick={addBet}>Add a bet</button>
+      <DefaultButton primary onClick={addBet}>
+        Add a bet
+      </DefaultButton>
     </div>
   )
 }

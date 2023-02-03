@@ -1,14 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Navigation: React.FC = () => {
+interface NavProps {
+  visible: boolean
+}
+const Navigation: React.FC<NavProps> = ({ visible }) => {
   return (
-    <nav className="App-nav">
+    <nav className={`App-nav ${visible ? 'visible' : 'invisible'}`}>
       <ul>
         <Link to="/">
-          <li>Main Page</li>
-        </Link>
-        <Link to="/list">
           <li>Bet List</li>
         </Link>
         <Link to="/settings">

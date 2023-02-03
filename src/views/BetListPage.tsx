@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import { Dialog, DialogType, FontIcon, IconButton } from '@fluentui/react'
+import React, { useEffect, useState } from 'react'
 import BetCreatorForm from '../components/BetCreatorForm'
 import BetElement from '../components/BetElement'
 import BetEntry from '../models/BetEntry'
@@ -7,6 +8,14 @@ import { BetDataContext } from '../providers/BetDataProvider'
 const BetPage: React.FC = () => {
   const [bets, setBets] = React.useState<BetEntry[]>([]) //zmienna do wszystkich betów
   const betConsumer = React.useContext(BetDataContext) // Get betConsumer -> Service that handle logic that provide data into component
+  const [hideDialog, toggleHideDialog] = useState(true)
+  const dialogContentProps = {
+    type: DialogType.normal,
+    title: 'Add Bet',
+  }
+  const modalProps = {
+    isBlocking: true,
+  }
 
   useEffect(() => {
     betConsumer.getAllBets().then((res) => setBets(res)) // Using betConsumer we can load all bets into this component like before
@@ -22,8 +31,17 @@ const BetPage: React.FC = () => {
 
   return (
     <div>
-      <h1>All Bets</h1>
-      <ul>
+      <IconButton
+        id="add-bet-button"
+        onClick={() => {
+          toggleHideDialog(false)
+        }}>
+        <FontIcon iconName="Add" />
+      </IconButton>
+      <header className="bet-list-page flex">
+        <h1>All Bets</h1>
+      </header>
+      <ul className="wrap">
         {bets.map((bet: BetEntry) => {
           return (
             <BetElement
@@ -35,11 +53,21 @@ const BetPage: React.FC = () => {
           )
         })}
       </ul>
-      <BetCreatorForm
-        onBetAdded={(bet: BetEntry) => {
-          setBets((currentBets) => [...currentBets, bet])
+      <Dialog
+        hidden={hideDialog}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onDismiss={() => {
+          toggleHideDialog(true)
         }}
-      />
+        dialogContentProps={dialogContentProps}
+        modalProps={modalProps}>
+        <BetCreatorForm
+          onBetAdded={(bet: BetEntry) => {
+            setBets((currentBets) => [...currentBets, bet])
+            toggleHideDialog(true)
+          }}
+        />
+      </Dialog>
     </div>
   )
 }

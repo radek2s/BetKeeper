@@ -15,6 +15,16 @@ button {
   cursor: pointer;
 }
 
+button:not(button:disabled):hover,
+.ms-Checkbox {
+  filter: brightness(0.9);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
 .flex-space-between {
   justify-content: space-between;
 }
