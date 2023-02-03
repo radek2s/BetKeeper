@@ -2,6 +2,7 @@ import BetEntry, { BetResolve } from '../models/BetEntry'
 import React, { useEffect, useState } from 'react'
 import { FontIcon } from '@fluentui/react/lib/Icon'
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog'
+
 import {
   Checkbox,
   DefaultButton,
@@ -84,7 +85,18 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
   return (
     <div className="bet-card">
       <header className="flex align-center space-between">
-        <div className="">
+        <h2>
+          {editMode ? (
+            <TextField
+              onChange={(_, e) => setTempBet({ ...tempBet, title: e || '' })}
+              value={tempBet.title}
+              placeholder="Title..."
+            />
+          ) : (
+            <span>{internalBet.title}</span>
+          )}
+        </h2>
+        <div className="manage-buttons">
           <IconButton
             disabled={editMode}
             onClick={() => {
@@ -93,47 +105,35 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
             <FontIcon iconName="Edit" />
           </IconButton>
           <IconButton
-            className="delete"
             onClick={() => {
               toggleHideDialog(false)
             }}>
             <FontIcon iconName="Delete" />
           </IconButton>
         </div>
-        <h2>
-          {editMode ? (
-            <TextField
-              onChange={(_, e) => setTempBet({ ...tempBet, title: e || '' })}
-              value={tempBet.title}
-            />
-          ) : (
-            <p>{internalBet.title}</p>
-          )}
-        </h2>
       </header>
       <div>
         {editMode ? (
           <TextField
             onChange={(_, e) => setTempBet({ ...tempBet, description: e || '' })}
             value={tempBet.description}
+            placeholder="Description..."
           />
         ) : (
           <p>{internalBet.description}</p>
         )}
       </div>
       <div className="options flex space-between">
-        <div className="flex space-between align-center">
+        <div className="option flex space-between align-center">
           {editMode ? (
             <TextField
-              className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}
               onChange={(_, e) => setTempBet({ ...tempBet, option1: e || '' })}
               value={tempBet.option1}
+              placeholder="First person demand"
             />
           ) : (
             <>
-              <span className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}>
-                {internalBet.option1}
-              </span>
+              <span>{internalBet.option1}</span>
               <Checkbox
                 checked={person1Checked}
                 onChange={() => {
@@ -143,12 +143,12 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
             </>
           )}
         </div>
-        <div className="flex space-between align-center">
+        <div className="option flex space-between align-center">
           {editMode ? (
             <TextField
-              className={bet.betResolve == BetResolve.Pending ? 'notFinished' : ''}
               onChange={(_, e) => setTempBet({ ...tempBet, option2: e || '' })}
               value={tempBet.option2}
+              placeholder="Second person demand"
             />
           ) : (
             <>
@@ -166,7 +166,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
         </div>
       </div>
       {editMode && (
-        <div>
+        <div className="confirmation-buttons">
           <PrimaryButton
             onClick={() => {
               handleEditChange(true)

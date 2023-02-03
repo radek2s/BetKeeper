@@ -23,7 +23,7 @@ const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
     }
   }
   return (
-    <div className="form flex space-between">
+    <div className="form flex justify-center wrap">
       <TextField
         placeholder="Enter a bet title"
         id="bet-title"
@@ -33,14 +33,16 @@ const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
         id="bet-title"
         onChange={(_, e) => setRequest({ ...request, description: e || '' })}></TextField>
       <TextField
-        placeholder="Enter Radek's demand"
+        placeholder="Enter first person demand"
         id="bet-option"
         onChange={(_, e) => setRequest({ ...request, option1: e || '' })}></TextField>
       <TextField
-        placeholder="Enter Gosia's demand"
+        placeholder="Enter second person demand"
         id="bet-option"
         onChange={(_, e) => setRequest({ ...request, option2: e || '' })}></TextField>
-      <DefaultButton onClick={addBet}>Add a bet</DefaultButton>
+      <DefaultButton primary onClick={addBet}>
+        Add a bet
+      </DefaultButton>
     </div>
   )
 }

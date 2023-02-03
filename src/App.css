@@ -1,8 +1,32 @@
 :root {
-  --mainColor: rgb(37, 37, 37);
-  --firstColor: rgb(255 87 36);
-  --secondColor: rgb(40 201 171);
-  --disabledColor: gray;
+  --mainColor: #282c34;
+  --firstColor: rgb(255 167 36);
+  --secondColor: rgb(201 196 40);
+  --actionsColor: #f1863a;
+  --disabledColor: #dcdcdb;
+  --whiteColor: #fff;
+  --checkboxSelectedColor: #545a64;
+}
+
+.ms-Button--primary:hover {
+  background-color: var(--checkboxSelectedColor);
+  border-color: var(--checkboxSelectedColor);
+}
+.ms-Checkbox {
+  margin-left: 8px;
+}
+.ms-Checkbox label div {
+  background-color: var(--whiteColor);
+}
+.ms-Checkbox i[data-icon-name='CheckMark'] {
+  background-color: var(--whiteColor);
+}
+
+.is-checked.ms-Checkbox label div {
+  background-color: var(--checkboxSelectedColor);
+}
+.is-checked.ms-Checkbox i[data-icon-name='CheckMark'] {
+  background-color: var(--checkboxSelectedColor);
 }
 
 .App {
@@ -14,47 +38,6 @@
 .App-logo {
   height: 40vmin;
   animation: App-logo-spin infinite 20s linear;
-}
-
-button {
-  padding: 0.1rem;
-  border-radius: 2px;
-}
-
-button.accept {
-  background-color: #35b44f;
-  border: solid 2px #3d8d4d;
-}
-
-button.delete {
-  background-color: #b43546;
-  border: solid 2px #86424b;
-}
-
-.checkbox {
-  scale: 1.5;
-}
-
-.bet-card h2 > input {
-  font-size: 1em;
-}
-
-.bet-card input:not(.checkbox, textarea) {
-  width: 100%;
-  border: none;
-  background-color: initial;
-  padding: 0.5rem;
-}
-
-.bet-card h2 {
-  width: 80%;
-}
-
-.form textarea {
-  padding: 0.5rem;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  width: 20%;
 }
 
 .App-loader {
@@ -78,14 +61,14 @@ button.delete {
 .App-header {
   grid-column-start: 1;
   grid-column-end: -1;
-  background-color: #282c34;
+  background-color: var(--mainColor);
   height: 56px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  color: white;
+  color: var(--whiteColor);
   z-index: 10;
   box-shadow: 1px 2px 5px 0px #000000a1;
 }
@@ -98,7 +81,7 @@ button.delete {
 
 .App-nav {
   grid-column-start: sidebar-start;
-  background-color: #282c34;
+  background-color: var(--mainColor);
   grid-row-start: 2;
   grid-row-end: -1;
   max-width: 250px;
@@ -115,34 +98,29 @@ button.delete {
 .App-nav ul li {
   padding: 10px;
   margin: 2px;
-  border: 1px solid #282c34;
+  border: 1px solid var(--mainColor);
 }
 
 .App-nav ul li:hover {
-  border: 1px solid white;
+  border: 1px solid var(--whiteColor);
   transition: border 0.2s ease-in-out;
 }
 
 .App-nav ul a {
-  color: white;
+  color: var(--whiteColor);
   text-decoration: none;
 }
 
 .bet-card {
-  width: 45%;
+  width: 95%;
+  max-width: 650px;
   margin: 1rem;
-  background-color: white;
+  background-color: var(--whiteColor);
   border-radius: 3px;
   box-shadow: 0px 0px 10px grey;
-  padding: 0.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-
-.bet-id {
-  color: var(--disabledColor);
-  margin-left: 1rem;
 }
 
 .flex {
@@ -153,37 +131,104 @@ button.delete {
   justify-content: space-between;
 }
 
+.justify-center {
+  justify-content: center;
+}
+
 .align-center {
   align-items: center;
 }
 
-.bet-card .options div {
+.bet-card h2 {
+  margin-right: 4px;
+  width: 100%;
+}
+.bet-card h2 input {
+  font-size: 22px;
+}
+.bet-card h2 .ms-TextField-fieldGroup {
+  height: 44px;
+}
+.bet-card .option {
   width: 44%;
   padding: 0.5rem;
   border-radius: 2px;
+  text-align: center;
 }
 
-.notFinished {
-  filter: grayscale(1);
-}
-
-.bet-card .options div:first-child {
+.bet-card .option:first-child {
   background-color: var(--firstColor);
 }
 
-.bet-card .options div:last-child {
+.bet-card .option:last-child {
   background-color: var(--secondColor);
 }
 
-main ul {
+.bet-list-page {
+  align-items: center;
+  justify-content: space-between;
+}
+
+#add-bet-button {
+  background-color: var(--actionsColor);
+  border-radius: 50%;
+  color: var(--whiteColor);
+  padding: 25px;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+  box-shadow: #868686 0px 0px 10px;
+}
+.manage-buttons {
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.manage-buttons i {
+  padding: 0.5rem;
+  border-radius: 2px;
+  color: var(--whiteColor);
+}
+
+.manage-buttons i[data-icon-name='Edit'] {
+  background-color: var(--firstColor);
+}
+
+.manage-buttons button[disabled] i[data-icon-name='Edit'] {
+  background-color: var(--disabledColor);
+}
+
+.manage-buttons i[data-icon-name='Delete'] {
+  background-color: var(--actionsColor);
+}
+
+.ms-Button--primary {
+  background-color: var(--checkboxSelectedColor);
+  border-color: var(--checkboxSelectedColor);
+}
+
+.wrap {
   flex-wrap: wrap;
+}
+
+ul {
+  display: flex;
   justify-content: space-around;
 }
 
-.winner {
-  filter: grayscale(0);
-  font-size: 2rem;
+.confirmation-buttons {
+  display: flex;
+  justify-content: end;
+  margin-top: 0.2rem;
+}
+.confirmation-buttons button {
+  margin-left: 0.2rem;
+}
+
+.ms-TextField {
+  width: 100%;
+  margin: 4px 0;
 }
 
 .App-header i {
@@ -224,7 +269,4 @@ main ul {
   .App-nav.visible {
     display: none;
   }
-}
-/* MOBILE */
-@media only screen and (max-width: 425px) {
 }
