@@ -9,9 +9,6 @@ const Navigation: React.FC<NavProps> = ({ visible }) => {
     <nav className={`App-nav ${visible ? 'visible' : 'invisible'}`}>
       <ul>
         <Link to="/">
-          <li>Main Page</li>
-        </Link>
-        <Link to="/list">
           <li>Bet List</li>
         </Link>
         <Link to="/settings">
