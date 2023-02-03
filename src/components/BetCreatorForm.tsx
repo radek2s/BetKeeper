@@ -10,7 +10,7 @@ interface Props {
 }
 const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
   const [request, setRequest] = React.useState<BetEntry>(
-    new BetEntry(newId, '', '', '', '')
+    new BetEntry(newId, '', `Creation date: ${new Date().toLocaleDateString()}`, '', '')
   )
   const betConsumer = React.useContext(BetDataContext)
 
@@ -31,6 +31,7 @@ const BetCreatorForm: React.FC<Props> = ({ onBetAdded }) => {
       <TextField
         placeholder="Enter a bet description"
         id="bet-title"
+        value={request.description}
         onChange={(_, e) => setRequest({ ...request, description: e || '' })}></TextField>
       <TextField
         placeholder="Enter first person demand"
