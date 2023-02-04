@@ -13,11 +13,12 @@ import {
 
 interface IBetElement {
   bet: BetEntry
-  betDelete: (id: number) => void
   betUpdate: (bet: BetEntry) => void
+  betDelete?: (id: string | number) => void
+  betArchive?: (id: string | number) => void
 }
 
-const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
+const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate, betArchive }) => {
   const [didMount, setDidMount] = useState<number>(1)
   const [editMode, setEditMode] = useState<boolean>(false)
   const [internalBet, setInternalBet] = React.useState<BetEntry>({ ...bet })
@@ -97,19 +98,37 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
           )}
         </h2>
         <div className="manage-buttons">
-          <IconButton
-            disabled={editMode}
-            onClick={() => {
-              handleEditChange()
-            }}>
-            <FontIcon iconName="Edit" />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              toggleHideDialog(false)
-            }}>
-            <FontIcon iconName="Delete" />
-          </IconButton>
+          {bet.archived ? (
+            <IconButton
+              onClick={() => {
+                betArchive && betArchive(bet.id)
+              }}>
+              <FontIcon iconName="PublishContent" />
+            </IconButton>
+          ) : (
+            <IconButton
+              disabled={editMode}
+              onClick={() => {
+                handleEditChange()
+              }}>
+              <FontIcon iconName="Edit" />
+            </IconButton>
+          )}
+          {bet.archived ? (
+            <IconButton
+              onClick={() => {
+                toggleHideDialog(false)
+              }}>
+              <FontIcon iconName="Delete" />
+            </IconButton>
+          ) : (
+            <IconButton
+              onClick={() => {
+                betArchive && betArchive(bet.id)
+              }}>
+              <FontIcon iconName="Archive" />
+            </IconButton>
+          )}
         </div>
       </header>
       <div>
@@ -135,6 +154,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
             <>
               <span>{internalBet.option1}</span>
               <Checkbox
+                disabled={bet.archived}
                 checked={person1Checked}
                 onChange={() => {
                   handleCheck(1)
@@ -156,6 +176,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
                 {tempBet.option2}
               </span>
               <Checkbox
+                disabled={bet.archived}
                 checked={person2Checked}
                 onChange={() => {
                   handleCheck(2)
@@ -191,7 +212,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate }) => {
           <PrimaryButton
             onClick={() => {
               toggleHideDialog(true)
-              betDelete(+bet.id)
+              betDelete && betDelete(+bet.id)
             }}
             text="OK"
           />

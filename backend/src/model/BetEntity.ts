@@ -6,7 +6,8 @@ export class BetEntity {
         public description: string,
         public option1: string,
         public option2: string,
-        public betResolve: BetResolve
+        public betResolve: BetResolve,
+        public archived: boolean = false
     ) {
 
     }

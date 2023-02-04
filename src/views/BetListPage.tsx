@@ -18,15 +18,16 @@ const BetPage: React.FC = () => {
   }
 
   useEffect(() => {
-    betConsumer.getAllBets().then((res) => setBets(res)) // Using betConsumer we can load all bets into this component like before
+    betConsumer.getAllActiveBets().then((res) => setBets(res)) // Using betConsumer we can load all bets into this component like before
   }, [])
 
-  const deleteBet = async (bet: BetEntry) => {
-    await betConsumer.deleteBet(bet.id)
-    betConsumer.getAllBets().then((r) => setBets(r))
-  }
   const updateBet = async (bet: BetEntry) => {
     await betConsumer.updateBet(bet)
+  }
+
+  const archiveBet = async (id: number | string) => {
+    await betConsumer.archiveBet(id, true)
+    setBets(await betConsumer.getAllActiveBets())
   }
 
   return (
@@ -47,7 +48,7 @@ const BetPage: React.FC = () => {
             <BetElement
               bet={bet}
               key={bet.id}
-              betDelete={() => deleteBet(bet)}
+              betArchive={archiveBet}
               betUpdate={updateBet}
             />
           )

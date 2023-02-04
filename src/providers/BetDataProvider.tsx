@@ -14,11 +14,17 @@ import { DatabaseContext } from './DatabaseProvider'
 export interface BetDataService {
   getAllBets(): Promise<BetEntry[]>
 
+  getAllActiveBets(): Promise<BetEntry[]>
+
+  getAllArchiveBets(): Promise<BetEntry[]>
+
   getBetById(id: number | string): Promise<BetEntry>
 
   addNewBet(bet: BetEntry): Promise<BetEntry>
 
   updateBet(bet: BetEntry): Promise<BetEntry>
+
+  archiveBet(id: number | string, archive: boolean): Promise<void>
 
   /**
    *

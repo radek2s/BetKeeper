@@ -11,6 +11,7 @@ import {
   setDoc,
   deleteDoc,
   Firestore,
+  updateDoc,
 } from 'firebase/firestore/lite'
 import { FirebaseConfig } from '../models/DatabaseConnector'
 
@@ -50,8 +51,25 @@ export default class BetFirebaseService implements BetDataService {
     })
     return bets
   }
+
+  async getAllActiveBets(): Promise<BetEntry[]> {
+    return (await this.getAllBets()).filter((bet) => !bet.archived)
+  }
+
+  async getAllArchiveBets(): Promise<BetEntry[]> {
+    return (await this.getAllBets()).filter((bet) => bet.archived)
+  }
+
   getBetById(id: string): Promise<BetEntry> {
     throw new Error(`Method not implemented. getById(${id})`)
+  }
+
+  async archiveBet(id: string, archived: boolean): Promise<void> {
+    if (!this.firestore) throw 'Firestore not initialized!'
+    await updateDoc(
+      doc(collection(this.firestore, BetFirebaseService.BET_COLLECTION_NAME), `${id}`),
+      { archived }
+    )
   }
 
   async addNewBet(bet: BetEntry): Promise<BetEntry> {

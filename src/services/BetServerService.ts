@@ -20,6 +20,23 @@ export default class BetServerService implements BetDataService {
     return data.map((bet: BetEntry) => BetEntry.fromObject(bet))
   }
 
+  async getAllActiveBets(): Promise<BetEntry[]> {
+    const { data } = await axios.get(`${this.path}/api/bet?state=active`)
+    return data.map((bet: BetEntry) => BetEntry.fromObject(bet))
+  }
+
+  async getAllArchiveBets(): Promise<BetEntry[]> {
+    const { data } = await axios.get(`${this.path}/api/bet?state=archived`)
+    return data.map((bet: BetEntry) => BetEntry.fromObject(bet))
+  }
+
+  async archiveBet(id: string | number, archive: boolean): Promise<void> {
+    const { data } = await axios.patch(
+      `${this.path}/api/bet/${id}/archive?state=${archive ? 1 : 0}`
+    )
+    return data
+  }
+
   async getBetById(id: number): Promise<BetEntry> {
     return await axios.get(`${this.path}/api/bet/${id}`)
   }

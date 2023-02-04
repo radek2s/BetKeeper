@@ -50,7 +50,8 @@ export class SqLiteService {
                 [description] TEXT,
                 [option1] TEXT,
                 [option2] TEXT,
-                [bet_resolve] INTEGER);
+                [bet_resolve] INTEGER,
+                [archived] INTEGER);
             `, (error) => {
                 if (error) reject(error)
                 resolve()
@@ -60,7 +61,7 @@ export class SqLiteService {
 
     getAllBets(): Promise<BetEntity[]> {
         return new Promise((resolve, reject) => {
-            this.db.all("SELECT id, title, description, option1, option2, bet_resolve FROM bets", (error, rows) => {
+            this.db.all("SELECT id, title, description, option1, option2, bet_resolve, archived FROM bets", (error, rows) => {
                 if (error) { reject(error) }
                 else {
                     const response: BetEntity[] = []
@@ -71,7 +72,8 @@ export class SqLiteService {
                             row.description,
                             row.option1,
                             row.option2,
-                            row.bet_resolve
+                            row.bet_resolve,
+                            row.archived === 1
                         ))
                     })
                     resolve(response)
@@ -80,9 +82,56 @@ export class SqLiteService {
         })
     }
 
+    getAllActiveBets(): Promise<BetEntity[]> {
+        return new Promise((resolve, reject) => {
+            this.db.all("SELECT id, title, description, option1, option2, bet_resolve, archived FROM bets WHERE archived=0", (error, rows) => {
+                if (error) { reject(error) }
+                else {
+                    const response: BetEntity[] = []
+                    rows.forEach((row) => {
+                        response.push(new BetEntity(
+                            row.id,
+                            row.title,
+                            row.description,
+                            row.option1,
+                            row.option2,
+                            row.bet_resolve,
+                            row.archived === 1
+                        ))
+                    })
+                    resolve(response)
+                }
+            })
+        })
+    }
+
+    getAllArchivedBets(): Promise<BetEntity[]> {
+        return new Promise((resolve, reject) => {
+            this.db.all("SELECT id, title, description, option1, option2, bet_resolve, archived FROM bets WHERE archived=1", (error, rows) => {
+                if (error) { reject(error) }
+                else {
+                    const response: BetEntity[] = []
+                    rows.forEach((row) => {
+                        response.push(new BetEntity(
+                            row.id,
+                            row.title,
+                            row.description,
+                            row.option1,
+                            row.option2,
+                            row.bet_resolve,
+                            row.archived === 1
+                        ))
+                    })
+                    resolve(response)
+                }
+            })
+        })
+
+    }
+
     getBet(id: number): Promise<BetEntity> {
         return new Promise((resolve, reject) => {
-            this.db.get("SELECT id, title, description, option1, option2, bet_resolve FROM bets WHERE id=$id", {
+            this.db.get("SELECT id, title, description, option1, option2, bet_resolve, archived FROM bets WHERE id=$id", {
                 $id: id
             }, (error, row) => {
                 if (error) reject(error)
@@ -93,7 +142,8 @@ export class SqLiteService {
                         row.description,
                         row.option1,
                         row.option2,
-                        row.bet_resolve
+                        row.bet_resolve,
+                        row.archived === 1
                     )
                     resolve(response)
                 } else {
@@ -103,10 +153,25 @@ export class SqLiteService {
         })
     }
 
+    setArchive(betId: number, archived: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.db.run(`UPDATE bets SET archived=$archived WHERE id=$id;`, {
+                $id: betId,
+                $archived: archived
+            }, function (error) {
+                if (error) reject(error)
+                if (this.changes == 0) reject(new BetNotFoundError(betId))
+                console.log("Updated row", betId)
+                resolve()
+            }
+            )
+        })
+    }
+
     saveBet(bet: BetEntity): Promise<BetEntity> {
         return new Promise((resolve, reject) => {
-            this.db.run(`INSERT INTO bets(title, description, option1, option2, bet_resolve) VALUES(?, ?, ?, ?, ?)`,
-                [bet.title, bet.description, bet.option1, bet.option2, bet.betResolve],
+            this.db.run(`INSERT INTO bets(title, description, option1, option2, bet_resolve, archived) VALUES(?, ?, ?, ?, ?, ?)`,
+                [bet.title, bet.description, bet.option1, bet.option2, bet.betResolve, bet.archived ? 1 : 0],
                 function (error) {
                     if (error) reject(error)
                     console.log(`Added with id=${this.lastID}`)
@@ -135,7 +200,8 @@ export class SqLiteService {
                 description=$description,
                 option1=$option1,
                 option2=$option2,
-                bet_resolve=$betResolve
+                bet_resolve=$betResolve,
+                archived=$archived
             WHERE id=$id;`, {
                 $id: bet.id,
                 $title: bet.title,
@@ -143,6 +209,7 @@ export class SqLiteService {
                 $option1: bet.option1,
                 $option2: bet.option2,
                 $betResolve: bet.betResolve,
+                $archived: bet.archived ? 1 : 0
             }, function (error) {
                 if (error) reject(error)
                 if (this.changes == 0) reject(new BetNotFoundError(bet.id))

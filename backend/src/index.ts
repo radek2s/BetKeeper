@@ -23,8 +23,11 @@ app.use(cors())
 app.get("/api/bet", async (req: Request, res: Response) => {
     try {
         console.log(`${new Date().toISOString()} [GET] /api/bet`)
-        const response = await dbService.getAllBets()
-        res.send(response)
+        switch (req.query.state) {
+            case 'active': res.send(await dbService.getAllActiveBets()); break
+            case 'archived': res.send(await dbService.getAllArchivedBets()); break
+            default: res.send(await dbService.getAllBets());
+        }
     } catch (e) {
         console.error(e)
         res.status(500).send()
@@ -82,6 +85,23 @@ app.delete("/api/bet/:id", async (req: Request, res: Response) => {
         await dbService.deleteBet(+id)
         res.status(204).send()
         //https://dev.to/pragativerma18/youre-not-using-http-status-codes-right-pc6
+    } catch (e) {
+        console.error(e)
+        if (e instanceof BetNotFoundError) {
+            res.status(404).send()
+        }
+        res.status(500).send()
+    }
+})
+
+app.patch("/api/bet/:id/archive", async (req: Request, res: Response) => {
+    try {
+        console.log(`${new Date().toISOString()} [PATCH] /api/bet/${req.params.id}`)
+        const id = +req.params.id
+        const result = req.query.state
+        if (!result) throw new Error("Invalid state param")
+        dbService.setArchive(id, +result)
+        res.status(201).send()
     } catch (e) {
         console.error(e)
         if (e instanceof BetNotFoundError) {
