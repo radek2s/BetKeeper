@@ -101,7 +101,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate, betArchi
           {bet.archived ? (
             <IconButton
               onClick={() => {
-                betArchive && betArchive(+bet.id)
+                betArchive && betArchive(bet.id)
               }}>
               <FontIcon iconName="PublishContent" />
             </IconButton>
@@ -124,7 +124,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate, betArchi
           ) : (
             <IconButton
               onClick={() => {
-                betArchive && betArchive(+bet.id)
+                betArchive && betArchive(bet.id)
               }}>
               <FontIcon iconName="Archive" />
             </IconButton>
