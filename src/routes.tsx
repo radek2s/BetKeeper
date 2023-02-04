@@ -2,6 +2,7 @@ import path from 'node:path/win32'
 import React from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import App from './App'
+import BetArchive from './views/BetArchiveList'
 import BetPage from './views/BetListPage'
 import SettingsPage from './views/Settings'
 
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: 'list',
         element: <BetPage />,
+      },
+      {
+        path: 'archive',
+        element: <BetArchive />,
       },
       {
         path: 'settings',

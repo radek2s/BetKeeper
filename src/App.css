@@ -12,12 +12,15 @@
   background-color: var(--checkboxSelectedColor);
   border-color: var(--checkboxSelectedColor);
 }
+
 .ms-Checkbox {
   margin-left: 8px;
 }
+
 .ms-Checkbox label div {
   background-color: var(--whiteColor);
 }
+
 .ms-Checkbox i[data-icon-name='CheckMark'] {
   background-color: var(--whiteColor);
 }
@@ -25,6 +28,7 @@
 .is-checked.ms-Checkbox label div {
   background-color: var(--checkboxSelectedColor);
 }
+
 .is-checked.ms-Checkbox i[data-icon-name='CheckMark'] {
   background-color: var(--checkboxSelectedColor);
 }
@@ -143,12 +147,15 @@
   margin-right: 4px;
   width: 100%;
 }
+
 .bet-card h2 input {
   font-size: 22px;
 }
+
 .bet-card h2 .ms-TextField-fieldGroup {
   height: 44px;
 }
+
 .bet-card .option {
   width: 44%;
   padding: 0.5rem;
@@ -180,18 +187,21 @@
   z-index: 100;
   box-shadow: #868686 0px 0px 10px;
 }
+
 .manage-buttons {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
+
 .manage-buttons i {
   padding: 0.5rem;
   border-radius: 2px;
   color: var(--whiteColor);
 }
 
-.manage-buttons i[data-icon-name='Edit'] {
+.manage-buttons i[data-icon-name='Edit'],
+.manage-buttons i[data-icon-name='PublishContent'] {
   background-color: var(--firstColor);
 }
 
@@ -199,7 +209,8 @@
   background-color: var(--disabledColor);
 }
 
-.manage-buttons i[data-icon-name='Delete'] {
+.manage-buttons i[data-icon-name='Delete'],
+.manage-buttons i[data-icon-name='Archive'] {
   background-color: var(--actionsColor);
 }
 
@@ -222,6 +233,7 @@ ul {
   justify-content: end;
   margin-top: 0.2rem;
 }
+
 .confirmation-buttons button {
   margin-left: 0.2rem;
 }
@@ -243,14 +255,17 @@ ul {
     grid-row: span 2 / -1;
     grid-column-end: 2;
   }
+
   .App-main {
     grid-row: 2;
     grid-column-start: 1;
   }
+
   .App {
     grid-template-columns: [sidebar-start] 40vw [main] auto [right-sidebar-start] 0px;
     grid-template-rows: [header-start] 56px [main] calc(100vh - 112px) [footer-start] 56px;
   }
+
   .App-nav ul li {
     border-bottom: 1px solid #1a1a1a;
   }
@@ -266,6 +281,7 @@ ul {
   .App-nav.visible {
     display: block;
   }
+
   .App-nav.visible {
     display: none;
   }

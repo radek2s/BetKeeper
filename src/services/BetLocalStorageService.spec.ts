@@ -126,5 +126,51 @@ describe('Storage Service', () => {
       //Assert
       expect(result).toHaveLength(1)
     })
+
+    describe('Archive Bets', () => {
+      test('Should get 1 active bet', async () => {
+        //Act
+        const result = await service.getAllActiveBets()
+
+        //Assert
+        expect(result).toHaveLength(1)
+      })
+
+      test('Should get 0 archived bets', async () => {
+        //Act
+        const result = await service.getAllArchiveBets()
+
+        //Assert
+        expect(result).toHaveLength(0)
+      })
+
+      test('Should archive bet with ID=1', async () => {
+        //Act
+        await service.archiveBet(1)
+        const result = await service.getAllArchiveBets()
+
+        //Assert
+        expect(result).toHaveLength(1)
+        expect(result[0].archived).toBe(true)
+      })
+
+      test('Should get 0 active bets', async () => {
+        //Act
+        const result = await service.getAllActiveBets()
+
+        //Assert
+        expect(result).toHaveLength(0)
+      })
+
+      test('Should set as active bet with ID=1', async () => {
+        //Act
+        await service.archiveBet(1, false)
+        const result = await service.getAllActiveBets()
+
+        //Assert
+        expect(result).toHaveLength(1)
+        expect(result[0].archived).toBe(false)
+      })
+    })
   })
 })
