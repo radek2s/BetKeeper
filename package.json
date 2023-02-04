@@ -2,6 +2,7 @@
   "name": "bet-keeper",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://radek2s.github.io/BetKeeper",
   "dependencies": {
     "@fluentui/font-icons-mdl2": "^8.5.5",
     "@fluentui/react": "^8.101.0",
@@ -39,7 +40,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start:vite": "vite",
-    "build": "CI=false && react-scripts build",
+    "build": "react-scripts build",
     "build:vite": "tsc && vite build",
     "preview:vite": "vite preview",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!axios)/\"",
