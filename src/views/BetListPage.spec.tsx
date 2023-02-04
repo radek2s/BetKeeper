@@ -20,7 +20,10 @@ describe('initialization', () => {
   test('Should render 2 bets with [Example Bet, Example Second Bet] titles', async () => {
     //Arrange
     const MockDataService = jest.fn<BetDataService, any>(() => ({
-      getAllBets: jest.fn().mockResolvedValue([
+      getAllBets: jest.fn(),
+      getBetById: jest.fn(),
+      addNewBet: jest.fn(),
+      getAllActiveBets: jest.fn().mockResolvedValue([
         {
           id: 1,
           title: 'Example Bet',
@@ -40,8 +43,8 @@ describe('initialization', () => {
           winner: false,
         },
       ]),
-      getBetById: jest.fn(),
-      addNewBet: jest.fn(),
+      getAllArchiveBets: jest.fn(),
+      archiveBet: jest.fn(),
       updateBet: jest.fn(),
       deleteBet: jest.fn(),
     }))
@@ -60,7 +63,7 @@ describe('initialization', () => {
     })
 
     //Assert
-    expect(dataServiceMock.getAllBets).toBeCalledTimes(1) //move to previous one
+    expect(dataServiceMock.getAllActiveBets).toBeCalledTimes(1) //move to previous one
     expect(container!.getElementsByClassName('bet-card')).toHaveLength(2) //has two rendered bet-cards
     expect(container!.innerHTML).toContain('Example Bet')
     expect(container!.innerHTML).toContain('Example Second Bet')
