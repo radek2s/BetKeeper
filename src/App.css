@@ -286,3 +286,32 @@ ul {
     display: none;
   }
 }
+
+.notification {
+  position: fixed;
+  right: 0;
+  top: 82px;
+  z-index: 100;
+
+  animation: showNotification 1s;
+  animation-delay: 0.5s;
+  animation-fill-mode: both;
+}
+
+.notification h4 {
+  margin: 0;
+}
+
+@keyframes showNotification {
+  from {
+    transform: translateX(450px);
+  }
+
+  to {
+    transform: translate(0);
+  }
+}
+
+.token-wrapper .copy-icon {
+  margin: 4px 0;
+}
