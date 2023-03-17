@@ -1,13 +1,29 @@
+/* eslint-disable no-console */
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, Messaging, onMessage } from 'firebase/messaging'
 import { FirebaseConfig } from '../models/DatabaseConnector'
 
 export class PushNotificationService {
   private messaging?: Messaging
+  private sw?: ServiceWorkerRegistration
   constructor(private config: FirebaseConfig) {}
 
-  private init() {
+  private async init() {
+    await this.initSW()
     this.messaging = getMessaging(initializeApp(this.config))
+  }
+
+  private async initSW() {
+    this.sw = await navigator.serviceWorker.register(
+      '/firebase-messaging-sw.js?config=' + JSON.stringify(this.config)
+    )
+    if (this.sw.installing) {
+      console.log('Serwice worker installing...')
+    } else if (this.sw.waiting) {
+      console.log('Service worker installed')
+    } else if (this.sw.active) {
+      console.log('Service worker active')
+    }
   }
 
   private checkNotificationPermission(): Promise<boolean> {
@@ -27,8 +43,9 @@ export class PushNotificationService {
   }
 
   async getFCMToken(): Promise<string | null> {
-    this.init()
-    if (!this.messaging) {
+    await this.init()
+    if (!this.messaging || !this.sw) {
+      console.warn({ ms: this.messaging, sw: this.sw })
       console.error('Messaging not initialized!')
       return null
     }
@@ -36,7 +53,7 @@ export class PushNotificationService {
       console.error('Notification permission denied!')
     }
     try {
-      return await getToken(this.messaging)
+      return await getToken(this.messaging, { serviceWorkerRegistration: this.sw })
     } catch (e) {
       console.error(e)
       return null

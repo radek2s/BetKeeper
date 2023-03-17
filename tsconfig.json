@@ -23,6 +23,6 @@
   },
   "include": [
     "src",
-    "firebase-messaging-sw.js"
+    "messaging_on_background_message.js"
   ]
 }
