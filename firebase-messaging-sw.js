@@ -9,7 +9,4 @@ console.log("Service worker config", firebaseConfig)
 if (firebaseConfig) {
     firebase.initializeApp(firebaseConfig)
     const messaging = firebase.messaging();
-    messaging.onBackgroundMessage(({ notification: { title, body, image } }) => {
-        self.registration.showNotification(title, { body });
-    });
 }
