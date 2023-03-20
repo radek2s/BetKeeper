@@ -5,8 +5,8 @@ importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compa
 
 const firebaseConfig = JSON.parse(new URL(location).searchParams.get("config"))
 
-console.log("Service worker config", firebaseConfig)
+console.log("[SW] Service worker config", firebaseConfig)
 if (firebaseConfig) {
     firebase.initializeApp(firebaseConfig)
-    const messaging = firebase.messaging();
+    firebase.messaging();
 }

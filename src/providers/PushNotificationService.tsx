@@ -32,24 +32,22 @@ export const PushNotificationProvider: React.FC<Props> = ({ children }) => {
   const [notification, setNotification] = useState<NotificationMessage | null>(null)
 
   const setup = async (config?: FirebaseConfig) => {
-    let configuration: FirebaseConfig | undefined = config
-    if (!config) {
-      console.warn(
-        'PushNotification: No config provided! Trying to load from LocalStorage.'
-      )
-      const data = JSON.parse(localStorage.getItem('conf-firebase') || '{}')
-      if ('apiKey' in data) {
-        configuration = data as FirebaseConfig
-      } else {
-        console.error('PushNotification: Unable to load data')
-        return
-      }
-    }
-    if (!configuration) return
+    const configuration: FirebaseConfig = config || loadConfig()
     const service = new PushNotificationService(configuration)
     setFcmToken(await service.getFCMToken())
     onMessage((await service.onMessageListener()) as NotificationMessage)
     setPushService(service)
+  }
+
+  const loadConfig = (): FirebaseConfig => {
+    console.warn(
+      'PushNotification: No config provided! Trying to load from LocalStorage.'
+    )
+    const data = JSON.parse(localStorage.getItem('conf-firebase') || '{}')
+    if ('apiKey' in data) {
+      return data as FirebaseConfig
+    }
+    throw new Error('Unable to load data')
   }
 
   const onMessage = (payload: NotificationMessage) => {
