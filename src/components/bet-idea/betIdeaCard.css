@@ -1,0 +1,23 @@
+.bet-idea-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: var(--whiteColor);
+  box-shadow: 0px 0px 10px grey;
+  border-radius: 3px;
+}
+
+.bet-idea-card--header h3 {
+  margin: 0;
+  margin-bottom: 16px;
+}
+
+.bet-idea-card--content .bet-idea {
+  display: flex;
+  flex-direction: column;
+}
+
+.bet-idea-card--content .bet-idea--label {
+  font-size: 0.8rem;
+  color: #888888;
+}

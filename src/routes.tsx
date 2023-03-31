@@ -4,6 +4,7 @@ import App from './App'
 import BetArchive from './views/BetArchiveList'
 import BetPage from './views/BetListPage'
 import SettingsPage from './views/Settings'
+import BetIdeaList from './views/BetIdeaList'
 
 const router = createHashRouter([
   {
@@ -17,6 +18,10 @@ const router = createHashRouter([
       {
         path: 'list',
         element: <BetPage />,
+      },
+      {
+        path: 'ideas',
+        element: <BetIdeaList />,
       },
       {
         path: 'archive',

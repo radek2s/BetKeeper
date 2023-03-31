@@ -2,6 +2,7 @@ import React from 'react'
 import BetEntry from '../models/BetEntry'
 import BetLocalStorageService from '../services/BetLocalStorageService'
 import { DatabaseContext } from './DatabaseProvider'
+import BetIdea from '../models/BetIdea'
 
 /**
  * BetDataService interface
@@ -18,6 +19,8 @@ export interface BetDataService {
 
   getAllArchiveBets(): Promise<BetEntry[]>
 
+  getAllBetIdeas(): Promise<BetIdea[]>
+
   getBetById(id: number | string): Promise<BetEntry>
 
   addNewBet(bet: BetEntry): Promise<BetEntry>
@@ -31,6 +34,8 @@ export interface BetDataService {
    * @param id bet id number
    */
   deleteBet(id: number | string): Promise<void>
+
+  addNewBetIdea(betIdea: BetIdea): Promise<void>
 }
 
 export const BetDataContext = React.createContext<BetDataService>(

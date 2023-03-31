@@ -11,6 +11,9 @@ const Navigation: React.FC<NavProps> = ({ visible }) => {
         <Link to="/list">
           <li>Bet List</li>
         </Link>
+        <Link to="/ideas">
+          <li>Bet Ideas</li>
+        </Link>
         <Link to="/archive">
           <li>Bet Archive</li>
         </Link>

@@ -1,8 +1,10 @@
 import BetEntry from '../models/BetEntry'
+import BetIdea from '../models/BetIdea'
 import { BetDataService } from '../providers/BetDataProvider'
 
 export default class BetLocalStorageService implements BetDataService {
   private static STORAGE_KEY = 'bets'
+  private static STORAGE_KEY_IDEAS = 'bet_ideas'
 
   async getAllBets(): Promise<BetEntry[]> {
     const data = JSON.parse(
@@ -54,5 +56,27 @@ export default class BetLocalStorageService implements BetDataService {
 
   private saveAllBets(bets: BetEntry[]) {
     localStorage.setItem(BetLocalStorageService.STORAGE_KEY, JSON.stringify(bets))
+  }
+
+  async getAllBetIdeas(): Promise<BetIdea[]> {
+    const data = JSON.parse(
+      localStorage.getItem(BetLocalStorageService.STORAGE_KEY_IDEAS) || '[]'
+    )
+    return data.map((bet: BetIdea) => BetIdea.fromObject(bet))
+  }
+
+  async addNewBetIdea(betIdea: BetIdea): Promise<void> {
+    const bets = await this.getAllBetIdeas()
+    const lastId = bets[bets.length - 1]?.id as number
+    betIdea.id = (+lastId || 0) + 1
+    bets.push(betIdea)
+    this.saveAllBetIdeas(bets)
+  }
+
+  private saveAllBetIdeas(betIdeas: BetIdea[]) {
+    localStorage.setItem(
+      BetLocalStorageService.STORAGE_KEY_IDEAS,
+      JSON.stringify(betIdeas)
+    )
   }
 }

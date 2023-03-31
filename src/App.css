@@ -176,6 +176,24 @@
   justify-content: space-between;
 }
 
+.bet-ideas {
+  grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  gap: 16px;
+}
+
+@media only screen and (max-width: 768px) {
+  .bet-ideas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .bet-ideas {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 #add-bet-button {
   background-color: var(--actionsColor);
   border-radius: 50%;
