@@ -1,11 +1,24 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Dropdown, Icon, IDropdownOption, PrimaryButton, Stack } from '@fluentui/react'
-import React from 'react'
+import React, { useState } from 'react'
+import {
+  DefaultButton,
+  Dialog,
+  DialogType,
+  Dropdown,
+  Icon,
+  IconButton,
+  IDropdownOption,
+  PrimaryButton,
+  Stack,
+  TextField,
+  TooltipHost,
+} from '@fluentui/react'
 import { SettingsServer } from '../components/SettingsServer'
 import { SettingsFirebase } from '../components/SettingsFirebase'
 import { SettingsLocal } from '../components/SettingsLocal'
 import { DatabaseConfig, DatabaseType } from '../models/DatabaseConnector'
 import { DatabaseContext } from '../providers/DatabaseProvider'
+import { PushNotificationContext } from '../providers/PushNotificationService'
 
 const databaseOptions: IDropdownOption[] = [
   {
@@ -22,8 +35,14 @@ const databaseOptions: IDropdownOption[] = [
   },
 ]
 
+const dialogContentProps = {
+  type: DialogType.normal,
+  title: 'Firebase Cloud Messaging Token',
+}
+
 export const SettingsPage: React.FC = () => {
   const dbConsumer = React.useContext(DatabaseContext)
+  const pushService = React.useContext(PushNotificationContext)
   const [configType, setConfigType] = React.useState<DatabaseType>(
     dbConsumer.database.type
   )
@@ -32,6 +51,7 @@ export const SettingsPage: React.FC = () => {
   const [selectedDatabase, setSelectedDatabase] = React.useState<
     IDropdownOption | undefined
   >(findActiveDatabaseOption())
+  const [hideDialog, setHideDialog] = useState<boolean>(true)
 
   function findActiveDatabaseOption(): IDropdownOption | undefined {
     return databaseOptions.find((option) => option.key === dbConsumer.database.type)
@@ -91,6 +111,10 @@ export const SettingsPage: React.FC = () => {
     }
   }
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(pushService.getToken())
+  }
+
   return (
     <div className="settings-page">
       <h1>Settings</h1>
@@ -116,6 +140,40 @@ export const SettingsPage: React.FC = () => {
         {renderSettings(selectedDatabase?.key)}
         <PrimaryButton text="Connect" disabled={!preConfig} onClick={handleConnect} />
       </Stack>
+
+      <header className="flex flex-space-between align-center">
+        <h2>Notification provider</h2>
+        <div className="notification-btns">
+          <DefaultButton
+            onClick={() => setHideDialog(false)}
+            text="Get FCM Token"
+            disabled={pushService.getToken() === ''}
+          />
+        </div>
+      </header>
+      <Dialog
+        hidden={hideDialog}
+        onDismiss={() => setHideDialog(true)}
+        dialogContentProps={dialogContentProps}>
+        <div className="token-wrapper">
+          <Stack horizontal verticalAlign="end">
+            <TextField
+              label="Token value"
+              readOnly
+              defaultValue={pushService.getToken()}
+            />
+            <div className="copy-icon">
+              <TooltipHost content="Copy to clipboard" id="copy_tooltip">
+                <IconButton
+                  iconProps={{ iconName: 'copy' }}
+                  aria-label="Copy"
+                  onClick={handleCopy}
+                />
+              </TooltipHost>
+            </div>
+          </Stack>
+        </div>
+      </Dialog>
     </div>
   )
 }

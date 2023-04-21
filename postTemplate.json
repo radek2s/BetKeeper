@@ -1,0 +1,10 @@
+{
+    "url": "//https://developers.google.com/oauthplayground/?code=4/0AWtgzh60m0nK3IxDoucQSwgZz7YunqY-eCjm2YRYQWq291fvS9M_D5osT-K2chYo2It7VA&scope=https://www.googleapis.com/auth/cloud-platform%20https://www.googleapis.com/auth/firebase.messaging",
+    "message": {
+        "token": "...",
+        "notification": {
+            "body": "This is an FCM notification message payload",
+            "title": "FCM Message"
+        }
+    }
+}
