@@ -123,6 +123,7 @@ const BetElement: React.FC<IBetElement> = ({ bet, betDelete, betUpdate, betArchi
             </IconButton>
           ) : (
             <IconButton
+              className="archive-button"
               onClick={() => {
                 betArchive && betArchive(bet.id)
               }}>
