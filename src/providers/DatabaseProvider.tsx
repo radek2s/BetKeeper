@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   DatabaseConfig,
   DatabaseConnector,
@@ -12,6 +12,7 @@ import BetLocalStorageService from '../services/BetLocalStorageService'
 import BetServerService from '../services/BetServerService'
 import { loadDatabaseConncecotr, saveDatabaseConnector } from '../utils/LocalStorageUtils'
 import { BetDataService } from './BetDataProvider'
+import { ToastContext } from '../services/ToastService'
 
 export interface DatabaseService {
   database: DatabaseConnector
@@ -41,19 +42,25 @@ export const DatabaseProvider: React.FC<Props> = ({ children }) => {
     new BetLocalStorageService()
   )
 
+  const ToastProvider = useContext(ToastContext)
+
   const initDatabaseConnector = (config: DatabaseConfig, dbType: DatabaseType) => {
     let service
-    switch (dbType) {
-      case 'server':
-        service = new BetServerService(config as ServerConfig)
-        break
-      case 'firebase':
-        service = new BetFirebaseService(config as FirebaseConfig)
-        break
-      default:
-        service = new BetLocalStorageService()
+    try {
+      switch (dbType) {
+        case 'server':
+          service = new BetServerService(config as ServerConfig)
+          break
+        case 'firebase':
+          service = new BetFirebaseService(config as FirebaseConfig)
+          break
+        default:
+          service = new BetLocalStorageService()
+      }
+      setBetDataProvider(service)
+    } catch (e: unknown) {
+      ToastProvider.show((e as Error).message)
     }
-    setBetDataProvider(service)
   }
 
   useEffect(() => {

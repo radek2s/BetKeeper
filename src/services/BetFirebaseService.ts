@@ -32,11 +32,7 @@ export default class BetFirebaseService implements BetDataService {
   private firestore?: Firestore
 
   private connect(config: FirebaseConfig) {
-    try {
-      this.firestore = getFirestore(initializeApp(config))
-    } catch (e: unknown) {
-      console.error(e)
-    }
+    this.firestore = getFirestore(initializeApp(config))
   }
 
   async getAllBets(): Promise<BetEntry[]> {

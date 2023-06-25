@@ -1,9 +1,10 @@
 import { Dialog, DialogType, FontIcon, IconButton } from '@fluentui/react'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import BetCreatorForm from '../components/BetCreatorForm'
 import BetElement from '../components/BetElement'
 import BetEntry from '../models/BetEntry'
 import { BetDataContext } from '../providers/BetDataProvider'
+import { ToastContext } from '../services/ToastService'
 
 const BetPage: React.FC = () => {
   const [bets, setBets] = React.useState<BetEntry[]>([]) //zmienna do wszystkich betów
@@ -17,8 +18,15 @@ const BetPage: React.FC = () => {
     isBlocking: true,
   }
 
+  const ToastProvider = useContext(ToastContext)
+
   useEffect(() => {
-    betConsumer.getAllActiveBets().then((res) => setBets(res)) // Using betConsumer we can load all bets into this component like before
+    betConsumer
+      .getAllActiveBets()
+      .then((res) => setBets(res))
+      .catch((e: unknown) => {
+        ToastProvider.show((e as Error).message)
+      }) // Using betConsumer we can load all bets into this component like before
   }, [])
 
   const updateBet = async (bet: BetEntry) => {

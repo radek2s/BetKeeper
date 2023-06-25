@@ -302,6 +302,24 @@ ul {
   margin: 0;
 }
 
+.toast.visible {
+  display: block;
+}
+.toast.invisible {
+  display: none;
+}
+.toast {
+  background-color: #ff00008c;
+  padding: 10px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 10;
+  max-width: 80%;
+  color: white;
+  border-radius: 5px;
+}
+
 @keyframes showNotification {
   from {
     transform: translateX(450px);
