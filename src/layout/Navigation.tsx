@@ -3,18 +3,19 @@ import { Link } from 'react-router-dom'
 
 interface NavProps {
   visible: boolean
+  onClick: () => void
 }
-const Navigation: React.FC<NavProps> = ({ visible }) => {
+const Navigation: React.FC<NavProps> = ({ visible, onClick }) => {
   return (
     <nav className={`App-nav ${visible ? 'visible' : 'invisible'}`}>
       <ul>
-        <Link to="/list">
+        <Link to="/list" onClick={onClick}>
           <li>Bet List</li>
         </Link>
-        <Link to="/archive">
+        <Link to="/archive" onClick={onClick}>
           <li>Bet Archive</li>
         </Link>
-        <Link to="/settings">
+        <Link to="/settings" onClick={onClick}>
           <li>Settings</li>
         </Link>
       </ul>

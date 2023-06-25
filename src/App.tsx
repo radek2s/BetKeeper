@@ -24,7 +24,7 @@ function App() {
                 <h1>Bet Keeper</h1>
               </header>
 
-              <Navigation visible={navVisible} />
+              <Navigation visible={navVisible} onClick={() => setNavVisible((e) => !e)} />
               <div className="App-main">
                 <Outlet />
               </div>
