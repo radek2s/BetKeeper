@@ -18,6 +18,7 @@ interface ToastService {
   show: (message: string) => void
 }
 
+/** @deprecated */
 export const ToastContext = React.createContext<ToastService>({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   show: () => {},
@@ -26,7 +27,7 @@ export const ToastContext = React.createContext<ToastService>({
 interface ToastProviderProps {
   children: React.ReactNode
 }
-
+/** @deprecated */
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const [visible, setVisibility] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('')

@@ -10,37 +10,40 @@ import { PushNotificationProvider } from './providers/PushNotificationService'
 
 import './Icons'
 import './App.css'
+import { NotificationProvider } from './providers/NotificationProvider'
 
 function App() {
   const [navVisible, setNavVisible] = useState<boolean>(true)
 
   return (
     <div className="App">
-      <PushNotificationProvider>
-        <ToastProvider>
-          <DatabaseProvider>
-            <BetDataProvider>
-              <>
-                <header className="App-header">
-                  <Icon
-                    iconName={'mobile-menu'}
+      <NotificationProvider>
+        <PushNotificationProvider>
+          <ToastProvider>
+            <DatabaseProvider>
+              <BetDataProvider>
+                <>
+                  <header className="App-header">
+                    <Icon
+                      iconName={'mobile-menu'}
+                      onClick={() => setNavVisible((e) => !e)}
+                    />
+                    <h1>Bet Keeper</h1>
+                  </header>
+
+                  <Navigation
+                    visible={navVisible}
                     onClick={() => setNavVisible((e) => !e)}
                   />
-                  <h1>Bet Keeper</h1>
-                </header>
-
-                <Navigation
-                  visible={navVisible}
-                  onClick={() => setNavVisible((e) => !e)}
-                />
-                <div className="App-main">
-                  <Outlet />
-                </div>
-              </>
-            </BetDataProvider>
-          </DatabaseProvider>
-        </ToastProvider>
-      </PushNotificationProvider>
+                  <div className="App-main">
+                    <Outlet />
+                  </div>
+                </>
+              </BetDataProvider>
+            </DatabaseProvider>
+          </ToastProvider>
+        </PushNotificationProvider>
+      </NotificationProvider>
     </div>
   )
 }

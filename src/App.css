@@ -294,7 +294,7 @@ ul {
   z-index: 100;
 
   animation: showNotification 1s;
-  animation-delay: 0.5s;
+  animation-delay: 0.125s;
   animation-fill-mode: both;
 }
 
@@ -305,9 +305,11 @@ ul {
 .toast.visible {
   display: block;
 }
+
 .toast.invisible {
   display: none;
 }
+
 .toast {
   background-color: #ff00008c;
   padding: 10px;

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { useEffect, useState } from 'react'
-import { MessageBar } from '@fluentui/react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FirebaseConfig } from '../models/DatabaseConnector'
-import { PushNotificationService } from '../services/NotificationService'
+import { PushNotificationService } from '../services/PushNotificationService'
+import { NotificationContext } from './NotificationProvider'
 
 type NotificationMessage = {
   notification: {
@@ -21,15 +21,13 @@ export const PushNotificationContext = React.createContext<PushNotificationConte
   getToken: () => '',
 })
 
-const NOTIFICATION_TIME = 8000
-
 interface Props {
   children: React.ReactNode
 }
 export const PushNotificationProvider: React.FC<Props> = ({ children }) => {
   const [, setPushService] = useState<PushNotificationService | null>(null)
   const [fcmToken, setFcmToken] = useState<string | null>(null)
-  const [notification, setNotification] = useState<NotificationMessage | null>(null)
+  const { showNotification } = useContext(NotificationContext)
 
   const setup = async (config?: FirebaseConfig) => {
     const configuration: FirebaseConfig = config || loadConfig()
@@ -51,11 +49,7 @@ export const PushNotificationProvider: React.FC<Props> = ({ children }) => {
   }
 
   const onMessage = (payload: NotificationMessage) => {
-    //Todo: Allow to multirendering messages
-    setNotification(payload)
-    setTimeout(() => {
-      setNotification(null)
-    }, NOTIFICATION_TIME)
+    showNotification(payload.notification.title, payload.notification.body)
   }
 
   const getToken = () => {
@@ -68,14 +62,6 @@ export const PushNotificationProvider: React.FC<Props> = ({ children }) => {
 
   return (
     <PushNotificationContext.Provider value={{ setup, getToken }}>
-      {notification && (
-        <div className="notification">
-          <MessageBar isMultiline={true}>
-            <h4>{notification.notification.title}</h4>
-            <p>{notification.notification.body}</p>
-          </MessageBar>
-        </div>
-      )}
       {children}
     </PushNotificationContext.Provider>
   )

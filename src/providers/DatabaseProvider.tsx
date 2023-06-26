@@ -12,7 +12,7 @@ import BetLocalStorageService from '../services/BetLocalStorageService'
 import BetServerService from '../services/BetServerService'
 import { loadDatabaseConncecotr, saveDatabaseConnector } from '../utils/LocalStorageUtils'
 import { BetDataService } from './BetDataProvider'
-import { ToastContext } from '../services/ToastService'
+import { NotificationContext } from './NotificationProvider'
 
 export interface DatabaseService {
   database: DatabaseConnector
@@ -41,25 +41,32 @@ export const DatabaseProvider: React.FC<Props> = ({ children }) => {
   const [betDataProvider, setBetDataProvider] = useState<BetDataService>(
     new BetLocalStorageService()
   )
-
-  const ToastProvider = useContext(ToastContext)
+  const { showNotification } = useContext(NotificationContext)
 
   const initDatabaseConnector = (config: DatabaseConfig, dbType: DatabaseType) => {
     let service
+    let message: string
     try {
       switch (dbType) {
         case 'server':
           service = new BetServerService(config as ServerConfig)
+          message = 'Connected to NodeServer'
           break
         case 'firebase':
           service = new BetFirebaseService(config as FirebaseConfig)
+          message = 'Connected to Firebase'
           break
         default:
           service = new BetLocalStorageService()
+          message = 'Using localStorage'
       }
       setBetDataProvider(service)
+      showNotification('Successfully connected!', message, 'success')
     } catch (e: unknown) {
-      ToastProvider.show((e as Error).message)
+      console.error(e)
+      if (e instanceof Error) {
+        showNotification(e.name, e.message, 'error')
+      }
     }
   }
 
