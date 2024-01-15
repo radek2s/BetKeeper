@@ -1,13 +1,22 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import DashboardCreateBetCard from './DashboardCreateBetCard'
 import DashboardStatisticsCard from './DashboardStatisticsCard'
+import { BetDataContext } from '../../providers/BetDataProvider'
+import BetEntry from '../../models/BetEntry'
+import BetItem from '../../components/BetItem'
 function DashboardView() {
   // TODO: Prepare logic component that will provide bets
+  const [bets, setBets] = React.useState<BetEntry[]>([])
+  const { getAllBets } = useContext(BetDataContext)
+
+  useEffect(() => {
+    getAllBets().then((res) => setBets(res))
+  }, [])
 
   return (
-    <div className="bet-dashboard">
-      <div className="bet-dashboard__main">
-        <div className="bet-dashboard__topbar">
+    <div className="bet-dashboard grid grid-cols-3 gap-4">
+      <div className="bet-dashboard__main col-span-2">
+        <div className="grid grid-cols-3 gap-2">
           <DashboardCreateBetCard
             onCreate={() => {
               console.log('')
@@ -39,7 +48,7 @@ function DashboardView() {
             </div>
           </DashboardStatisticsCard>
         </div>
-        <div className="bet-dashboard__content dashboard-card">
+        <div className="bet-dashboard__content dashboard-card flex flex-col gap-8">
           <div className="flex justify_between">
             <div>
               {/* TODO: Make a button component to use Icons and active state */}
@@ -51,7 +60,11 @@ function DashboardView() {
               <input placeholder="Search for bet" />
             </div>
           </div>
-          <div>Bet list</div>
+          <div className="flex flex-col gap-4">
+            {bets?.map((bet) => (
+              <BetItem key={bet.id} bet={bet} />
+            ))}
+          </div>
         </div>
       </div>
       <DashboardStatisticsCard title="Insight" className="bet-dashboard__sidebar">

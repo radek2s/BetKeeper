@@ -1,23 +1,8 @@
 .bet-dashboard {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-  align-items: stretch;
-
   &__main {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    // grid-column: 0 / span 2;
-  }
-
-  &__topbar {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  &__sidebar {
   }
 
   .dashboard-card {

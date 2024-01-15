@@ -1,5 +1,10 @@
 @import './views/dashboard/dashboard.scss';
 @import './root.scss';
+@import './components/betItem.scss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @font-face {
   font-family: 'Oswald';
