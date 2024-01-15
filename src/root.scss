@@ -1,0 +1,45 @@
+.root {
+  background-color: #fff;
+  display: flex;
+  height: 100dvh;
+
+  &__navigation {
+    width: 20vw;
+    padding: 58px 16px 0 32px;
+  }
+
+  &__outlet {
+    background-color: #e9e9e9;
+    border-radius: 64px 0 0 64px;
+    padding: 58px 48px;
+  }
+
+  .page-logo {
+    margin-bottom: 64px;
+    font-size: 52px;
+  }
+
+  .page-navigation {
+    li {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-family: 'Oswald';
+      font-size: 28px;
+      gap: 8px;
+
+      svg path {
+        fill: #111111;
+      }
+
+      &:hover,
+      .active {
+        color: #ffcb74;
+
+        svg path {
+          fill: #ffcb74;
+        }
+      }
+    }
+  }
+}

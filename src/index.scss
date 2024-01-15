@@ -1,0 +1,115 @@
+@import './views/dashboard/dashboard.scss';
+@import './root.scss';
+
+@font-face {
+  font-family: 'Oswald';
+  src: url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: 'Oswald';
+}
+
+.text-header {
+  font-family: 'Oswald';
+}
+
+button {
+  border: none;
+  border-radius: 16px;
+  background-color: #f6f6f6;
+  padding: 8px 36px;
+  font-weight: 600;
+}
+
+input {
+  outline: none;
+  border: none;
+  padding: 8px 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify {
+  &_center {
+    justify-content: center;
+  }
+
+  &_around {
+    justify-content: space-around;
+  }
+
+  &_between {
+    justify-content: space-between;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #dcdcdb;
+  font-size: 18px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:not(button:disabled):hover,
+.ms-Checkbox {
+  filter: brightness(0.9);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+.flex-space-between {
+  justify-content: space-between;
+}
+
+.settings-page .connection-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.settings-page .connection-status .label {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.settings-page .connection-status .type {
+  display: flex;
+  align-items: center;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+
+  li {
+    padding: 16px 4px;
+  }
+}

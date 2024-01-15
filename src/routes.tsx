@@ -4,6 +4,8 @@ import App from './App'
 import BetArchive from './views/BetArchiveList'
 import BetPage from './views/BetListPage'
 import SettingsPage from './views/Settings'
+import DashboardView from './views/dashboard/DashboardView'
+import BetKeeperRootView from './Root'
 
 const router = createHashRouter([
   {
@@ -25,6 +27,16 @@ const router = createHashRouter([
       {
         path: 'settings',
         element: <SettingsPage />,
+      },
+    ],
+  },
+  {
+    path: '/new',
+    element: <BetKeeperRootView />,
+    children: [
+      {
+        path: 'dashboard',
+        element: <DashboardView />,
       },
     ],
   },
