@@ -11,6 +11,9 @@
   src: url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
 }
 
+@import './layout/button/button';
+@import './layout/dialog/dialog';
+
 h1,
 h2,
 h3,
@@ -21,14 +24,6 @@ h4 {
 
 .text-header {
   font-family: 'Oswald';
-}
-
-button {
-  border: none;
-  border-radius: 16px;
-  background-color: #f6f6f6;
-  padding: 8px 36px;
-  font-weight: 600;
 }
 
 input {

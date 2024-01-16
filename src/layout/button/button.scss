@@ -1,0 +1,40 @@
+button {
+  border: none;
+  border-radius: 16px;
+  padding: 8px 18px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  font-size: 18px;
+
+  & svg {
+    height: 18px;
+    width: 18px;
+  }
+
+  &.none {
+    background-color: none;
+    color: #000;
+
+    &:hover {
+      color: #ffcb74;
+
+      svg path {
+        fill: #ffcb74;
+      }
+    }
+  }
+
+  &.default {
+    background-color: #f6f6f6;
+    color: #000;
+  }
+
+  &.primary {
+    background-color: #ffcb74;
+    color: #000;
+  }
+}

@@ -4,10 +4,22 @@ import DashboardStatisticsCard from './DashboardStatisticsCard'
 import { BetDataContext } from '../../providers/BetDataProvider'
 import BetEntry from '../../models/BetEntry'
 import BetItem from '../../components/BetItem'
+import Button from '../../layout/button/Button'
+import IconFire from '../../layout/icons/Fire'
+import IconMoon from '../../layout/icons/Moon'
+import IconSmoke from '../../layout/icons/Smoke'
+
+type TabState = 'pending' | 'resolved' | 'archived'
+
 function DashboardView() {
   // TODO: Prepare logic component that will provide bets
   const [bets, setBets] = React.useState<BetEntry[]>([])
+  const [activeTab, setActiveTab] = React.useState<TabState>('pending')
   const { getAllBets } = useContext(BetDataContext)
+
+  const isActiveTab = (tab: TabState) => {
+    return tab === activeTab ? 'primary' : 'none'
+  }
 
   useEffect(() => {
     getAllBets().then((res) => setBets(res))
@@ -50,11 +62,25 @@ function DashboardView() {
         </div>
         <div className="bet-dashboard__content dashboard-card flex flex-col gap-8">
           <div className="flex justify_between">
-            <div>
-              {/* TODO: Make a button component to use Icons and active state */}
-              <button>Pending</button>
-              <button>Resolved</button>
-              <button>Archived</button>
+            <div className="flex gap-1">
+              <Button
+                color={isActiveTab('pending')}
+                iconStart={<IconSmoke />}
+                onClick={() => setActiveTab('pending')}>
+                Pending
+              </Button>
+              <Button
+                color={isActiveTab('resolved')}
+                iconStart={<IconFire />}
+                onClick={() => setActiveTab('resolved')}>
+                Resolved
+              </Button>
+              <Button
+                color={isActiveTab('archived')}
+                iconStart={<IconMoon />}
+                onClick={() => setActiveTab('archived')}>
+                Archived
+              </Button>
             </div>
             <div>
               <input placeholder="Search for bet" />

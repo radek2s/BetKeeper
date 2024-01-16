@@ -6,6 +6,7 @@ import BetPage from './views/BetListPage'
 import SettingsPage from './views/Settings'
 import DashboardView from './views/dashboard/DashboardView'
 import BetKeeperRootView from './Root'
+import SettingsView from './views/settings/SettingsView'
 
 const router = createHashRouter([
   {
@@ -37,6 +38,10 @@ const router = createHashRouter([
       {
         path: 'dashboard',
         element: <DashboardView />,
+      },
+      {
+        path: 'settings',
+        element: <SettingsView />,
       },
     ],
   },

@@ -1,0 +1,22 @@
+.dialog {
+  &__backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5c5c5c1a;
+    backdrop-filter: blur(5px);
+  }
+
+  min-width: 300px;
+  min-height: 150px;
+  background-color: #f6f6f6;
+  padding: 32px 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
