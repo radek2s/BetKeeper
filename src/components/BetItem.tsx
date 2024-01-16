@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import BetEntry from '../models/BetEntry'
+import IconChevron from '../layout/icons/Chevron'
+import clsx from 'clsx'
+import Button from '../layout/button/Button'
 
 interface BetItemProps {
   bet: BetEntry
 }
 function BetItem({ bet }: BetItemProps) {
+  const [expanded, setExpanded] = useState<boolean>(false)
   return (
     <div className="bet-item flex flex-col p-3 px-4 rounded-xl shadow">
       <header className="text-sm flex items-center gap-1">
@@ -24,9 +28,25 @@ function BetItem({ bet }: BetItemProps) {
         {bet.description}
       </header>
       <section className="flex flex-col items-center gap-4 my-2">
-        <span>{bet.title}</span>
-        <button>Resolve</button>
+        <span className="text-center">{bet.title}</span>
       </section>
+      {expanded && (
+        <section className="bet-item__details flex flex-col gap-2">
+          <div className="bet-item__option">{bet.option1}</div>
+          <div className="bet-item__option">{bet.option2}</div>
+        </section>
+      )}
+
+      <div className="flex justify-center my-4">
+        <Button color="primary" className="w-2/3 flex justify-center">
+          Resolve
+        </Button>
+      </div>
+      <div
+        className={clsx(['bet-item__expand', expanded && 'open'])}
+        onClick={() => setExpanded((s) => !s)}>
+        <IconChevron />
+      </div>
     </div>
   )
 }

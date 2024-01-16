@@ -86,7 +86,7 @@ function DashboardView() {
               <input placeholder="Search for bet" />
             </div>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="bet-list">
             {bets?.map((bet) => (
               <BetItem key={bet.id} bet={bet} />
             ))}
