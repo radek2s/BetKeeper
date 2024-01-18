@@ -1,18 +1,27 @@
 import React, { ChangeEvent, useState } from 'react'
 import Settings from './type/SettingsFactory'
 import { DatabaseConfig, DatabaseType } from '../../models/DatabaseConnector'
-import { DatabaseContext } from '../../providers/DatabaseProvider'
+import { FirebaseConfig, useDataSourceContext } from '../../providers/DataSourceProvider'
 
 function SettingsView() {
-  const { database, setConnection } = React.useContext(DatabaseContext) //TODO: Improve useContext
-  const [type, setType] = useState<DatabaseType>(database.type)
-  //TODO: Handle service provider change
+  const { datasource, setDatasource } = useDataSourceContext()
+  const [type, setType] = useState<DatabaseType>(datasource.type)
+
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setType(e.target.value as DatabaseType)
   }
 
   const handleSave = (config: DatabaseConfig) => {
-    setConnection({ type, config })
+    switch (type) {
+      case 'local':
+        setDatasource({ type: 'local' })
+        break
+      case 'firebase':
+        setDatasource({ type: 'firebase', ...(config as FirebaseConfig) })
+        break
+      default:
+        console.error(`Type=${type} not recoginized`)
+    }
   }
 
   return (
@@ -26,7 +35,7 @@ function SettingsView() {
             <option value="firebase">Firebase</option>
           </select>
         </div>
-        <Settings type={type} save={handleSave} initialConfig={database.config} />
+        <Settings type={type} save={handleSave} initialConfig={datasource} />
       </div>
     </div>
   )

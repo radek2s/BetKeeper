@@ -1,3 +1,4 @@
+//TODO: File to be removed
 export type DatabaseType = 'local' | 'server' | 'firebase'
 
 export interface DatabaseConnector {

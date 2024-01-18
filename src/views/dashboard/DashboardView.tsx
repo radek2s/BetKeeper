@@ -8,6 +8,7 @@ import Button from '../../layout/button/Button'
 import IconFire from '../../layout/icons/Fire'
 import IconMoon from '../../layout/icons/Moon'
 import IconSmoke from '../../layout/icons/Smoke'
+import { useBetContext } from '../../providers/AbstractBetProvider'
 
 type TabState = 'pending' | 'resolved' | 'archived'
 
@@ -16,6 +17,7 @@ function DashboardView() {
   const [bets, setBets] = React.useState<BetEntry[]>([])
   const [activeTab, setActiveTab] = React.useState<TabState>('pending')
   const { getAllBets } = useContext(BetDataContext)
+  const { getAll } = useBetContext()
 
   const isActiveTab = (tab: TabState) => {
     return tab === activeTab ? 'primary' : 'none'
@@ -87,7 +89,7 @@ function DashboardView() {
             </div>
           </div>
           <div className="bet-list">
-            {bets?.map((bet) => (
+            {getAll()?.map((bet) => (
               <BetItem key={bet.id} bet={bet} />
             ))}
           </div>

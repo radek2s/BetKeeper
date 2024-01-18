@@ -4,6 +4,7 @@ import { SettingsProps } from '../settings.interface'
 import SettingsLocal from './SettingsLocal'
 import SettingsFirebase from './SettingsFirebase'
 
+//TODO: Correct settings properties to match new approach
 type SettingsFactoryProps = SettingsProps & { type: DatabaseType }
 
 function Settings({ type, save, initialConfig }: SettingsFactoryProps) {

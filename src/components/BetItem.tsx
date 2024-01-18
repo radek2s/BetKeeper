@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import BetEntry from '../models/BetEntry'
-import IconChevron from '../layout/icons/Chevron'
 import clsx from 'clsx'
+
+import IconChevron from '../layout/icons/Chevron'
 import Button from '../layout/button/Button'
 
+import { Bet } from '../models/Bet'
+
 interface BetItemProps {
-  bet: BetEntry
+  bet: Bet
 }
 function BetItem({ bet }: BetItemProps) {
   const [expanded, setExpanded] = useState<boolean>(false)
