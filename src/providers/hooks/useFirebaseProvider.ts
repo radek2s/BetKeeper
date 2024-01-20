@@ -2,7 +2,7 @@ import { useEffect, useReducer, useRef } from 'react'
 import { Firestore, collection, getDocs, getFirestore } from 'firebase/firestore/lite'
 import { initializeApp } from 'firebase/app'
 
-import { Bet } from '../../models/Bet'
+import { Bet, BetResolveType } from '../../models/Bet'
 import { mapFromRequestData } from '../../models/BetMapper'
 import { BetService } from '../BetService.interface'
 import { FirebaseConfig } from '../DataSourceProvider'
@@ -36,7 +36,7 @@ function useFirebaseProvider(datasource: FirebaseConfig | null): BetService {
     )
   }
 
-  const getBets = async () => {
+  async function getBets() {
     if (!firestoreRef.current) return
     const docs = await getDocs(collection(firestoreRef.current, BET_COLLECTION_NAME))
 
@@ -48,8 +48,23 @@ function useFirebaseProvider(datasource: FirebaseConfig | null): BetService {
     dispatch({ type: 'fetch', data })
   }
 
+  function handleAddBet(bet: Bet) {
+    dispatch({ type: 'add', bet })
+  }
+
+  function removeBet(betId: string | number) {
+    dispatch({ type: 'remove', betId })
+  }
+
+  function resolveBet(betId: string | number, resolve: BetResolveType) {
+    throw new Error('Method not implemented')
+  }
+
   return {
     getAll: () => bets,
+    add: handleAddBet,
+    remove: removeBet,
+    resolve: resolveBet,
   }
 }
 
