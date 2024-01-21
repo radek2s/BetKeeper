@@ -16,7 +16,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-extra-semi': ['off'],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'no-magic-numbers': ['warn', { ignore: [0, 1, 2], ignoreDefaultValues: true }],
+    'no-magic-numbers': ['off'],
   },
   settings: {
     react: {
