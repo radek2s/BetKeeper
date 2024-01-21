@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import IconAdd from '../../layout/icons/Add'
-import Button from '../../layout/button/Button'
-import Dialog from '../../layout/dialog/Dialog'
+import React from 'react'
+
 import CreateBetDialog from './CreateBetDialog'
-import { Bet } from '../../models/Bet'
-import useDialog from '../../layout/dialog/useDialog'
+import { Bet } from '../../../models/Bet'
+import useDialog from '../../../layout/dialog/useDialog'
+import IconAdd from '../../../layout/icons/Add'
 
 interface DashboardCreateBetCardProps {
   onCreate: (bet: Bet) => void

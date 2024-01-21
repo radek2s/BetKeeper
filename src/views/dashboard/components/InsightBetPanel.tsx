@@ -1,8 +1,8 @@
 import React from 'react'
-import DashboardStatisticsCard from './DashboardStatisticsCard'
-import { useBetContext } from '../../providers/AbstractBetProvider'
-import { filterResolvedBets } from './utils'
-import BetItem from '../../components/BetItem'
+import { useBetContext } from '../../../providers/AbstractBetProvider'
+import { filterResolvedBets } from '../utils'
+import DashboardStatisticsCard from '../layout/DashboardStatisticsCard'
+import BetItem from './BetItem'
 
 function InsightBetPanel() {
   const { getAll } = useBetContext()
@@ -18,7 +18,12 @@ function InsightBetPanel() {
           {oldest && (
             <>
               <h4>Oldest penging bet:</h4>
-              <BetItem bet={oldest} />
+              <BetItem
+                bet={oldest}
+                onResolve={() => {
+                  console.log()
+                }}
+              />
             </>
           )}
         </div>
@@ -26,7 +31,12 @@ function InsightBetPanel() {
           {latestResolved && (
             <>
               <h4>Latest resolved:</h4>
-              <BetItem bet={latestResolved} />
+              <BetItem
+                bet={latestResolved}
+                onResolve={() => {
+                  console.log()
+                }}
+              />
             </>
           )}
         </div>

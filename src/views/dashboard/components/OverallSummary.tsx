@@ -1,8 +1,7 @@
 import React from 'react'
-import { Bet } from '../../models/Bet'
-import { useBetContext } from '../../providers/AbstractBetProvider'
-import DashboardStatisticsCard from './DashboardStatisticsCard'
-import { filterPendingBets, filterResolvedBets } from './utils'
+import { useBetContext } from '../../../providers/AbstractBetProvider'
+import { filterPendingBets, filterResolvedBets } from '../utils'
+import DashboardStatisticsCard from '../layout/DashboardStatisticsCard'
 
 function OverallSummary() {
   //TODO: Pass BetList as property instead of betContext

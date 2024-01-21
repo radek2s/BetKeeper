@@ -1,6 +1,6 @@
-import { Bet } from '../../models/Bet'
+import { Bet, BetResolveType } from '../../models/Bet'
 
-type BetActions = BetActionFetch | BetActionAdd | BetActionRemove
+type BetActions = BetActionFetch | BetActionAdd | BetActionRemove | BetActionResolve
 
 type BetActionFetch = {
   type: 'fetch'
@@ -17,6 +17,12 @@ type BetActionRemove = {
   betId: string | number
 }
 
+type BetActionResolve = {
+  type: 'resolve'
+  betId: string | number
+  resolve: BetResolveType
+}
+
 //TODO: Add other methods 'add' | 'delete' etc.
 
 function betReducer(state: Bet[], action: BetActions) {
@@ -27,6 +33,12 @@ function betReducer(state: Bet[], action: BetActions) {
       return [...state, action.bet]
     case 'remove':
       return state.filter(({ id }) => id !== action.betId)
+    case 'resolve': {
+      const index = state.findIndex(({ id }) => id === action.betId)
+      if (index < 0) throw new Error(`Unable to find Bet with id:${action.betId}`)
+      state[index].betResolve = action.resolve
+      return [...state]
+    }
   }
 }
 

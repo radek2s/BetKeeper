@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import Button from '../../layout/button/Button'
-import IconFire from '../../layout/icons/Fire'
-import IconSmoke from '../../layout/icons/Smoke'
-import IconMoon from '../../layout/icons/Moon'
-import BetItem from '../../components/BetItem'
-import { useBetContext } from '../../providers/AbstractBetProvider'
-import { Bet } from '../../models/Bet'
+
 import {
   filterArchivedBets,
   filterPendingNotArchivedBets,
   filterResolvedNotArchivedBets,
-} from './utils'
+} from '../utils'
+import { useBetContext } from '../../../providers/AbstractBetProvider'
+import { Bet } from '../../../models/Bet'
+import Button from '../../../layout/button/Button'
+import IconSmoke from '../../../layout/icons/Smoke'
+import IconFire from '../../../layout/icons/Fire'
+import IconMoon from '../../../layout/icons/Moon'
+import BetItem from './BetItem'
 
 type TabState = 'pending' | 'resolved' | 'archived'
 
@@ -22,7 +23,7 @@ function BetPanel() {
     return tab === activeFilter ? 'primary' : 'none'
   }
 
-  const { getAll } = useBetContext()
+  const { getAll, resolve } = useBetContext()
 
   const getActiveFilter = () => {
     switch (activeFilter) {
@@ -76,7 +77,12 @@ function BetPanel() {
       </div>
       <div className="bet-list my-6">
         {getBets?.map((bet) => (
-          <BetItem key={bet.id} bet={bet} />
+          <BetItem
+            key={bet.id}
+            bet={bet}
+            onResolve={resolve}
+            readonly={activeFilter !== 'pending'}
+          />
         ))}
       </div>
     </div>

@@ -12,19 +12,19 @@ interface BetProviderProps {
   datasource: DataSource
 }
 export function BetProvider({ children, datasource }: BetProviderProps) {
-  const localStorageProvider = useLocalStorageProvider()
-  const firebaseProvider = useFirebaseProvider(
-    isFirebaseConfig(datasource) ? datasource : null
-  )
-
   switch (datasource.type) {
     case 'local':
       return (
-        <BetContext.Provider value={localStorageProvider}>{children}</BetContext.Provider>
+        <BetContext.Provider value={useLocalStorageProvider()}>
+          {children}
+        </BetContext.Provider>
       )
     case 'firebase':
       return (
-        <BetContext.Provider value={firebaseProvider}>{children}</BetContext.Provider>
+        <BetContext.Provider
+          value={useFirebaseProvider(isFirebaseConfig(datasource) ? datasource : null)}>
+          {children}
+        </BetContext.Provider>
       )
     default:
       throw new Error('Unrecoginized datasource')

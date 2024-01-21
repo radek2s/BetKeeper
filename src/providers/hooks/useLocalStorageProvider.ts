@@ -41,7 +41,7 @@ function useLocalStorageProvider(): BetService {
   }
 
   function resolveBet(betId: string | number, resolve: BetResolveType) {
-    throw new Error('Method not implemented')
+    dispatch({ type: 'resolve', betId, resolve })
   }
 
   return {

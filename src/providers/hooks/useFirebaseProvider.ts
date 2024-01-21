@@ -48,6 +48,7 @@ function useFirebaseProvider(datasource: FirebaseConfig | null): BetService {
     dispatch({ type: 'fetch', data })
   }
 
+  //TODO: Add handlers for saving and other operations
   function handleAddBet(bet: Bet) {
     dispatch({ type: 'add', bet })
   }

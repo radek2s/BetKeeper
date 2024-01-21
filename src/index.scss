@@ -1,6 +1,6 @@
 @import './views/dashboard/dashboard.scss';
+
 @import './root.scss';
-@import './components/betItem.scss';
 
 @tailwind base;
 @tailwind components;
@@ -34,6 +34,10 @@ textarea {
   padding: 8px 24px;
   background-color: #ffffff;
   border-radius: 8px;
+}
+
+select {
+  cursor: pointer;
 }
 
 .flex {

@@ -1,13 +1,16 @@
 import React, { useContext, useEffect } from 'react'
-import DashboardCreateBetCard from './DashboardCreateBetCard'
-import DashboardStatisticsCard from './DashboardStatisticsCard'
+
 import { BetDataContext } from '../../providers/BetDataProvider'
 import BetEntry from '../../models/BetEntry'
-import BetPanel from './BetPanel'
-import OverallSummary from './OverallSummary'
-import MonthlySummary from './MonthlySummary'
-import InsightBetPanel from './InsightBetPanel'
+
 import { useBetContext } from '../../providers/AbstractBetProvider'
+import {
+  BetPanel,
+  DashboardCreateBetCard,
+  InsightBetPanel,
+  MonthlySummary,
+  OverallSummary,
+} from './components'
 
 function DashboardView() {
   // TODO: Prepare logic component that will provide bets

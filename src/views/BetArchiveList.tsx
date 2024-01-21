@@ -1,3 +1,4 @@
+//TODO: To be removed
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useContext, useEffect, useState } from 'react'
 import BetElement from '../components/BetElement'
