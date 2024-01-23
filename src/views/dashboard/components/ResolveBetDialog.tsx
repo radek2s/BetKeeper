@@ -51,7 +51,10 @@ function ResolveBetDialog({ bet, visible, onResolved }: ResolveBetDialogProps) {
         </div>
         <div className="flex flex-col">
           <label>Choose winner:</label>
-          <select onChange={handleChange}>
+          <select onChange={handleChange} value={winner}>
+            <option value="pending" disabled>
+              -
+            </option>
             <option value="person1">Person 1</option>
             <option value="person2">Person 2</option>
             <option value="draw">Draw</option>

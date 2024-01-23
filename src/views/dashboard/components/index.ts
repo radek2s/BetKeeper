@@ -1,5 +1,5 @@
 export { default as BetPanel } from './BetPanel'
-export { default as CreateBetDialog } from './CreateBetDialog'
+export { default as ManageBetDialog } from './ManageBetDialog'
 export { default as DashboardCreateBetCard } from './DashboardCreateBetCard'
 export { default as InsightBetPanel } from './InsightBetPanel'
 export { default as MonthlySummary } from './MonthlySummary'

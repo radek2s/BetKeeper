@@ -19,6 +19,7 @@ function InsightBetPanel() {
             <>
               <h4>Oldest penging bet:</h4>
               <BetItem
+                readonly
                 bet={oldest}
                 onResolve={() => {
                   console.log()
@@ -32,6 +33,7 @@ function InsightBetPanel() {
             <>
               <h4>Latest resolved:</h4>
               <BetItem
+                readonly
                 bet={latestResolved}
                 onResolve={() => {
                   console.log()

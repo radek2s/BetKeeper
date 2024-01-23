@@ -68,3 +68,7 @@ To check the PWA application you must deploy that application on any HTTP server
 localhost you don't need to wory about SSL certificates. But for any other external server
 the SSL certificate must be valid and trusted and otherwise the application service worker
 will not start and the application will not work as PWA.
+
+### License
+
+Images from [unDraw](https://undraw.co/)

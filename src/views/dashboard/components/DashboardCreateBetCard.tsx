@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CreateBetDialog from './CreateBetDialog'
+import CreateBetDialog from './ManageBetDialog'
 import { Bet } from '../../../models/Bet'
 import useDialog from '../../../layout/dialog/useDialog'
 import IconAdd from '../../../layout/icons/Add'
