@@ -1,7 +1,4 @@
-import React, { useContext, useEffect } from 'react'
-
-import { BetDataContext } from '../../providers/BetDataProvider'
-import BetEntry from '../../models/BetEntry'
+import React from 'react'
 
 import { useBetContext } from '../../providers/AbstractBetProvider'
 import {
@@ -13,14 +10,7 @@ import {
 } from './components'
 
 function DashboardView() {
-  // TODO: Prepare logic component that will provide bets
-  const [bets, setBets] = React.useState<BetEntry[]>([])
-  const { getAllBets } = useContext(BetDataContext)
   const { add } = useBetContext()
-
-  useEffect(() => {
-    getAllBets().then((res) => setBets(res))
-  }, [])
 
   return (
     <div className="bet-dashboard grid grid-cols-3 gap-4">

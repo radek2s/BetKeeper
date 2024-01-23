@@ -29,13 +29,13 @@ function ManageBetDialog({
 
   function handelSave(): Bet {
     return {
-      id: '',
+      id: initialData?.id || '',
       title: titleRef.current?.value || '',
       description: descriptionRef.current?.value || '',
-      archived: false,
+      archived: initialData?.archived || false,
       option1: option1Ref.current?.value || '',
       option2: option2Ref.current?.value || '',
-      betResolve: 'pending',
+      betResolve: initialData?.betResolve || 'pending',
     }
   }
 
