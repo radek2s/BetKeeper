@@ -9,5 +9,7 @@ export interface BetService {
 
   resolve: (betId: string | number, resolve: BetResolveType) => void
 
-  //TODO: Add other options
+  update: (bet: Bet) => void
+
+  archive: (betId: string | number, archive: boolean) => void
 }

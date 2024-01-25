@@ -32,7 +32,7 @@ function BetPanel() {
     return tab === activeFilter ? 'primary' : 'none'
   }
 
-  const { getAll, resolve } = useBetContext()
+  const { getAll, resolve, remove, update, archive } = useBetContext()
 
   const getActiveFilter = () => {
     switch (activeFilter) {
@@ -59,8 +59,7 @@ function BetPanel() {
   const handleEditSave = (bet?: Bet) => {
     hide()
     setActiveBet(null)
-    //TODO: Update bet
-    console.log(bet)
+    if (bet) update(bet)
   }
 
   const handleDelete = (betId: string | number) => {
@@ -70,24 +69,24 @@ function BetPanel() {
 
   const handleOnDeleted = (result: boolean) => {
     hideConfirm()
-    if (result) {
-      //TODO: Delete
-      console.log('Delete', activeBetId)
-    }
+    if (result && activeBetId) remove(activeBetId)
     setActiveBetId(null)
   }
 
   const handleOnArchived = (betId: string | number) => {
-    //TODO: Archive bet
-    console.log(betId)
+    archive(betId, true)
   }
 
   const handleOnRestored = (betId: string | number) => {
-    //TODO: Restore bet
-    console.log(betId)
+    archive(betId, false)
   }
 
   const getBets = searchBets(getActiveFilter()(getAll()))
+
+  const isEmpty = getBets.length === 0
+
+  const imgSrc =
+    activeFilter === 'archived' ? 'undraw_dreamer.svg' : 'undraw_business_deal.svg'
 
   return (
     <div>
@@ -153,6 +152,15 @@ function BetPanel() {
           />
         ))}
       </div>
+      {isEmpty && (
+        <div className="flex flex-col items-center">
+          <img src={imgSrc} className="w-2/3" />
+          <div className="my-4">
+            <h4 className="text-center">List is empty</h4>
+            <p>Maybe it&apos;s about time to new bet?</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

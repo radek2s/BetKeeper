@@ -72,7 +72,7 @@ function BetItem({
               <ul>
                 {onEdit && <li onClick={() => onEdit(bet)}>Edit</li>}
                 {onArchive && <li onClick={() => onArchive(bet.id)}>Archive</li>}
-                {onRestore && <li onClick={() => onRestore(bet.id)}>Delete</li>}
+                {onRestore && <li onClick={() => onRestore(bet.id)}>Restore</li>}
                 {onDelete && <li onClick={() => onDelete(bet.id)}>Delete</li>}
               </ul>
             </div>

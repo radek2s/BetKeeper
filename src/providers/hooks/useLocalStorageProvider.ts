@@ -44,11 +44,21 @@ function useLocalStorageProvider(): BetService {
     dispatch({ type: 'resolve', betId, resolve })
   }
 
+  function updateBet(bet: Bet) {
+    dispatch({ type: 'update', bet })
+  }
+
+  function archiveBet(betId: string | number, archive: boolean) {
+    dispatch({ type: 'archive', betId, archive })
+  }
+
   return {
     getAll: () => bets,
     add: handleAddBet,
     remove: removeBet,
     resolve: resolveBet,
+    update: updateBet,
+    archive: archiveBet,
   }
 }
 

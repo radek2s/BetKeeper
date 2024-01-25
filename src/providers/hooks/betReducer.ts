@@ -1,6 +1,12 @@
 import { Bet, BetResolveType } from '../../models/Bet'
 
-type BetActions = BetActionFetch | BetActionAdd | BetActionRemove | BetActionResolve
+type BetActions =
+  | BetActionFetch
+  | BetActionAdd
+  | BetActionRemove
+  | BetActionResolve
+  | BetActionUpdate
+  | BetActionArchive
 
 type BetActionFetch = {
   type: 'fetch'
@@ -23,7 +29,16 @@ type BetActionResolve = {
   resolve: BetResolveType
 }
 
-//TODO: Add other methods 'add' | 'delete' etc.
+type BetActionUpdate = {
+  type: 'update'
+  bet: Bet
+}
+
+type BetActionArchive = {
+  type: 'archive'
+  betId: string | number
+  archive: boolean
+}
 
 function betReducer(state: Bet[], action: BetActions) {
   switch (action.type) {
@@ -37,6 +52,18 @@ function betReducer(state: Bet[], action: BetActions) {
       const index = state.findIndex(({ id }) => id === action.betId)
       if (index < 0) throw new Error(`Unable to find Bet with id:${action.betId}`)
       state[index].betResolve = action.resolve
+      return [...state]
+    }
+    case 'update': {
+      const index = state.findIndex(({ id }) => id === action.bet.id)
+      if (index < 0) throw new Error(`Unable to find Bet with id:${action.bet.id}`)
+      state[index] = action.bet
+      return [...state]
+    }
+    case 'archive': {
+      const index = state.findIndex(({ id }) => id === action.betId)
+      if (index < 0) throw new Error(`Unable to find Bet with id:${action.betId}`)
+      state[index].archived = action.archive
       return [...state]
     }
   }
