@@ -109,8 +109,8 @@ function BetPanel() {
         </div>
       </ConfirmationDialog>
 
-      <div className="flex justify_between">
-        <div className="flex gap-1">
+      <div className="bet-list__settings flex justify_between">
+        <div className="bet-list__tabs flex gap-1">
           <Button
             color={isActiveFilter('pending')}
             iconStart={<IconSmoke />}

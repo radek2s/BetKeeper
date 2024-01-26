@@ -18,7 +18,7 @@ function DashboardCreateBetCard({ onCreate }: DashboardCreateBetCardProps) {
 
   return (
     <div className="dashboard-card dashboard-action-card primary" onClick={show}>
-      <img src="/addBet.png" alt="Add bet graphic" />
+      <img src="/bet_competition.svg" alt="Add bet graphic" />
       <div className="dashboard-action-card__action">
         <IconAdd />
         Add new bet
