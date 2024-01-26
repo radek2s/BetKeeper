@@ -1,9 +1,18 @@
 import { useEffect, useReducer, useRef } from 'react'
-import { Firestore, collection, getDocs, getFirestore } from 'firebase/firestore/lite'
+import {
+  Firestore,
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  setDoc,
+} from 'firebase/firestore/lite'
 import { initializeApp } from 'firebase/app'
 
 import { Bet, BetResolveType } from '../../models/Bet'
-import { mapFromRequestData } from '../../models/BetMapper'
+import { mapFromRequestData, mapToRequestData } from '../../models/BetMapper'
 import { BetService } from '../BetService.interface'
 import { FirebaseConfig } from '../DataSourceProvider'
 import betReducer from './betReducer'
@@ -42,23 +51,52 @@ function useFirebaseProvider(datasource: FirebaseConfig | null): BetService {
 
     const data: Bet[] = []
     docs.forEach((doc) => {
-      data.push(mapFromRequestData(doc.data()))
+      data.push(mapFromRequestData({ ...doc.data(), id: doc.id }))
     })
 
     dispatch({ type: 'fetch', data })
   }
 
-  //TODO: Add handlers for saving and other operations
-  function handleAddBet(bet: Bet) {
+  async function handleAddBet(bet: Bet) {
+    if (!firestoreRef.current) return
+    const doc = await addDoc(collection(firestoreRef.current, BET_COLLECTION_NAME), bet)
+    bet.id = doc.id
+
     dispatch({ type: 'add', bet })
   }
 
-  function removeBet(betId: string | number) {
+  async function removeBet(betId: string | number) {
+    if (!firestoreRef.current) return
+    await deleteDoc(doc(firestoreRef.current, BET_COLLECTION_NAME, betId.toString()))
     dispatch({ type: 'remove', betId })
   }
 
-  function resolveBet(betId: string | number, resolve: BetResolveType) {
-    throw new Error('Method not implemented')
+  async function resolveBet(betId: string | number, resolve: BetResolveType) {
+    const bet: Bet | undefined = bets?.find(({ id }) => betId === id)
+    if (!bet) return
+    bet.betResolve = resolve
+    await updateBet(bet)
+  }
+
+  async function archiveBet(betId: string | number, archive: boolean) {
+    const bet: Bet | undefined = bets?.find(({ id }) => betId === id)
+    if (!bet) return
+    bet.archived = archive
+    await updateBet(bet)
+  }
+
+  async function updateBet(bet: Bet) {
+    if (!firestoreRef.current) return
+    try {
+      const betRef = doc(
+        collection(firestoreRef.current, BET_COLLECTION_NAME),
+        bet.id.toString()
+      )
+      await setDoc(betRef, mapToRequestData(bet))
+      dispatch({ type: 'update', bet })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return {
@@ -66,6 +104,8 @@ function useFirebaseProvider(datasource: FirebaseConfig | null): BetService {
     add: handleAddBet,
     remove: removeBet,
     resolve: resolveBet,
+    update: updateBet,
+    archive: archiveBet,
   }
 }
 
