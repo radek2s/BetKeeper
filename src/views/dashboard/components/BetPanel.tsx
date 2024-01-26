@@ -109,7 +109,15 @@ function BetPanel() {
         </div>
       </ConfirmationDialog>
 
-      <div className="bet-list__settings flex justify_between">
+      <div className="bet-list__settings flex flex-col gap-2 justify_between">
+        <div>
+          <input
+            className="w-full"
+            placeholder="Search for bet..."
+            value={search}
+            onChange={(v) => setSearch(v.target.value)}
+          />
+        </div>
         <div className="bet-list__tabs flex gap-1">
           <Button
             color={isActiveFilter('pending')}
@@ -129,13 +137,6 @@ function BetPanel() {
             onClick={() => setActiveFilter('archived')}>
             Archived
           </Button>
-        </div>
-        <div>
-          <input
-            placeholder="🔍 Search for bet"
-            value={search}
-            onChange={(v) => setSearch(v.target.value)}
-          />
         </div>
       </div>
       <div className="bet-list my-6">

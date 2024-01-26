@@ -16,7 +16,7 @@ function MonthlySummary() {
     <DashboardStatisticsCard title="Monthly summary" className="dark">
       <div className="statistics primary">
         <span className="statistics__value">+{newBets}</span>
-        <span className="statistics__label">new bets</span>
+        <span className="statistics__label">new&nbsp;bets</span>
       </div>
       <div className="statistics">
         <span className="statistics__value">{pending}</span>
