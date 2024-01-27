@@ -9,26 +9,11 @@ store.
 ## Tech stack:
 
 <div style="height:64px;display:flex;justify-content:space-around; align-items:center; margin:16px 0;">
-  <div>
-    <img src='./docs/logo_react.svg' alt="React"/>
-    <span>React
-  </div>
-  <div>
-    <img src='./docs/logo_vite.svg' alt="Vite"/>
-    Vite
-  </div>
-  <div>
-    <img src='./docs/logo_tailwind.svg' alt="Tailwind"/>
-    Tailwind
-  </div>
-  <div>
-    <img src='./docs/logo_firebase.svg' alt="Firebase"/>
-    Firebase
-  </div>
-  <div>
-    <img src='./docs/logo_pwa.svg' alt="Progressive Web Application"/>
-    PWA App
-  </div>
+    <img src='./docs/logo_react.svg' alt="React" height="48px"/>
+    <img src='./docs/logo_vite.svg' alt="Vite" height="48px"/>
+    <img src='./docs/logo_tailwind.svg' alt="Tailwind" height="48px"/>
+    <img src='./docs/logo_firebase.svg' alt="Firebase" height="48px"/>
+    <img src='./docs/logo_pwa.svg' alt="Progressive Web Application" height="48px"/>
 </div>
 
 ## Usage - Quick Start
@@ -39,24 +24,15 @@ open the running environment.
 ### Local environment
 
 - Clone repository
-  ```shell
+  ```
   git clone https://github.com/radek2s/BetKeeper.git
   ```
 - Install dependencies for frontend application
-  ```shell
+  ```
   npm i
   ```
-  <!-- - (🚧 Work in progress) Install dependencies for backend server
-    ```bash
-    cd ./backend
-    ```
-- Run server (from `backend` directory)
-  ````bash
-  npm run start
-  ``` -->
-  ````
 - Run application (from root directory)
-  ```shell
+  ```
   npm run start
   ```
 - Open browser on address [http://localhost:5173/](http://localhost:5173/)
