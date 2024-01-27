@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import Dialog from '../../../layout/dialog/Dialog'
 import Button from '../../../layout/button/Button'
-import { FirebaseConfig } from '../../../models/DatabaseConnector'
+import { FirebaseConfig } from '../settings.interface'
 
 interface FirebaseImportDialogProps {
   open: boolean

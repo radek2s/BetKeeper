@@ -1,14 +1,13 @@
 import React from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { ManageBetDialog } from '@/views/dashboard/components'
-import IconHome from '../icons/Home'
-import IconCog from '../icons/Cog'
-import NavigationItem from './NavigationItem'
-import IconAdd from '../icons/Add'
-import { useDialog } from '../dialog'
-import { useBetContext } from '@/providers/BetProvider'
 import { Bet } from '@/models/Bet'
+import { ManageBetDialog } from '@/views/dashboard/components'
+import { useBetContext } from '@/providers/BetProvider'
+import { IconAdd, IconCog, IconHome } from '../icons'
+import { useDialog } from '../dialog'
+
+import NavigationItem from './NavigationItem'
 
 function Navigation() {
   const { pathname } = useLocation()

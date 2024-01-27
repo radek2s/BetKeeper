@@ -1,7 +1,9 @@
 import React from 'react'
-import { useBetContext } from '../../../providers/BetProvider'
-import { filterPendingBets, filterResolvedBets } from '../utils'
-import DashboardStatisticsCard from '../layout/DashboardStatisticsCard'
+
+import { useBetContext } from '@/providers/BetProvider'
+
+import { filterPendingBets, filterResolvedBets } from '../../utils'
+import DashboardStatisticsCard from '../../layout/DashboardStatisticsCard'
 
 function MonthlySummary() {
   const { getAll } = useBetContext()

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { FirebaseConfig } from '../../../models/DatabaseConnector'
 import Button from '../../../layout/button/Button'
 
-import { SettingsProps } from '../settings.interface'
+import { FirebaseConfig, SettingsProps } from '../settings.interface'
 import FirebaseImportDialog from './FirebaseImportDialog'
 
 function SettingsFirebase({ initialConfig, save }: SettingsProps) {

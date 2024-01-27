@@ -3,7 +3,7 @@ import React from 'react'
 import { useBetContext } from '../../providers/BetProvider'
 import {
   BetPanel,
-  DashboardCreateBetCard,
+  DashboardCreateBetWidget,
   InsightBetPanel,
   MonthlySummary,
   OverallSummary,
@@ -16,7 +16,7 @@ function DashboardView() {
     <div className="grid grid-cols-3 gap-4 bet-dashboard">
       <div className="bet-dashboard__main col-span-2">
         <div className="bet-dashboard__panel grid grid-cols-3 gap-2">
-          <DashboardCreateBetCard onCreate={add} />
+          <DashboardCreateBetWidget onCreate={add} />
           <MonthlySummary />
           <OverallSummary />
         </div>

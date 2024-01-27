@@ -1,9 +1,10 @@
 import React from 'react'
 
-import CreateBetDialog from './ManageBetDialog'
-import { Bet } from '../../../models/Bet'
-import useDialog from '../../../layout/dialog/useDialog'
-import IconAdd from '../../../layout/icons/Add'
+import { Bet } from '@/models/Bet'
+import { useDialog } from '@/layout/dialog'
+import { IconAdd } from '@/layout/icons'
+
+import CreateBetDialog from '../ManageBetDialog'
 
 interface DashboardCreateBetCardProps {
   onCreate: (bet: Bet) => void

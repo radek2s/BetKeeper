@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useState } from 'react'
+
 import Settings from './type/SettingsFactory'
-import { DatabaseConfig, DatabaseType } from '../../models/DatabaseConnector'
 import { FirebaseConfig, useDataSourceContext } from '../../providers/DataSourceProvider'
+import { DatabaseConfig, DatabaseType } from './settings.interface'
 
 function SettingsView() {
   const { datasource, setDatasource } = useDataSourceContext()
@@ -29,8 +30,8 @@ function SettingsView() {
       <h1>Settings</h1>
       <div className="my-4">
         <div className="flex flex-col">
-          <label>Database connection</label>
-          <select onChange={handleChange} value={type}>
+          <label htmlFor="datasource-select">Database connection</label>
+          <select id="datasource-select" onChange={handleChange} value={type}>
             <option value="local">Local Storage</option>
             <option value="firebase">Firebase</option>
           </select>

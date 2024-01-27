@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react'
 import clsx from 'clsx'
 
-import ResolveBetDialog from './ResolveBetDialog'
-import { Bet, BetResolveType } from '../../../models/Bet'
-import { useDialog } from '../../../layout/dialog'
-import { Button } from '../../../layout/button'
-import IconChevron from '../../../layout/icons/Chevron'
-import IconMoreHoriziontal from '@/layout/icons/MoreHorizontal'
+import { Bet, BetResolveType } from '@/models/Bet'
+import { IconChevron, IconClock, IconMoreHorizontal } from '@/layout/icons'
+import { useDialog } from '@/layout/dialog'
+import { Button } from '@/layout/button'
+
+import ResolveBetDialog from '../ResolveBetDialog'
 
 interface BetItemProps {
   bet: Bet
@@ -17,6 +17,13 @@ interface BetItemProps {
   onDelete?: (betId: string | number) => void
   onResolve: (betId: string | number, resolve: BetResolveType) => void
 }
+/**
+ * Bet Item Component
+ *
+ * Responsible for rendering single Bet Instance details
+ * It is layout component that implements buttons
+ * but logic should be handled elswhere.
+ */
 function BetItem({
   bet,
   onResolve,
@@ -47,18 +54,7 @@ function BetItem({
       <ResolveBetDialog bet={bet} visible={visible} onResolved={handleResolve} />
       <header className="text-sm flex justify-between">
         <div className="flex items-center gap-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12.763"
-            height="12.763"
-            viewBox="0 0 12.763 12.763">
-            <path
-              id="time-fill"
-              d="M8.381,14.763a6.381,6.381,0,1,1,6.381-6.381A6.381,6.381,0,0,1,8.381,14.763Zm.638-6.381V5.191H7.743V9.658h3.829V8.381Z"
-              transform="translate(-2 -2)"
-              fill="#5d5d5d"
-            />
-          </svg>
+          <IconClock />
 
           {bet.description}
         </div>
@@ -66,7 +62,7 @@ function BetItem({
         {hideButton && (
           <div className="menu">
             <div className="menu-button">
-              <IconMoreHoriziontal />
+              <IconMoreHorizontal />
             </div>
             <div className="menu-content">
               <ul>
