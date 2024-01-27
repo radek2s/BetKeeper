@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useBetContext } from '../../providers/AbstractBetProvider'
+import { useBetContext } from '../../providers/BetProvider'
 import {
   BetPanel,
   DashboardCreateBetCard,

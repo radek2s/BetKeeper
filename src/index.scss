@@ -72,6 +72,17 @@ body {
   font-size: 18px;
 }
 
+.notification {
+  position: fixed;
+  bottom: 16px;
+  right: 0;
+
+  background-color: #ffffff;
+  padding: 16px 64px 16px 48px;
+  border-radius: 16px 0 0 16px;
+  box-shadow: 2px 4px 6px #00000038;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }

@@ -1,5 +1,7 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
-import { BetProvider } from './AbstractBetProvider'
+
+import { BetProvider } from './BetProvider'
+import { useNotification } from './NotificationProvider'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DataSourceConfig {}
@@ -32,11 +34,17 @@ export type DataSourceService = {
 const DataSourceContext = createContext<DataSourceService | null>(null)
 const DATASOURCE_KEY = 'bet-datasource'
 
+const datasourceString = {
+  local: 'Local Browser Memory',
+  firebase: 'Google Firebase Database',
+}
+
 interface DataSourceProviderProps {
   children: ReactNode
 }
 export function DataSourceProvider({ children }: DataSourceProviderProps) {
   const [datasource, setDatasource] = useState<DataSource>({ type: 'local' })
+  const { showNotification } = useNotification()
 
   useEffect(() => {
     loadDataSourceSettings()
@@ -45,6 +53,10 @@ export function DataSourceProvider({ children }: DataSourceProviderProps) {
   function handleDatasourceChange(datasource: DataSource) {
     setDatasource(datasource)
     saveDataSourceSettings(datasource)
+    showNotification(
+      'Changed datasource',
+      `Successfully changed to ${datasourceString[datasource.type]}`
+    )
   }
 
   function loadDataSourceSettings() {

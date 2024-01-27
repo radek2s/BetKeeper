@@ -7,7 +7,7 @@ import IconCog from '../icons/Cog'
 import NavigationItem from './NavigationItem'
 import IconAdd from '../icons/Add'
 import { useDialog } from '../dialog'
-import { useBetContext } from '@/providers/AbstractBetProvider'
+import { useBetContext } from '@/providers/BetProvider'
 import { Bet } from '@/models/Bet'
 
 function Navigation() {
@@ -24,7 +24,7 @@ function Navigation() {
     <div className="page-navigation__wrapper">
       <ul className="page-navigation">
         <li>
-          <NavigationItem link="/new/dashboard" pathname={pathname}>
+          <NavigationItem link="/dashboard" pathname={pathname}>
             <IconHome />
             <span className="nav-text">Dashboard</span>
           </NavigationItem>
@@ -35,7 +35,7 @@ function Navigation() {
           </div>
         </li>
         <li>
-          <NavigationItem link="/new/settings" pathname={pathname}>
+          <NavigationItem link="/settings" pathname={pathname}>
             <IconCog />
             <span className="nav-text">Settings</span>
           </NavigationItem>

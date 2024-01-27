@@ -5,7 +5,7 @@ import {
   filterPendingNotArchivedBets,
   filterResolvedNotArchivedBets,
 } from '../utils'
-import { useBetContext } from '../../../providers/AbstractBetProvider'
+import { useBetContext } from '../../../providers/BetProvider'
 import { Bet } from '../../../models/Bet'
 import Button from '../../../layout/button/Button'
 import IconSmoke from '../../../layout/icons/Smoke'

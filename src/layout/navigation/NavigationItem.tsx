@@ -11,7 +11,7 @@ function NavigationItem({ link, pathname, children }: NavigationItemProps) {
   return (
     <Link
       to={link}
-      className={clsx(['flex align-center gap-2', pathname === link && 'active'])}>
+      className={clsx(['flex items-center gap-2', pathname === link && 'active'])}>
       {children}
     </Link>
   )

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FirebaseConfig } from '../models/DatabaseConnector'
 import { PushNotificationService } from '../services/PushNotificationService'
-import { NotificationContext } from './NotificationProvider'
+import { useNotification } from './NotificationProvider'
 
 type NotificationMessage = {
   notification: {
@@ -27,7 +27,7 @@ interface Props {
 export const PushNotificationProvider: React.FC<Props> = ({ children }) => {
   const [, setPushService] = useState<PushNotificationService | null>(null)
   const [fcmToken, setFcmToken] = useState<string | null>(null)
-  const { showNotification } = useContext(NotificationContext)
+  const { showNotification } = useNotification()
 
   const setup = async (config?: FirebaseConfig) => {
     const configuration: FirebaseConfig = config || loadConfig()

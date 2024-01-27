@@ -1,5 +1,5 @@
 import React from 'react'
-import { useBetContext } from '../../../providers/AbstractBetProvider'
+import { useBetContext } from '../../../providers/BetProvider'
 import { filterResolvedBets } from '../utils'
 import DashboardStatisticsCard from '../layout/DashboardStatisticsCard'
 import BetItem from './BetItem'

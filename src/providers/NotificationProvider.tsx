@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { MessageBar, MessageBarType } from '@fluentui/react'
+import React, { useContext, useState } from 'react'
+import { MessageBarType } from '@fluentui/react'
 
 /**
  * Supported Notification message levels
@@ -20,11 +20,7 @@ export interface NotificationService {
   showNotification: (message: string, body?: string, level?: NotificationType) => void
 }
 
-export const NotificationContext = React.createContext<NotificationService>({
-  showNotification: () => {
-    throw Error('Context not initialized!')
-  },
-})
+const NotificationContext = React.createContext<NotificationService | null>(null)
 
 const NOTIFICATION_TIMEOUT = 3000
 interface Props {
@@ -69,13 +65,19 @@ export const NotificationProvider: React.FC<Props> = ({ children }) => {
     <NotificationContext.Provider value={{ showNotification }}>
       {notification && (
         <div className={`notification`}>
-          <MessageBar isMultiline messageBarType={notification.level}>
-            <h4>{notification.title}</h4>
-            <p>{notification.content}</p>
-          </MessageBar>
+          <h4>{notification.title}</h4>
+          <p>{notification.content}</p>
         </div>
       )}
       {children}
     </NotificationContext.Provider>
   )
+}
+
+export function useNotification() {
+  const context = useContext(NotificationContext)
+  if (context === null)
+    throw new Error('useNotifiaction must be within NotifiactionProvider')
+
+  return context
 }
