@@ -1,8 +1,9 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, renderHook, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Dialog from './Dialog'
 import { vi } from 'vitest'
+import useDialog from './useDialog'
 
 describe('Dialog Component Test', () => {
   it('Should be visible when open=true', () => {
@@ -45,5 +46,31 @@ describe('Dialog Component Test', () => {
     await userEvent.click(backdropEl)
 
     expect(onCloseMock).toBeCalledTimes(1)
+  })
+})
+
+describe('useDialog Test', () => {
+  it('Should change visible state', () => {
+    const { result } = renderHook(() => useDialog())
+
+    expect(result.current.visible).toBe(false)
+
+    act(() => {
+      result.current.show()
+    })
+
+    expect(result.current.visible).toBe(true)
+  })
+
+  it('Should hide change to visible false', () => {
+    const { result } = renderHook(() => useDialog(true))
+
+    expect(result.current.visible).toBe(true)
+
+    act(() => {
+      result.current.hide()
+    })
+
+    expect(result.current.visible).toBe(false)
   })
 })

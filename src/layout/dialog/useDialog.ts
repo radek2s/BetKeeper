@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-function useDialog() {
-  const [visible, setVisible] = useState<boolean>(false)
+function useDialog(initialValue: boolean = false) {
+  const [visible, setVisible] = useState<boolean>(initialValue)
 
   function hide() {
     setVisible(false)
