@@ -60,7 +60,7 @@ function SettingsFirebase({ initialConfig, save }: SettingsProps) {
   const appIdRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div>
+    <div data-testid="settings-firebase">
       <div className="my-4">
         <div className="flex justify-end">
           <FirebaseImportDialog open={isDialogVisible} onClose={handleImport} />

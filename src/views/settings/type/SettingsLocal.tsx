@@ -8,7 +8,7 @@ function SettingsLocal({ save }: SettingsProps) {
   }
 
   return (
-    <div className="my-4">
+    <div className="my-4" data-testid="settings-local">
       <Button onClick={handleSave}>Save</Button>
     </div>
   )

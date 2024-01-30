@@ -31,7 +31,7 @@ export type DataSourceService = {
   setDatasource: (datasource: DataSource) => void
 }
 
-const DataSourceContext = createContext<DataSourceService | null>(null)
+export const DataSourceContext = createContext<DataSourceService | null>(null)
 const DATASOURCE_KEY = 'bet-datasource'
 
 const datasourceString = {
