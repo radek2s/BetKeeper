@@ -40,6 +40,7 @@
   "scripts": {
     "start": "vite dev",
     "test": "vitest",
+    "test:ci": "vitest run",
     "test:coverage": "vitest run --coverage",
     "build": "CI=false && tsc && vite build",
     "preview": "vite preview",

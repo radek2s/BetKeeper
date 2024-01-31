@@ -11,7 +11,12 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['@testing-library/jest-dom', './test/testSetup.ts'],
     coverage: { provider: 'v8' },
+    reporters: ['verbose', 'junit'],
+    outputFile: {
+      junit: './test-report.xml',
+    },
   },
+
   resolve: {
     alias: [
       {
