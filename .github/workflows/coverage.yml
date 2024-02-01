@@ -14,8 +14,8 @@ jobs:
             node-version: 18.13
             cache: 'npm'
       - run: npm ci
+      - run: npm run test:ci:coverage
       - name: Test Report
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-            test-script: npm run test:ci:coverage
             coverage-file: report.json
