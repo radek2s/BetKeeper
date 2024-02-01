@@ -42,7 +42,6 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:ci:coverage": "vitest run --coverage --reporter=json --outputFile=report.json",
     "build": "CI=false && tsc && vite build",
     "preview": "vite preview",
     "format": "npx prettier --write .",

@@ -11,6 +11,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['@testing-library/jest-dom', './test/testSetup.ts'],
     coverage: {
+      reporter: ['text', 'cobertura', 'html'],
       provider: 'v8',
       exclude: [
         'build',
