@@ -45,7 +45,7 @@ function BetItem({
     if (resolve) onResolve(bet.id, resolve)
   }
 
-  const hideButton = useMemo(() => {
+  const actionButton = useMemo(() => {
     return onEdit || onArchive || onDelete || onRestore
   }, [onEdit, onArchive, onDelete, onRestore])
 
@@ -53,37 +53,55 @@ function BetItem({
     <div className="bet-item flex flex-col p-3 px-4 rounded-xl shadow">
       <ResolveBetDialog bet={bet} visible={visible} onResolved={handleResolve} />
       <header className="text-sm flex justify-between">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" role="contentinfo">
           <IconClock />
 
           {bet.description}
         </div>
 
-        {hideButton && (
+        {actionButton && (
           <div className="menu">
-            <div className="menu-button">
+            <div className="menu-button" role="button" aria-label="Bet Menu Button">
               <IconMoreHorizontal />
             </div>
-            <div className="menu-content">
+            <div className="menu-content" role="menu">
               <ul>
-                {onEdit && <li onClick={() => onEdit(bet)}>Edit</li>}
-                {onArchive && <li onClick={() => onArchive(bet.id)}>Archive</li>}
-                {onRestore && <li onClick={() => onRestore(bet.id)}>Restore</li>}
-                {onDelete && <li onClick={() => onDelete(bet.id)}>Delete</li>}
+                {onEdit && (
+                  <li role="menuitem" onClick={() => onEdit(bet)}>
+                    Edit
+                  </li>
+                )}
+                {onArchive && (
+                  <li role="menuitem" onClick={() => onArchive(bet.id)}>
+                    Archive
+                  </li>
+                )}
+                {onRestore && (
+                  <li role="menuitem" onClick={() => onRestore(bet.id)}>
+                    Restore
+                  </li>
+                )}
+                {onDelete && (
+                  <li role="menuitem" onClick={() => onDelete(bet.id)}>
+                    Delete
+                  </li>
+                )}
               </ul>
             </div>
           </div>
         )}
       </header>
       <section className="flex flex-col items-center gap-4 my-2">
-        <span className="text-center">{bet.title}</span>
+        <span role="heading" className="text-center">
+          {bet.title}
+        </span>
       </section>
       {expanded && (
         <section className="bet-item__details flex flex-col gap-2">
-          <div className={clsx(['bet-item__option', isActive('person1')])}>
+          <div className={clsx(['bet-item__option', isActive('person1')])} role="option">
             {bet.option1}
           </div>
-          <div className={clsx(['bet-item__option', isActive('person2')])}>
+          <div className={clsx(['bet-item__option', isActive('person2')])} role="option">
             {bet.option2}
           </div>
         </section>
@@ -98,6 +116,8 @@ function BetItem({
       )}
 
       <div
+        role="button"
+        aria-label="expand-button"
         className={clsx(['bet-item__expand', expanded && 'open'])}
         onClick={() => setExpanded((s) => !s)}>
         <IconChevron />

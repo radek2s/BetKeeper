@@ -18,7 +18,7 @@ function Dialog({ open, onClose, children, className }: DialogProps) {
   }
 
   return createPortal(
-    <div className="dialog__backdrop" onClick={handleClose}>
+    <div className="dialog__backdrop" onClick={handleClose} role="dialog">
       <div className={clsx(['dialog', className])}>{children}</div>
     </div>,
     document.body

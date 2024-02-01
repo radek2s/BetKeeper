@@ -10,8 +10,20 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['@testing-library/jest-dom', './test/testSetup.ts'],
-    coverage: { provider: 'v8' },
+    coverage: {
+      provider: 'v8',
+      exclude: [
+        'build',
+        'node_modules',
+        'backend',
+        '.eslintrc.js',
+        'firebase-messaging-sw.js',
+        'postcss.config.js',
+        'tailwind.config.js',
+      ],
+    },
     reporters: ['verbose', 'junit'],
+
     outputFile: {
       junit: './test-report.xml',
     },

@@ -223,7 +223,7 @@ describe('DataSource Provider Tests', () => {
     expect(changeDataSourceMock).toHaveBeenCalledTimes(2)
   })
 
-  it('Should load FirebaseStorageProvider when defined', () => {
+  it('Should load FirebaseStorageProvider when defined', async () => {
     window.localStorage.setItem(
       'bet-datasource',
       JSON.stringify({

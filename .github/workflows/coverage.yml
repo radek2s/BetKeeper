@@ -1,0 +1,22 @@
+name: 'Code Test coverage'
+on:
+  pull_request:
+    branches:
+        - main
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.13
+          cache: 'npm'
+      - run: npm ci
+      - name: Test Report
+        uses: ArtiomTr/jest-coverage-report-action@v2.2.6
+        with:
+          name: Jest Tests
+          test-script: npm run test:coverage
+          coverage-file: coverage.json
