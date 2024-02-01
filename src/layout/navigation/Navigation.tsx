@@ -21,19 +21,19 @@ function Navigation() {
   }
   return (
     <div className="page-navigation__wrapper">
-      <ul className="page-navigation">
-        <li>
+      <ul className="page-navigation" role="navigation">
+        <li role="listitem">
           <NavigationItem link="/dashboard" pathname={pathname}>
             <IconHome />
             <span className="nav-text">Dashboard</span>
           </NavigationItem>
         </li>
-        <li id="mobile-add" onClick={show}>
+        <li role="listitem" id="mobile-add" onClick={show}>
           <div className="icon-bg icon-bg__dark">
             <IconAdd />
           </div>
         </li>
-        <li>
+        <li role="listitem">
           <NavigationItem link="/settings" pathname={pathname}>
             <IconCog />
             <span className="nav-text">Settings</span>

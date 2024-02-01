@@ -41,7 +41,7 @@
     "start": "vite dev",
     "test": "vitest",
     "test:ci": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage --reporter junit --output-file ./test-report.xml",
     "build": "CI=false && tsc && vite build",
     "preview": "vite preview",
     "format": "npx prettier --write .",

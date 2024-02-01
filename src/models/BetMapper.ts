@@ -14,6 +14,7 @@ export function mapToRequestData(bet: Bet) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function mapFromRequestData(data: any): Bet {
   const betResolveMapper = new Map<number, BetResolveType>()
   betResolveMapper.set(0, 'person1')

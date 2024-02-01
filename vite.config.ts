@@ -21,13 +21,15 @@ export default defineConfig({
         'firebase-messaging-sw.js',
         'postcss.config.js',
         'tailwind.config.js',
+        '**/*.interface.ts',
+        'src/Root.tsx',
+        'src/index.tsx',
+        'src/routes.tsx',
+        'src/service-worker.ts',
+        'src/serviceWorkerRegistration.ts',
       ],
     },
-    reporters: ['verbose', 'junit'],
-
-    outputFile: {
-      junit: './test-report.xml',
-    },
+    reporters: ['verbose'],
   },
 
   resolve: {

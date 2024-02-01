@@ -15,7 +15,7 @@ interface BetItemProps {
   onArchive?: (betId: string | number) => void
   onRestore?: (betId: string | number) => void
   onDelete?: (betId: string | number) => void
-  onResolve: (betId: string | number, resolve: BetResolveType) => void
+  onResolve?: (betId: string | number, resolve: BetResolveType) => void
 }
 /**
  * Bet Item Component
@@ -42,7 +42,7 @@ function BetItem({
 
   function handleResolve(resolve: BetResolveType | undefined) {
     hide()
-    if (resolve) onResolve(bet.id, resolve)
+    if (resolve && onResolve) onResolve(bet.id, resolve)
   }
 
   const actionButton = useMemo(() => {

@@ -5,7 +5,7 @@ import useLocalStorageProvider from './hooks/useLocalStorageProvider'
 import useFirebaseProvider from './hooks/useFirebaseProvider'
 import { DataSource, isFirebaseConfig } from './DataSourceProvider'
 
-const BetContext = createContext<BetService | null>(null)
+export const BetContext = createContext<BetService | null>(null)
 
 interface BetProviderProps {
   children: ReactNode

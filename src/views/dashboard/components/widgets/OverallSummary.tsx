@@ -19,11 +19,11 @@ function OverallSummary() {
 
   return (
     <DashboardStatisticsCard title="Overall status" className="dark">
-      <div className="statistics primary">
+      <div className="statistics primary" role="note" aria-label="Pending overall">
         <span className="statistics__value">{pending}%</span>
         <span className="statistics__label">pending</span>
       </div>
-      <div className="statistics">
+      <div className="statistics" role="note" aria-label="Resolved overall">
         <span className="statistics__value">{resolved}%</span>
         <span className="statistics__label">resolved</span>
       </div>

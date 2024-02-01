@@ -112,6 +112,7 @@ function BetPanel() {
       <div className="bet-list__settings flex flex-col gap-2 justify_between">
         <div>
           <input
+            aria-label="Filter Bets"
             className="w-full"
             placeholder="Search for bet..."
             value={search}

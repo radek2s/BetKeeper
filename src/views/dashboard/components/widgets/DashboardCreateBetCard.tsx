@@ -18,7 +18,11 @@ function DashboardCreateBetCard({ onCreate }: DashboardCreateBetCardProps) {
   }
 
   return (
-    <div className="dashboard-card dashboard-action-card primary" onClick={show}>
+    <div
+      className="dashboard-card dashboard-action-card primary"
+      role="button"
+      aria-label="Create new bet card"
+      onClick={show}>
       <img src="/bet_competition.svg" alt="Add bet graphic" />
       <div className="dashboard-action-card__action">
         <IconAdd />

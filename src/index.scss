@@ -1,5 +1,6 @@
 @import './views/dashboard/dashboard.scss';
-
+@import './layout/button/button';
+@import './layout/dialog/dialog';
 @import './root.scss';
 
 @tailwind base;
@@ -10,9 +11,6 @@
   font-family: 'Oswald';
   src: url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
 }
-
-@import './layout/button/button';
-@import './layout/dialog/dialog';
 
 h1,
 h2,
@@ -96,11 +94,6 @@ button:not(button:disabled):hover,
   filter: brightness(0.9);
 }
 
-ul {
-  margin: 0;
-  padding: 0;
-}
-
 .flex-space-between {
   justify-content: space-between;
 }
@@ -122,6 +115,8 @@ ul {
 }
 
 ul {
+  margin: 0;
+  padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -165,7 +160,7 @@ ul {
 }
 
 .confirmation-dialog {
-  padding: 16px 16px;
+  padding: 16px;
 
   &__content {
     padding: 16px 64px;

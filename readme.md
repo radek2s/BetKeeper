@@ -2,6 +2,10 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/radek2s/BetKeeper?style=for-the-badge)
 
+[![codecov](https://codecov.io/gh/radek2s/BetKeeper/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
+
+[![CodeFactor](https://www.codefactor.io/repository/github/radek2s/betkeeper/badge)](https://www.codefactor.io/repository/github/radek2s/betkeeper)
+
 Progressive Web Application (PWA) build with React and Typescript to manage and display
 bets between two people. Store data in browser memory or connect to your own Firebase
 store.

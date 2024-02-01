@@ -18,13 +18,7 @@ function InsightBetPanel() {
           {oldest && (
             <>
               <h4>Oldest penging bet:</h4>
-              <BetItem
-                readonly
-                bet={oldest}
-                onResolve={() => {
-                  console.log()
-                }}
-              />
+              <BetItem readonly bet={oldest} />
             </>
           )}
         </div>
@@ -32,13 +26,7 @@ function InsightBetPanel() {
           {latestResolved && (
             <>
               <h4>Latest resolved:</h4>
-              <BetItem
-                readonly
-                bet={latestResolved}
-                onResolve={() => {
-                  console.log()
-                }}
-              />
+              <BetItem readonly bet={latestResolved} />
             </>
           )}
         </div>

@@ -16,15 +16,15 @@ function MonthlySummary() {
 
   return (
     <DashboardStatisticsCard title="Monthly summary" className="dark">
-      <div className="statistics primary">
+      <div className="statistics primary" role="note" aria-label="New Bets">
         <span className="statistics__value">+{newBets}</span>
         <span className="statistics__label">new&nbsp;bets</span>
       </div>
-      <div className="statistics">
+      <div className="statistics" role="note" aria-label="Pending">
         <span className="statistics__value">{pending}</span>
         <span className="statistics__label">pending</span>
       </div>
-      <div className="statistics">
+      <div className="statistics" role="note" aria-label="Resolved">
         <span className="statistics__value">{resolved}</span>
         <span className="statistics__label">resolved</span>
       </div>
