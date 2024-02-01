@@ -11,12 +11,11 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 18.13
-          cache: 'npm'
+            node-version: 18.13
+            cache: 'npm'
       - run: npm ci
       - name: Test Report
-        uses: ArtiomTr/jest-coverage-report-action@v2.2.6
+        uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          name: Jest Tests
-          test-script: npm run test:coverage
-          coverage-file: coverage.json
+            test-script: npm run test:ci:coverage
+            coverage-file: report.json
