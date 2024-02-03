@@ -23,7 +23,7 @@ function DashboardCreateBetCard({ onCreate }: DashboardCreateBetCardProps) {
       role="button"
       aria-label="Create new bet card"
       onClick={show}>
-      <img src="/bet_competition.svg" alt="Add bet graphic" />
+      <img src="bet_competition.svg" alt="Add bet graphic" />
       <div className="dashboard-action-card__action">
         <IconAdd />
         Add new bet
