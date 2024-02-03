@@ -42,7 +42,8 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:coverage": "vitest run --coverage --reporter junit --output-file ./test-report.xml",
-    "build": "CI=false && tsc && vite build",
+    "build": "tsc && vite build",
+    "build:ci": "CI=false && tsc && vite build",
     "preview": "vite preview",
     "format": "npx prettier --write .",
     "prepare": "husky install"

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
+import { FirebaseConfig } from '@/providers/DataSourceProvider'
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, Messaging, onMessage } from 'firebase/messaging'
-import { FirebaseConfig } from '../models/DatabaseConnector'
 
 export class PushNotificationService {
   private messaging?: Messaging

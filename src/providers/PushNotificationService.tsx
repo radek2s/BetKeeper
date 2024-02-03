@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useEffect, useState } from 'react'
-import { FirebaseConfig } from '../models/DatabaseConnector'
 import { PushNotificationService } from '../services/PushNotificationService'
 import { useNotification } from './NotificationProvider'
+import { FirebaseConfig } from '@/views/settings/settings.interface'
 
 type NotificationMessage = {
   notification: {
