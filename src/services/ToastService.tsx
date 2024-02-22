@@ -24,6 +24,8 @@ export const ToastContext = React.createContext<ToastService>({
   show: () => {},
 })
 
+const TOAST_DURATION_MS = 5000
+
 interface ToastProviderProps {
   children: React.ReactNode
 }
@@ -37,7 +39,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
     setMessage(message)
     setTimeout(() => {
       setVisibility(false)
-    }, 5000)
+    }, TOAST_DURATION_MS)
   }
   return (
     <>

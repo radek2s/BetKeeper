@@ -22,7 +22,7 @@ export interface NotificationService {
 
 const NotificationContext = React.createContext<NotificationService | null>(null)
 
-const NOTIFICATION_TIMEOUT = 3000
+const NOTIFICATION_TIMEOUT = 5000
 interface Props {
   children: React.ReactNode
 }
@@ -52,7 +52,7 @@ export const NotificationProvider: React.FC<Props> = ({ children }) => {
         messageBarType = MessageBarType.error
         break
       default:
-        throw Error('')
+        throw Error(`Unsupported error level '${level}'`)
     }
 
     setNotification({ title: message, content: body, level: messageBarType })

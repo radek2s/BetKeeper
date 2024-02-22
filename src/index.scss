@@ -1,3 +1,4 @@
+@import './theme.scss';
 @import './views/dashboard/dashboard.scss';
 @import './layout/button/button';
 @import './layout/dialog/dialog';
@@ -30,7 +31,7 @@ textarea {
   outline: none;
   border: none;
   padding: 8px 24px;
-  background-color: #ffffff;
+  background-color: $background-color-90;
   border-radius: 8px;
 }
 
@@ -66,7 +67,7 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #dcdcdb;
+  background-color: $background-color-30;
   font-size: 18px;
 }
 
@@ -75,7 +76,7 @@ body {
   bottom: 16px;
   right: 0;
 
-  background-color: #ffffff;
+  background-color: $background-color-90;
   padding: 16px 64px 16px 48px;
   border-radius: 16px 0 0 16px;
   box-shadow: 2px 4px 6px #00000038;
@@ -148,9 +149,9 @@ ul {
     }
 
     li:hover {
-      background-color: #111111;
+      background-color: $background-color-10;
       border-radius: 8px;
-      color: #ffcb74;
+      color: $primary-color-50;
     }
   }
 
