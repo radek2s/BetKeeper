@@ -1,0 +1,151 @@
+.root {
+  background-color: $background-color-90;
+  display: flex;
+  height: 100dvh;
+
+  &__navigation {
+    padding: 58px 16px 0 32px;
+    width: clamp(300px, 30vw, 400px);
+  }
+
+  &__outlet {
+    width: 100%;
+    background-color: $background-color-50;
+    border-radius: 64px 0 0 64px;
+    padding: 58px 48px;
+  }
+
+  .page-logo {
+    margin-bottom: 64px;
+    font-size: 52px;
+  }
+
+  .page-navigation {
+    li {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-family: 'Oswald';
+      font-size: 28px;
+      gap: 8px;
+
+      svg path {
+        fill: $text-color-40;
+      }
+
+      &:hover,
+      .active {
+        color: $primary-color-50;
+
+        svg path {
+          fill: $primary-color-50;
+        }
+      }
+    }
+  }
+}
+
+#mobile-add {
+  display: none;
+}
+
+@media screen and (max-width: 640px) {
+  .root {
+    flex-direction: column-reverse;
+    background-color: $background-color-50;
+
+    &__navigation {
+      padding: 0;
+      max-height: 64px;
+      width: calc(100% - 16px);
+      margin: 8px;
+      position: fixed;
+      background-color: $background-color-90;
+      border-radius: 32px;
+
+      .page-logo {
+        position: fixed;
+        top: 0;
+        font-size: 24px;
+        left: 0;
+        text-align: center;
+        width: 100%;
+        background-color: $text-color-30;
+        color: $background-color-50;
+        padding: 8px;
+        border-radius: 0 0 32px 32px;
+      }
+
+      .page-navigation {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
+
+        li {
+          padding: 8px;
+        }
+
+        &__wrapper {
+          position: relative;
+          z-index: 10000;
+        }
+
+        .nav-text {
+          display: none;
+        }
+      }
+
+      #mobile-add {
+        display: block;
+      }
+
+      .icon-bg {
+        padding: 8px;
+        border-radius: 99px;
+      }
+
+      .icon-bg__dark {
+        background-color: $primary-color-50;
+
+        svg path {
+          fill: $text-color-30;
+        }
+      }
+    }
+
+    &__outlet {
+      height: 100%;
+      padding: 72px 12px;
+      border-radius: 0px;
+      overflow-y: auto;
+    }
+  }
+
+  .bet-dashboard.grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bet-dashboard__panel.grid {
+    display: none;
+  }
+
+  .bet-list__settings,
+  .bet-list__tabs {
+    flex-direction: column;
+  }
+
+  .bet-dashboard .bet-list {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog__backdrop {
+    z-index: 1000;
+
+    .dialog {
+      width: 100%;
+      padding: 24px 8px;
+      margin: 0 16px;
+    }
+  }
+}

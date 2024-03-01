@@ -1,0 +1,41 @@
+.root button,
+.dialog button {
+  border: none;
+  border-radius: 16px;
+  padding: 8px 18px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  font-size: 18px;
+
+  & svg {
+    height: 18px;
+    width: 18px;
+  }
+
+  &.none {
+    background-color: none;
+    color: $text-color;
+
+    &:hover {
+      color: $primary-color-50;
+
+      svg path {
+        fill: $primary-color-50;
+      }
+    }
+  }
+
+  &.default {
+    background-color: $background-color-50;
+    color: $text-color;
+  }
+
+  &.primary {
+    background-color: $primary-color-50;
+    color: $text-color;
+  }
+}

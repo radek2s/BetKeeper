@@ -1,30 +1,26 @@
 import React from 'react'
 import { createHashRouter, Navigate } from 'react-router-dom'
-import App from './App'
-import BetArchive from './views/BetArchiveList'
-import BetPage from './views/BetListPage'
-import SettingsPage from './views/Settings'
+
+import BetKeeperRootView from './Root'
+import DashboardView from './views/dashboard/DashboardView'
+import SettingsView from './views/settings/SettingsView'
 
 const router = createHashRouter([
   {
     path: '/',
-    element: <Navigate to="list"></Navigate>,
+    element: <Navigate to="dashboard"></Navigate>,
   },
   {
     path: '/',
-    element: <App />,
+    element: <BetKeeperRootView />,
     children: [
       {
-        path: 'list',
-        element: <BetPage />,
-      },
-      {
-        path: 'archive',
-        element: <BetArchive />,
+        path: 'dashboard',
+        element: <DashboardView />,
       },
       {
         path: 'settings',
-        element: <SettingsPage />,
+        element: <SettingsView />,
       },
     ],
   },

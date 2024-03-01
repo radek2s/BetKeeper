@@ -1,0 +1,59 @@
+.bet-item {
+  background-color: #fff;
+  font-weight: 500;
+
+  &__expand {
+    cursor: pointer;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min-content;
+    border-radius: 99px;
+    padding: 4px;
+    bottom: -24px;
+    background-color: #efefef;
+
+    svg {
+      transition: transform 0.125s ease-in-out;
+
+      path {
+        fill: #111;
+      }
+    }
+
+    &.open {
+      svg {
+        transform: rotate(180deg);
+        transition: transform 0.125s ease-in-out;
+      }
+    }
+  }
+
+  &__option {
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    background-color: #f6f6f6;
+
+    &.active {
+      background-color: #ffcb74;
+    }
+  }
+}
+
+.bet-resolve-dialog,
+.bet-create-dialog {
+  width: clamp(300px, 50vw, 600px);
+
+  .option-item {
+    background-color: #fff;
+    border-radius: 8px;
+    min-height: 64px;
+    font-weight: 500;
+
+    &.selected {
+      border: 2px solid #ffcb74;
+    }
+  }
+}

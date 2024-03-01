@@ -1,0 +1,89 @@
+@import './components/BetItem/index';
+
+.bet-dashboard {
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .dashboard-card {
+    padding: 18px 24px;
+    background-color: #f6f6f6;
+    border-radius: 32px;
+
+    &.dark {
+      background-color: #2f2f2f;
+      color: #f6f6f6;
+    }
+
+    &.primary {
+      background-color: #ffcb74;
+      color: #111111;
+    }
+  }
+
+  .dashboard-statistics-card {
+    &__title {
+      margin-bottom: 8px;
+    }
+
+    &__content {
+      display: flex;
+      justify-content: space-evenly;
+      gap: 8px;
+    }
+  }
+
+  .dashboard-action-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+
+    &__action {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Oswald';
+      font-weight: bold;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.125s;
+    }
+  }
+
+  .statistics {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 24px 0 32px;
+    font-family: 'Oswald';
+
+    &.primary {
+      color: #ffcb74;
+    }
+
+    &__value {
+      font-size: 32px;
+      font-weight: bold;
+      line-height: 32px;
+    }
+  }
+
+  .bet-list {
+    display: grid;
+    padding: 1.6rem 0;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    gap: 16px;
+    max-height: 55dvh;
+  }
+}

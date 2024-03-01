@@ -1,0 +1,169 @@
+@import './theme.scss';
+@import './views/dashboard/dashboard.scss';
+@import './layout/button/button';
+@import './layout/dialog/dialog';
+@import './root.scss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Oswald';
+  src: url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: 'Oswald';
+}
+
+.text-header {
+  font-family: 'Oswald';
+}
+
+input,
+select,
+textarea {
+  outline: none;
+  border: none;
+  padding: 8px 24px;
+  background-color: $background-color-90;
+  border-radius: 8px;
+}
+
+select {
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify {
+  &_center {
+    justify-content: center;
+  }
+
+  &_around {
+    justify-content: space-around;
+  }
+
+  &_between {
+    justify-content: space-between;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: $background-color-30;
+  font-size: 18px;
+}
+
+.notification {
+  position: fixed;
+  bottom: 16px;
+  right: 0;
+
+  background-color: $background-color-90;
+  padding: 16px 64px 16px 48px;
+  border-radius: 16px 0 0 16px;
+  box-shadow: 2px 4px 6px #00000038;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:not(button:disabled):hover,
+.ms-Checkbox {
+  filter: brightness(0.9);
+}
+
+.flex-space-between {
+  justify-content: space-between;
+}
+
+.settings-page .connection-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.settings-page .connection-status .label {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.settings-page .connection-status .type {
+  display: flex;
+  align-items: center;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+
+  li {
+    padding: 16px 4px;
+  }
+}
+
+.menu {
+  position: relative;
+
+  &-button {
+    cursor: pointer;
+  }
+
+  &-content {
+    display: none;
+    position: absolute;
+    right: -4px;
+    background-color: #ffffff;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 8px;
+
+    li {
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+
+    li:hover {
+      background-color: $background-color-10;
+      border-radius: 8px;
+      color: $primary-color-50;
+    }
+  }
+
+  &:hover .menu-content {
+    display: block;
+  }
+}
+
+.confirmation-dialog {
+  padding: 16px;
+
+  &__content {
+    padding: 16px 64px;
+  }
+}

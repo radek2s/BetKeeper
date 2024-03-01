@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+report.json
 
 # production
 /build
@@ -25,3 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 
 junit.xml
+test-report.xml
