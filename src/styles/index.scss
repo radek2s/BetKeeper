@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+}
+
+.bet-keeper-theme {
+  .login-wrapper {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2f2f2f;
+
+    & > div {
+      margin-bottom: 15vh;
+    }
+  }
+
+  .cb-container {
+    background-color: #f6f6f6;
+    font-family: 'Roboto';
+
+    .cb-header,
+    .cb-subheader {
+      font-family: 'Oswald';
+    }
+
+    .cb-link-primary,
+    .cb-link-secondary {
+      color: #ffcb74;
+      -webkit-text-fill-color: #ffcb74;
+    }
+
+    .cb-form-input label {
+      color: #111;
+    }
+
+    .cb-button-primary {
+      font-family: 'Oswald';
+      background-color: #ffcb74;
+      color: #111;
+    }
+  }
+}
+
+// .your-custom-theme {
+//     .cb-container {
+//       background-color: var(--color-white);
+//       color: var(--color-black);
+//       border-color: var(--color-dark-brown);
+//     }
+
+//     .cb-header,
+//     .cb-subheader,
+//     .cb-body {
+//       font-family: var(--font-eloquent);
+//       color: var(--color-black);
+//     }
+
+//     .cb-link-primary {
+//       color: var(--color-light-brown);
+//     }
+
+//     .cb-link-secondary {
+//       color: var(--color-dark-brown);
+//     }
+//   }

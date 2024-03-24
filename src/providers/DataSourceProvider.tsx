@@ -1,3 +1,4 @@
+'use client'
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 
 import { BetProvider } from './BetProvider'

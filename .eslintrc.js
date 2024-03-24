@@ -17,6 +17,7 @@ module.exports = {
     '@typescript-eslint/no-extra-semi': ['off'],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-magic-numbers': ['off'],
+    'react/react-in-jsx-scope': ['off']
   },
   settings: {
     react: {

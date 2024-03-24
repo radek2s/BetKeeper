@@ -25,7 +25,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
       "@/*": [
@@ -34,12 +34,19 @@
       "@test/*": [
         "test/*"
       ]
-    }
+    },
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "src",
     "test",
-    "messaging_on_background_message.js"
+    "messaging_on_background_message.js",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

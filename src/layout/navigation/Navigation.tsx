@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { useLocation } from 'react-router-dom'
 
@@ -10,7 +11,7 @@ import { useDialog } from '../dialog'
 import NavigationItem from './NavigationItem'
 
 function Navigation() {
-  const { pathname } = useLocation()
+  // const { pathname } = useLocation()
 
   const { visible, show, hide } = useDialog()
   const { add } = useBetContext()
@@ -23,7 +24,7 @@ function Navigation() {
     <div className="page-navigation__wrapper">
       <ul className="page-navigation" role="navigation">
         <li role="listitem">
-          <NavigationItem link="/dashboard" pathname={pathname}>
+          <NavigationItem link="/dashboard" pathname={'/dashboard'}>
             <IconHome />
             <span className="nav-text">Dashboard</span>
           </NavigationItem>
@@ -34,7 +35,7 @@ function Navigation() {
           </div>
         </li>
         <li role="listitem">
-          <NavigationItem link="/settings" pathname={pathname}>
+          <NavigationItem link="/settings" pathname={''}>
             <IconCog />
             <span className="nav-text">Settings</span>
           </NavigationItem>
