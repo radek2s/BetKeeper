@@ -8,24 +8,13 @@ import {
   MonthlySummary,
   OverallSummary,
 } from './components'
-import { useCorbado, useCorbadoSession } from '@corbado/react'
-import { Button } from '@/layout/button'
 
 function DashboardView() {
   const { add } = useBetContext()
-  const { user } = useCorbadoSession()
-  const { logout } = useCorbado()
-
-  const getUsers = async () => {}
 
   return (
     <div className="grid grid-cols-3 gap-4 bet-dashboard">
       <div className="bet-dashboard__main col-span-2">
-        <div>
-          Hello! {user.sub}: {user.email}
-          <Button onClick={getUsers}>Get users</Button>
-          <Button onClick={logout}>Logout</Button>
-        </div>
         <div className="bet-dashboard__panel grid grid-cols-3 gap-2">
           <DashboardCreateBetWidget onCreate={add} />
           <MonthlySummary />
