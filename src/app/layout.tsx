@@ -1,9 +1,9 @@
-import ProviderWrapper from './utils/provider'
-import '../index.scss'
-import AuthGuard from '@/components/AuthGuard'
-import { NotificationProvider } from '@/providers/NotificationProvider'
-import { DataSourceProvider } from '@/providers/DataSourceProvider'
-import Navigation from '@/layout/navigation/Navigation'
+// import ProviderWrapper from './utils/provider'
+// import '../index.scss'
+// import AuthGuard from '@/components/AuthGuard'
+// import { NotificationProvider } from '@/providers/NotificationProvider'
+// import { DataSourceProvider } from '@/providers/DataSourceProvider'
+// import Navigation from '@/layout/navigation/Navigation'
 
 export const metadata = {
   title: 'Bet Keeper',
@@ -13,7 +13,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <ProviderWrapper>
+      <body>
+        {children}
+      </body>
+      {/* <ProviderWrapper>
         <body className="bet-keeper-theme">
           <NotificationProvider>
             <DataSourceProvider>
@@ -29,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </DataSourceProvider>
           </NotificationProvider>
         </body>
-      </ProviderWrapper>
+      </ProviderWrapper> */}
     </html>
   )
 }
