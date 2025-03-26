@@ -5,6 +5,9 @@
 // import { DataSourceProvider } from '@/providers/DataSourceProvider'
 // import Navigation from '@/layout/navigation/Navigation'
 
+import AuthGuard from "@/components/AuthGuard"
+import AuthProvider from "@/components/AuthProvider"
+
 export const metadata = {
   title: 'Bet Keeper',
   description: 'Simple application to store your bets',
@@ -14,7 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {children}
+        <AuthProvider>
+          <AuthGuard>
+            {children}
+          </AuthGuard>
+        </AuthProvider>
       </body>
       {/* <ProviderWrapper>
         <body className="bet-keeper-theme">
