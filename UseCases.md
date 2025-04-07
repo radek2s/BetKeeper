@@ -58,28 +58,43 @@ In the future from collected data platfrom will be able to show statistics relat
 
 ## Use cases
 
+### Friend context
+
+As USER nefore I will be able to create new Bet I must have at least one friend in my "friend list". I should be able to see my friend list and add a new person by email. If that person is not a user of this application I should see the possibility to request access for this person that will be send to application ADMINISTRATOR. When administrator approve this request a new account will be created and new user will receive a note that he has been invite to use BetKeeper with pending friend request.
+
+
+```mermaid
+---
+title Friend List Use Cases
+---
+flowchart TB
+    
+    USER["User"] --> SHOW_FREINDS(["Show friend list"])
+    USER -- by username (email) --> FRIEND_INVITE(["Add to friend list"])
+    FRIEND_INVITE -- when user does not exists --> REQUEST_INVITE
+    USER -- when pending friend request --> APROVE_FRIEND_INVITE(["Approve freiend request"])
+    USER -- for email --> REQUEST_INVITE(["Request user invitation"])
+
+    FRIEND_INVITE -.- FREIND_INVITE_REQUEST[/"Friend request"/] -.- APROVE_FRIEND_INVITE
+    ADMINISTRATOR["Administrator"] -- when pending invitation request --> APROVE_INVITE(["Approve user invitation request"])
+    REQUEST_INVITE -.- INVITATION_REQUEST[/"Invitation request"/] -.- APROVE_INVITE
+```
+
+### Bet context
+Then when User have at least one friend he is able to create new bet. When bet is created he must be able to modify the bet content. As CREATOR he should be able to delete given bet. Any BET PARTICIPANT should be able to reject or resolve given bet. Resolve means that person who lose must realize the "stake". When it will be done bet participant should mark bet as completed. Completed and Rejected bets should not be visible on user bets in progress list. Both are treated as FINISHED so there is no more further actions possible. Those items should be move to separate view that presents only Finished bets.
+
 ```mermaid
 ---
 title: Bet Use Cases
 ---
 flowchart TB
-    USER(["User"]) ---> BET_VIEW(["Show participated bets"]) 
+    USER["User"] ---> BET_VIEW(["Show participated bets"]) 
     BET_VIEW ---> BET_VIEW_PENDING(["Show in progress bets"]) & BET_VIEW_RESOLVED(["Show finished bets"])
     USER -- must assign 'friend' ---> BET_CREATE(["Create bet"])
 
     BET_CREATE --> BET_UPDATE(["Update"])
     BET_CREATE --> BET_REJECT(["Reject"])
-    BET_CREATE --> BET_DELETE(["Delete"])
+    BET_CREATE -- only creator --> BET_DELETE(["Delete"])
     BET_CREATE --> BET_RESOLVE(["Resolve"])
     BET_RESOLVE --> BET_COMPLETE(["Complete"])
-
-    USER ---> FREIND_INVITE(["Invite friend to friend list"])
-    
-
-    USER@{ icon: "fa:user", pos: "b", h: 80}
 ```
-
-When bet is "resolved" then it must be done by looser. When stake is done it is "completed". 
-
-Finished is a state for bets that are Completed or Rejected.
-
