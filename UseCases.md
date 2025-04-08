@@ -12,6 +12,8 @@ In the future from collected data platfrom will be able to show statistics relat
 
 # Planning
 
+Application is intended to use by narrow group of users but it might grow up to 50 registered user accounts. This project is mostly focused to present on development process from the idea, through design phase then with organized development to application deploy and publish. Main goal is to share expirience how to conduct software project.
+
 ## Requirements
 
 <span style="color: #E11E39">Bussines requirements</span> - without this functionalites application will not achieve the project goal. 
@@ -98,3 +100,16 @@ flowchart TB
     BET_CREATE --> BET_RESOLVE(["Resolve"])
     BET_RESOLVE --> BET_COMPLETE(["Complete"])
 ```
+
+## Risk storming
+
+Bet Keeper is a simple Web Application that persist user data. Even such software has potential risks that should be taken into consideration:
+
+1. **Legal disputes** - misuse of this platform for gambling-like activities might leat to regulatory compliance issues in cerain regions.
+2. **Security Concerns** - Application store user data such as email, stakes and other private information. Database where data will be stored should be resilient for unauthorized access. 
+3. **Scalability Challenges** - Expected user trafic is minimal but application architecture should allow further possibility of scaling.
+4. **Unwanted traffic** - Hosted application might be a target of hacker attacks for example DoS or potential Resource Exhaustion Attack.
+5. **Confidential Keys leakage** - This project repository is hosted on public and open platform such as GitHub and anyone will be able to browse project files so database connection keys and project identifiers must be keep in secure places.
+6. **Administrator Approval Delays** - slow processing of user invitations could deter new users from joining the platform.
+7. **Ambiguity in Bet Resolution** - when users does not define clear terms for their bets they might face disputes and complain about difficult bet resolution process.
+8. **Notification system failure** - not working push notification lead to user dissatisfaction.
