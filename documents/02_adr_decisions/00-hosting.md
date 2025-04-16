@@ -35,3 +35,6 @@ Microsoft also offer a similar solutions but has Azure App Servie that offer clo
 
 From all hosting services the easiest to maintain and the completly safe regarding to availablitiy and pricng is **Vercel**.
 
+
+[Back to top](./readme.md)  
+[Next](./01-storage.md)

@@ -36,3 +36,6 @@ It has unlimited API request with 50,000 MAU (Monthly Active Users) and up to 0.
 There is a lot of great storage solutions but this project will be realised with **Supabase** because it is a trendy solution for private projects and it will be nice to learn its advantages and disadvantages. It is free and has many free usage credits that with this project will not be consumed. When database will be paused there will be another layer of protection against unwanted traffic and DoS attact. But after a long break of user activity there will be a need to turn on the database instance.
 
 
+[Back to top](./readme.md)  
+[Previous](./00-hosting.md)  
+[Next](./02-authentication.md)

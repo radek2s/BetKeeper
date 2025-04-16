@@ -10,6 +10,15 @@ Progressive Web Application (PWA) build with React and Typescript to manage and 
 bets between two people. Store data in browser memory or connect to your own Firebase
 store.
 
+## Project documentation
+
+All related documents are stored in "doc" directory within this project. Git is used to versionning of the files and keeping the audit logs with established decisions.
+
+[Requirements](./documents/01_requirements/00-requirements.md)
+
+
+
+
 ## Tech stack:
 
 <div style="height:64px;display:flex;justify-content:space-around; align-items:center; margin:16px 0;">

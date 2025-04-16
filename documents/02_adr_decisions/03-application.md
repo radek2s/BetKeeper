@@ -32,3 +32,6 @@ Provides a streamlined development experience. Great for simple and easy to use 
 📆 Date: 16.04.2025
 
 This project will be realized with **Next.js** because this will be enough to achieve goals and it will be easily integrated with Vercel hosting that supports connection to external database systems and allowing reliable access.
+
+[Back to top](./readme.md)  
+[Previous](./02-authentication.md)  

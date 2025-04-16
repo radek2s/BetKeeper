@@ -58,58 +58,10 @@ Application is intended to use by narrow group of users but it might grow up to 
 13. <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 3) user should be able to see the list of bets he need to complete.
 5. <span style="color: #2E5AD1">(Usability)</span> Notification should be send as Push.
 
-## Use cases
 
-### Friend context
+Check use cases:
+- [friend context](./use_cases/friend_context.md)
+- [bet context](./use_cases/bet_context.md)
 
-As USER nefore I will be able to create new Bet I must have at least one friend in my "friend list". I should be able to see my friend list and add a new person by email. If that person is not a user of this application I should see the possibility to request access for this person that will be send to application ADMINISTRATOR. When administrator approve this request a new account will be created and new user will receive a note that he has been invite to use BetKeeper with pending friend request.
-
-
-```mermaid
----
-title Friend List Use Cases
----
-flowchart TB
-    
-    USER["User"] --> SHOW_FREINDS(["Show friend list"])
-    USER -- by username (email) --> FRIEND_INVITE(["Add to friend list"])
-    FRIEND_INVITE -- when user does not exists --> REQUEST_INVITE
-    USER -- when pending friend request --> APROVE_FRIEND_INVITE(["Approve freiend request"])
-    USER -- for email --> REQUEST_INVITE(["Request user invitation"])
-
-    FRIEND_INVITE -.- FREIND_INVITE_REQUEST[/"Friend request"/] -.- APROVE_FRIEND_INVITE
-    ADMINISTRATOR["Administrator"] -- when pending invitation request --> APROVE_INVITE(["Approve user invitation request"])
-    REQUEST_INVITE -.- INVITATION_REQUEST[/"Invitation request"/] -.- APROVE_INVITE
-```
-
-### Bet context
-Then when User have at least one friend he is able to create new bet. When bet is created he must be able to modify the bet content. As CREATOR he should be able to delete given bet. Any BET PARTICIPANT should be able to reject or resolve given bet. Resolve means that person who lose must realize the "stake". When it will be done bet participant should mark bet as completed. Completed and Rejected bets should not be visible on user bets in progress list. Both are treated as FINISHED so there is no more further actions possible. Those items should be move to separate view that presents only Finished bets.
-
-```mermaid
----
-title: Bet Use Cases
----
-flowchart TB
-    USER["User"] ---> BET_VIEW(["Show participated bets"]) 
-    BET_VIEW ---> BET_VIEW_PENDING(["Show in progress bets"]) & BET_VIEW_RESOLVED(["Show finished bets"])
-    USER -- must assign 'friend' ---> BET_CREATE(["Create bet"])
-
-    BET_CREATE --> BET_UPDATE(["Update"])
-    BET_CREATE --> BET_REJECT(["Reject"])
-    BET_CREATE -- only creator --> BET_DELETE(["Delete"])
-    BET_CREATE --> BET_RESOLVE(["Resolve"])
-    BET_RESOLVE --> BET_COMPLETE(["Complete"])
-```
-
-## Risk storming
-
-Bet Keeper is a simple Web Application that persist user data. Even such software has potential risks that should be taken into consideration:
-
-1. **Legal disputes** - misuse of this platform for gambling-like activities might leat to regulatory compliance issues in cerain regions.
-2. **Security Concerns** - Application store user data such as email, stakes and other private information. Database where data will be stored should be resilient for unauthorized access. 
-3. **Scalability Challenges** - Expected user trafic is minimal but application architecture should allow further possibility of scaling.
-4. **Unwanted traffic** - Hosted application might be a target of hacker attacks for example DoS or potential Resource Exhaustion Attack.
-5. **Confidential Keys leakage** - This project repository is hosted on public and open platform such as GitHub and anyone will be able to browse project files so database connection keys and project identifiers must be keep in secure places.
-6. **Administrator Approval Delays** - slow processing of user invitations could deter new users from joining the platform.
-7. **Ambiguity in Bet Resolution** - when users does not define clear terms for their bets they might face disputes and complain about difficult bet resolution process.
-8. **Notification system failure** - not working push notification lead to user dissatisfaction.
+And related risks:
+- [Risk](./01-risks)

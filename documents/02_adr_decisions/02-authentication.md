@@ -32,3 +32,7 @@ Corbado is focused on [Passkey functionality](https://www.corbado.com/) and has 
 📆 Date: 15.04.2025
 
 **Corbado** is the choosen one. It wons because of its free plan and simplified user login flow with UI managment panel and possiblity to limit user registration.
+
+[Back to top](./readme.md)  
+[Previous](./01-storage.md)  
+[Next](./03-application.md)
