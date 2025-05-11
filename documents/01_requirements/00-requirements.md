@@ -37,6 +37,8 @@ Application is intended to use by narrow group of users but it might grow up to 
 4. <span style="color: #DB9724">(Functional)</span> User should be notified when bet is Finished.
 5. <span style="color: #DB9724">(Functional)</span> User should be notified when bet deadline is approaching (if bet is not Finished) (3 days left).
 
+5. <span style="color: #DB9724">(Functional)</span> User should be notified when bet is still in Pending state for longer than 1 week. (Pending is after creation state before resolved or rejected)
+
 
 7. <span style="color: #DB9724">(Functional)</span> During bet creation creator should be able to select one friend from his friend list to be participate of the bet. 
 8. <span style="color: #DB9724">(Functional)</span> Bet list should have ability to filter bets by:
@@ -46,11 +48,13 @@ Application is intended to use by narrow group of users but it might grow up to 
 8. <span style="color: #DB9724">(Functional)</span> Bet list should have ability to sort bets by:
     - status field
     - creation date
-    - deadline date
+    - due date
 8. <span style="color: #DB9724">(Functional)</span> User should be able to add another user to his friend list by username (email is a username).
 9. <span style="color: #DB9724">(Functional)</span> User should be able create new user invitation request to administrator.
 10. <span style="color: #DB9724">(Functional)</span> Administrator should be able to approve invitation of new user.
 8. <span style="color: #DB9724">(Functional)</span> There should be an audit event logs for each bet and it should contains details related with state changes, who, when and what did in this change. 
+
+8. <span style="color: #DB9724">(Functional)</span> User should be able to browse, create, modify and delete his stake ideas (for future bet stakes) as simple list of text notes.
 
 11. <span style="color: #2E5AD1">(Usability)</span> Application should be mobile-friendly.
 11. <span style="color: #2E5AD1">(Usability)</span> Application data should be in sync with other users.

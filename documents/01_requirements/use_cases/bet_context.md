@@ -17,4 +17,25 @@ flowchart TB
     BET_RESOLVE --> BET_COMPLETE(["Complete"])
 ```
 
+
+Bet statuses:
+```mermaid
+---
+title: Bet State Transitions
+---
+flowchart TB
+    PENDING(["Pending"]) ---> RESOLVED(["Resolved"]) 
+    PENDING ---> REJECTED(["Rejected"])
+    RESOLVED ---> COMPLETED(["Completed"])
+    
+
+```
+
+### Stake idea context
+User should have possibility to create a stake idea for given bet that will be stored in notebook. This list should be visible only for given user. User should be able to browse this list and delete or modify stake idea.
+
+In future this idea might be shown during defining a new bet as suggestion for stake.
+
+
+
 [Next use case](./friend_context.md)
