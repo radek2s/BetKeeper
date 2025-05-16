@@ -58,8 +58,8 @@ Application is intended to use by narrow group of users but it might grow up to 
 
 11. <span style="color: #2E5AD1">(Usability)</span> Application should be mobile-friendly.
 11. <span style="color: #2E5AD1">(Usability)</span> Application data should be in sync with other users.
-12. <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 3) user should be able to create a new bet.
-13. <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 3) user should be able to see the list of bets he need to complete.
+12. <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to create a new bet.
+13. <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to see the list of bets he need to complete.
 5. <span style="color: #2E5AD1">(Usability)</span> Notification should be send as Push.
 
 
