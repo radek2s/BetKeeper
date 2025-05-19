@@ -21,16 +21,26 @@ Application is intended to use by narrow group of users but it might grow up to 
 <span style="color: #2E5AD1">Usability requirements</span> - requirements related with use envionment and expected use cases.
 
 1. <span style="color: #E11E39">(Bussines)</span> Provide a platform to manage bets between friends to reduce the issue with remebering the terms and stakes.
-1. <span style="color: #DB9724">(Functional)</span> User should be able to create bet  
-    Bet must contains details such as
+1. <span style="color: #E11E39">(Bussines)</span> Provide a space to establish and refine bets with friends regardless of distance and location.
+2. <span style="color: #DB9724">(Functional)</span> User should be able to create bet request 
+    Bet Request must contains details such as
     - participants
     - terms
-    - stakes
+    - stakes (there are 2 wariants of stakes)
+        - common stake (both participants has has the same stake to deal with)
+        - individual stakes (each participant defines what other person has to do)
     - deadlines to complete stake (optional)
-2. <span style="color: #DB9724">(Functional)</span> User should be able to see bets that he participate (including resolved, completed etc.).
+3. <span style="color: #DB9724">(Functional)</span> During bet request creation creator should be able to select one friend from his friend list to be participate of the bet. 
+4. <span style="color: #DB9724">(Functional)</span> User should be able to see pending bet requests and vote to accept or reject them.
+5. <span style="color: #DB9724">(Functional)</span> Bet request participants should be able to modify terms and stakes in given bet request.
+6. <span style="color: #DB9724">(Functional)</span> Each change of terms and stakes in bet request should reset given "votes" (Approval or Rejection).
+6. <span style="color: #DB9724">(Functional)</span> Each change of terms and stakes in bet request should send a notifications to participants
+
+7. <span style="color: #DB9724">(Functional)</span> Bet creator should be able to delete bet request.
+8. <span style="color: #DB9724">(Functional)</span> User should be able to block Bet Request to hide it from his dashboard and block unwanted notifications.
+9. <span style="color: #DB9724">(Functional)</span> User should be able to see bets that he participate (including pending, resolved, completed etc.).
 3. <span style="color: #DB9724">(Functional)</span> Bet participant should be able to resolve bet (who won).
 4. <span style="color: #DB9724">(Functional)</span> Bet participant should be able to mark bet as completed.
-6. <span style="color: #DB9724">(Functional)</span> Bet participant should be able to reject bet
 6. <span style="color: #DB9724">(Functional)</span> Administrator should be able to invite new user via email to application.
 6. <span style="color: #DB9724">(Functional)</span> Creator should be able to delete bet.
 6. <span style="color: #DB9724">(Functional)</span> Administrator should be able to delete any bet.
@@ -40,7 +50,7 @@ Application is intended to use by narrow group of users but it might grow up to 
 5. <span style="color: #DB9724">(Functional)</span> User should be notified when bet is still in Pending state for longer than 1 week. (Pending is after creation state before resolved or rejected)
 
 
-7. <span style="color: #DB9724">(Functional)</span> During bet creation creator should be able to select one friend from his friend list to be participate of the bet. 
+
 8. <span style="color: #DB9724">(Functional)</span> Bet list should have ability to filter bets by:
     - status field
     - participatns
