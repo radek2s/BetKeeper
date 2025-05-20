@@ -34,3 +34,6 @@ Resolving the bet:
 
 ![image](./07_users.jpg)
 
+
+Initial concept design has been approved. All further application desings will be designed with more detailed look and feel.
+Check [Application Designs pages](../05_app_designs/readme.md) to see latest designs.
