@@ -14,18 +14,18 @@ title: Bet Use Cases
 flowchart TB
     USER ---> BET_VIEW(["Show participated bets"])
     BET_VIEW ---> BET_VIEW_PENDING(["Show bets in progress"]) & BET_VIEW_RESOLVED(["Show completed bets"])
-    USER -- assigining friend user defines terms and stakes ---> BET_REQUEST{{"Bet Request"}}
+    USER -- assigining friend user defines terms and stakes ---> BET_REQUEST[/"Bet Request"/]
     USER["User"] ---> BET_REQUESTS(["Show Bet requests"])
-    BET_REQUESTS(["Show Bet requests"]) --> BET_REQUESTS_PENDING(["Show pending"])
+    BET_REQUESTS(["Show Bet requests"]) --> BET_REQUESTS_PENDING(["Show unknown"])
     BET_REQUESTS(["Show Bet requests"]) --> BET_REQUESTS_REJECTED(["Show rejected"])
     BET_REQUEST -- only creator or admin --> BET_REQUEST_DELETE(["Delete"])
     BET_REQUEST -- any participant --> BET_REQUEST_UPDATE(["Update terms and stakes"])
-    BET_REQUEST_UPDATE --> BET_REQUSET_NOTE[/"This action notifies participants about change and reset participants agreements"/]
+    BET_REQUEST_UPDATE --> BET_REQUSET_NOTE{{"This action notifies participants about change and reset participants agreements"}}
     BET_REQUEST -- both participants must mark that agree with terms and stakes --> BET_APPROVED(["Approve"])
     BET_REQUEST --> BET_REJECTED(["Reject"])
-    BET_REJECTED --> BET_REQUEST_UNSUBSCRIBE(["Block"])
     
-    BET_APPROVED(["Approve"]) -- terms and stakes becomes immutable --> BET{{"Bet"}}
+    
+    BET_APPROVED(["Approve"]) -- terms and stakes becomes immutable --> BET[/"Bet"/]
     BET --> BET_RESOLVE(["Resolve"])
     BET_RESOLVE -- (optional) define due date --> BET_COMPLETE(["Complete"])
     BET -- only creator or admin --> BET_DELETE(["Delete"])
