@@ -1,5 +1,14 @@
 # [Bet Keeper](https://radek2s.github.io/BetKeeper/)
 
+![](./docs/BetKeeper_Logo.png)
+
+# 🏗️ Project under construction...
+
+New version of this application is under construction. Project will be planned, designed and documented according to best known by me design practices such as  stages are requirement gathering, taking architectural decisions, performing UI wireframe, performing UX design and testing and finally development of the application.
+
+## Older versions:
+
+
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/radek2s/BetKeeper?style=for-the-badge)
 
 [![codecov](https://codecov.io/gh/radek2s/BetKeeper/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
