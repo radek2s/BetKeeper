@@ -1,0 +1,24 @@
+{
+  "name": "application",
+  "projectType": "application",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "src",
+  "tags": ["score:application", "type:nextjs"],
+  
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "options": {
+        "outputPath": "dist/application"
+      }
+    },
+    "serve":{
+      "executor": "@nx/next:server",
+      "options": {
+        "buildTarget": "application:build"
+      }
+
+    }
+  }
+
+}
