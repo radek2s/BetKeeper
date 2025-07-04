@@ -26,6 +26,7 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.0.6",
     "@corbado/types": "^3.0.0",
     "@eslint/compat": "^1.1.1",
     "@eslint/eslintrc": "^3",

@@ -2,43 +2,52 @@
 
 ![](./docs/BetKeeper_Logo.png)
 
+[![Biome on board!](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+
 # 🏗️ Project under construction...
 
-New version of this application is under construction. Project will be planned, designed and documented according to best known by me design practices such as  stages are requirement gathering, taking architectural decisions, performing UI wireframe, performing UX design and testing and finally development of the application.
-
-## Older versions:
-
-
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/radek2s/BetKeeper?style=for-the-badge)
-
-[![codecov](https://codecov.io/gh/radek2s/BetKeeper/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
-
-[![CodeFactor](https://www.codefactor.io/repository/github/radek2s/betkeeper/badge)](https://www.codefactor.io/repository/github/radek2s/betkeeper)
-
-Progressive Web Application (PWA) build with React and Typescript to manage and display
-bets between two people. Store data in browser memory or connect to your own Firebase
-store.
+New version of this application is under construction. Project will be planned, designed
+and documented according to best known by me design practices such as stages are
+requirement gathering, taking architectural decisions, performing UI wireframe, performing
+UX design and testing and finally development of the application.
 
 ## Project documentation
 
-All related documents are stored in "doc" directory within this project. Git is used to versionning of the files and keeping the audit logs with established decisions.
+All related documents are stored in "doc" directory within this project. Git is used to
+versionning of the files and keeping the audit logs with established decisions.
 
 [Requirements](./documents/01_requirements/00-requirements.md)
 
-
-
-
 ## Tech stack:
 
-<div style="height:64px;display:flex;justify-content:space-around; align-items:center; margin:16px 0;">
-    <img src='./docs/logo_react.svg' alt="React" height="48px"/>
-    <img src='./docs/logo_vite.svg' alt="Vite" height="48px"/>
-    <img src='./docs/logo_tailwind.svg' alt="Tailwind" height="48px"/>
-    <img src='./docs/logo_firebase.svg' alt="Firebase" height="48px"/>
-    <img src='./docs/logo_pwa.svg' alt="Progressive Web Application" height="48px"/>
-</div>
+- [NX](https://nx.dev/) - Build platform to manage codebase and organizae modules within
+  BetKeeper monorepo.
+- [Vite](https://vite.dev/) - Build Tool.
+- [Next.js](https://nextjs.org/) - React Framework for full stack expirience for
+  web-application.
 
-## Usage - Quick Start
+- [Biome.js](https://biomejs.dev/) Performant toolchain for WebApplication
+
+## Development Quick Start
+
+Installation
+
+```
+npm i
+```
+
+This project is running with NX tool that provide additional project graph where developer
+can check the dependencies betweeen modules.
+
+```
+nx graph
+```
+
+There are two projects within this monorepo:
+
+- domain - bussiness logic and tests of core BetKeeper objects
+- application - application layer that host an UI and wrap bussiness logic with database
+  persistance and server logic
 
 Stable version of application is hosted on GitHub Pages. To check how it looks like just
 open the running environment.
