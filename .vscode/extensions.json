@@ -1,8 +1,9 @@
 {
-    "recommendations": [
-        "biomejs.biome",
-        "firsttris.vscode-jest-runner",
-        "MermaidChart.vscode-mermaid-chart",
-        "nrwl.angular-console"
-    ]
+  "recommendations": [
+    "biomejs.biome",
+    "firsttris.vscode-jest-runner",
+    "MermaidChart.vscode-mermaid-chart",
+    "nrwl.angular-console",
+    "ms-playwright.playwright"
+  ]
 }
