@@ -44,3 +44,5 @@ next-env.d.ts
 .github/instructions/nx.instructions.md
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
+
+test-result/*

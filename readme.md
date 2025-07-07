@@ -49,8 +49,20 @@ There are two projects within this monorepo:
 - application - application layer that host an UI and wrap bussiness logic with database
   persistance and server logic
 
-Stable version of application is hosted on GitHub Pages. To check how it looks like just
-open the running environment.
+## Usefull commands
+
+Run application and perform E2E tests in Playwright UI
+```shell
+npx nx run application:serve
+npx nx e2e --ui
+```
+
+Run Cucumber Behaviour-Driven Development tests that verifies requirements
+```shell
+npx nx run bet-keeper:test:bdd
+```
+Then you can open [cucumber-report.html](./test-result/cucumber-report.html) to visit what requriements are met.
+
 
 ### Local environment
 

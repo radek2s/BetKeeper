@@ -1,4 +1,4 @@
-import { User } from '@bet-keeper/domain'
+import type { User } from '@bet-keeper/domain'
 export default function Index() {
   /*
    * Replace the elements below with your own.
