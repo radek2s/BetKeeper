@@ -3,7 +3,7 @@ module.exports = {
     formateOptions: {
       snippentInterface: "async-await",
     },
-    paths: ["e2e/features/*.feature"],
+    paths: ["e2e/features/**/*.feature"],
     publishQuite: true,
     dryRun: false,
     require: ["e2e/steps/*.ts"],
