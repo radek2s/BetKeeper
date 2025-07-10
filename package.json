@@ -8,6 +8,7 @@
     "dev": "next dev",
     "start": "vite dev",
     "test": "vitest",
+    "test:domain:ci": "npx nx run test domain --reporter junit --output-file ./tests-domain.xml",
     "test:ci": "vitest run",
     "test:coverage": "vitest run --coverage --reporter junit --output-file ./test-report.xml",
     "build": "tsc && vite build",
