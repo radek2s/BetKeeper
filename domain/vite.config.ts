@@ -45,15 +45,11 @@ export default defineConfig(() => ({
     },
   },
   test: {
+    name: "Domain Test",
     watch: false,
     globals: true,
     environment: "node",
+    outputFile: "../test-results/domain2.xml",
     include: ["{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["/backend/**/*"],
-    reporters: ["junit"],
-    coverage: {
-      reportsDirectory: "../coverage/domain",
-      provider: "v8" as const,
-    },
   },
 }));

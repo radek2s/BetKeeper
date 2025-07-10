@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
 import type { User } from '@bet-keeper/domain'
 export default function Index() {
   /*
