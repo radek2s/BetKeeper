@@ -1,0 +1,7 @@
+{
+  "name": "backend",
+  "projectType": "application",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "src",
+  "tags": ["score:application", "type:express"]
+}
