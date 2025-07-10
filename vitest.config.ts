@@ -8,7 +8,7 @@ export default defineConfig({
     coverage: {
       enabled: true,
       include: ["domain/**/*", "application/**/*"],
-      reporter: ["html"],
+      reporter: ["html", ["json", { file: "./coverage.json" }]],
       reportsDirectory: "coverage",
       provider: "v8",
     },
