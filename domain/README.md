@@ -1,11 +1,19 @@
-# domain
+# Bet Keeper Domain
 
-This library was generated with [Nx](https://nx.dev).
+Module to handle Bussines Domain logic and requirements. With indpendance of implementation this module provide most of the BetKeeper logic with dedicated test suite. 
 
-## Building
+Tech stack:
+- [TypeScript](https://www.typescriptlang.org/) Types for JavaScript
+- [Vitest](https://vitest.dev/) Unit test framework for ClientComponents
 
-Run `nx build domain` to build the library.
+## Command
 
-## Running unit tests
+Build library
+```shell
+nx build domain
+```
 
-Run `nx test domain` to execute the unit tests via [Vitest](https://vitest.dev/).
+Run unit tests
+```shell
+nx test domain
+```

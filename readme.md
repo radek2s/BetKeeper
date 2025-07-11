@@ -18,6 +18,8 @@ versionning of the files and keeping the audit logs with established decisions.
 
 [Requirements](./documents/01_requirements/00-requirements.md)
 
+
+
 ## Tech stack:
 
 - [NX](https://nx.dev/) - Build platform to manage codebase and organizae modules within
@@ -27,6 +29,11 @@ versionning of the files and keeping the audit logs with established decisions.
   web-application.
 
 - [Biome.js](https://biomejs.dev/) Performant toolchain for WebApplication
+
+### Sub modules
+
+- [Domain](./domain/readme.md)
+- [Application](./application/readme.md)
 
 ## Development Quick Start
 

@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "private": true,
   "homepage": "https://radek2s.github.io/BetKeeper",
-  "type": "module",
+
   "scripts": {
     "test:bdd": "npx cucumber-js test",
     "dev": "next dev",
