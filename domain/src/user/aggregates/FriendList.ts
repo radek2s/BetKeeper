@@ -1,29 +1,36 @@
-import { UserId } from '../value-objects/UserId';
-import { Email } from '../value-objects/Email';
-import { User } from '../entities/User';
-import { FriendRequest } from '../entities/FriendRequest';
-import { InvitationRequest } from '../entities/InvitationRequest';
-import { RequestStatus } from '../types/RequestStatus';
-import { DomainEvent } from '../events/DomainEvent';
-import { FriendRemovedEvent } from '../events/FriendRequestEvents';
+import { UserId } from "../value-objects/UserId";
+import { Email } from "../value-objects/Email";
+import { User } from "../entities/User";
+import { FriendRequest } from "../entities/FriendRequest";
+import { InvitationRequest } from "../entities/InvitationRequest";
+import { RequestStatus } from "../types/RequestStatus";
+import { FriendRemovedEvent } from "../events/FriendRequestEvents";
+import { AggregateRoot } from "../../shared/Entity";
+import { IEventDispatcher } from "../../shared/EventDispatcher";
 
 /**
  * Friend List Aggregate Root
  * Manages a user's friends and friend-related operations
  */
-export class FriendList {
+export class FriendList extends AggregateRoot<UserId> {
   private readonly _userId: UserId;
   private readonly _friends: Map<string, UserId> = new Map();
   private readonly _sentFriendRequests: Map<string, FriendRequest> = new Map();
-  private readonly _receivedFriendRequests: Map<string, FriendRequest> = new Map();
-  private readonly _sentInvitationRequests: Map<string, InvitationRequest> = new Map();
-  private _domainEvents: DomainEvent[] = [];
+  private readonly _receivedFriendRequests: Map<string, FriendRequest> =
+    new Map();
+  private readonly _sentInvitationRequests: Map<string, InvitationRequest> =
+    new Map();
 
-  constructor(userId: UserId) {
+  constructor(userId: UserId, eventDispatcher?: IEventDispatcher) {
+    super(eventDispatcher);
     this._userId = userId;
   }
 
   // Getters
+  override get id(): UserId {
+    return this._userId;
+  }
+
   get userId(): UserId {
     return this._userId;
   }
@@ -45,33 +52,29 @@ export class FriendList {
   }
 
   get pendingReceivedRequests(): FriendRequest[] {
-    return this.receivedFriendRequests.filter(request => request.isPending());
+    return this.receivedFriendRequests.filter((request) => request.isPending());
   }
 
   get sentInvitationRequests(): InvitationRequest[] {
     return Array.from(this._sentInvitationRequests.values());
   }
 
-  get domainEvents(): DomainEvent[] {
-    return [...this._domainEvents];
-  }
-
   // Friend management methods
   sendFriendRequest(targetUser: User): FriendRequest {
     if (!targetUser.canReceiveFriendRequests()) {
-      throw new Error('Target user cannot receive friend requests');
+      throw new Error("Target user cannot receive friend requests");
     }
 
     if (this.isFriend(targetUser.id)) {
-      throw new Error('User is already a friend');
+      throw new Error("User is already a friend");
     }
 
     if (this.hasPendingFriendRequestTo(targetUser.id)) {
-      throw new Error('Friend request already sent to this user');
+      throw new Error("Friend request already sent to this user");
     }
 
     if (this.hasPendingFriendRequestFrom(targetUser.id)) {
-      throw new Error('User has already sent you a friend request');
+      throw new Error("User has already sent you a friend request");
     }
 
     const friendRequest = FriendRequest.create(this._userId, targetUser.id);
@@ -86,7 +89,7 @@ export class FriendList {
 
   receiveFriendRequest(friendRequest: FriendRequest): void {
     if (!friendRequest.receiverId.equals(this._userId)) {
-      throw new Error('Friend request is not for this user');
+      throw new Error("Friend request is not for this user");
     }
 
     this._receivedFriendRequests.set(friendRequest.id.value, friendRequest);
@@ -95,7 +98,7 @@ export class FriendList {
   approveFriendRequest(requestId: string): void {
     const request = this._receivedFriendRequests.get(requestId);
     if (!request) {
-      throw new Error('Friend request not found');
+      throw new Error("Friend request not found");
     }
 
     request.approve();
@@ -109,7 +112,7 @@ export class FriendList {
   rejectFriendRequest(requestId: string): void {
     const request = this._receivedFriendRequests.get(requestId);
     if (!request) {
-      throw new Error('Friend request not found');
+      throw new Error("Friend request not found");
     }
 
     request.reject();
@@ -122,7 +125,7 @@ export class FriendList {
   cancelSentFriendRequest(requestId: string): void {
     const request = this._sentFriendRequests.get(requestId);
     if (!request) {
-      throw new Error('Sent friend request not found');
+      throw new Error("Sent friend request not found");
     }
 
     request.cancel();
@@ -130,7 +133,7 @@ export class FriendList {
 
   addFriend(friendId: UserId): void {
     if (friendId.equals(this._userId)) {
-      throw new Error('Cannot add yourself as a friend');
+      throw new Error("Cannot add yourself as a friend");
     }
 
     if (this.isFriend(friendId)) {
@@ -142,7 +145,7 @@ export class FriendList {
 
   removeFriend(friendId: UserId): void {
     if (!this.isFriend(friendId)) {
-      throw new Error('User is not in friend list');
+      throw new Error("User is not in friend list");
     }
 
     this._friends.delete(friendId.value);
@@ -152,11 +155,17 @@ export class FriendList {
   // Invitation request methods
   sendInvitationRequest(inviteeEmail: Email): InvitationRequest {
     if (this.hasPendingInvitationRequestFor(inviteeEmail)) {
-      throw new Error('Invitation request already sent for this email');
+      throw new Error("Invitation request already sent for this email");
     }
 
-    const invitationRequest = InvitationRequest.create(this._userId, inviteeEmail);
-    this._sentInvitationRequests.set(invitationRequest.id.value, invitationRequest);
+    const invitationRequest = InvitationRequest.create(
+      this._userId,
+      inviteeEmail,
+    );
+    this._sentInvitationRequests.set(
+      invitationRequest.id.value,
+      invitationRequest,
+    );
 
     // Add domain events from the invitation request
     this.addDomainEvents(invitationRequest.domainEvents);
@@ -168,7 +177,7 @@ export class FriendList {
   cancelInvitationRequest(requestId: string): void {
     const request = this._sentInvitationRequests.get(requestId);
     if (!request) {
-      throw new Error('Invitation request not found');
+      throw new Error("Invitation request not found");
     }
 
     request.cancel();
@@ -180,22 +189,28 @@ export class FriendList {
   }
 
   hasPendingFriendRequestTo(userId: UserId): boolean {
-    return Array.from(this._sentFriendRequests.values())
-      .some(request => request.receiverId.equals(userId) && request.isPending());
+    return Array.from(this._sentFriendRequests.values()).some(
+      (request) => request.receiverId.equals(userId) && request.isPending(),
+    );
   }
 
   hasPendingFriendRequestFrom(userId: UserId): boolean {
-    return Array.from(this._receivedFriendRequests.values())
-      .some(request => request.senderId.equals(userId) && request.isPending());
+    return Array.from(this._receivedFriendRequests.values()).some(
+      (request) => request.senderId.equals(userId) && request.isPending(),
+    );
   }
 
   hasPendingInvitationRequestFor(email: Email): boolean {
-    return Array.from(this._sentInvitationRequests.values())
-      .some(request => request.inviteeEmail.equals(email) && request.isPending());
+    return Array.from(this._sentInvitationRequests.values()).some(
+      (request) => request.inviteeEmail.equals(email) && request.isPending(),
+    );
   }
 
   getFriendRequest(requestId: string): FriendRequest | undefined {
-    return this._receivedFriendRequests.get(requestId) || this._sentFriendRequests.get(requestId);
+    return (
+      this._receivedFriendRequests.get(requestId) ||
+      this._sentFriendRequests.get(requestId)
+    );
   }
 
   getInvitationRequest(requestId: string): InvitationRequest | undefined {
@@ -207,22 +222,24 @@ export class FriendList {
     return this.friendCount > 0;
   }
 
-  // Domain events management
-  private addDomainEvent(event: DomainEvent): void {
-    this._domainEvents.push(event);
+  // Equality
+  override equals(other: AggregateRoot<UserId>): boolean {
+    if (!(other instanceof FriendList)) {
+      return false;
+    }
+    return this._userId.equals(other._userId);
   }
 
-  private addDomainEvents(events: DomainEvent[]): void {
-    this._domainEvents.push(...events);
-  }
-
-  clearDomainEvents(): void {
-    this._domainEvents = [];
+  override toString(): string {
+    return `FriendList(${this._userId.value}, ${this.friendCount} friends)`;
   }
 
   // Factory method
-  static create(userId: UserId): FriendList {
-    return new FriendList(userId);
+  static create(
+    userId: UserId,
+    eventDispatcher?: IEventDispatcher,
+  ): FriendList {
+    return new FriendList(userId, eventDispatcher);
   }
 
   // Reconstitution method for persistence
@@ -231,34 +248,31 @@ export class FriendList {
     friends: UserId[],
     sentFriendRequests: FriendRequest[],
     receivedFriendRequests: FriendRequest[],
-    sentInvitationRequests: InvitationRequest[]
+    sentInvitationRequests: InvitationRequest[],
+    eventDispatcher?: IEventDispatcher,
   ): FriendList {
-    const friendList = new FriendList(userId);
+    const friendList = new FriendList(userId, eventDispatcher);
 
     // Restore friends
-    friends.forEach(friendId => {
+    friends.forEach((friendId) => {
       friendList._friends.set(friendId.value, friendId);
     });
 
     // Restore sent friend requests
-    sentFriendRequests.forEach(request => {
+    sentFriendRequests.forEach((request) => {
       friendList._sentFriendRequests.set(request.id.value, request);
     });
 
     // Restore received friend requests
-    receivedFriendRequests.forEach(request => {
+    receivedFriendRequests.forEach((request) => {
       friendList._receivedFriendRequests.set(request.id.value, request);
     });
 
     // Restore sent invitation requests
-    sentInvitationRequests.forEach(request => {
+    sentInvitationRequests.forEach((request) => {
       friendList._sentInvitationRequests.set(request.id.value, request);
     });
 
     return friendList;
-  }
-
-  toString(): string {
-    return `FriendList(${this._userId.value}, ${this.friendCount} friends)`;
   }
 }

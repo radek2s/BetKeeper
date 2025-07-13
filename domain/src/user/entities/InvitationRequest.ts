@@ -1,15 +1,20 @@
-import { RequestId } from '../value-objects/RequestId';
-import { UserId } from '../value-objects/UserId';
-import { Email } from '../value-objects/Email';
-import { RequestStatus, RequestStatusGuards } from '../types/RequestStatus';
-import { DomainEvent } from '../events/DomainEvent';
-import { InvitationRequestSentEvent, InvitationRequestApprovedEvent } from '../events/FriendRequestEvents';
+import { RequestId } from "../value-objects/RequestId";
+import { UserId } from "../value-objects/UserId";
+import { Email } from "../value-objects/Email";
+import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
+import {
+  InvitationRequestSentEvent,
+  InvitationRequestApprovedEvent,
+} from "../events/FriendRequestEvents";
+import { Entity } from "../../shared/Entity";
+import { IEventDispatcher } from "../../shared/EventDispatcher";
+import { DomainEvent } from "../events/DomainEvent";
 
 /**
  * Invitation Request Entity
  * Represents a request to invite a non-existing user to join the system
  */
-export class InvitationRequest {
+export class InvitationRequest extends Entity<RequestId> {
   private readonly _id: RequestId;
   private readonly _requesterId: UserId;
   private readonly _inviteeEmail: Email;
@@ -18,7 +23,6 @@ export class InvitationRequest {
   private _updatedAt: Date;
   private _approvedById?: UserId;
   private _approvedAt?: Date;
-  private _domainEvents: DomainEvent[] = [];
 
   constructor(
     id: RequestId,
@@ -28,8 +32,11 @@ export class InvitationRequest {
     createdAt?: Date,
     updatedAt?: Date,
     approvedById?: UserId,
-    approvedAt?: Date
+    approvedAt?: Date,
+    eventDispatcher?: IEventDispatcher,
   ) {
+    super(eventDispatcher);
+
     this._id = id;
     this._requesterId = requesterId;
     this._inviteeEmail = inviteeEmail;
@@ -41,7 +48,13 @@ export class InvitationRequest {
 
     // Raise domain event for new invitation request
     if (!createdAt && status === RequestStatus.PENDING) {
-      this.addDomainEvent(new InvitationRequestSentEvent(this._id, this._requesterId, this._inviteeEmail));
+      this.addDomainEvent(
+        new InvitationRequestSentEvent(
+          this._id,
+          this._requesterId,
+          this._inviteeEmail,
+        ),
+      );
     }
   }
 
@@ -78,45 +91,46 @@ export class InvitationRequest {
     return this._approvedAt;
   }
 
-  get domainEvents(): DomainEvent[] {
-    return [...this._domainEvents];
-  }
-
   // Business methods
   approve(approvedById: UserId): void {
     if (!RequestStatusGuards.isPending(this._status)) {
-      throw new Error('Can only approve pending invitation requests');
+      throw new Error("Can only approve pending invitation requests");
     }
 
     this._status = RequestStatus.APPROVED;
     this._approvedById = approvedById;
     this._approvedAt = new Date();
     this._updatedAt = new Date();
+    this.markAsModified();
 
-    this.addDomainEvent(new InvitationRequestApprovedEvent(
-      this._id, 
-      this._requesterId, 
-      this._inviteeEmail, 
-      approvedById
-    ));
+    this.addDomainEvent(
+      new InvitationRequestApprovedEvent(
+        this._id,
+        this._requesterId,
+        this._inviteeEmail,
+        approvedById,
+      ),
+    );
   }
 
   reject(): void {
     if (!RequestStatusGuards.isPending(this._status)) {
-      throw new Error('Can only reject pending invitation requests');
+      throw new Error("Can only reject pending invitation requests");
     }
 
     this._status = RequestStatus.REJECTED;
     this._updatedAt = new Date();
+    this.markAsModified();
   }
 
   cancel(): void {
     if (!RequestStatusGuards.isPending(this._status)) {
-      throw new Error('Can only cancel pending invitation requests');
+      throw new Error("Can only cancel pending invitation requests");
     }
 
     this._status = RequestStatus.CANCELLED;
     this._updatedAt = new Date();
+    this.markAsModified();
   }
 
   // Domain behavior checks
@@ -144,19 +158,24 @@ export class InvitationRequest {
     return this.isPending();
   }
 
-  // Domain events management
-  private addDomainEvent(event: DomainEvent): void {
-    this._domainEvents.push(event);
-  }
-
-  clearDomainEvents(): void {
-    this._domainEvents = [];
-  }
-
   // Factory methods
-  static create(requesterId: UserId, inviteeEmail: Email): InvitationRequest {
+  static create(
+    requesterId: UserId,
+    inviteeEmail: Email,
+    eventDispatcher?: IEventDispatcher,
+  ): InvitationRequest {
     const id = RequestId.generate();
-    return new InvitationRequest(id, requesterId, inviteeEmail);
+    return new InvitationRequest(
+      id,
+      requesterId,
+      inviteeEmail,
+      RequestStatus.PENDING,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      eventDispatcher,
+    );
   }
 
   static reconstitute(
@@ -167,26 +186,31 @@ export class InvitationRequest {
     createdAt: Date,
     updatedAt: Date,
     approvedById?: UserId,
-    approvedAt?: Date
+    approvedAt?: Date,
+    eventDispatcher?: IEventDispatcher,
   ): InvitationRequest {
     return new InvitationRequest(
-      id, 
-      requesterId, 
-      inviteeEmail, 
-      status, 
-      createdAt, 
-      updatedAt, 
-      approvedById, 
-      approvedAt
+      id,
+      requesterId,
+      inviteeEmail,
+      status,
+      createdAt,
+      updatedAt,
+      approvedById,
+      approvedAt,
+      eventDispatcher,
     );
   }
 
   // Equality
-  equals(other: InvitationRequest): boolean {
+  override equals(other: Entity<RequestId>): boolean {
+    if (!(other instanceof InvitationRequest)) {
+      return false;
+    }
     return this._id.equals(other._id);
   }
 
-  toString(): string {
+  override toString(): string {
     return `InvitationRequest(${this._id.value}, ${this._requesterId.value} -> ${this._inviteeEmail.value}, ${this._status})`;
   }
 }

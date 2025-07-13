@@ -1,14 +1,19 @@
-import { RequestId } from '../value-objects/RequestId';
-import { UserId } from '../value-objects/UserId';
-import { RequestStatus, RequestStatusGuards } from '../types/RequestStatus';
-import { DomainEvent } from '../events/DomainEvent';
-import { FriendRequestSentEvent, FriendRequestApprovedEvent, FriendRequestRejectedEvent } from '../events/FriendRequestEvents';
+import { RequestId } from "../value-objects/RequestId";
+import { UserId } from "../value-objects/UserId";
+import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
+import {
+  FriendRequestSentEvent,
+  FriendRequestApprovedEvent,
+  FriendRequestRejectedEvent,
+} from "../events/FriendRequestEvents";
+import { Entity } from "../../shared/Entity";
+import { IEventDispatcher } from "../../shared/EventDispatcher";
 
 /**
  * Friend Request Entity
  * Represents a request from one user to become friends with another user
  */
-export class FriendRequest {
+export class FriendRequest extends Entity<RequestId> {
   private readonly _id: RequestId;
   private readonly _senderId: UserId;
   private readonly _receiverId: UserId;
@@ -16,7 +21,6 @@ export class FriendRequest {
   private readonly _createdAt: Date;
   private _updatedAt: Date;
   private _expiresAt?: Date;
-  private _domainEvents: DomainEvent[] = [];
 
   constructor(
     id: RequestId,
@@ -25,10 +29,13 @@ export class FriendRequest {
     status: RequestStatus = RequestStatus.PENDING,
     createdAt?: Date,
     updatedAt?: Date,
-    expiresAt?: Date
+    expiresAt?: Date,
+    eventDispatcher?: IEventDispatcher,
   ) {
+    super(eventDispatcher);
+
     if (senderId.equals(receiverId)) {
-      throw new Error('Cannot send friend request to yourself');
+      throw new Error("Cannot send friend request to yourself");
     }
 
     this._id = id;
@@ -41,7 +48,9 @@ export class FriendRequest {
 
     // Raise domain event for new friend request
     if (!createdAt && status === RequestStatus.PENDING) {
-      this.addDomainEvent(new FriendRequestSentEvent(this._id, this._senderId, this._receiverId));
+      this.addDomainEvent(
+        new FriendRequestSentEvent(this._id, this._senderId, this._receiverId),
+      );
     }
   }
 
@@ -74,53 +83,65 @@ export class FriendRequest {
     return this._expiresAt;
   }
 
-  get domainEvents(): DomainEvent[] {
-    return [...this._domainEvents];
-  }
-
   // Business methods
   approve(): void {
     if (!RequestStatusGuards.isPending(this._status)) {
-      throw new Error('Can only approve pending friend requests');
+      throw new Error("Can only approve pending friend requests");
     }
 
     if (this.isExpired()) {
-      throw new Error('Cannot approve expired friend request');
+      throw new Error("Cannot approve expired friend request");
     }
 
     this._status = RequestStatus.APPROVED;
     this._updatedAt = new Date();
+    this.markAsModified();
 
-    this.addDomainEvent(new FriendRequestApprovedEvent(this._id, this._senderId, this._receiverId));
+    this.addDomainEvent(
+      new FriendRequestApprovedEvent(
+        this._id,
+        this._senderId,
+        this._receiverId,
+      ),
+    );
   }
 
   reject(): void {
     if (!RequestStatusGuards.isPending(this._status)) {
-      throw new Error('Can only reject pending friend requests');
+      throw new Error("Can only reject pending friend requests");
     }
 
     this._status = RequestStatus.REJECTED;
     this._updatedAt = new Date();
+    this.markAsModified();
 
-    this.addDomainEvent(new FriendRequestRejectedEvent(this._id, this._senderId, this._receiverId));
+    this.addDomainEvent(
+      new FriendRequestRejectedEvent(
+        this._id,
+        this._senderId,
+        this._receiverId,
+      ),
+    );
   }
 
   cancel(): void {
     if (!RequestStatusGuards.isPending(this._status)) {
-      throw new Error('Can only cancel pending friend requests');
+      throw new Error("Can only cancel pending friend requests");
     }
 
     this._status = RequestStatus.CANCELLED;
     this._updatedAt = new Date();
+    this.markAsModified();
   }
 
   expire(): void {
     if (!RequestStatusGuards.isPending(this._status)) {
-      throw new Error('Can only expire pending friend requests');
+      throw new Error("Can only expire pending friend requests");
     }
 
     this._status = RequestStatus.EXPIRED;
     this._updatedAt = new Date();
+    this.markAsModified();
   }
 
   // Domain behavior checks
@@ -158,22 +179,27 @@ export class FriendRequest {
     return this.isPending() && !this.isExpired();
   }
 
-  // Domain events management
-  private addDomainEvent(event: DomainEvent): void {
-    this._domainEvents.push(event);
-  }
-
-  clearDomainEvents(): void {
-    this._domainEvents = [];
-  }
-
   // Factory methods
-  static create(senderId: UserId, receiverId: UserId, expirationDays: number = 30): FriendRequest {
+  static create(
+    senderId: UserId,
+    receiverId: UserId,
+    expirationDays: number = 30,
+    eventDispatcher?: IEventDispatcher,
+  ): FriendRequest {
     const id = RequestId.generate();
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + expirationDays);
 
-    return new FriendRequest(id, senderId, receiverId, RequestStatus.PENDING, undefined, undefined, expiresAt);
+    return new FriendRequest(
+      id,
+      senderId,
+      receiverId,
+      RequestStatus.PENDING,
+      undefined,
+      undefined,
+      expiresAt,
+      eventDispatcher,
+    );
   }
 
   static reconstitute(
@@ -183,17 +209,30 @@ export class FriendRequest {
     status: RequestStatus,
     createdAt: Date,
     updatedAt: Date,
-    expiresAt?: Date
+    expiresAt?: Date,
+    eventDispatcher?: IEventDispatcher,
   ): FriendRequest {
-    return new FriendRequest(id, senderId, receiverId, status, createdAt, updatedAt, expiresAt);
+    return new FriendRequest(
+      id,
+      senderId,
+      receiverId,
+      status,
+      createdAt,
+      updatedAt,
+      expiresAt,
+      eventDispatcher,
+    );
   }
 
   // Equality
-  equals(other: FriendRequest): boolean {
+  override equals(other: Entity<RequestId>): boolean {
+    if (!(other instanceof FriendRequest)) {
+      return false;
+    }
     return this._id.equals(other._id);
   }
 
-  toString(): string {
+  override toString(): string {
     return `FriendRequest(${this._id.value}, ${this._senderId.value} -> ${this._receiverId.value}, ${this._status})`;
   }
 }
