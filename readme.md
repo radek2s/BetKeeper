@@ -61,7 +61,17 @@ There are two projects within this monorepo:
 Run application and perform E2E tests in Playwright UI
 ```shell
 npx nx run application:serve
-npx nx e2e --ui
+npx nx run e2e-tests:e2e --ui
+```
+
+Run E2E tests in headless mode
+```shell
+npm run e2e
+```
+
+Run E2E tests in headed mode (with browser UI)
+```shell
+npm run e2e:headed
 ```
 
 Run Cucumber Behaviour-Driven Development tests that verifies requirements

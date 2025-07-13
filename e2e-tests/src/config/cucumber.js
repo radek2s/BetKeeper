@@ -3,10 +3,10 @@ module.exports = {
     formateOptions: {
       snippentInterface: "async-await",
     },
-    paths: ["e2e/features/**/*.feature"],
+    paths: ["e2e-tests/src/features/**/*.feature"],
     publishQuite: true,
     dryRun: false,
-    require: ["e2e/steps/*.ts"],
+    require: ["e2e-tests/src/steps/*.ts"],
     requireModule: ["ts-node/register"],
     format: [
       "html:test-result/cucumber-report.html",

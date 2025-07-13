@@ -5,7 +5,7 @@
   "homepage": "https://radek2s.github.io/BetKeeper",
 
   "scripts": {
-    "test:bdd": "npx cucumber-js test",
+    "test:bdd": "npx cucumber-js e2e-tests",
     "dev": "next dev",
     "start": "vite dev",
     "test": "vitest",
@@ -15,7 +15,11 @@
     "build": "tsc && vite build",
     "build:ci": "CI=false && tsc && vite build",
     "preview": "vite preview",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "e2e": "nx run e2e-tests:e2e",
+    "e2e:ui": "nx run e2e-tests:e2e --ui",
+    "e2e:ci": "nx run e2e-tests:e2e-ci",
+    "e2e:headed": "nx run e2e-tests:e2e --headed"
   },
   "dependencies": {
     "@corbado/react": "^3.0.0",

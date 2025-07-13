@@ -10,4 +10,3 @@ Feature: Bet creation
         And defined common stake
         When user create click button
         Then Bet Request should be created with data
-

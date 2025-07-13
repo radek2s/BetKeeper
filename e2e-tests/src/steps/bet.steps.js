@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/complexity/useArrowFunction: <explanation> */
 import assert from "node:assert";
-import { Given, Then } from "@cucumber/cucumber";
+import { Given, Then, When } from "@cucumber/cucumber";
 
 When("User clicked bet creation", function () {
   // Write code here that turns the phrase above into concrete actions
