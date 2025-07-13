@@ -1,0 +1,30 @@
+{
+  "name": "e2e-tests",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "e2e-tests",
+  "projectType": "application",
+  "tags": ["scope:e2e", "type:testing"],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "e2e-tests/playwright.config.ts"
+      },
+      "outputs": ["{workspaceRoot}/dist/.playwright"]
+    },
+    "e2e-ci": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "e2e-tests/playwright.config.ts",
+        "headed": false
+      },
+      "outputs": ["{workspaceRoot}/dist/.playwright"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["e2e-tests/**/*.{js,ts}"]
+      }
+    }
+  }
+}

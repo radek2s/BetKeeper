@@ -1,0 +1,36 @@
+name: Continuous Integration
+on:
+  pull_request  
+
+jobs:
+  unit-tests:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for better coverage analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Generate test report
+        uses: dorny/test-reporter@v2
+        if: ${{ !cancelled() }}
+        with:
+          name: Unit Test Results
+          path: test-report.xml
+          reporter: jest-junit
+          fail-on-error: false

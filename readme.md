@@ -1,88 +1,64 @@
 # [Bet Keeper](https://radek2s.github.io/BetKeeper/)
 
-![](./docs/BetKeeper_Logo.png)
+![](./documents/BetKeeper_Logo.png)
+
+[![Biome on board!](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+
+[![codecov](https://codecov.io/gh/radek2s/BetKeeper/branch/main/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
 
 # 🏗️ Project under construction...
 
-New version of this application is under construction. Project will be planned, designed and documented according to best known by me design practices such as  stages are requirement gathering, taking architectural decisions, performing UI wireframe, performing UX design and testing and finally development of the application.
-
-## Older versions:
-
-
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/radek2s/BetKeeper?style=for-the-badge)
-
-[![codecov](https://codecov.io/gh/radek2s/BetKeeper/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
-
-[![CodeFactor](https://www.codefactor.io/repository/github/radek2s/betkeeper/badge)](https://www.codefactor.io/repository/github/radek2s/betkeeper)
-
-Progressive Web Application (PWA) build with React and Typescript to manage and display
-bets between two people. Store data in browser memory or connect to your own Firebase
-store.
+New version of this application is under construction. Project will be planned, designed
+and documented according to best known by me design practices such as stages are
+requirement gathering, taking architectural decisions, performing UI wireframe, performing
+UX design and testing and finally development of the application.
 
 ## Project documentation
 
-All related documents are stored in "doc" directory within this project. Git is used to versionning of the files and keeping the audit logs with established decisions.
+All related documents are stored in "doc" directory within this project. Git is used to
+versionning of the files and keeping the audit logs with established decisions.
 
 [Requirements](./documents/01_requirements/00-requirements.md)
 
 
 
-
 ## Tech stack:
 
-<div style="height:64px;display:flex;justify-content:space-around; align-items:center; margin:16px 0;">
-    <img src='./docs/logo_react.svg' alt="React" height="48px"/>
-    <img src='./docs/logo_vite.svg' alt="Vite" height="48px"/>
-    <img src='./docs/logo_tailwind.svg' alt="Tailwind" height="48px"/>
-    <img src='./docs/logo_firebase.svg' alt="Firebase" height="48px"/>
-    <img src='./docs/logo_pwa.svg' alt="Progressive Web Application" height="48px"/>
-</div>
+- [NX](https://nx.dev/) - Build platform to manage codebase and organizae modules within
+  BetKeeper monorepo.
+- [Vite](https://vite.dev/) - Build Tool.
+- [Next.js](https://nextjs.org/) - React Framework for full stack expirience for
+  web-application.
 
-## Usage - Quick Start
+- [Biome.js](https://biomejs.dev/) Performant toolchain for WebApplication
 
-Stable version of application is hosted on GitHub Pages. To check how it looks like just
-open the running environment.
+### Sub modules
 
-### Local environment
+- [Domain](./domain/readme.md)
+- [Application](./application/readme.md)
+- [E2E Tests](./e2e-tests/readme.md)
 
-- Clone repository
-  ```
-  git clone https://github.com/radek2s/BetKeeper.git
-  ```
-- Install dependencies for frontend application
-  ```
-  npm i
-  ```
-- Run application (from root directory)
-  ```
-  npm run start
-  ```
-- Open browser on address [http://localhost:5173/](http://localhost:5173/)
+## Development Quick Start
 
-### Firebase environment
+Installation
+```
+npm i
+```
 
-To connect with firebase to store your bet data just create a new Firebase Application and
-provide all required configuration data directly on "Settings" page.
+This project is running with NX tool that provide additional project graph where developer
+can check the dependencies betweeen modules.
 
-## Development
+```
+nx graph
+```
 
-Application was designed in Adobe XD. Then based on prepared mocup this application has
-been created.
+There are projects within this monorepo:
 
-### Scripts
+- domain - bussiness logic and tests of core BetKeeper objects
+- application - application layer that host an UI and wrap bussiness logic with database
+  persistance and server logic
+- e2e-tests - end-to-end tests for BetKeeper application that check if requirements are met using cucumber and playwright.
 
-- `npm install`: install project dependencies
-- `npm prepare`: install husky 🐶 - pre-commit hooks
-- `npm start`: Starts the application
-- `npm test`: Run Unit Tests
-- `npm run build`: Builds the application for production
-
-### PWA
-
-To check the PWA application you must deploy that application on any HTTP server. For
-localhost you don't need to wory about SSL certificates. But for any other external server
-the SSL certificate must be valid and trusted and otherwise the application service worker
-will not start and the application will not work as PWA.
 
 ### License
 
