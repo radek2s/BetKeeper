@@ -1,8 +1,10 @@
 # [Bet Keeper](https://radek2s.github.io/BetKeeper/)
 
-![](./docs/BetKeeper_Logo.png)
+![](./documents/BetKeeper_Logo.png)
 
 [![Biome on board!](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
+
+[![codecov](https://codecov.io/gh/radek2s/BetKeeper/branch/main/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
 
 # 🏗️ Project under construction...
 
@@ -34,11 +36,11 @@ versionning of the files and keeping the audit logs with established decisions.
 
 - [Domain](./domain/readme.md)
 - [Application](./application/readme.md)
+- [E2E Tests](./e2e-tests/readme.md)
 
 ## Development Quick Start
 
 Installation
-
 ```
 npm i
 ```
@@ -50,77 +52,13 @@ can check the dependencies betweeen modules.
 nx graph
 ```
 
-There are two projects within this monorepo:
+There are projects within this monorepo:
 
 - domain - bussiness logic and tests of core BetKeeper objects
 - application - application layer that host an UI and wrap bussiness logic with database
   persistance and server logic
+- e2e-tests - end-to-end tests for BetKeeper application that check if requirements are met using cucumber and playwright.
 
-## Usefull commands
-
-Run application and perform E2E tests in Playwright UI
-```shell
-npx nx run application:serve
-npx nx run e2e-tests:e2e --ui
-```
-
-Run E2E tests in headless mode
-```shell
-npm run e2e
-```
-
-Run E2E tests in headed mode (with browser UI)
-```shell
-npm run e2e:headed
-```
-
-Run Cucumber Behaviour-Driven Development tests that verifies requirements
-```shell
-npx nx run bet-keeper:test:bdd
-```
-Then you can open [cucumber-report.html](./test-result/cucumber-report.html) to visit what requriements are met.
-
-
-### Local environment
-
-- Clone repository
-  ```
-  git clone https://github.com/radek2s/BetKeeper.git
-  ```
-- Install dependencies for frontend application
-  ```
-  npm i
-  ```
-- Run application (from root directory)
-  ```
-  npm run start
-  ```
-- Open browser on address [http://localhost:5173/](http://localhost:5173/)
-
-### Firebase environment
-
-To connect with firebase to store your bet data just create a new Firebase Application and
-provide all required configuration data directly on "Settings" page.
-
-## Development
-
-Application was designed in Adobe XD. Then based on prepared mocup this application has
-been created.
-
-### Scripts
-
-- `npm install`: install project dependencies
-- `npm prepare`: install husky 🐶 - pre-commit hooks
-- `npm start`: Starts the application
-- `npm test`: Run Unit Tests
-- `npm run build`: Builds the application for production
-
-### PWA
-
-To check the PWA application you must deploy that application on any HTTP server. For
-localhost you don't need to wory about SSL certificates. But for any other external server
-the SSL certificate must be valid and trusted and otherwise the application service worker
-will not start and the application will not work as PWA.
 
 ### License
 
