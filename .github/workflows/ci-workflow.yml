@@ -1,28 +1,36 @@
 name: Continuous Integration
 on:
-    pull_request:
+  pull_request  
+
 jobs:
-  test-domain:
+  unit-tests:
+    name: Unit Tests & Coverage
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup node.js
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for better coverage analysis
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
-      - run: npm ci
-      - run: npm run test:ci --coverage 
-      - name: Test Report
+
+      - name: Install dependencies
+        run: npm ci
+
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Generate test report
         uses: dorny/test-reporter@v2
-        if: ${{ !cancelled() }}      
+        if: ${{ !cancelled() }}
         with:
-          name: Domain Tests            
-          path: tests-results.xml
+          name: Unit Test Results
+          path: test-report.xml
           reporter: jest-junit
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          files: './coverage/coverage.json'
-          token: ${{ secrets.CODECOV_TOKEN }}    
-      
+          fail-on-error: false
