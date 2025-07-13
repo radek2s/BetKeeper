@@ -1,6 +1,6 @@
 # Bet Keeper E2E Tests for Application
 
-[Back to top](../readme.md)
+[Back to parent](../readme.md)
 
 Tech stack:
 - [Playwright](https://playwright.dev/) E2E test framework for testing async Server Components

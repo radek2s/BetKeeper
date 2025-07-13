@@ -1,6 +1,6 @@
 # Bet Keeper Application
 
-[Back to top](../readme.md)
+[Back to parent](../readme.md)
 
 Tech stack:
 - [Vitest](https://vitest.dev/) Unit test framework for ClientComponents
