@@ -1,12 +1,14 @@
-import { DomainEvent } from '../user/events/DomainEvent';
-import { IEventDispatcher, NullEventDispatcher } from './EventDispatcher';
+import type { DomainEvent } from "../user/events/DomainEvent";
+import type { IEventDispatcher } from "./EventDispatcher";
+import { NullEventDispatcher } from "./EventDispatcher";
+import type { UUID } from "./Uuid";
 
 /**
  * Abstract Entity Base Class
  * Provides unified domain event management and optional event dispatching
  * following DDD principles
  */
-export abstract class Entity<TId> {
+export abstract class Entity {
   private _domainEvents: DomainEvent[] = [];
   private readonly _eventDispatcher: IEventDispatcher;
 
@@ -17,7 +19,7 @@ export abstract class Entity<TId> {
   /**
    * Gets the unique identifier of the entity
    */
-  abstract get id(): TId;
+  abstract get id(): UUID;
 
   /**
    * Gets all domain events that have been raised by this entity
@@ -98,7 +100,7 @@ export abstract class Entity<TId> {
    * Abstract method for entity equality comparison
    * @param other The other entity to compare with
    */
-  abstract equals(other: Entity<TId>): boolean;
+  abstract equals(other: Entity): boolean;
 
   /**
    * Abstract method for string representation of the entity
@@ -110,7 +112,7 @@ export abstract class Entity<TId> {
  * Abstract Aggregate Root Base Class
  * Extends Entity with additional aggregate-specific functionality
  */
-export abstract class AggregateRoot<TId> extends Entity<TId> {
+export abstract class AggregateRoot extends Entity {
   constructor(eventDispatcher?: IEventDispatcher) {
     super(eventDispatcher);
   }

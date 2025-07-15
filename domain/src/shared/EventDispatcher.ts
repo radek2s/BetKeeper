@@ -1,4 +1,4 @@
-import { DomainEvent } from '../user/events/DomainEvent';
+import type { DomainEvent } from "../user/events/DomainEvent";
 
 /**
  * Event Dispatcher Interface

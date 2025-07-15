@@ -2,24 +2,25 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { FriendList } from "../FriendList";
 import { User } from "../../entities/User";
-import { UserId } from "../../value-objects/UserId";
 import { Email } from "../../value-objects/Email";
-import { UserName } from "../../value-objects/UserName";
 import { UserStatus } from "../../types/RequestStatus";
 import { FriendRemovedEvent } from "../../events/FriendRequestEvents";
+import { UUID } from "../../../shared/Uuid";
 
 describe("FriendList", () => {
-  let userId: UserId;
+  let userId: UUID;
   let friendList: FriendList;
   let targetUser: User;
 
   beforeEach(() => {
-    userId = new UserId("user_123");
+    userId = "dee009ab-a335-44d9-baa7-31293d4db194";
+
     friendList = new FriendList(userId);
     targetUser = new User(
-      new UserId("user_target"),
+      "a9404e77-befb-4c57-bb32-38490aa2eeb3",
       new Email("target@example.com"),
-      new UserName("Target User"),
+      "Target",
+      "User",
       UserStatus.ACTIVE,
     );
   });
@@ -47,9 +48,10 @@ describe("FriendList", () => {
 
     it("should throw error when target user cannot receive friend requests", () => {
       const suspendedUser = new User(
-        new UserId("user_suspended"),
+        "user_suspended",
         new Email("suspended@example.com"),
-        new UserName("Suspended User"),
+        "Suspended",
+        "User",
         UserStatus.SUSPENDED,
       );
 
@@ -82,7 +84,8 @@ describe("FriendList", () => {
         new User(
           userId,
           new Email("user@example.com"),
-          new UserName("User"),
+          "User",
+          "Demo",
           UserStatus.ACTIVE,
         ),
       );
@@ -94,13 +97,14 @@ describe("FriendList", () => {
     });
 
     it("should throw error when friend request is not for this user", () => {
-      const otherUserId = new UserId("user_other");
+      const otherUserId = "user_other";
       const senderFriendList = new FriendList(targetUser.id);
       const friendRequest = senderFriendList.sendFriendRequest(
         new User(
           otherUserId,
           new Email("other@example.com"),
-          new UserName("Other"),
+          "Other",
+          "Demo",
           UserStatus.ACTIVE,
         ),
       );
@@ -118,13 +122,14 @@ describe("FriendList", () => {
         new User(
           userId,
           new Email("user@example.com"),
-          new UserName("User"),
+          "User",
+          "Demo",
           UserStatus.ACTIVE,
         ),
       );
       friendList.receiveFriendRequest(friendRequest);
 
-      friendList.approveFriendRequest(friendRequest.id.value);
+      friendList.approveFriendRequest(friendRequest.id);
 
       expect(friendList.isFriend(targetUser.id)).toBe(true);
       expect(friendList.friendCount).toBe(1);
@@ -145,13 +150,14 @@ describe("FriendList", () => {
         new User(
           userId,
           new Email("user@example.com"),
-          new UserName("User"),
+          "User",
+          "Demo",
           UserStatus.ACTIVE,
         ),
       );
       friendList.receiveFriendRequest(friendRequest);
 
-      friendList.rejectFriendRequest(friendRequest.id.value);
+      friendList.rejectFriendRequest(friendRequest.id);
 
       expect(friendList.isFriend(targetUser.id)).toBe(false);
       expect(friendList.domainEvents.length).toBeGreaterThan(0);
@@ -238,23 +244,22 @@ describe("FriendList", () => {
 
     it("should correctly identify friends", () => {
       expect(friendList.isFriend(targetUser.id)).toBe(true);
-      expect(friendList.isFriend(new UserId("non-friend"))).toBe(false);
+      expect(friendList.isFriend("non-friend")).toBe(false);
     });
 
     it("should correctly identify pending friend requests", () => {
       const anotherUser = new User(
-        new UserId("user_another"),
+        "user_another",
         new Email("another@example.com"),
-        new UserName("Another User"),
+        "Another",
+        "User",
         UserStatus.ACTIVE,
       );
 
       friendList.sendFriendRequest(anotherUser);
 
       expect(friendList.hasPendingFriendRequestTo(anotherUser.id)).toBe(true);
-      expect(
-        friendList.hasPendingFriendRequestTo(new UserId("non-existent")),
-      ).toBe(false);
+      expect(friendList.hasPendingFriendRequestTo("non-existent")).toBe(false);
     });
 
     it("should correctly identify pending invitation requests", () => {
@@ -320,7 +325,9 @@ describe("FriendList", () => {
     it("should return string representation", () => {
       friendList.addFriend(targetUser.id);
 
-      expect(friendList.toString()).toBe("FriendList(user_123, 1 friends)");
+      expect(friendList.toString()).toBe(
+        `FriendList(${friendList.id}, 1 friends)`,
+      );
     });
   });
 });

@@ -1,15 +1,14 @@
-import { User } from '../entities/User';
-import { FriendList } from '../aggregates/FriendList';
-import { Email } from '../value-objects/Email';
-import { UserName } from '../value-objects/UserName';
-import { UserId } from '../value-objects/UserId';
+import { User } from "../entities/User";
+import { FriendList } from "../aggregates/FriendList";
+import { Email } from "../value-objects/Email";
+import { UUID } from "domain/src/shared/Uuid";
 
 /**
  * User Repository Interface
  * Defines the contract for user persistence operations
  */
 export interface IUserRepository {
-  findById(id: UserId): Promise<User | null>;
+  findById(id: UUID): Promise<User | null>;
   findByEmail(email: Email): Promise<User | null>;
   save(user: User): Promise<void>;
   exists(email: Email): Promise<boolean>;
@@ -20,7 +19,7 @@ export interface IUserRepository {
  * Defines the contract for friend list persistence operations
  */
 export interface IFriendListRepository {
-  findByUserId(userId: UserId): Promise<FriendList | null>;
+  findByUserId(userId: UUID): Promise<FriendList | null>;
   save(friendList: FriendList): Promise<void>;
 }
 
@@ -31,21 +30,25 @@ export interface IFriendListRepository {
 export class UserService {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly friendListRepository: IFriendListRepository
+    private readonly friendListRepository: IFriendListRepository,
   ) {}
 
   /**
    * Creates a new user and initializes their friend list
    */
-  async createUser(email: Email, name: UserName): Promise<User> {
+  async createUser(
+    email: Email,
+    firstName: string,
+    lastName: string,
+  ): Promise<User> {
     // Check if user already exists
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
-      throw new Error('User with this email already exists');
+      throw new Error("User with this email already exists");
     }
 
     // Create new user
-    const user = User.create(email, name);
+    const user = User.create(email, firstName, lastName);
     await this.userRepository.save(user);
 
     // Initialize friend list for the new user
@@ -58,33 +61,38 @@ export class UserService {
   /**
    * Handles the complete friend request process between two users
    */
-  async sendFriendRequest(senderId: UserId, receiverEmail: Email): Promise<void> {
+  async sendFriendRequest(senderId: UUID, receiverEmail: Email): Promise<void> {
     // Find sender
     const sender = await this.userRepository.findById(senderId);
     if (!sender) {
-      throw new Error('Sender not found');
+      throw new Error("Sender not found");
     }
 
     if (!sender.canSendFriendRequests()) {
-      throw new Error('Sender cannot send friend requests');
+      throw new Error("Sender cannot send friend requests");
     }
 
     // Find receiver
     const receiver = await this.userRepository.findByEmail(receiverEmail);
     if (!receiver) {
-      throw new Error('User with this email does not exist. Consider sending an invitation request.');
+      throw new Error(
+        "User with this email does not exist. Consider sending an invitation request.",
+      );
     }
 
     // Get sender's friend list
-    const senderFriendList = await this.friendListRepository.findByUserId(senderId);
+    const senderFriendList =
+      await this.friendListRepository.findByUserId(senderId);
     if (!senderFriendList) {
-      throw new Error('Sender friend list not found');
+      throw new Error("Sender friend list not found");
     }
 
     // Get receiver's friend list
-    const receiverFriendList = await this.friendListRepository.findByUserId(receiver.id);
+    const receiverFriendList = await this.friendListRepository.findByUserId(
+      receiver.id,
+    );
     if (!receiverFriendList) {
-      throw new Error('Receiver friend list not found');
+      throw new Error("Receiver friend list not found");
     }
 
     // Send friend request
@@ -99,23 +107,29 @@ export class UserService {
   /**
    * Handles friend request approval and establishes mutual friendship
    */
-  async approveFriendRequest(receiverId: UserId, requestId: string): Promise<void> {
+  async approveFriendRequest(
+    receiverId: UUID,
+    requestId: string,
+  ): Promise<void> {
     // Get receiver's friend list
-    const receiverFriendList = await this.friendListRepository.findByUserId(receiverId);
+    const receiverFriendList =
+      await this.friendListRepository.findByUserId(receiverId);
     if (!receiverFriendList) {
-      throw new Error('Receiver friend list not found');
+      throw new Error("Receiver friend list not found");
     }
 
     // Get the friend request to find the sender
     const friendRequest = receiverFriendList.getFriendRequest(requestId);
     if (!friendRequest) {
-      throw new Error('Friend request not found');
+      throw new Error("Friend request not found");
     }
 
     // Get sender's friend list
-    const senderFriendList = await this.friendListRepository.findByUserId(friendRequest.senderId);
+    const senderFriendList = await this.friendListRepository.findByUserId(
+      friendRequest.senderId,
+    );
     if (!senderFriendList) {
-      throw new Error('Sender friend list not found');
+      throw new Error("Sender friend list not found");
     }
 
     // Approve the request (this adds the sender to receiver's friend list)
@@ -132,17 +146,18 @@ export class UserService {
   /**
    * Handles friend removal and ensures mutual removal
    */
-  async removeFriend(userId: UserId, friendId: UserId): Promise<void> {
+  async removeFriend(userId: UUID, friendId: UUID): Promise<void> {
     // Get user's friend list
     const userFriendList = await this.friendListRepository.findByUserId(userId);
     if (!userFriendList) {
-      throw new Error('User friend list not found');
+      throw new Error("User friend list not found");
     }
 
     // Get friend's friend list
-    const friendFriendList = await this.friendListRepository.findByUserId(friendId);
+    const friendFriendList =
+      await this.friendListRepository.findByUserId(friendId);
     if (!friendFriendList) {
-      throw new Error('Friend friend list not found');
+      throw new Error("Friend friend list not found");
     }
 
     // Remove friend from user's list
@@ -168,7 +183,7 @@ export class UserService {
   /**
    * Validates if a user can create bet requests (has at least one friend)
    */
-  async canCreateBetRequest(userId: UserId): Promise<boolean> {
+  async canCreateBetRequest(userId: UUID): Promise<boolean> {
     const friendList = await this.friendListRepository.findByUserId(userId);
     if (!friendList) {
       return false;
@@ -180,10 +195,10 @@ export class UserService {
   /**
    * Gets a user's friend list with full user details
    */
-  async getUserFriendsWithDetails(userId: UserId): Promise<User[]> {
+  async getUserFriendsWithDetails(userId: UUID): Promise<User[]> {
     const friendList = await this.friendListRepository.findByUserId(userId);
     if (!friendList) {
-      throw new Error('Friend list not found');
+      throw new Error("Friend list not found");
     }
 
     const friends: User[] = [];

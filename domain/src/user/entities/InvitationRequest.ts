@@ -1,5 +1,3 @@
-import { RequestId } from "../value-objects/RequestId";
-import { UserId } from "../value-objects/UserId";
 import { Email } from "../value-objects/Email";
 import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
 import {
@@ -9,29 +7,30 @@ import {
 import { Entity } from "../../shared/Entity";
 import { IEventDispatcher } from "../../shared/EventDispatcher";
 import { DomainEvent } from "../events/DomainEvent";
+import { generateId, UUID } from "../../shared/Uuid";
 
 /**
  * Invitation Request Entity
  * Represents a request to invite a non-existing user to join the system
  */
-export class InvitationRequest extends Entity<RequestId> {
-  private readonly _id: RequestId;
-  private readonly _requesterId: UserId;
+export class InvitationRequest extends Entity {
+  private readonly _id: UUID;
+  private readonly _requesterId: UUID;
   private readonly _inviteeEmail: Email;
   private _status: RequestStatus;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
-  private _approvedById?: UserId;
+  private _approvedById?: UUID;
   private _approvedAt?: Date;
 
   constructor(
-    id: RequestId,
-    requesterId: UserId,
+    id: UUID,
+    requesterId: UUID,
     inviteeEmail: Email,
     status: RequestStatus = RequestStatus.PENDING,
     createdAt?: Date,
     updatedAt?: Date,
-    approvedById?: UserId,
+    approvedById?: UUID,
     approvedAt?: Date,
     eventDispatcher?: IEventDispatcher,
   ) {
@@ -59,11 +58,11 @@ export class InvitationRequest extends Entity<RequestId> {
   }
 
   // Getters
-  get id(): RequestId {
+  get id(): UUID {
     return this._id;
   }
 
-  get requesterId(): UserId {
+  get requesterId(): UUID {
     return this._requesterId;
   }
 
@@ -83,7 +82,7 @@ export class InvitationRequest extends Entity<RequestId> {
     return this._updatedAt;
   }
 
-  get approvedById(): UserId | undefined {
+  get approvedById(): UUID | undefined {
     return this._approvedById;
   }
 
@@ -92,7 +91,7 @@ export class InvitationRequest extends Entity<RequestId> {
   }
 
   // Business methods
-  approve(approvedById: UserId): void {
+  approve(approvedById: UUID): void {
     if (!RequestStatusGuards.isPending(this._status)) {
       throw new Error("Can only approve pending invitation requests");
     }
@@ -160,11 +159,11 @@ export class InvitationRequest extends Entity<RequestId> {
 
   // Factory methods
   static create(
-    requesterId: UserId,
+    requesterId: UUID,
     inviteeEmail: Email,
     eventDispatcher?: IEventDispatcher,
   ): InvitationRequest {
-    const id = RequestId.generate();
+    const id = generateId();
     return new InvitationRequest(
       id,
       requesterId,
@@ -179,13 +178,13 @@ export class InvitationRequest extends Entity<RequestId> {
   }
 
   static reconstitute(
-    id: RequestId,
-    requesterId: UserId,
+    id: UUID,
+    requesterId: UUID,
     inviteeEmail: Email,
     status: RequestStatus,
     createdAt: Date,
     updatedAt: Date,
-    approvedById?: UserId,
+    approvedById?: UUID,
     approvedAt?: Date,
     eventDispatcher?: IEventDispatcher,
   ): InvitationRequest {
@@ -203,14 +202,14 @@ export class InvitationRequest extends Entity<RequestId> {
   }
 
   // Equality
-  override equals(other: Entity<RequestId>): boolean {
+  override equals(other: Entity): boolean {
     if (!(other instanceof InvitationRequest)) {
       return false;
     }
-    return this._id.equals(other._id);
+    return this._id === other._id;
   }
 
   override toString(): string {
-    return `InvitationRequest(${this._id.value}, ${this._requesterId.value} -> ${this._inviteeEmail.value}, ${this._status})`;
+    return `InvitationRequest(${this._id}, ${this._requesterId} -> ${this._inviteeEmail.value}, ${this._status})`;
   }
 }

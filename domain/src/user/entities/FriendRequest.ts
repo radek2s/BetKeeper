@@ -1,5 +1,3 @@
-import { RequestId } from "../value-objects/RequestId";
-import { UserId } from "../value-objects/UserId";
 import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
 import {
   FriendRequestSentEvent,
@@ -8,24 +6,25 @@ import {
 } from "../events/FriendRequestEvents";
 import { Entity } from "../../shared/Entity";
 import { IEventDispatcher } from "../../shared/EventDispatcher";
+import { generateId, UUID } from "../../shared/Uuid";
 
 /**
  * Friend Request Entity
  * Represents a request from one user to become friends with another user
  */
-export class FriendRequest extends Entity<RequestId> {
-  private readonly _id: RequestId;
-  private readonly _senderId: UserId;
-  private readonly _receiverId: UserId;
+export class FriendRequest extends Entity {
+  private readonly _id: UUID;
+  private readonly _senderId: UUID;
+  private readonly _receiverId: UUID;
   private _status: RequestStatus;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
   private _expiresAt?: Date;
 
   constructor(
-    id: RequestId,
-    senderId: UserId,
-    receiverId: UserId,
+    id: UUID,
+    senderId: UUID,
+    receiverId: UUID,
     status: RequestStatus = RequestStatus.PENDING,
     createdAt?: Date,
     updatedAt?: Date,
@@ -34,7 +33,7 @@ export class FriendRequest extends Entity<RequestId> {
   ) {
     super(eventDispatcher);
 
-    if (senderId.equals(receiverId)) {
+    if (senderId === receiverId) {
       throw new Error("Cannot send friend request to yourself");
     }
 
@@ -46,7 +45,6 @@ export class FriendRequest extends Entity<RequestId> {
     this._updatedAt = updatedAt || new Date();
     this._expiresAt = expiresAt;
 
-    // Raise domain event for new friend request
     if (!createdAt && status === RequestStatus.PENDING) {
       this.addDomainEvent(
         new FriendRequestSentEvent(this._id, this._senderId, this._receiverId),
@@ -54,16 +52,15 @@ export class FriendRequest extends Entity<RequestId> {
     }
   }
 
-  // Getters
-  get id(): RequestId {
+  get id(): UUID {
     return this._id;
   }
 
-  get senderId(): UserId {
+  get senderId(): UUID {
     return this._senderId;
   }
 
-  get receiverId(): UserId {
+  get receiverId(): UUID {
     return this._receiverId;
   }
 
@@ -83,7 +80,6 @@ export class FriendRequest extends Entity<RequestId> {
     return this._expiresAt;
   }
 
-  // Business methods
   approve(): void {
     if (!RequestStatusGuards.isPending(this._status)) {
       throw new Error("Can only approve pending friend requests");
@@ -144,7 +140,6 @@ export class FriendRequest extends Entity<RequestId> {
     this.markAsModified();
   }
 
-  // Domain behavior checks
   isPending(): boolean {
     return RequestStatusGuards.isPending(this._status);
   }
@@ -179,14 +174,13 @@ export class FriendRequest extends Entity<RequestId> {
     return this.isPending() && !this.isExpired();
   }
 
-  // Factory methods
   static create(
-    senderId: UserId,
-    receiverId: UserId,
+    senderId: UUID,
+    receiverId: UUID,
     expirationDays: number = 30,
     eventDispatcher?: IEventDispatcher,
   ): FriendRequest {
-    const id = RequestId.generate();
+    const id = generateId();
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + expirationDays);
 
@@ -203,9 +197,9 @@ export class FriendRequest extends Entity<RequestId> {
   }
 
   static reconstitute(
-    id: RequestId,
-    senderId: UserId,
-    receiverId: UserId,
+    id: UUID,
+    senderId: UUID,
+    receiverId: UUID,
     status: RequestStatus,
     createdAt: Date,
     updatedAt: Date,
@@ -224,15 +218,14 @@ export class FriendRequest extends Entity<RequestId> {
     );
   }
 
-  // Equality
-  override equals(other: Entity<RequestId>): boolean {
+  override equals(other: Entity): boolean {
     if (!(other instanceof FriendRequest)) {
       return false;
     }
-    return this._id.equals(other._id);
+    return this._id === other._id;
   }
 
   override toString(): string {
-    return `FriendRequest(${this._id.value}, ${this._senderId.value} -> ${this._receiverId.value}, ${this._status})`;
+    return `FriendRequest(${this._id}, ${this._senderId} -> ${this._receiverId}, ${this._status})`;
   }
 }

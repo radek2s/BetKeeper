@@ -1,4 +1,3 @@
-import { UserId } from "../value-objects/UserId";
 import { Email } from "../value-objects/Email";
 import { User } from "../entities/User";
 import { FriendRequest } from "../entities/FriendRequest";
@@ -7,35 +6,36 @@ import { RequestStatus } from "../types/RequestStatus";
 import { FriendRemovedEvent } from "../events/FriendRequestEvents";
 import { AggregateRoot } from "../../shared/Entity";
 import { IEventDispatcher } from "../../shared/EventDispatcher";
+import { UUID } from "../../shared/Uuid";
 
 /**
  * Friend List Aggregate Root
  * Manages a user's friends and friend-related operations
  */
-export class FriendList extends AggregateRoot<UserId> {
-  private readonly _userId: UserId;
-  private readonly _friends: Map<string, UserId> = new Map();
+export class FriendList extends AggregateRoot {
+  private readonly _userId: UUID;
+  private readonly _friends: Map<string, UUID> = new Map();
   private readonly _sentFriendRequests: Map<string, FriendRequest> = new Map();
   private readonly _receivedFriendRequests: Map<string, FriendRequest> =
     new Map();
   private readonly _sentInvitationRequests: Map<string, InvitationRequest> =
     new Map();
 
-  constructor(userId: UserId, eventDispatcher?: IEventDispatcher) {
+  constructor(userId: UUID, eventDispatcher?: IEventDispatcher) {
     super(eventDispatcher);
     this._userId = userId;
   }
 
   // Getters
-  override get id(): UserId {
+  override get id(): UUID {
     return this._userId;
   }
 
-  get userId(): UserId {
+  get userId(): UUID {
     return this._userId;
   }
 
-  get friends(): UserId[] {
+  get friends(): UUID[] {
     return Array.from(this._friends.values());
   }
 
@@ -78,7 +78,7 @@ export class FriendList extends AggregateRoot<UserId> {
     }
 
     const friendRequest = FriendRequest.create(this._userId, targetUser.id);
-    this._sentFriendRequests.set(friendRequest.id.value, friendRequest);
+    this._sentFriendRequests.set(friendRequest.id, friendRequest);
 
     // Add domain events from the friend request
     this.addDomainEvents(friendRequest.domainEvents);
@@ -88,11 +88,11 @@ export class FriendList extends AggregateRoot<UserId> {
   }
 
   receiveFriendRequest(friendRequest: FriendRequest): void {
-    if (!friendRequest.receiverId.equals(this._userId)) {
+    if (friendRequest.receiverId !== this._userId) {
       throw new Error("Friend request is not for this user");
     }
 
-    this._receivedFriendRequests.set(friendRequest.id.value, friendRequest);
+    this._receivedFriendRequests.set(friendRequest.id, friendRequest);
   }
 
   approveFriendRequest(requestId: string): void {
@@ -131,8 +131,8 @@ export class FriendList extends AggregateRoot<UserId> {
     request.cancel();
   }
 
-  addFriend(friendId: UserId): void {
-    if (friendId.equals(this._userId)) {
+  addFriend(friendId: UUID): void {
+    if (friendId === this._userId) {
       throw new Error("Cannot add yourself as a friend");
     }
 
@@ -140,15 +140,15 @@ export class FriendList extends AggregateRoot<UserId> {
       return; // Already a friend
     }
 
-    this._friends.set(friendId.value, friendId);
+    this._friends.set(friendId, friendId);
   }
 
-  removeFriend(friendId: UserId): void {
+  removeFriend(friendId: UUID): void {
     if (!this.isFriend(friendId)) {
       throw new Error("User is not in friend list");
     }
 
-    this._friends.delete(friendId.value);
+    this._friends.delete(friendId);
     this.addDomainEvent(new FriendRemovedEvent(this._userId, friendId));
   }
 
@@ -162,10 +162,7 @@ export class FriendList extends AggregateRoot<UserId> {
       this._userId,
       inviteeEmail,
     );
-    this._sentInvitationRequests.set(
-      invitationRequest.id.value,
-      invitationRequest,
-    );
+    this._sentInvitationRequests.set(invitationRequest.id, invitationRequest);
 
     // Add domain events from the invitation request
     this.addDomainEvents(invitationRequest.domainEvents);
@@ -184,19 +181,19 @@ export class FriendList extends AggregateRoot<UserId> {
   }
 
   // Query methods
-  isFriend(userId: UserId): boolean {
-    return this._friends.has(userId.value);
+  isFriend(userId: UUID): boolean {
+    return this._friends.has(userId);
   }
 
-  hasPendingFriendRequestTo(userId: UserId): boolean {
+  hasPendingFriendRequestTo(userId: UUID): boolean {
     return Array.from(this._sentFriendRequests.values()).some(
-      (request) => request.receiverId.equals(userId) && request.isPending(),
+      (request) => request.receiverId === userId && request.isPending(),
     );
   }
 
-  hasPendingFriendRequestFrom(userId: UserId): boolean {
+  hasPendingFriendRequestFrom(userId: UUID): boolean {
     return Array.from(this._receivedFriendRequests.values()).some(
-      (request) => request.senderId.equals(userId) && request.isPending(),
+      (request) => request.senderId === userId && request.isPending(),
     );
   }
 
@@ -223,29 +220,26 @@ export class FriendList extends AggregateRoot<UserId> {
   }
 
   // Equality
-  override equals(other: AggregateRoot<UserId>): boolean {
+  override equals(other: AggregateRoot): boolean {
     if (!(other instanceof FriendList)) {
       return false;
     }
-    return this._userId.equals(other._userId);
+    return this._userId === other._userId;
   }
 
   override toString(): string {
-    return `FriendList(${this._userId.value}, ${this.friendCount} friends)`;
+    return `FriendList(${this._userId}, ${this.friendCount} friends)`;
   }
 
   // Factory method
-  static create(
-    userId: UserId,
-    eventDispatcher?: IEventDispatcher,
-  ): FriendList {
+  static create(userId: UUID, eventDispatcher?: IEventDispatcher): FriendList {
     return new FriendList(userId, eventDispatcher);
   }
 
   // Reconstitution method for persistence
   static reconstitute(
-    userId: UserId,
-    friends: UserId[],
+    userId: UUID,
+    friends: UUID[],
     sentFriendRequests: FriendRequest[],
     receivedFriendRequests: FriendRequest[],
     sentInvitationRequests: InvitationRequest[],
@@ -255,22 +249,22 @@ export class FriendList extends AggregateRoot<UserId> {
 
     // Restore friends
     friends.forEach((friendId) => {
-      friendList._friends.set(friendId.value, friendId);
+      friendList._friends.set(friendId, friendId);
     });
 
     // Restore sent friend requests
     sentFriendRequests.forEach((request) => {
-      friendList._sentFriendRequests.set(request.id.value, request);
+      friendList._sentFriendRequests.set(request.id, request);
     });
 
     // Restore received friend requests
     receivedFriendRequests.forEach((request) => {
-      friendList._receivedFriendRequests.set(request.id.value, request);
+      friendList._receivedFriendRequests.set(request.id, request);
     });
 
     // Restore sent invitation requests
     sentInvitationRequests.forEach((request) => {
-      friendList._sentInvitationRequests.set(request.id.value, request);
+      friendList._sentInvitationRequests.set(request.id, request);
     });
 
     return friendList;

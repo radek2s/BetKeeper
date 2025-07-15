@@ -1,28 +1,29 @@
-import { UserId } from "../value-objects/UserId";
 import { Email } from "../value-objects/Email";
-import { UserName } from "../value-objects/UserName";
+import { Entity } from "../../shared/Entity";
 import { UserStatus, UserStatusGuards } from "../types/RequestStatus";
 import { UserCreatedEvent } from "../events/UserCreatedEvent";
 import { UserStatusChangedEvent } from "../events/UserStatusChangedEvent";
-import { Entity } from "../../shared/Entity";
 import { IEventDispatcher } from "../../shared/EventDispatcher";
+import { generateId, UUID } from "../../shared/Uuid";
 
 /**
  * User Entity
  * Represents a user in the BetKeeper system following DDD principles
  */
-export class User extends Entity<UserId> {
-  private readonly _id: UserId;
+export class User extends Entity {
+  private readonly _id: UUID;
   private _email: Email;
-  private _name: UserName;
+  private _firstName: string;
+  private _lastName: string;
   private _status: UserStatus;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
 
   constructor(
-    id: UserId,
+    id: UUID,
     email: Email,
-    name: UserName,
+    firstName: string,
+    lastName: string,
     status: UserStatus = UserStatus.PENDING_ACTIVATION,
     createdAt?: Date,
     updatedAt?: Date,
@@ -32,7 +33,8 @@ export class User extends Entity<UserId> {
 
     this._id = id;
     this._email = email;
-    this._name = name;
+    this._firstName = firstName;
+    this._lastName = lastName;
     this._status = status;
     this._createdAt = createdAt || new Date();
     this._updatedAt = updatedAt || new Date();
@@ -40,13 +42,13 @@ export class User extends Entity<UserId> {
     // Raise domain event for new user creation
     if (!createdAt) {
       this.addDomainEvent(
-        new UserCreatedEvent(this._id, this._email, this._name),
+        new UserCreatedEvent(this._id, this._email, this.name),
       );
     }
   }
 
   // Getters
-  get id(): UserId {
+  get id(): UUID {
     return this._id;
   }
 
@@ -54,8 +56,8 @@ export class User extends Entity<UserId> {
     return this._email;
   }
 
-  get name(): UserName {
-    return this._name;
+  get name(): string {
+    return `${this._firstName} ${this._lastName}`;
   }
 
   get status(): UserStatus {
@@ -70,7 +72,6 @@ export class User extends Entity<UserId> {
     return this._updatedAt;
   }
 
-  // Business methods
   activate(): void {
     if (this._status === UserStatus.ACTIVE) {
       throw new Error("User is already active");
@@ -120,19 +121,20 @@ export class User extends Entity<UserId> {
     );
   }
 
-  updateName(newName: UserName): void {
-    if (this._name.equals(newName)) {
-      return; // No change needed
+  updateName(firstName: string, lastName: string): void {
+    if (this._firstName === firstName && this._lastName === lastName) {
+      return;
     }
 
-    this._name = newName;
+    this._firstName = firstName;
+    this._lastName = lastName;
     this._updatedAt = new Date();
     this.markAsModified();
   }
 
   updateEmail(newEmail: Email): void {
     if (this._email.equals(newEmail)) {
-      return; // No change needed
+      return;
     }
 
     this._email = newEmail;
@@ -140,7 +142,6 @@ export class User extends Entity<UserId> {
     this.markAsModified();
   }
 
-  // Domain behavior checks
   canReceiveFriendRequests(): boolean {
     return UserStatusGuards.canReceiveFriendRequests(this._status);
   }
@@ -153,19 +154,19 @@ export class User extends Entity<UserId> {
     return UserStatusGuards.isActive(this._status);
   }
 
-  // Factory methods
   static create(
     email: Email,
-    name: UserName,
+    firstName: string,
+    lastName: string,
     eventDispatcher?: IEventDispatcher,
   ): User {
-    const id = UserId.create(
-      `user_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-    );
+    const id = generateId();
+
     return new User(
       id,
       email,
-      name,
+      firstName,
+      lastName,
       UserStatus.PENDING_ACTIVATION,
       undefined,
       undefined,
@@ -174,9 +175,10 @@ export class User extends Entity<UserId> {
   }
 
   static reconstitute(
-    id: UserId,
+    id: UUID,
     email: Email,
-    name: UserName,
+    firstName: string,
+    lastName: string,
     status: UserStatus,
     createdAt: Date,
     updatedAt: Date,
@@ -185,7 +187,8 @@ export class User extends Entity<UserId> {
     return new User(
       id,
       email,
-      name,
+      firstName,
+      lastName,
       status,
       createdAt,
       updatedAt,
@@ -193,15 +196,14 @@ export class User extends Entity<UserId> {
     );
   }
 
-  // Equality
-  override equals(other: Entity<UserId>): boolean {
+  override equals(other: Entity): boolean {
     if (!(other instanceof User)) {
       return false;
     }
-    return this._id.equals(other._id);
+    return this._id === other._id;
   }
 
   override toString(): string {
-    return `User(${this._id.value}, ${this._email.value}, ${this._name.value})`;
+    return `User(${this._id}, ${this._email.value}, ${this._firstName} ${this._lastName})`;
   }
 }
