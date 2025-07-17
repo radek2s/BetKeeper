@@ -1,27 +1,29 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import { describe, it, expect, beforeEach } from "vitest";
-import { FriendList } from "../FriendList";
+
 import { User } from "../../entities/User";
 import { Email } from "../../value-objects/Email";
 import { UserStatus } from "../../types/RequestStatus";
 import { FriendRemovedEvent } from "../../events/FriendRequestEvents";
 import { UUID } from "../../../shared/Uuid";
+import { UserFriendList } from "../UserFriendList";
 
 describe("FriendList", () => {
   let userId: UUID;
-  let friendList: FriendList;
+  let friendList: UserFriendList;
   let targetUser: User;
 
   beforeEach(() => {
     userId = "dee009ab-a335-44d9-baa7-31293d4db194";
 
-    friendList = new FriendList(userId);
+    friendList = new UserFriendList(userId);
     targetUser = new User(
-      "a9404e77-befb-4c57-bb32-38490aa2eeb3",
       new Email("target@example.com"),
       "Target",
       "User",
       UserStatus.ACTIVE,
+      undefined,
+      "a9404e77-befb-4c57-bb32-38490aa2eeb3",
     );
   });
 
@@ -48,11 +50,12 @@ describe("FriendList", () => {
 
     it("should throw error when target user cannot receive friend requests", () => {
       const suspendedUser = new User(
-        "user_suspended",
         new Email("suspended@example.com"),
         "Suspended",
         "User",
         UserStatus.SUSPENDED,
+        undefined,
+        "user_suspended",
       );
 
       expect(() => friendList.sendFriendRequest(suspendedUser)).toThrow(
@@ -79,14 +82,15 @@ describe("FriendList", () => {
 
   describe("receiveFriendRequest", () => {
     it("should receive a friend request", () => {
-      const senderFriendList = new FriendList(targetUser.id);
+      const senderFriendList = new UserFriendList(targetUser.id);
       const friendRequest = senderFriendList.sendFriendRequest(
         new User(
-          userId,
           new Email("user@example.com"),
           "User",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
+          userId,
         ),
       );
 
@@ -98,14 +102,15 @@ describe("FriendList", () => {
 
     it("should throw error when friend request is not for this user", () => {
       const otherUserId = "user_other";
-      const senderFriendList = new FriendList(targetUser.id);
+      const senderFriendList = new UserFriendList(targetUser.id);
       const friendRequest = senderFriendList.sendFriendRequest(
         new User(
-          otherUserId,
           new Email("other@example.com"),
           "Other",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
+          otherUserId,
         ),
       );
 
@@ -117,14 +122,15 @@ describe("FriendList", () => {
 
   describe("approveFriendRequest", () => {
     it("should approve a friend request and add friend", () => {
-      const senderFriendList = new FriendList(targetUser.id);
+      const senderFriendList = new UserFriendList(targetUser.id);
       const friendRequest = senderFriendList.sendFriendRequest(
         new User(
-          userId,
           new Email("user@example.com"),
           "User",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
+          userId,
         ),
       );
       friendList.receiveFriendRequest(friendRequest);
@@ -145,14 +151,15 @@ describe("FriendList", () => {
 
   describe("rejectFriendRequest", () => {
     it("should reject a friend request", () => {
-      const senderFriendList = new FriendList(targetUser.id);
+      const senderFriendList = new UserFriendList(targetUser.id);
       const friendRequest = senderFriendList.sendFriendRequest(
         new User(
-          userId,
           new Email("user@example.com"),
           "User",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
+          userId,
         ),
       );
       friendList.receiveFriendRequest(friendRequest);
@@ -249,11 +256,12 @@ describe("FriendList", () => {
 
     it("should correctly identify pending friend requests", () => {
       const anotherUser = new User(
-        "user_another",
         new Email("another@example.com"),
         "Another",
         "User",
         UserStatus.ACTIVE,
+        undefined,
+        "user_another",
       );
 
       friendList.sendFriendRequest(anotherUser);
@@ -292,7 +300,7 @@ describe("FriendList", () => {
   describe("factory methods", () => {
     describe("create", () => {
       it("should create a new friend list for a user", () => {
-        const newFriendList = FriendList.create(userId);
+        const newFriendList = UserFriendList.create(userId);
 
         expect(newFriendList.userId).toBe(userId);
         expect(newFriendList.friendCount).toBe(0);
@@ -306,7 +314,7 @@ describe("FriendList", () => {
         const receivedRequests: any[] = [];
         const invitationRequests: any[] = [];
 
-        const reconstitutedList = FriendList.reconstitute(
+        const reconstitutedList = UserFriendList.reconstitute(
           userId,
           friends,
           sentRequests,

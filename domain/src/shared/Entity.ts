@@ -16,9 +16,6 @@ export abstract class Entity {
     this._eventDispatcher = eventDispatcher || new NullEventDispatcher();
   }
 
-  /**
-   * Gets the unique identifier of the entity
-   */
   abstract get id(): UUID;
 
   /**
@@ -26,20 +23,6 @@ export abstract class Entity {
    */
   get domainEvents(): DomainEvent[] {
     return [...this._domainEvents];
-  }
-
-  /**
-   * Checks if the entity has any pending domain events
-   */
-  get hasDomainEvents(): boolean {
-    return this._domainEvents.length > 0;
-  }
-
-  /**
-   * Gets the number of pending domain events
-   */
-  get domainEventCount(): number {
-    return this._domainEvents.length;
   }
 
   /**
@@ -80,31 +63,8 @@ export abstract class Entity {
     await this._eventDispatcher.dispatchAll(eventsToDispatch);
   }
 
-  /**
-   * Dispatches a specific domain event immediately
-   * @param event The domain event to dispatch
-   */
-  protected async dispatchEvent(event: DomainEvent): Promise<void> {
-    await this._eventDispatcher.dispatch(event);
-  }
-
-  /**
-   * Marks the entity as modified by updating its timestamp
-   * Subclasses should call this method when entity state changes
-   */
-  protected markAsModified(): void {
-    // Subclasses can override this to update timestamps or other metadata
-  }
-
-  /**
-   * Abstract method for entity equality comparison
-   * @param other The other entity to compare with
-   */
   abstract equals(other: Entity): boolean;
 
-  /**
-   * Abstract method for string representation of the entity
-   */
   abstract toString(): string;
 }
 

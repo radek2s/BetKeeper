@@ -1,6 +1,5 @@
 {
-  "editor.formatOnSave": true,
   "vitest.enable": true,
+  "editor.formatOnSave": true,
   "vitest.shellType": "terminal"
-  
 }

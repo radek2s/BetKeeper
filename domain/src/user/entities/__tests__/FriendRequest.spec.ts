@@ -35,12 +35,10 @@ describe("FriendRequest", () => {
       expect(friendRequest.receiverId).toBe(receiverId);
       expect(friendRequest.status).toBe(RequestStatus.PENDING);
       expect(friendRequest.createdAt).toBeInstanceOf(Date);
-      expect(friendRequest.updatedAt).toBeInstanceOf(Date);
     });
 
     it("should create a friend request with custom status and dates", () => {
       const createdAt = new Date("2023-01-01");
-      const updatedAt = new Date("2023-01-02");
       const expiresAt = new Date("2023-02-01");
 
       const friendRequest = new FriendRequest(
@@ -49,13 +47,11 @@ describe("FriendRequest", () => {
         receiverId,
         RequestStatus.APPROVED,
         createdAt,
-        updatedAt,
         expiresAt,
       );
 
       expect(friendRequest.status).toBe(RequestStatus.APPROVED);
       expect(friendRequest.createdAt).toBe(createdAt);
-      expect(friendRequest.updatedAt).toBe(updatedAt);
       expect(friendRequest.expiresAt).toBe(expiresAt);
     });
 
@@ -122,7 +118,6 @@ describe("FriendRequest", () => {
         senderId,
         receiverId,
         RequestStatus.PENDING,
-        undefined,
         undefined,
         expiredDate,
       );
@@ -216,7 +211,6 @@ describe("FriendRequest", () => {
         receiverId,
         RequestStatus.PENDING,
         undefined,
-        undefined,
         expiredDate,
       );
 
@@ -231,7 +225,6 @@ describe("FriendRequest", () => {
         senderId,
         receiverId,
         RequestStatus.PENDING,
-        undefined,
         undefined,
         futureDate,
       );
@@ -308,7 +301,6 @@ describe("FriendRequest", () => {
     describe("reconstitute", () => {
       it("should reconstitute a friend request from persistence data", () => {
         const createdAt = new Date("2023-01-01");
-        const updatedAt = new Date("2023-01-02");
         const expiresAt = new Date("2023-02-01");
 
         const friendRequest = FriendRequest.reconstitute(
@@ -317,14 +309,12 @@ describe("FriendRequest", () => {
           receiverId,
           RequestStatus.APPROVED,
           createdAt,
-          updatedAt,
           expiresAt,
         );
 
         expect(friendRequest.id).toBe(requestId);
         expect(friendRequest.status).toBe(RequestStatus.APPROVED);
         expect(friendRequest.createdAt).toBe(createdAt);
-        expect(friendRequest.updatedAt).toBe(updatedAt);
         expect(friendRequest.expiresAt).toBe(expiresAt);
         expect(friendRequest.domainEvents).toHaveLength(0);
       });

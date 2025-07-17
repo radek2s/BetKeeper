@@ -3,8 +3,11 @@ import { Entity } from "../../shared/Entity";
 import { UserStatus, UserStatusGuards } from "../types/RequestStatus";
 import { UserCreatedEvent } from "../events/UserCreatedEvent";
 import { UserStatusChangedEvent } from "../events/UserStatusChangedEvent";
-import { IEventDispatcher } from "../../shared/EventDispatcher";
-import { generateId, UUID } from "../../shared/Uuid";
+import {
+  generateId,
+  type IEventDispatcher,
+  type UUID,
+} from "@bet-keeper/domain";
 
 /**
  * User Entity
@@ -16,38 +19,30 @@ export class User extends Entity {
   private _firstName: string;
   private _lastName: string;
   private _status: UserStatus;
-  private readonly _createdAt: Date;
-  private _updatedAt: Date;
 
   constructor(
-    id: UUID,
     email: Email,
     firstName: string,
     lastName: string,
     status: UserStatus = UserStatus.PENDING_ACTIVATION,
-    createdAt?: Date,
-    updatedAt?: Date,
     eventDispatcher?: IEventDispatcher,
+    id?: UUID,
   ) {
     super(eventDispatcher);
 
-    this._id = id;
+    this._id = id || generateId();
     this._email = email;
     this._firstName = firstName;
     this._lastName = lastName;
     this._status = status;
-    this._createdAt = createdAt || new Date();
-    this._updatedAt = updatedAt || new Date();
 
-    // Raise domain event for new user creation
-    if (!createdAt) {
+    if (!id) {
       this.addDomainEvent(
         new UserCreatedEvent(this._id, this._email, this.name),
       );
     }
   }
 
-  // Getters
   get id(): UUID {
     return this._id;
   }
@@ -64,14 +59,6 @@ export class User extends Entity {
     return this._status;
   }
 
-  get createdAt(): Date {
-    return this._createdAt;
-  }
-
-  get updatedAt(): Date {
-    return this._updatedAt;
-  }
-
   activate(): void {
     if (this._status === UserStatus.ACTIVE) {
       throw new Error("User is already active");
@@ -83,8 +70,6 @@ export class User extends Entity {
 
     const previousStatus = this._status;
     this._status = UserStatus.ACTIVE;
-    this._updatedAt = new Date();
-    this.markAsModified();
 
     this.addDomainEvent(
       new UserStatusChangedEvent(this._id, previousStatus, this._status),
@@ -98,8 +83,6 @@ export class User extends Entity {
 
     const previousStatus = this._status;
     this._status = UserStatus.INACTIVE;
-    this._updatedAt = new Date();
-    this.markAsModified();
 
     this.addDomainEvent(
       new UserStatusChangedEvent(this._id, previousStatus, this._status),
@@ -113,8 +96,6 @@ export class User extends Entity {
 
     const previousStatus = this._status;
     this._status = UserStatus.SUSPENDED;
-    this._updatedAt = new Date();
-    this.markAsModified();
 
     this.addDomainEvent(
       new UserStatusChangedEvent(this._id, previousStatus, this._status),
@@ -128,8 +109,6 @@ export class User extends Entity {
 
     this._firstName = firstName;
     this._lastName = lastName;
-    this._updatedAt = new Date();
-    this.markAsModified();
   }
 
   updateEmail(newEmail: Email): void {
@@ -138,8 +117,6 @@ export class User extends Entity {
     }
 
     this._email = newEmail;
-    this._updatedAt = new Date();
-    this.markAsModified();
   }
 
   canReceiveFriendRequests(): boolean {
@@ -163,14 +140,12 @@ export class User extends Entity {
     const id = generateId();
 
     return new User(
-      id,
       email,
       firstName,
       lastName,
       UserStatus.PENDING_ACTIVATION,
-      undefined,
-      undefined,
       eventDispatcher,
+      id,
     );
   }
 
@@ -180,20 +155,9 @@ export class User extends Entity {
     firstName: string,
     lastName: string,
     status: UserStatus,
-    createdAt: Date,
-    updatedAt: Date,
     eventDispatcher?: IEventDispatcher,
   ): User {
-    return new User(
-      id,
-      email,
-      firstName,
-      lastName,
-      status,
-      createdAt,
-      updatedAt,
-      eventDispatcher,
-    );
+    return new User(email, firstName, lastName, status, eventDispatcher, id);
   }
 
   override equals(other: Entity): boolean {

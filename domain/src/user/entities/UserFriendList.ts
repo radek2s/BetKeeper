@@ -1,24 +1,24 @@
-import { Email } from "../value-objects/Email";
-import { User } from "../entities/User";
+import type { Email } from "../value-objects/Email";
+import type { User } from "../entities/User";
 import { FriendRequest } from "../entities/FriendRequest";
-import { InvitationRequest } from "../entities/InvitationRequest";
-import { RequestStatus } from "../types/RequestStatus";
+
 import { FriendRemovedEvent } from "../events/FriendRequestEvents";
-import { AggregateRoot } from "../../shared/Entity";
-import { IEventDispatcher } from "../../shared/EventDispatcher";
-import { UUID } from "../../shared/Uuid";
+import { type AggregateRoot, Entity } from "../../shared/Entity";
+import type { IEventDispatcher } from "../../shared/EventDispatcher";
+import type { UUID } from "../../shared/Uuid";
+import { UserInvitationRequest } from "./UserInvitationRequest";
 
 /**
  * Friend List Aggregate Root
  * Manages a user's friends and friend-related operations
  */
-export class FriendList extends AggregateRoot {
+export class UserFriendList extends Entity {
   private readonly _userId: UUID;
   private readonly _friends: Map<string, UUID> = new Map();
   private readonly _sentFriendRequests: Map<string, FriendRequest> = new Map();
   private readonly _receivedFriendRequests: Map<string, FriendRequest> =
     new Map();
-  private readonly _sentInvitationRequests: Map<string, InvitationRequest> =
+  private readonly _sentInvitationRequests: Map<string, UserInvitationRequest> =
     new Map();
 
   constructor(userId: UUID, eventDispatcher?: IEventDispatcher) {
@@ -26,7 +26,6 @@ export class FriendList extends AggregateRoot {
     this._userId = userId;
   }
 
-  // Getters
   override get id(): UUID {
     return this._userId;
   }
@@ -55,11 +54,10 @@ export class FriendList extends AggregateRoot {
     return this.receivedFriendRequests.filter((request) => request.isPending());
   }
 
-  get sentInvitationRequests(): InvitationRequest[] {
+  get sentInvitationRequests(): UserInvitationRequest[] {
     return Array.from(this._sentInvitationRequests.values());
   }
 
-  // Friend management methods
   sendFriendRequest(targetUser: User): FriendRequest {
     if (!targetUser.canReceiveFriendRequests()) {
       throw new Error("Target user cannot receive friend requests");
@@ -80,7 +78,6 @@ export class FriendList extends AggregateRoot {
     const friendRequest = FriendRequest.create(this._userId, targetUser.id);
     this._sentFriendRequests.set(friendRequest.id, friendRequest);
 
-    // Add domain events from the friend request
     this.addDomainEvents(friendRequest.domainEvents);
     friendRequest.clearDomainEvents();
 
@@ -104,7 +101,6 @@ export class FriendList extends AggregateRoot {
     request.approve();
     this.addFriend(request.senderId);
 
-    // Add domain events from the friend request
     this.addDomainEvents(request.domainEvents);
     request.clearDomainEvents();
   }
@@ -117,7 +113,6 @@ export class FriendList extends AggregateRoot {
 
     request.reject();
 
-    // Add domain events from the friend request
     this.addDomainEvents(request.domainEvents);
     request.clearDomainEvents();
   }
@@ -137,7 +132,7 @@ export class FriendList extends AggregateRoot {
     }
 
     if (this.isFriend(friendId)) {
-      return; // Already a friend
+      return;
     }
 
     this._friends.set(friendId, friendId);
@@ -152,19 +147,17 @@ export class FriendList extends AggregateRoot {
     this.addDomainEvent(new FriendRemovedEvent(this._userId, friendId));
   }
 
-  // Invitation request methods
-  sendInvitationRequest(inviteeEmail: Email): InvitationRequest {
+  sendInvitationRequest(inviteeEmail: Email): UserInvitationRequest {
     if (this.hasPendingInvitationRequestFor(inviteeEmail)) {
       throw new Error("Invitation request already sent for this email");
     }
 
-    const invitationRequest = InvitationRequest.create(
+    const invitationRequest = UserInvitationRequest.create(
       this._userId,
       inviteeEmail,
     );
     this._sentInvitationRequests.set(invitationRequest.id, invitationRequest);
 
-    // Add domain events from the invitation request
     this.addDomainEvents(invitationRequest.domainEvents);
     invitationRequest.clearDomainEvents();
 
@@ -180,7 +173,6 @@ export class FriendList extends AggregateRoot {
     request.cancel();
   }
 
-  // Query methods
   isFriend(userId: UUID): boolean {
     return this._friends.has(userId);
   }
@@ -210,18 +202,16 @@ export class FriendList extends AggregateRoot {
     );
   }
 
-  getInvitationRequest(requestId: string): InvitationRequest | undefined {
+  getInvitationRequest(requestId: string): UserInvitationRequest | undefined {
     return this._sentInvitationRequests.get(requestId);
   }
 
-  // Business rules validation
   canCreateBetRequest(): boolean {
     return this.friendCount > 0;
   }
 
-  // Equality
   override equals(other: AggregateRoot): boolean {
-    if (!(other instanceof FriendList)) {
+    if (!(other instanceof UserFriendList)) {
       return false;
     }
     return this._userId === other._userId;
@@ -231,38 +221,35 @@ export class FriendList extends AggregateRoot {
     return `FriendList(${this._userId}, ${this.friendCount} friends)`;
   }
 
-  // Factory method
-  static create(userId: UUID, eventDispatcher?: IEventDispatcher): FriendList {
-    return new FriendList(userId, eventDispatcher);
+  static create(
+    userId: UUID,
+    eventDispatcher?: IEventDispatcher,
+  ): UserFriendList {
+    return new UserFriendList(userId, eventDispatcher);
   }
 
-  // Reconstitution method for persistence
   static reconstitute(
     userId: UUID,
     friends: UUID[],
     sentFriendRequests: FriendRequest[],
     receivedFriendRequests: FriendRequest[],
-    sentInvitationRequests: InvitationRequest[],
+    sentInvitationRequests: UserInvitationRequest[],
     eventDispatcher?: IEventDispatcher,
-  ): FriendList {
-    const friendList = new FriendList(userId, eventDispatcher);
+  ): UserFriendList {
+    const friendList = new UserFriendList(userId, eventDispatcher);
 
-    // Restore friends
     friends.forEach((friendId) => {
       friendList._friends.set(friendId, friendId);
     });
 
-    // Restore sent friend requests
     sentFriendRequests.forEach((request) => {
       friendList._sentFriendRequests.set(request.id, request);
     });
 
-    // Restore received friend requests
     receivedFriendRequests.forEach((request) => {
       friendList._receivedFriendRequests.set(request.id, request);
     });
 
-    // Restore sent invitation requests
     sentInvitationRequests.forEach((request) => {
       friendList._sentInvitationRequests.set(request.id, request);
     });

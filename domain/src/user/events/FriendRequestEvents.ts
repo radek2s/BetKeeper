@@ -1,26 +1,25 @@
-import { DomainEvent } from './DomainEvent';
-import { UserId } from '../value-objects/UserId';
-import { RequestId } from '../value-objects/RequestId';
-import { Email } from '../value-objects/Email';
+import { DomainEvent } from "./DomainEvent";
+import { Email } from "../value-objects/Email";
+import { UUID } from "@bet-keeper/domain";
 
 /**
  * Friend Request Sent Domain Event
  * Raised when a user sends a friend request to another user
  */
 export class FriendRequestSentEvent extends DomainEvent {
-  public readonly requestId: RequestId;
-  public readonly senderId: UserId;
-  public readonly receiverId: UserId;
+  public readonly requestId: UUID;
+  public readonly senderId: UUID;
+  public readonly receiverId: UUID;
 
-  constructor(requestId: RequestId, senderId: UserId, receiverId: UserId) {
-    super('FriendRequestSent');
+  constructor(requestId: UUID, senderId: UUID, receiverId: UUID) {
+    super("FriendRequestSent");
     this.requestId = requestId;
     this.senderId = senderId;
     this.receiverId = receiverId;
   }
 
   getAggregateId(): string {
-    return this.senderId.value;
+    return this.senderId;
   }
 }
 
@@ -29,19 +28,19 @@ export class FriendRequestSentEvent extends DomainEvent {
  * Raised when a friend request is approved
  */
 export class FriendRequestApprovedEvent extends DomainEvent {
-  public readonly requestId: RequestId;
-  public readonly senderId: UserId;
-  public readonly receiverId: UserId;
+  public readonly requestId: UUID;
+  public readonly senderId: UUID;
+  public readonly receiverId: UUID;
 
-  constructor(requestId: RequestId, senderId: UserId, receiverId: UserId) {
-    super('FriendRequestApproved');
+  constructor(requestId: UUID, senderId: UUID, receiverId: UUID) {
+    super("FriendRequestApproved");
     this.requestId = requestId;
     this.senderId = senderId;
     this.receiverId = receiverId;
   }
 
   getAggregateId(): string {
-    return this.receiverId.value;
+    return this.receiverId;
   }
 }
 
@@ -50,19 +49,19 @@ export class FriendRequestApprovedEvent extends DomainEvent {
  * Raised when a friend request is rejected
  */
 export class FriendRequestRejectedEvent extends DomainEvent {
-  public readonly requestId: RequestId;
-  public readonly senderId: UserId;
-  public readonly receiverId: UserId;
+  public readonly requestId: UUID;
+  public readonly senderId: UUID;
+  public readonly receiverId: UUID;
 
-  constructor(requestId: RequestId, senderId: UserId, receiverId: UserId) {
-    super('FriendRequestRejected');
+  constructor(requestId: UUID, senderId: UUID, receiverId: UUID) {
+    super("FriendRequestRejected");
     this.requestId = requestId;
     this.senderId = senderId;
     this.receiverId = receiverId;
   }
 
   getAggregateId(): string {
-    return this.receiverId.value;
+    return this.receiverId;
   }
 }
 
@@ -71,17 +70,17 @@ export class FriendRequestRejectedEvent extends DomainEvent {
  * Raised when a user removes another user from their friend list
  */
 export class FriendRemovedEvent extends DomainEvent {
-  public readonly userId: UserId;
-  public readonly removedFriendId: UserId;
+  public readonly userId: UUID;
+  public readonly removedFriendId: UUID;
 
-  constructor(userId: UserId, removedFriendId: UserId) {
-    super('FriendRemoved');
+  constructor(userId: UUID, removedFriendId: UUID) {
+    super("FriendRemoved");
     this.userId = userId;
     this.removedFriendId = removedFriendId;
   }
 
   getAggregateId(): string {
-    return this.userId.value;
+    return this.userId;
   }
 }
 
@@ -90,19 +89,19 @@ export class FriendRemovedEvent extends DomainEvent {
  * Raised when a user requests an invitation for a non-existing user
  */
 export class InvitationRequestSentEvent extends DomainEvent {
-  public readonly requestId: RequestId;
-  public readonly requesterId: UserId;
+  public readonly requestId: UUID;
+  public readonly requesterId: UUID;
   public readonly inviteeEmail: Email;
 
-  constructor(requestId: RequestId, requesterId: UserId, inviteeEmail: Email) {
-    super('InvitationRequestSent');
+  constructor(requestId: UUID, requesterId: UUID, inviteeEmail: Email) {
+    super("InvitationRequestSent");
     this.requestId = requestId;
     this.requesterId = requesterId;
     this.inviteeEmail = inviteeEmail;
   }
 
   getAggregateId(): string {
-    return this.requesterId.value;
+    return this.requesterId;
   }
 }
 
@@ -111,13 +110,18 @@ export class InvitationRequestSentEvent extends DomainEvent {
  * Raised when an administrator approves an invitation request
  */
 export class InvitationRequestApprovedEvent extends DomainEvent {
-  public readonly requestId: RequestId;
-  public readonly requesterId: UserId;
+  public readonly requestId: UUID;
+  public readonly requesterId: UUID;
   public readonly inviteeEmail: Email;
-  public readonly approvedById: UserId;
+  public readonly approvedById: UUID;
 
-  constructor(requestId: RequestId, requesterId: UserId, inviteeEmail: Email, approvedById: UserId) {
-    super('InvitationRequestApproved');
+  constructor(
+    requestId: UUID,
+    requesterId: UUID,
+    inviteeEmail: Email,
+    approvedById: UUID,
+  ) {
+    super("InvitationRequestApproved");
     this.requestId = requestId;
     this.requesterId = requesterId;
     this.inviteeEmail = inviteeEmail;
@@ -125,6 +129,6 @@ export class InvitationRequestApprovedEvent extends DomainEvent {
   }
 
   getAggregateId(): string {
-    return this.requesterId.value;
+    return this.requesterId;
   }
 }

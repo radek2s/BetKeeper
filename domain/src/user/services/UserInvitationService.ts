@@ -1,18 +1,19 @@
 import { User } from "../entities/User";
-import { FriendList } from "../aggregates/FriendList";
-import { InvitationRequest } from "../entities/InvitationRequest";
+
 import { Email } from "../value-objects/Email";
 import { IUserRepository, IFriendListRepository } from "./UserService";
 import { UUID } from "domain/src/shared/Uuid";
+import { UserInvitationRequest } from "../entities/UserInvitationRequest";
+import { UserFriendList } from "../entities/UserFriendList";
 
 /**
  * Invitation Request Repository Interface
  * Defines the contract for invitation request persistence operations
  */
 export interface IInvitationRequestRepository {
-  findById(id: string): Promise<InvitationRequest | null>;
-  findPendingByEmail(email: Email): Promise<InvitationRequest[]>;
-  save(request: InvitationRequest): Promise<void>;
+  findById(id: string): Promise<UserInvitationRequest | null>;
+  findPendingByEmail(email: Email): Promise<UserInvitationRequest[]>;
+  save(request: UserInvitationRequest): Promise<void>;
 }
 
 /**
@@ -32,8 +33,7 @@ export class InvitationService {
   async sendInvitationRequest(
     requesterId: UUID,
     inviteeEmail: Email,
-  ): Promise<InvitationRequest> {
-    // Check if requester exists and can send requests
+  ): Promise<UserInvitationRequest> {
     const requester = await this.userRepository.findById(requesterId);
     if (!requester) {
       throw new Error("Requester not found");
@@ -43,24 +43,20 @@ export class InvitationService {
       throw new Error("Requester cannot send invitation requests");
     }
 
-    // Check if user already exists
     const existingUser = await this.userRepository.findByEmail(inviteeEmail);
     if (existingUser) {
       throw new Error("User already exists. Send a friend request instead.");
     }
 
-    // Get requester's friend list
     const requesterFriendList =
       await this.friendListRepository.findByUserId(requesterId);
     if (!requesterFriendList) {
       throw new Error("Requester friend list not found");
     }
 
-    // Send invitation request
     const invitationRequest =
       requesterFriendList.sendInvitationRequest(inviteeEmail);
 
-    // Save friend list and invitation request
     await this.friendListRepository.save(requesterFriendList);
     await this.invitationRequestRepository.save(invitationRequest);
 
@@ -76,34 +72,28 @@ export class InvitationService {
     inviteeFirstName: string,
     inviteeLastName: string,
   ): Promise<User> {
-    // Find the invitation request
     const invitationRequest =
       await this.invitationRequestRepository.findById(requestId);
     if (!invitationRequest) {
       throw new Error("Invitation request not found");
     }
 
-    // Check if approver exists and has permission
     const approver = await this.userRepository.findById(approvedById);
     if (!approver) {
       throw new Error("Approver not found");
     }
 
-    // Approve the request
     invitationRequest.approve(approvedById);
 
-    // Create new user account
     const newUser = User.create(
       invitationRequest.inviteeEmail,
       inviteeFirstName,
       inviteeLastName,
     );
-    newUser.activate(); // Activate immediately since invitation was approved
+    newUser.activate();
 
-    // Initialize friend list for new user
-    const newUserFriendList = FriendList.create(newUser.id);
+    const newUserFriendList = UserFriendList.create(newUser.id);
 
-    // Get requester's friend list
     const requesterFriendList = await this.friendListRepository.findByUserId(
       invitationRequest.requesterId,
     );
@@ -111,11 +101,9 @@ export class InvitationService {
       throw new Error("Requester friend list not found");
     }
 
-    // Establish mutual friendship between requester and new user
     requesterFriendList.addFriend(newUser.id);
     newUserFriendList.addFriend(invitationRequest.requesterId);
 
-    // Save everything
     await this.userRepository.save(newUser);
     await this.friendListRepository.save(newUserFriendList);
     await this.friendListRepository.save(requesterFriendList);
@@ -155,18 +143,15 @@ export class InvitationService {
       throw new Error("Only the requester can cancel the invitation request");
     }
 
-    // Get requester's friend list
     const requesterFriendList =
       await this.friendListRepository.findByUserId(requesterId);
     if (!requesterFriendList) {
       throw new Error("Requester friend list not found");
     }
 
-    // Cancel the request
     requesterFriendList.cancelInvitationRequest(requestId);
     invitationRequest.cancel();
 
-    // Save both
     await this.friendListRepository.save(requesterFriendList);
     await this.invitationRequestRepository.save(invitationRequest);
   }
@@ -176,7 +161,7 @@ export class InvitationService {
    */
   async getPendingInvitationRequestsForEmail(
     email: Email,
-  ): Promise<InvitationRequest[]> {
+  ): Promise<UserInvitationRequest[]> {
     return await this.invitationRequestRepository.findPendingByEmail(email);
   }
 

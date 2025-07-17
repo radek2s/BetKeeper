@@ -23,63 +23,51 @@ describe("User", () => {
 
   describe("constructor", () => {
     it("should create a user with provided values", () => {
-      const user = new User(userId, email, firstName, lastName);
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
 
       expect(user.id).toBe(userId);
       expect(user.email).toBe(email);
       expect(user.name).toBe(`${firstName} ${lastName}`);
       expect(user.status).toBe(UserStatus.PENDING_ACTIVATION);
-      expect(user.createdAt).toBeInstanceOf(Date);
-      expect(user.updatedAt).toBeInstanceOf(Date);
     });
 
     it("should create a user with custom status", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
+        userId,
       );
 
       expect(user.status).toBe(UserStatus.ACTIVE);
     });
 
-    it("should create a user with custom dates", () => {
-      const createdAt = new Date("2023-01-01");
-      const updatedAt = new Date("2023-01-02");
-      const user = new User(
-        userId,
-        email,
-        firstName,
-        lastName,
-        UserStatus.ACTIVE,
-        createdAt,
-        updatedAt,
-      );
-
-      expect(user.createdAt).toBe(createdAt);
-      expect(user.updatedAt).toBe(updatedAt);
-    });
-
     it("should raise UserCreatedEvent for new users", () => {
-      const user = new User(userId, email, firstName, lastName);
+      const user = new User(email, firstName, lastName);
 
       const events = user.domainEvents;
       expect(events).toHaveLength(1);
       expect(events[0]).toBeInstanceOf(UserCreatedEvent);
-      expect((events[0] as UserCreatedEvent).userId).toBe(userId);
+      expect((events[0] as UserCreatedEvent).userId).toBe(user.id);
     });
 
     it("should not raise UserCreatedEvent for reconstituted users", () => {
-      const createdAt = new Date("2023-01-01");
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        createdAt,
+        undefined,
+        userId,
       );
 
       expect(user.domainEvents).toHaveLength(0);
@@ -89,20 +77,15 @@ describe("User", () => {
   describe("activate", () => {
     it("should activate a pending user", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.PENDING_ACTIVATION,
       );
-      const initialUpdatedAt = user.updatedAt;
 
       user.activate();
 
       expect(user.status).toBe(UserStatus.ACTIVE);
-      expect(user.updatedAt.getTime()).toBeGreaterThanOrEqual(
-        initialUpdatedAt.getTime(),
-      );
 
       const events = user.domainEvents;
       const statusChangedEvent = events.find(
@@ -117,11 +100,12 @@ describe("User", () => {
 
     it("should throw error when activating already active user", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
+        userId,
       );
 
       expect(() => user.activate()).toThrow("User is already active");
@@ -129,11 +113,12 @@ describe("User", () => {
 
     it("should throw error when activating suspended user", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.SUSPENDED,
+        undefined,
+        userId,
       );
 
       expect(() => user.activate()).toThrow("Cannot activate suspended user");
@@ -143,11 +128,12 @@ describe("User", () => {
   describe("deactivate", () => {
     it("should deactivate an active user", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
+        userId,
       );
 
       user.deactivate();
@@ -165,11 +151,12 @@ describe("User", () => {
 
     it("should throw error when deactivating already inactive user", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.INACTIVE,
+        undefined,
+        userId,
       );
 
       expect(() => user.deactivate()).toThrow("User is already inactive");
@@ -179,11 +166,12 @@ describe("User", () => {
   describe("suspend", () => {
     it("should suspend an active user", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
+        userId,
       );
 
       user.suspend();
@@ -201,11 +189,12 @@ describe("User", () => {
 
     it("should throw error when suspending already suspended user", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.SUSPENDED,
+        undefined,
+        userId,
       );
 
       expect(() => user.suspend()).toThrow("User is already suspended");
@@ -214,62 +203,79 @@ describe("User", () => {
 
   describe("updateName", () => {
     it("should update user name", () => {
-      const user = new User(userId, email, firstName, lastName);
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
       const [newFirstName, newLastName] = "Jane Doe".split(" ");
-      const initialUpdatedAt = user.updatedAt;
 
       user.updateName(newFirstName, newLastName);
 
       expect(user.name).toBe(`${newFirstName} ${newLastName}`);
-      expect(user.updatedAt.getTime()).toBeGreaterThanOrEqual(
-        initialUpdatedAt.getTime(),
-      );
     });
 
     it("should not update if name is the same", () => {
-      const user = new User(userId, email, firstName, lastName);
-      const initialUpdatedAt = user.updatedAt;
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
 
       user.updateName(firstName, lastName);
 
       expect(user.name).toBe(`${firstName} ${lastName}`);
-      expect(user.updatedAt).toBe(initialUpdatedAt);
     });
   });
 
   describe("updateEmail", () => {
     it("should update user email", () => {
-      const user = new User(userId, email, firstName, lastName);
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
       const newEmail = new Email("new@example.com");
-      const initialUpdatedAt = user.updatedAt;
 
       user.updateEmail(newEmail);
 
       expect(user.email).toBe(newEmail);
-      expect(user.updatedAt.getTime()).toBeGreaterThanOrEqual(
-        initialUpdatedAt.getTime(),
-      );
     });
 
     it("should not update if email is the same", () => {
-      const user = new User(userId, email, firstName, lastName);
-      const initialUpdatedAt = user.updatedAt;
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
 
       user.updateEmail(email);
 
       expect(user.email).toBe(email);
-      expect(user.updatedAt).toBe(initialUpdatedAt);
     });
   });
 
   describe("business behavior checks", () => {
     it("should allow active users to receive friend requests", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
+        userId,
       );
 
       expect(user.canReceiveFriendRequests()).toBe(true);
@@ -277,11 +283,12 @@ describe("User", () => {
 
     it("should allow pending users to receive friend requests", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.PENDING_ACTIVATION,
+        undefined,
+        userId,
       );
 
       expect(user.canReceiveFriendRequests()).toBe(true);
@@ -289,11 +296,12 @@ describe("User", () => {
 
     it("should not allow suspended users to receive friend requests", () => {
       const user = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.SUSPENDED,
+        undefined,
+        userId,
       );
 
       expect(user.canReceiveFriendRequests()).toBe(false);
@@ -301,18 +309,20 @@ describe("User", () => {
 
     it("should only allow active users to send friend requests", () => {
       const activeUser = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
+        userId,
       );
       const pendingUser = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.PENDING_ACTIVATION,
+        undefined,
+        userId,
       );
 
       expect(activeUser.canSendFriendRequests()).toBe(true);
@@ -321,18 +331,20 @@ describe("User", () => {
 
     it("should correctly identify active users", () => {
       const activeUser = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
+        userId,
       );
       const inactiveUser = new User(
-        userId,
         email,
         firstName,
         lastName,
         UserStatus.INACTIVE,
+        undefined,
+        userId,
       );
 
       expect(activeUser.isActive()).toBe(true);
@@ -342,7 +354,7 @@ describe("User", () => {
 
   describe("domain events management", () => {
     it("should clear domain events", () => {
-      const user = new User(userId, email, firstName, lastName);
+      const user = new User(email, firstName, lastName);
 
       expect(user.domainEvents).toHaveLength(1);
 
@@ -366,24 +378,19 @@ describe("User", () => {
 
     describe("reconstitute", () => {
       it("should reconstitute a user from persistence data", () => {
-        const createdAt = new Date("2023-01-01");
-        const updatedAt = new Date("2023-01-02");
         const user = User.reconstitute(
           userId,
           email,
           firstName,
           lastName,
           UserStatus.ACTIVE,
-          createdAt,
-          updatedAt,
+          undefined,
         );
 
         expect(user.id).toBe(userId);
         expect(user.email).toBe(email);
         expect(user.name).toBe(`${firstName} ${lastName}`);
         expect(user.status).toBe(UserStatus.ACTIVE);
-        expect(user.createdAt).toBe(createdAt);
-        expect(user.updatedAt).toBe(updatedAt);
         expect(user.domainEvents).toHaveLength(0);
       });
     });
@@ -391,20 +398,43 @@ describe("User", () => {
 
   describe("equality", () => {
     it("should be equal to users with same ID", () => {
-      const user1 = new User(userId, email, firstName, lastName);
-      const user2 = new User(
+      const user1 = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
         userId,
+      );
+      const user2 = new User(
         new Email("other@example.com"),
         "Other",
         "Name",
+        undefined,
+        undefined,
+        userId,
       );
 
       expect(user1.equals(user2)).toBe(true);
     });
 
     it("should not be equal to users with different ID", () => {
-      const user1 = new User(userId, email, firstName, lastName);
-      const user2 = new User(generateId(), email, firstName, lastName);
+      const user1 = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
+      const user2 = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        generateId(),
+      );
 
       expect(user1.equals(user2)).toBe(false);
     });
@@ -412,10 +442,17 @@ describe("User", () => {
 
   describe("toString", () => {
     it("should return string representation", () => {
-      const user = new User(userId, email, firstName, lastName);
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
 
       expect(user.toString()).toBe(
-        `User(${user.id}, test@example.com, John Doe)`,
+        `User(${userId}, test@example.com, John Doe)`,
       );
     });
   });

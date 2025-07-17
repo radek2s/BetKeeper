@@ -5,8 +5,8 @@ import {
   FriendRequestRejectedEvent,
 } from "../events/FriendRequestEvents";
 import { Entity } from "../../shared/Entity";
-import { IEventDispatcher } from "../../shared/EventDispatcher";
-import { generateId, UUID } from "../../shared/Uuid";
+import type { IEventDispatcher } from "../../shared/EventDispatcher";
+import { generateId, type UUID } from "../../shared/Uuid";
 
 /**
  * Friend Request Entity
@@ -18,7 +18,6 @@ export class FriendRequest extends Entity {
   private readonly _receiverId: UUID;
   private _status: RequestStatus;
   private readonly _createdAt: Date;
-  private _updatedAt: Date;
   private _expiresAt?: Date;
 
   constructor(
@@ -27,7 +26,6 @@ export class FriendRequest extends Entity {
     receiverId: UUID,
     status: RequestStatus = RequestStatus.PENDING,
     createdAt?: Date,
-    updatedAt?: Date,
     expiresAt?: Date,
     eventDispatcher?: IEventDispatcher,
   ) {
@@ -42,7 +40,6 @@ export class FriendRequest extends Entity {
     this._receiverId = receiverId;
     this._status = status;
     this._createdAt = createdAt || new Date();
-    this._updatedAt = updatedAt || new Date();
     this._expiresAt = expiresAt;
 
     if (!createdAt && status === RequestStatus.PENDING) {
@@ -72,10 +69,6 @@ export class FriendRequest extends Entity {
     return this._createdAt;
   }
 
-  get updatedAt(): Date {
-    return this._updatedAt;
-  }
-
   get expiresAt(): Date | undefined {
     return this._expiresAt;
   }
@@ -90,8 +83,6 @@ export class FriendRequest extends Entity {
     }
 
     this._status = RequestStatus.APPROVED;
-    this._updatedAt = new Date();
-    this.markAsModified();
 
     this.addDomainEvent(
       new FriendRequestApprovedEvent(
@@ -108,8 +99,6 @@ export class FriendRequest extends Entity {
     }
 
     this._status = RequestStatus.REJECTED;
-    this._updatedAt = new Date();
-    this.markAsModified();
 
     this.addDomainEvent(
       new FriendRequestRejectedEvent(
@@ -126,8 +115,6 @@ export class FriendRequest extends Entity {
     }
 
     this._status = RequestStatus.CANCELLED;
-    this._updatedAt = new Date();
-    this.markAsModified();
   }
 
   expire(): void {
@@ -136,8 +123,6 @@ export class FriendRequest extends Entity {
     }
 
     this._status = RequestStatus.EXPIRED;
-    this._updatedAt = new Date();
-    this.markAsModified();
   }
 
   isPending(): boolean {
@@ -190,7 +175,6 @@ export class FriendRequest extends Entity {
       receiverId,
       RequestStatus.PENDING,
       undefined,
-      undefined,
       expiresAt,
       eventDispatcher,
     );
@@ -202,7 +186,6 @@ export class FriendRequest extends Entity {
     receiverId: UUID,
     status: RequestStatus,
     createdAt: Date,
-    updatedAt: Date,
     expiresAt?: Date,
     eventDispatcher?: IEventDispatcher,
   ): FriendRequest {
@@ -212,7 +195,6 @@ export class FriendRequest extends Entity {
       receiverId,
       status,
       createdAt,
-      updatedAt,
       expiresAt,
       eventDispatcher,
     );

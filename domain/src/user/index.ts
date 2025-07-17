@@ -1,7 +1,5 @@
-// Value Objects
 export { Email } from "./value-objects/Email";
 
-// Types and Enums
 export {
   RequestStatus,
   UserStatus,
@@ -10,15 +8,11 @@ export {
   UserStatusGuards,
 } from "./types/RequestStatus";
 
-// Entities
 export { User } from "./entities/User";
 export { FriendRequest } from "./entities/FriendRequest";
-export { InvitationRequest } from "./entities/InvitationRequest";
+export { UserInvitationRequest } from "./entities/UserInvitationRequest";
+export { UserFriendList } from "./entities/UserFriendList";
 
-// Aggregates
-export { FriendList } from "./aggregates/FriendList";
-
-// Domain Events
 export { DomainEvent } from "./events/DomainEvent";
 export { UserCreatedEvent } from "./events/UserCreatedEvent";
 export { UserStatusChangedEvent } from "./events/UserStatusChangedEvent";
@@ -37,6 +31,6 @@ export type {
   IUserRepository,
   IFriendListRepository,
 } from "./services/UserService";
-export { InvitationService } from "./services/InvitationService";
+export { InvitationService } from "./services/UserInvitationService";
 
-export type { IInvitationRequestRepository } from "./services/InvitationService";
+export type { IInvitationRequestRepository } from "./services/UserInvitationService";

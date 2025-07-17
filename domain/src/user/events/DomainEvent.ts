@@ -1,9 +1,11 @@
+import type { UUID } from "@bet-keeper/domain";
+
 /**
  * Base Domain Event
  * Abstract base class for all domain events in the user context
  */
 export abstract class DomainEvent {
-  public readonly eventId: string;
+  public readonly eventId: UUID;
   public readonly occurredOn: Date;
   public readonly eventType: string;
 
@@ -13,5 +15,5 @@ export abstract class DomainEvent {
     this.eventType = eventType;
   }
 
-  abstract getAggregateId(): string;
+  abstract getAggregateId(): UUID;
 }

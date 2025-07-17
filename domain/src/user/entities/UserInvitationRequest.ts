@@ -13,13 +13,12 @@ import { generateId, UUID } from "../../shared/Uuid";
  * Invitation Request Entity
  * Represents a request to invite a non-existing user to join the system
  */
-export class InvitationRequest extends Entity {
+export class UserInvitationRequest extends Entity {
   private readonly _id: UUID;
   private readonly _requesterId: UUID;
   private readonly _inviteeEmail: Email;
   private _status: RequestStatus;
   private readonly _createdAt: Date;
-  private _updatedAt: Date;
   private _approvedById?: UUID;
   private _approvedAt?: Date;
 
@@ -29,7 +28,6 @@ export class InvitationRequest extends Entity {
     inviteeEmail: Email,
     status: RequestStatus = RequestStatus.PENDING,
     createdAt?: Date,
-    updatedAt?: Date,
     approvedById?: UUID,
     approvedAt?: Date,
     eventDispatcher?: IEventDispatcher,
@@ -41,11 +39,9 @@ export class InvitationRequest extends Entity {
     this._inviteeEmail = inviteeEmail;
     this._status = status;
     this._createdAt = createdAt || new Date();
-    this._updatedAt = updatedAt || new Date();
     this._approvedById = approvedById;
     this._approvedAt = approvedAt;
 
-    // Raise domain event for new invitation request
     if (!createdAt && status === RequestStatus.PENDING) {
       this.addDomainEvent(
         new InvitationRequestSentEvent(
@@ -57,7 +53,6 @@ export class InvitationRequest extends Entity {
     }
   }
 
-  // Getters
   get id(): UUID {
     return this._id;
   }
@@ -78,10 +73,6 @@ export class InvitationRequest extends Entity {
     return this._createdAt;
   }
 
-  get updatedAt(): Date {
-    return this._updatedAt;
-  }
-
   get approvedById(): UUID | undefined {
     return this._approvedById;
   }
@@ -90,7 +81,6 @@ export class InvitationRequest extends Entity {
     return this._approvedAt;
   }
 
-  // Business methods
   approve(approvedById: UUID): void {
     if (!RequestStatusGuards.isPending(this._status)) {
       throw new Error("Can only approve pending invitation requests");
@@ -99,8 +89,6 @@ export class InvitationRequest extends Entity {
     this._status = RequestStatus.APPROVED;
     this._approvedById = approvedById;
     this._approvedAt = new Date();
-    this._updatedAt = new Date();
-    this.markAsModified();
 
     this.addDomainEvent(
       new InvitationRequestApprovedEvent(
@@ -118,8 +106,6 @@ export class InvitationRequest extends Entity {
     }
 
     this._status = RequestStatus.REJECTED;
-    this._updatedAt = new Date();
-    this.markAsModified();
   }
 
   cancel(): void {
@@ -128,11 +114,8 @@ export class InvitationRequest extends Entity {
     }
 
     this._status = RequestStatus.CANCELLED;
-    this._updatedAt = new Date();
-    this.markAsModified();
   }
 
-  // Domain behavior checks
   isPending(): boolean {
     return RequestStatusGuards.isPending(this._status);
   }
@@ -157,19 +140,17 @@ export class InvitationRequest extends Entity {
     return this.isPending();
   }
 
-  // Factory methods
   static create(
     requesterId: UUID,
     inviteeEmail: Email,
     eventDispatcher?: IEventDispatcher,
-  ): InvitationRequest {
+  ): UserInvitationRequest {
     const id = generateId();
-    return new InvitationRequest(
+    return new UserInvitationRequest(
       id,
       requesterId,
       inviteeEmail,
       RequestStatus.PENDING,
-      undefined,
       undefined,
       undefined,
       undefined,
@@ -183,27 +164,24 @@ export class InvitationRequest extends Entity {
     inviteeEmail: Email,
     status: RequestStatus,
     createdAt: Date,
-    updatedAt: Date,
     approvedById?: UUID,
     approvedAt?: Date,
     eventDispatcher?: IEventDispatcher,
-  ): InvitationRequest {
-    return new InvitationRequest(
+  ): UserInvitationRequest {
+    return new UserInvitationRequest(
       id,
       requesterId,
       inviteeEmail,
       status,
       createdAt,
-      updatedAt,
       approvedById,
       approvedAt,
       eventDispatcher,
     );
   }
 
-  // Equality
   override equals(other: Entity): boolean {
-    if (!(other instanceof InvitationRequest)) {
+    if (!(other instanceof UserInvitationRequest)) {
       return false;
     }
     return this._id === other._id;

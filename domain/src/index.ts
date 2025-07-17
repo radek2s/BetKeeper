@@ -1,3 +1,3 @@
 export * from "./lib/domain";
-export * from "./models/user";
+export * from "./shared";
 export * from "./user";
