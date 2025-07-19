@@ -19,7 +19,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@bet-keeper/domain": ["domain/src/index.ts"],
+      "@domain/*": ["domain/src/*"],
+      "@bet-keeper/domain/test/*": ["domain/tests/*"],
       "@test/*": ["./test/*"]
     }
   },

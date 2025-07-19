@@ -1,12 +1,10 @@
+import { generateId, UUID } from "@domain/shared";
+import { Email } from "@domain/user/value-objects";
 import { describe, it, expect, beforeEach } from "vitest";
 import { User } from "../User";
-import { Email } from "../../value-objects/Email";
-
-import { UserStatus } from "../../types/RequestStatus";
-import { UserCreatedEvent } from "../../events/UserCreatedEvent";
-import { UserStatusChangedEvent } from "../../events/UserStatusChangedEvent";
-import type { UUID } from "../../../shared/Uuid";
-import { generateId } from "../../../shared/Uuid";
+import { UserStatus } from "@domain/user/types/RequestStatus";
+import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
+import { UserStatusChangedEvent } from "@domain/user/events/UserStatusChangedEvent";
 
 describe("User", () => {
   let userId: UUID;
@@ -23,14 +21,7 @@ describe("User", () => {
 
   describe("constructor", () => {
     it("should create a user with provided values", () => {
-      const user = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user = new User(email, firstName, lastName, undefined, userId);
 
       expect(user.id).toBe(userId);
       expect(user.email).toBe(email);
@@ -44,7 +35,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
 
@@ -66,7 +56,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
 
@@ -104,7 +93,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
 
@@ -117,7 +105,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.SUSPENDED,
-        undefined,
         userId,
       );
 
@@ -132,7 +119,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
 
@@ -155,7 +141,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.INACTIVE,
-        undefined,
         userId,
       );
 
@@ -170,7 +155,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
 
@@ -193,7 +177,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.SUSPENDED,
-        undefined,
         userId,
       );
 
@@ -203,14 +186,7 @@ describe("User", () => {
 
   describe("updateName", () => {
     it("should update user name", () => {
-      const user = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user = new User(email, firstName, lastName, undefined, userId);
       const [newFirstName, newLastName] = "Jane Doe".split(" ");
 
       user.updateName(newFirstName, newLastName);
@@ -219,14 +195,7 @@ describe("User", () => {
     });
 
     it("should not update if name is the same", () => {
-      const user = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user = new User(email, firstName, lastName, undefined, userId);
 
       user.updateName(firstName, lastName);
 
@@ -236,14 +205,7 @@ describe("User", () => {
 
   describe("updateEmail", () => {
     it("should update user email", () => {
-      const user = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user = new User(email, firstName, lastName, undefined, userId);
       const newEmail = new Email("new@example.com");
 
       user.updateEmail(newEmail);
@@ -252,14 +214,7 @@ describe("User", () => {
     });
 
     it("should not update if email is the same", () => {
-      const user = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user = new User(email, firstName, lastName, undefined, userId);
 
       user.updateEmail(email);
 
@@ -274,7 +229,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
 
@@ -287,7 +241,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.PENDING_ACTIVATION,
-        undefined,
         userId,
       );
 
@@ -300,7 +253,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.SUSPENDED,
-        undefined,
         userId,
       );
 
@@ -313,7 +265,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
       const pendingUser = new User(
@@ -321,8 +272,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.PENDING_ACTIVATION,
-        undefined,
-        userId,
       );
 
       expect(activeUser.canSendFriendRequests()).toBe(true);
@@ -335,7 +284,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
-        undefined,
         userId,
       );
       const inactiveUser = new User(
@@ -343,7 +291,6 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.INACTIVE,
-        undefined,
         userId,
       );
 
@@ -384,7 +331,6 @@ describe("User", () => {
           firstName,
           lastName,
           UserStatus.ACTIVE,
-          undefined,
         );
 
         expect(user.id).toBe(userId);
@@ -398,19 +344,11 @@ describe("User", () => {
 
   describe("equality", () => {
     it("should be equal to users with same ID", () => {
-      const user1 = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user1 = new User(email, firstName, lastName, undefined, userId);
       const user2 = new User(
         new Email("other@example.com"),
         "Other",
         "Name",
-        undefined,
         undefined,
         userId,
       );
@@ -419,19 +357,11 @@ describe("User", () => {
     });
 
     it("should not be equal to users with different ID", () => {
-      const user1 = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user1 = new User(email, firstName, lastName, undefined, userId);
       const user2 = new User(
         email,
         firstName,
         lastName,
-        undefined,
         undefined,
         generateId(),
       );
@@ -442,14 +372,7 @@ describe("User", () => {
 
   describe("toString", () => {
     it("should return string representation", () => {
-      const user = new User(
-        email,
-        firstName,
-        lastName,
-        undefined,
-        undefined,
-        userId,
-      );
+      const user = new User(email, firstName, lastName, undefined, userId);
 
       expect(user.toString()).toBe(
         `User(${userId}, test@example.com, John Doe)`,

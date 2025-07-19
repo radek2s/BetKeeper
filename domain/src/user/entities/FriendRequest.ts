@@ -27,9 +27,8 @@ export class FriendRequest extends Entity {
     status: RequestStatus = RequestStatus.PENDING,
     createdAt?: Date,
     expiresAt?: Date,
-    eventDispatcher?: IEventDispatcher,
   ) {
-    super(eventDispatcher);
+    super();
 
     if (senderId === receiverId) {
       throw new Error("Cannot send friend request to yourself");
@@ -163,7 +162,6 @@ export class FriendRequest extends Entity {
     senderId: UUID,
     receiverId: UUID,
     expirationDays: number = 30,
-    eventDispatcher?: IEventDispatcher,
   ): FriendRequest {
     const id = generateId();
     const expiresAt = new Date();
@@ -176,7 +174,6 @@ export class FriendRequest extends Entity {
       RequestStatus.PENDING,
       undefined,
       expiresAt,
-      eventDispatcher,
     );
   }
 
@@ -187,7 +184,6 @@ export class FriendRequest extends Entity {
     status: RequestStatus,
     createdAt: Date,
     expiresAt?: Date,
-    eventDispatcher?: IEventDispatcher,
   ): FriendRequest {
     return new FriendRequest(
       id,
@@ -196,7 +192,6 @@ export class FriendRequest extends Entity {
       status,
       createdAt,
       expiresAt,
-      eventDispatcher,
     );
   }
 

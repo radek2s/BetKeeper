@@ -1,10 +1,9 @@
 import { User } from "../entities/User";
 
-import { Email } from "../value-objects/Email";
-import { IUserRepository, IFriendListRepository } from "./UserService";
-import { UUID } from "domain/src/shared/Uuid";
-import { UserInvitationRequest } from "../entities/UserInvitationRequest";
-import { UserFriendList } from "../entities/UserFriendList";
+import { IEventDispatcher, UUID } from "@domain/shared";
+import { Email } from "../value-objects";
+import { UserFriendList, UserInvitationRequest } from "../entities";
+import { IFriendListRepository, IUserRepository } from "./UserService";
 
 /**
  * Invitation Request Repository Interface
@@ -25,6 +24,7 @@ export class InvitationService {
     private readonly userRepository: IUserRepository,
     private readonly friendListRepository: IFriendListRepository,
     private readonly invitationRequestRepository: IInvitationRequestRepository,
+    private readonly eventDispatcher?: IEventDispatcher,
   ) {}
 
   /**
@@ -59,6 +59,8 @@ export class InvitationService {
 
     await this.friendListRepository.save(requesterFriendList);
     await this.invitationRequestRepository.save(invitationRequest);
+
+    this.eventDispatcher;
 
     return invitationRequest;
   }

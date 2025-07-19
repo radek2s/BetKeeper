@@ -1,9 +1,10 @@
 import { User } from "../entities/User";
-import { UserFriendList } from "../entities/UserFriendList";
 
 import { Email } from "../value-objects/Email";
-
-import type { IEventDispatcher, UUID } from "@bet-keeper/domain";
+import { DomainService } from "../../shared/DomainService";
+import { IEventDispatcher } from "../../shared/EventDispatcher";
+import { UserFriendList } from "../entities/UserFriendList";
+import { UUID } from "../../shared";
 
 /**
  * User Repository Interface
@@ -29,13 +30,18 @@ export interface IFriendListRepository {
  * User Domain Service
  * Handles complex business operations that involve multiple aggregates
  */
-export class UserService {
+export class UserService extends DomainService {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly friendListRepository: IFriendListRepository,
-    private readonly eventDispatcher?: IEventDispatcher,
-  ) {}
+    eventDispatcher?: IEventDispatcher,
+  ) {
+    super(eventDispatcher);
+  }
 
+  /**
+   * Creates a new user and initializes their friend list
+   */
   async createUser(
     email: Email,
     firstName: string,
@@ -45,14 +51,14 @@ export class UserService {
       throw new Error("User with this email already exists");
     }
 
-    const user = User.create(email, firstName, lastName, this.eventDispatcher);
+    const user = new User(email, firstName, lastName);
     await this.userRepository.save(user);
 
     const friendList = UserFriendList.create(user.id);
     await this.friendListRepository.save(friendList);
 
     // Dispatch collected domain events if everything was successfull
-    user.dispatchDomainEvents();
+    await this.dispatchDomainEvents(user);
 
     return user;
   }
@@ -126,7 +132,11 @@ export class UserService {
     await this.friendListRepository.save(senderFriendList);
   }
 
+  /**
+   * Handles friend removal and ensures mutual removal
+   */
   async removeFriend(userId: UUID, friendId: UUID): Promise<void> {
+    // Get user's friend list
     const userFriendList = await this.friendListRepository.findByUserId(userId);
     if (!userFriendList) {
       throw new Error("User friend list not found");

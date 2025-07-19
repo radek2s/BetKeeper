@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { FriendRequest } from "../FriendRequest";
-import * as uuid from "uuid";
-import { RequestStatus } from "../../types/RequestStatus";
+
 import {
   FriendRequestSentEvent,
   FriendRequestApprovedEvent,
   FriendRequestRejectedEvent,
 } from "../../events/FriendRequestEvents";
-import { generateId, type UUID } from "../../../shared/Uuid";
+import { generateId, UUID } from "@domain/shared";
+import { FriendRequest } from "../FriendRequest";
+import { RequestStatus } from "@domain/user/types/RequestStatus";
 
 describe("FriendRequest", () => {
   let requestId: UUID;
@@ -15,15 +15,10 @@ describe("FriendRequest", () => {
   let receiverId: UUID;
 
   beforeEach(() => {
-    requestId = uuid.stringify(
-      uuid.parse("acc4a4ab-eafb-4d7d-84c3-d92844e63475"),
-    );
-    senderId = uuid.stringify(
-      uuid.parse("a9404e77-befb-4c57-bb32-38490aa2eeb3"),
-    );
-    receiverId = uuid.stringify(
-      uuid.parse("4d10b756-6dd4-45d1-b37f-40c6cc925162"),
-    );
+    requestId = "acc4a4ab-eafb-4d7d-84c3-d92844e63475";
+
+    senderId = "a9404e77-befb-4c57-bb32-38490aa2eeb3";
+    receiverId = "4d10b756-6dd4-45d1-b37f-40c6cc925162";
   });
 
   describe("constructor", () => {
@@ -283,7 +278,6 @@ describe("FriendRequest", () => {
         expect(friendRequest.senderId).toBe(senderId);
         expect(friendRequest.receiverId).toBe(receiverId);
         expect(friendRequest.status).toBe(RequestStatus.PENDING);
-        // expect(friendRequest.id).toMatch(/^req_/);
         expect(friendRequest.expiresAt).toBeInstanceOf(Date);
       });
 

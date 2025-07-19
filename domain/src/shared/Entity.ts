@@ -1,7 +1,5 @@
-import type { DomainEvent } from "../user/events/DomainEvent";
-import type { IEventDispatcher } from "./EventDispatcher";
-import { NullEventDispatcher } from "./EventDispatcher";
-import type { UUID } from "./Uuid";
+import { UUID } from ".";
+import { DomainEvent } from "../user/events/DomainEvent";
 
 /**
  * Abstract Entity Base Class
@@ -10,11 +8,6 @@ import type { UUID } from "./Uuid";
  */
 export abstract class Entity {
   private _domainEvents: DomainEvent[] = [];
-  private readonly _eventDispatcher: IEventDispatcher;
-
-  constructor(eventDispatcher?: IEventDispatcher) {
-    this._eventDispatcher = eventDispatcher || new NullEventDispatcher();
-  }
 
   abstract get id(): UUID;
 
@@ -48,21 +41,6 @@ export abstract class Entity {
     this._domainEvents = [];
   }
 
-  /**
-   * Dispatches all pending domain events using the configured event dispatcher
-   * and clears the events after dispatching
-   */
-  async dispatchDomainEvents(): Promise<void> {
-    if (this._domainEvents.length === 0) {
-      return;
-    }
-
-    const eventsToDispatch = [...this._domainEvents];
-    this.clearDomainEvents();
-
-    await this._eventDispatcher.dispatchAll(eventsToDispatch);
-  }
-
   abstract equals(other: Entity): boolean;
 
   abstract toString(): string;
@@ -73,8 +51,8 @@ export abstract class Entity {
  * Extends Entity with additional aggregate-specific functionality
  */
 export abstract class AggregateRoot extends Entity {
-  constructor(eventDispatcher?: IEventDispatcher) {
-    super(eventDispatcher);
+  constructor() {
+    super();
   }
 
   /**

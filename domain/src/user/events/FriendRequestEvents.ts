@@ -1,6 +1,6 @@
 import { DomainEvent } from "./DomainEvent";
 import { Email } from "../value-objects/Email";
-import { UUID } from "@bet-keeper/domain";
+import { UUID } from "@domain/shared";
 
 /**
  * Friend Request Sent Domain Event

@@ -31,6 +31,5 @@ export type {
   IUserRepository,
   IFriendListRepository,
 } from "./services/UserService";
-export { InvitationService } from "./services/UserInvitationService";
 
 export type { IInvitationRequestRepository } from "./services/UserInvitationService";

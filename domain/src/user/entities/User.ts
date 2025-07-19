@@ -1,13 +1,8 @@
-import { Email } from "../value-objects/Email";
-import { Entity } from "../../shared/Entity";
+import { Entity, generateId, UUID } from "@domain/shared";
+import { Email } from "../value-objects";
 import { UserStatus, UserStatusGuards } from "../types/RequestStatus";
 import { UserCreatedEvent } from "../events/UserCreatedEvent";
 import { UserStatusChangedEvent } from "../events/UserStatusChangedEvent";
-import {
-  generateId,
-  type IEventDispatcher,
-  type UUID,
-} from "@bet-keeper/domain";
 
 /**
  * User Entity
@@ -20,16 +15,19 @@ export class User extends Entity {
   private _lastName: string;
   private _status: UserStatus;
 
+  /**
+   * Create a new User Instance
+   *
+   * Emits a UserCreatedEvent if the user is newly created
+   */
   constructor(
     email: Email,
     firstName: string,
     lastName: string,
     status: UserStatus = UserStatus.PENDING_ACTIVATION,
-    eventDispatcher?: IEventDispatcher,
     id?: UUID,
   ) {
-    super(eventDispatcher);
-
+    super();
     this._id = id || generateId();
     this._email = email;
     this._firstName = firstName;
@@ -131,12 +129,7 @@ export class User extends Entity {
     return UserStatusGuards.isActive(this._status);
   }
 
-  static create(
-    email: Email,
-    firstName: string,
-    lastName: string,
-    eventDispatcher?: IEventDispatcher,
-  ): User {
+  static create(email: Email, firstName: string, lastName: string): User {
     const id = generateId();
 
     return new User(
@@ -144,7 +137,6 @@ export class User extends Entity {
       firstName,
       lastName,
       UserStatus.PENDING_ACTIVATION,
-      eventDispatcher,
       id,
     );
   }
@@ -155,9 +147,8 @@ export class User extends Entity {
     firstName: string,
     lastName: string,
     status: UserStatus,
-    eventDispatcher?: IEventDispatcher,
   ): User {
-    return new User(email, firstName, lastName, status, eventDispatcher, id);
+    return new User(email, firstName, lastName, status, id);
   }
 
   override equals(other: Entity): boolean {

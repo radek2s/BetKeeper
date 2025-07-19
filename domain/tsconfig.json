@@ -12,7 +12,8 @@
   },
   "files": [],
   "include": [
-    "domain/src/**/*.ts"
+    "domain/src/**/*.ts",
+    "domain/tests/**/*.ts"
   ],
   "references": [
     {

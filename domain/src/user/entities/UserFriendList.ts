@@ -1,12 +1,9 @@
-import type { Email } from "../value-objects/Email";
-import type { User } from "../entities/User";
-import { FriendRequest } from "../entities/FriendRequest";
-
-import { FriendRemovedEvent } from "../events/FriendRequestEvents";
-import { type AggregateRoot, Entity } from "../../shared/Entity";
-import type { IEventDispatcher } from "../../shared/EventDispatcher";
-import type { UUID } from "../../shared/Uuid";
+import { AggregateRoot, Entity, UUID } from "@domain/shared";
+import { FriendRequest } from "./FriendRequest";
 import { UserInvitationRequest } from "./UserInvitationRequest";
+import { User } from "./User";
+import { FriendRemovedEvent } from "../events/FriendRequestEvents";
+import { Email } from "../value-objects";
 
 /**
  * Friend List Aggregate Root
@@ -21,8 +18,8 @@ export class UserFriendList extends Entity {
   private readonly _sentInvitationRequests: Map<string, UserInvitationRequest> =
     new Map();
 
-  constructor(userId: UUID, eventDispatcher?: IEventDispatcher) {
-    super(eventDispatcher);
+  constructor(userId: UUID) {
+    super();
     this._userId = userId;
   }
 
@@ -221,11 +218,8 @@ export class UserFriendList extends Entity {
     return `FriendList(${this._userId}, ${this.friendCount} friends)`;
   }
 
-  static create(
-    userId: UUID,
-    eventDispatcher?: IEventDispatcher,
-  ): UserFriendList {
-    return new UserFriendList(userId, eventDispatcher);
+  static create(userId: UUID): UserFriendList {
+    return new UserFriendList(userId);
   }
 
   static reconstitute(
@@ -234,9 +228,8 @@ export class UserFriendList extends Entity {
     sentFriendRequests: FriendRequest[],
     receivedFriendRequests: FriendRequest[],
     sentInvitationRequests: UserInvitationRequest[],
-    eventDispatcher?: IEventDispatcher,
   ): UserFriendList {
-    const friendList = new UserFriendList(userId, eventDispatcher);
+    const friendList = new UserFriendList(userId);
 
     friends.forEach((friendId) => {
       friendList._friends.set(friendId, friendId);

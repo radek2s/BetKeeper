@@ -4,14 +4,16 @@ import {
   IUserRepository,
   IFriendListRepository,
 } from "../UserService";
-
-import { UserStatus } from "../../types/RequestStatus";
-import { Email, User, UserFriendList } from "@bet-keeper/domain";
+import { InMemoryEventDispatcher } from "@domain/shared";
+import { Email } from "@domain/user/value-objects";
+import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
+import { User, UserFriendList, UserStatus } from "@domain/user";
 
 describe("UserService", () => {
   let userService: UserService;
   let mockUserRepository: IUserRepository;
   let mockFriendListRepository: IFriendListRepository;
+  let eventDispatcher: InMemoryEventDispatcher;
 
   beforeEach(() => {
     mockUserRepository = {
@@ -26,7 +28,13 @@ describe("UserService", () => {
       save: vi.fn(),
     };
 
-    userService = new UserService(mockUserRepository, mockFriendListRepository);
+    eventDispatcher = new InMemoryEventDispatcher();
+
+    userService = new UserService(
+      mockUserRepository,
+      mockFriendListRepository,
+      eventDispatcher,
+    );
   });
 
   describe("createUser", () => {
@@ -47,6 +55,11 @@ describe("UserService", () => {
       expect(mockFriendListRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({ userId: user.id }),
       );
+
+      expect(eventDispatcher.dispatchedEvents).toHaveLength(1);
+      expect(eventDispatcher.dispatchedEvents[0]).toBeInstanceOf(
+        UserCreatedEvent,
+      );
     });
 
     it("should throw error when user already exists", async () => {
@@ -60,6 +73,8 @@ describe("UserService", () => {
       await expect(
         userService.createUser(email, firstName, lastName),
       ).rejects.toThrow("User with this email already exists");
+
+      expect(eventDispatcher.dispatchedEvents).toHaveLength(0);
     });
   });
 
@@ -73,7 +88,6 @@ describe("UserService", () => {
         "Sender",
         "Testing",
         UserStatus.ACTIVE,
-        undefined,
         senderId,
       );
       const receiver = new User(
@@ -81,7 +95,6 @@ describe("UserService", () => {
         "Receiver",
         "Testing",
         UserStatus.ACTIVE,
-        undefined,
         "receiver_123",
       );
 
@@ -121,7 +134,6 @@ describe("UserService", () => {
         "Sender",
         "Testing",
         UserStatus.ACTIVE,
-        undefined,
         senderId,
       );
 
@@ -144,14 +156,12 @@ describe("UserService", () => {
       const receiverFriendList = UserFriendList.create(receiverId);
       const senderFriendList = UserFriendList.create(senderId);
 
-      // Create and add a friend request to receiver's list
       const friendRequest = senderFriendList.sendFriendRequest(
         new User(
           new Email("receiver@example.com"),
           "Receiver",
           "Testing",
           UserStatus.ACTIVE,
-          undefined,
           receiverId,
         ),
       );
@@ -260,7 +270,6 @@ describe("UserService", () => {
         "Friend",
         "Testing",
         UserStatus.ACTIVE,
-        undefined,
         friendId,
       );
 

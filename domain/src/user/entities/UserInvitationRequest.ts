@@ -30,9 +30,8 @@ export class UserInvitationRequest extends Entity {
     createdAt?: Date,
     approvedById?: UUID,
     approvedAt?: Date,
-    eventDispatcher?: IEventDispatcher,
   ) {
-    super(eventDispatcher);
+    super();
 
     this._id = id;
     this._requesterId = requesterId;
@@ -140,11 +139,7 @@ export class UserInvitationRequest extends Entity {
     return this.isPending();
   }
 
-  static create(
-    requesterId: UUID,
-    inviteeEmail: Email,
-    eventDispatcher?: IEventDispatcher,
-  ): UserInvitationRequest {
+  static create(requesterId: UUID, inviteeEmail: Email): UserInvitationRequest {
     const id = generateId();
     return new UserInvitationRequest(
       id,
@@ -154,7 +149,6 @@ export class UserInvitationRequest extends Entity {
       undefined,
       undefined,
       undefined,
-      eventDispatcher,
     );
   }
 
@@ -166,7 +160,6 @@ export class UserInvitationRequest extends Entity {
     createdAt: Date,
     approvedById?: UUID,
     approvedAt?: Date,
-    eventDispatcher?: IEventDispatcher,
   ): UserInvitationRequest {
     return new UserInvitationRequest(
       id,
@@ -176,7 +169,6 @@ export class UserInvitationRequest extends Entity {
       createdAt,
       approvedById,
       approvedAt,
-      eventDispatcher,
     );
   }
 
