@@ -5,6 +5,8 @@ import { DomainService } from "../../shared/DomainService";
 import { IEventDispatcher } from "../../shared/EventDispatcher";
 import { UserFriendList } from "../entities/UserFriendList";
 import { UUID } from "../../shared";
+import { FriendRequest } from "../entities/FriendRequest";
+import { UserRequest } from "../entities";
 
 /**
  * User Repository Interface
@@ -26,6 +28,12 @@ export interface IFriendListRepository {
   save(friendList: UserFriendList): Promise<void>;
 }
 
+export interface IUserRequestRepository {
+  findAllPending(): Promise<UserRequest[]>;
+  findByUserId(userId: UUID): Promise<UserRequest | null>;
+  save(friendList: UserRequest): Promise<void>;
+}
+
 /**
  * User Domain Service
  * Handles complex business operations that involve multiple aggregates
@@ -33,10 +41,27 @@ export interface IFriendListRepository {
 export class UserService extends DomainService {
   constructor(
     private readonly userRepository: IUserRepository,
+    private readonly userRequestRepository: IUserRequestRepository,
     private readonly friendListRepository: IFriendListRepository,
     eventDispatcher?: IEventDispatcher,
   ) {
     super(eventDispatcher);
+  }
+
+  async sendUserRequest(
+    requesterId: UUID,
+    inviteeEmail: Email,
+  ): Promise<UserRequest> {
+    const requester = await this.userRepository.findById(requesterId);
+    if (!requester) {
+      throw new Error("Sender not found");
+    }
+
+    const request = new UserRequest(requesterId, inviteeEmail);
+    await this.userRequestRepository.save(request);
+
+    this.dispatchDomainEvents(request);
+    return request;
   }
 
   /**
@@ -63,7 +88,10 @@ export class UserService extends DomainService {
     return user;
   }
 
-  async sendFriendRequest(senderId: UUID, receiverEmail: Email): Promise<void> {
+  async sendFriendRequest(
+    senderId: UUID,
+    receiverEmail: Email,
+  ): Promise<FriendRequest> {
     const sender = await this.userRepository.findById(senderId);
     if (!sender) {
       throw new Error("Sender not found");
@@ -98,6 +126,8 @@ export class UserService extends DomainService {
 
     await this.friendListRepository.save(senderFriendList);
     await this.friendListRepository.save(receiverFriendList);
+
+    return friendRequest;
   }
 
   /**

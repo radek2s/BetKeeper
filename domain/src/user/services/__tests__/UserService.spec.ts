@@ -3,6 +3,7 @@ import {
   UserService,
   IUserRepository,
   IFriendListRepository,
+  IUserRequestRepository,
 } from "../UserService";
 import { InMemoryEventDispatcher } from "@domain/shared";
 import { Email } from "@domain/user/value-objects";
@@ -12,6 +13,7 @@ import { User, UserFriendList, UserStatus } from "@domain/user";
 describe("UserService", () => {
   let userService: UserService;
   let mockUserRepository: IUserRepository;
+  let mockUserRequestRepository: IUserRequestRepository;
   let mockFriendListRepository: IFriendListRepository;
   let eventDispatcher: InMemoryEventDispatcher;
 
@@ -28,10 +30,17 @@ describe("UserService", () => {
       save: vi.fn(),
     };
 
+    mockUserRequestRepository = {
+      findAllPending: vi.fn(),
+      findByUserId: vi.fn(),
+      save: vi.fn(),
+    };
+
     eventDispatcher = new InMemoryEventDispatcher();
 
     userService = new UserService(
       mockUserRepository,
+      mockUserRequestRepository,
       mockFriendListRepository,
       eventDispatcher,
     );

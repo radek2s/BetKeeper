@@ -32,7 +32,6 @@ describe("FriendList", () => {
       expect(friendList.friendCount).toBe(0);
       expect(friendList.sentFriendRequests).toHaveLength(0);
       expect(friendList.receivedFriendRequests).toHaveLength(0);
-      expect(friendList.sentInvitationRequests).toHaveLength(0);
     });
   });
 
@@ -215,28 +214,6 @@ describe("FriendList", () => {
     });
   });
 
-  describe("sendInvitationRequest", () => {
-    it("should send an invitation request for a new email", () => {
-      const inviteeEmail = new Email("newuser@example.com");
-
-      const invitationRequest = friendList.sendInvitationRequest(inviteeEmail);
-
-      expect(invitationRequest.requesterId).toBe(userId);
-      expect(invitationRequest.inviteeEmail).toBe(inviteeEmail);
-      expect(friendList.sentInvitationRequests).toHaveLength(1);
-      expect(friendList.domainEvents.length).toBeGreaterThan(0);
-    });
-
-    it("should throw error when invitation request already sent for email", () => {
-      const inviteeEmail = new Email("newuser@example.com");
-      friendList.sendInvitationRequest(inviteeEmail);
-
-      expect(() => friendList.sendInvitationRequest(inviteeEmail)).toThrow(
-        "Invitation request already sent for this email",
-      );
-    });
-  });
-
   describe("query methods", () => {
     beforeEach(() => {
       friendList.addFriend(targetUser.id);
@@ -260,20 +237,6 @@ describe("FriendList", () => {
 
       expect(friendList.hasPendingFriendRequestTo(anotherUser.id)).toBe(true);
       expect(friendList.hasPendingFriendRequestTo("non-existent")).toBe(false);
-    });
-
-    it("should correctly identify pending invitation requests", () => {
-      const inviteeEmail = new Email("newuser@example.com");
-      friendList.sendInvitationRequest(inviteeEmail);
-
-      expect(friendList.hasPendingInvitationRequestFor(inviteeEmail)).toBe(
-        true,
-      );
-      expect(
-        friendList.hasPendingInvitationRequestFor(
-          new Email("other@example.com"),
-        ),
-      ).toBe(false);
     });
   });
 
@@ -304,14 +267,12 @@ describe("FriendList", () => {
         const friends = [targetUser.id];
         const sentRequests: any[] = [];
         const receivedRequests: any[] = [];
-        const invitationRequests: any[] = [];
 
         const reconstitutedList = UserFriendList.reconstitute(
           userId,
           friends,
           sentRequests,
           receivedRequests,
-          invitationRequests,
         );
 
         expect(reconstitutedList.userId).toBe(userId);

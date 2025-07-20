@@ -1,3 +1,3 @@
 export * from "./User";
-export * from "./UserInvitationRequest";
+export * from "./UserRequest";
 export * from "./UserFriendList";

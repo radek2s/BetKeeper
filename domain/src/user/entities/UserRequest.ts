@@ -5,15 +5,13 @@ import {
   InvitationRequestApprovedEvent,
 } from "../events/FriendRequestEvents";
 import { Entity } from "../../shared/Entity";
-import { IEventDispatcher } from "../../shared/EventDispatcher";
-import { DomainEvent } from "../events/DomainEvent";
 import { generateId, UUID } from "../../shared/Uuid";
 
 /**
  * Invitation Request Entity
  * Represents a request to invite a non-existing user to join the system
  */
-export class UserInvitationRequest extends Entity {
+export class UserRequest extends Entity {
   private readonly _id: UUID;
   private readonly _requesterId: UUID;
   private readonly _inviteeEmail: Email;
@@ -23,17 +21,17 @@ export class UserInvitationRequest extends Entity {
   private _approvedAt?: Date;
 
   constructor(
-    id: UUID,
     requesterId: UUID,
     inviteeEmail: Email,
     status: RequestStatus = RequestStatus.PENDING,
     createdAt?: Date,
     approvedById?: UUID,
     approvedAt?: Date,
+    id?: UUID,
   ) {
     super();
 
-    this._id = id;
+    this._id = id || generateId();
     this._requesterId = requesterId;
     this._inviteeEmail = inviteeEmail;
     this._status = status;
@@ -41,7 +39,7 @@ export class UserInvitationRequest extends Entity {
     this._approvedById = approvedById;
     this._approvedAt = approvedAt;
 
-    if (!createdAt && status === RequestStatus.PENDING) {
+    if (!id) {
       this.addDomainEvent(
         new InvitationRequestSentEvent(
           this._id,
@@ -139,16 +137,16 @@ export class UserInvitationRequest extends Entity {
     return this.isPending();
   }
 
-  static create(requesterId: UUID, inviteeEmail: Email): UserInvitationRequest {
+  static create(requesterId: UUID, inviteeEmail: Email): UserRequest {
     const id = generateId();
-    return new UserInvitationRequest(
-      id,
+    return new UserRequest(
       requesterId,
       inviteeEmail,
       RequestStatus.PENDING,
       undefined,
       undefined,
       undefined,
+      id,
     );
   }
 
@@ -160,20 +158,20 @@ export class UserInvitationRequest extends Entity {
     createdAt: Date,
     approvedById?: UUID,
     approvedAt?: Date,
-  ): UserInvitationRequest {
-    return new UserInvitationRequest(
-      id,
+  ): UserRequest {
+    return new UserRequest(
       requesterId,
       inviteeEmail,
       status,
       createdAt,
       approvedById,
       approvedAt,
+      id,
     );
   }
 
   override equals(other: Entity): boolean {
-    if (!(other instanceof UserInvitationRequest)) {
+    if (!(other instanceof UserRequest)) {
       return false;
     }
     return this._id === other._id;

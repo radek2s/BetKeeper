@@ -10,7 +10,7 @@ export {
 
 export { User } from "./entities/User";
 export { FriendRequest } from "./entities/FriendRequest";
-export { UserInvitationRequest } from "./entities/UserInvitationRequest";
+export { UserRequest } from "./entities/UserRequest";
 export { UserFriendList } from "./entities/UserFriendList";
 
 export { DomainEvent } from "./events/DomainEvent";

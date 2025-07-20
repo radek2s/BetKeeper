@@ -2,17 +2,25 @@ import { Email } from "@domain/user/value-objects";
 import { UserService } from "../UserService";
 import { InMemoryUserRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserRepository";
 import { InMemoryFriendListRepository } from "@bet-keeper/domain/test/mocks/InMemoryFriendListRepository";
+import { InMemoryUserRequestRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserRequestRepository";
 import { EventDispatcherMock } from "@bet-keeper/domain/test/mocks/EventDispatcherMock";
 import { DomainEvent } from "@domain/user/events/DomainEvent";
 import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
+import { User } from "@domain/user/entities";
+import { UserStatusChangedEvent } from "@domain/user/events/UserStatusChangedEvent";
 
 describe("User UseCases", () => {
   let userService: UserService;
   let userRepository = new InMemoryUserRepository();
-  let userFreindListRepository = new InMemoryFriendListRepository();
+  let userRequestRepository = new InMemoryUserRequestRepository();
+  let userFriendListRepository = new InMemoryFriendListRepository();
   let eventDispatcher = new EventDispatcherMock();
 
-  it("Should create a new user", async () => {
+  let admin: User;
+  let user: User;
+  let friend: User;
+
+  it("Should create admin user", async () => {
     let emitedEvent: DomainEvent | null = null;
     const eventHandler = (event: DomainEvent) => {
       emitedEvent = event;
@@ -21,12 +29,94 @@ describe("User UseCases", () => {
 
     userService = new UserService(
       userRepository,
-      userFreindListRepository,
+      userRequestRepository,
+      userFriendListRepository,
       eventDispatcher,
     );
 
-    await userService.createUser(new Email("test@example.com"), "Test", "User");
+    admin = await userService.createUser(
+      new Email("admin@example.com"),
+      "Admin",
+      "User",
+    );
 
     expect(emitedEvent).toBeInstanceOf(UserCreatedEvent);
+  });
+
+  it("Should invite new user", async () => {
+    await userService.sendUserRequest(admin.id, new Email("user@example.com"));
+
+    const requests = await userRequestRepository.findAllPending();
+    expect(requests).toHaveLength(1);
+  });
+
+  it("Should activate user", async () => {
+    let emitedEvent: DomainEvent | null = null;
+    const eventHandler = (event: DomainEvent) => {
+      emitedEvent = event;
+    };
+    eventDispatcher.addHandler(eventHandler);
+
+    //User Invitation Request should be visible for admin when user does not exists in DB
+    const [userRequest] = await userRequestRepository.findAllPending();
+
+    userRequest.approve(admin.id);
+    await userRequestRepository.save(userRequest);
+
+    user = await userService.createUser(
+      new Email(userRequest.inviteeEmail.value),
+      "Admin",
+      "User",
+    );
+
+    user.activate();
+    expect(user.status).toBe("active");
+
+    await eventDispatcher.dispatchAll(user.domainEvents);
+    user.clearDomainEvents();
+
+    expect(emitedEvent).toBeInstanceOf(UserStatusChangedEvent);
+  });
+
+  //User should be able to add somebody by email to his friend list
+  it("Should invite friend", async () => {
+    friend = await userService.createUser(
+      new Email("friend@example.com"),
+      "Mock",
+      "User",
+    );
+
+    await userService.sendFriendRequest(user.id, friend.email);
+
+    const userFriendList = await userFriendListRepository.findByUserId(user.id);
+    expect(userFriendList?.sentFriendRequests).toHaveLength(1);
+  });
+
+  //Friend Request should be visible for other user
+  it("Should approve friend request", async () => {
+    const friendList = await userFriendListRepository.findByUserId(friend.id);
+
+    expect(friendList?.receivedFriendRequests).toHaveLength(1);
+
+    if (friendList == null) {
+      throw new Error("Friend list not found");
+    }
+
+    const invitationRequest = friendList.receivedFriendRequests[0];
+
+    await userService.approveFriendRequest(friend.id, invitationRequest.id);
+
+    const friends = await userService.getUserFriendsWithDetails(user.id);
+
+    expect(friends).toHaveLength(1);
+    expect(friends[0]).toBe(friend);
+  });
+
+  it("Should remove friend", async () => {
+    await userService.removeFriend(user.id, friend.id);
+
+    const friends = await userService.getUserFriendsWithDetails(user.id);
+
+    expect(friends).toHaveLength(0);
   });
 });

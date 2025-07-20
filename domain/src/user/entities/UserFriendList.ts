@@ -1,9 +1,7 @@
 import { AggregateRoot, Entity, UUID } from "@domain/shared";
 import { FriendRequest } from "./FriendRequest";
-import { UserInvitationRequest } from "./UserInvitationRequest";
 import { User } from "./User";
 import { FriendRemovedEvent } from "../events/FriendRequestEvents";
-import { Email } from "../value-objects";
 
 /**
  * Friend List Aggregate Root
@@ -14,8 +12,6 @@ export class UserFriendList extends Entity {
   private readonly _friends: Map<string, UUID> = new Map();
   private readonly _sentFriendRequests: Map<string, FriendRequest> = new Map();
   private readonly _receivedFriendRequests: Map<string, FriendRequest> =
-    new Map();
-  private readonly _sentInvitationRequests: Map<string, UserInvitationRequest> =
     new Map();
 
   constructor(userId: UUID) {
@@ -49,10 +45,6 @@ export class UserFriendList extends Entity {
 
   get pendingReceivedRequests(): FriendRequest[] {
     return this.receivedFriendRequests.filter((request) => request.isPending());
-  }
-
-  get sentInvitationRequests(): UserInvitationRequest[] {
-    return Array.from(this._sentInvitationRequests.values());
   }
 
   sendFriendRequest(targetUser: User): FriendRequest {
@@ -144,32 +136,6 @@ export class UserFriendList extends Entity {
     this.addDomainEvent(new FriendRemovedEvent(this._userId, friendId));
   }
 
-  sendInvitationRequest(inviteeEmail: Email): UserInvitationRequest {
-    if (this.hasPendingInvitationRequestFor(inviteeEmail)) {
-      throw new Error("Invitation request already sent for this email");
-    }
-
-    const invitationRequest = UserInvitationRequest.create(
-      this._userId,
-      inviteeEmail,
-    );
-    this._sentInvitationRequests.set(invitationRequest.id, invitationRequest);
-
-    this.addDomainEvents(invitationRequest.domainEvents);
-    invitationRequest.clearDomainEvents();
-
-    return invitationRequest;
-  }
-
-  cancelInvitationRequest(requestId: string): void {
-    const request = this._sentInvitationRequests.get(requestId);
-    if (!request) {
-      throw new Error("Invitation request not found");
-    }
-
-    request.cancel();
-  }
-
   isFriend(userId: UUID): boolean {
     return this._friends.has(userId);
   }
@@ -186,21 +152,11 @@ export class UserFriendList extends Entity {
     );
   }
 
-  hasPendingInvitationRequestFor(email: Email): boolean {
-    return Array.from(this._sentInvitationRequests.values()).some(
-      (request) => request.inviteeEmail.equals(email) && request.isPending(),
-    );
-  }
-
   getFriendRequest(requestId: string): FriendRequest | undefined {
     return (
       this._receivedFriendRequests.get(requestId) ||
       this._sentFriendRequests.get(requestId)
     );
-  }
-
-  getInvitationRequest(requestId: string): UserInvitationRequest | undefined {
-    return this._sentInvitationRequests.get(requestId);
   }
 
   canCreateBetRequest(): boolean {
@@ -227,7 +183,6 @@ export class UserFriendList extends Entity {
     friends: UUID[],
     sentFriendRequests: FriendRequest[],
     receivedFriendRequests: FriendRequest[],
-    sentInvitationRequests: UserInvitationRequest[],
   ): UserFriendList {
     const friendList = new UserFriendList(userId);
 
@@ -241,10 +196,6 @@ export class UserFriendList extends Entity {
 
     receivedFriendRequests.forEach((request) => {
       friendList._receivedFriendRequests.set(request.id, request);
-    });
-
-    sentInvitationRequests.forEach((request) => {
-      friendList._sentInvitationRequests.set(request.id, request);
     });
 
     return friendList;
