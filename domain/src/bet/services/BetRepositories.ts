@@ -38,7 +38,10 @@ export interface IBetRequestRepository {
   /**
    * Find bet requests by status for a specific user
    */
-  findByUserIdAndStatus(userId: UUID, status: BetRequestStatus): Promise<BetRequest[]>;
+  findByUserIdAndStatus(
+    userId: UUID,
+    status: BetRequestStatus,
+  ): Promise<BetRequest[]>;
 
   /**
    * Find pending bet requests for a specific user (not blocked)
@@ -226,8 +229,8 @@ export interface BetQueryFilters {
   isPendingTooLong?: boolean;
   limit?: number;
   offset?: number;
-  sortBy?: 'createdAt' | 'updatedAt' | 'dueDate';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "createdAt" | "updatedAt" | "dueDate";
+  sortOrder?: "asc" | "desc";
 }
 
 /**
