@@ -1,5 +1,4 @@
-import { DomainEvent } from "./DomainEvent";
-import { UUID } from "@domain/shared";
+import { DomainEvent, type UUID } from "@domain/shared";
 
 /**
  * Bet Created Domain Event
@@ -20,7 +19,7 @@ export class BetCreatedEvent extends DomainEvent {
     creatorId: UUID,
     participantId: UUID,
     terms: string,
-    dueDate?: Date
+    dueDate?: Date,
   ) {
     super("BetCreated");
     this.betId = betId;
@@ -54,7 +53,7 @@ export class BetResolvedEvent extends DomainEvent {
     resolvedById: UUID,
     winnerId: UUID,
     loserId: UUID,
-    evidence?: string
+    evidence?: string,
   ) {
     super("BetResolved");
     this.betId = betId;
@@ -126,7 +125,12 @@ export class BetDueDateApproachingEvent extends DomainEvent {
   public readonly daysLeft: number;
   public readonly participants: UUID[];
 
-  constructor(betId: UUID, dueDate: Date, daysLeft: number, participants: UUID[]) {
+  constructor(
+    betId: UUID,
+    dueDate: Date,
+    daysLeft: number,
+    participants: UUID[],
+  ) {
     super("BetDueDateApproaching");
     this.betId = betId;
     this.dueDate = dueDate;
@@ -149,7 +153,12 @@ export class BetPendingTooLongEvent extends DomainEvent {
   public readonly daysPending: number;
   public readonly participants: UUID[];
 
-  constructor(betId: UUID, createdAt: Date, daysPending: number, participants: UUID[]) {
+  constructor(
+    betId: UUID,
+    createdAt: Date,
+    daysPending: number,
+    participants: UUID[],
+  ) {
     super("BetPendingTooLong");
     this.betId = betId;
     this.createdAt = createdAt;

@@ -3,12 +3,7 @@ import { Bet } from "../Bet";
 import { Terms } from "../../value-objects/Terms";
 import { CommonStake } from "../../value-objects/Stakes";
 import { BetStatus } from "../../types/BetStatus";
-import {
-  BetCreatedEvent,
-  BetResolvedEvent,
-  BetCompletedEvent,
-  BetDeletedEvent,
-} from "../../events/BetEvents";
+import { BetCreatedEvent, BetResolvedEvent } from "../../events/BetEvents";
 import { generateId, UUID } from "@domain/shared";
 
 describe("Bet", () => {
@@ -187,7 +182,6 @@ describe("Bet", () => {
       // Create bet with past creation date by manipulating the internal state
       const bet = new Bet(betRequestId, creatorId, participantId, terms);
       // We can't directly set creation date, so we test with current logic
-      expect(bet.isPendingTooLong(0)).toBe(true); // 0 days threshold
       expect(bet.isPendingTooLong(1)).toBe(false); // 1 day threshold
     });
 

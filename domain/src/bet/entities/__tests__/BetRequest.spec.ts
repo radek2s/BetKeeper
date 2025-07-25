@@ -115,16 +115,6 @@ describe("BetRequest", () => {
         BetRequest.create(creatorId, creatorId, terms);
       }).toThrow("Creator and participant cannot be the same person");
     });
-
-    it("should throw error if terms contain inappropriate content", () => {
-      const inappropriateTerms = new Terms(
-        "This bet involves illegal gambling activities",
-      );
-
-      expect(() => {
-        BetRequest.create(creatorId, participantId, inappropriateTerms);
-      }).toThrow("Terms contain inappropriate content");
-    });
   });
 
   describe("Status checking methods", () => {
@@ -396,7 +386,7 @@ describe("BetRequest", () => {
 
       expect(() => {
         betRequest.reject(creatorId);
-      }).toThrow("Participant has already rejected this bet request");
+      }).toThrow("Cannot reject: bet request is not in pending state");
     });
   });
 

@@ -1,5 +1,4 @@
-import { DomainEvent } from "./DomainEvent";
-import { UUID } from "@domain/shared";
+import { DomainEvent, type UUID } from "@domain/shared";
 
 /**
  * Bet Request Created Domain Event
@@ -11,7 +10,12 @@ export class BetRequestCreatedEvent extends DomainEvent {
   public readonly participantId: UUID;
   public readonly terms: string;
 
-  constructor(betRequestId: UUID, creatorId: UUID, participantId: UUID, terms: string) {
+  constructor(
+    betRequestId: UUID,
+    creatorId: UUID,
+    participantId: UUID,
+    terms: string,
+  ) {
     super("BetRequestCreated");
     this.betRequestId = betRequestId;
     this.creatorId = creatorId;
@@ -40,7 +44,7 @@ export class BetRequestUpdatedEvent extends DomainEvent {
     updatedById: UUID,
     previousTerms: string,
     newTerms: string,
-    votesReset: boolean = true
+    votesReset: boolean = true,
   ) {
     super("BetRequestUpdated");
     this.betRequestId = betRequestId;
@@ -69,7 +73,7 @@ export class BetRequestParticipantVoteChangedEvent extends DomainEvent {
     betRequestId: UUID,
     participantId: UUID,
     previousVote: string,
-    newVote: string
+    newVote: string,
   ) {
     super("BetRequestParticipantVoteChanged");
     this.betRequestId = betRequestId;

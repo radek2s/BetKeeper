@@ -1,3 +1,4 @@
+export * from "./DomainEvent";
 export * from "./DomainService";
 export * from "./Entity";
 export * from "./EventDispatcher";
