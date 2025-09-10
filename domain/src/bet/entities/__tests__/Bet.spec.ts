@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { Bet } from "../Bet";
-import { Terms } from "../../value-objects/Terms";
-import { CommonStake } from "../../value-objects/Stakes";
-import { BetStatus } from "../../types/BetStatus";
+import { generateId, type UUID } from "@domain/shared";
+import { beforeEach, describe, expect, it } from "vitest";
 import { BetCreatedEvent, BetResolvedEvent } from "../../events/BetEvents";
-import { generateId, UUID } from "@domain/shared";
+import { BetStatus } from "../../types/BetStatus";
+import { CommonStake } from "../../value-objects/Stakes";
+import { Terms } from "../../value-objects/Terms";
+import { Bet } from "../Bet";
 
 describe("Bet", () => {
   let betRequestId: UUID;

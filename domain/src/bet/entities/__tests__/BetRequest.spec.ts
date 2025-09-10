@@ -1,21 +1,21 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { BetRequest } from "../BetRequest";
-import { Terms } from "../../value-objects/Terms";
-import { CommonStake, IndividualStakes } from "../../value-objects/Stakes";
+import { generateId, type UUID } from "@domain/shared";
+import { beforeEach, describe, expect, it } from "vitest";
+import {
+  BetRequestApprovedEvent,
+  BetRequestBlockedEvent,
+  BetRequestCreatedEvent,
+  BetRequestDeletedEvent,
+  BetRequestParticipantVoteChangedEvent,
+  BetRequestRejectedEvent,
+  BetRequestUpdatedEvent,
+} from "../../events/BetRequestEvents";
 import {
   BetRequestStatus,
   ParticipantVote,
 } from "../../types/BetRequestStatus";
-import {
-  BetRequestCreatedEvent,
-  BetRequestUpdatedEvent,
-  BetRequestParticipantVoteChangedEvent,
-  BetRequestApprovedEvent,
-  BetRequestRejectedEvent,
-  BetRequestBlockedEvent,
-  BetRequestDeletedEvent,
-} from "../../events/BetRequestEvents";
-import { generateId, UUID } from "@domain/shared";
+import { CommonStake, IndividualStakes } from "../../value-objects/Stakes";
+import { Terms } from "../../value-objects/Terms";
+import { BetRequest } from "../BetRequest";
 
 describe("BetRequest", () => {
   let creatorId: UUID;

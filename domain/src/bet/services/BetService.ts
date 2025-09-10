@@ -1,19 +1,19 @@
+import type { UUID } from "../../shared";
 import { DomainService } from "../../shared/DomainService";
-import { IEventDispatcher } from "../../shared/EventDispatcher";
-import { UUID } from "../../shared";
+import type { IEventDispatcher } from "../../shared/EventDispatcher";
+import type { Bet } from "../entities/Bet";
 import { BetAggregate } from "../entities/BetAggregate";
-import { BetRequest } from "../entities/BetRequest";
-import { Bet } from "../entities/Bet";
-import { Terms } from "../value-objects/Terms";
-import { IStake } from "../value-objects/Stakes";
-import { BetRequestStatus } from "../types/BetRequestStatus";
-import { BetStatus } from "../types/BetStatus";
-import {
-  IBetRequestRepository,
-  IBetRepository,
+import type { BetRequest } from "../entities/BetRequest";
+import type { BetRequestStatus } from "../types/BetRequestStatus";
+import type { BetStatus } from "../types/BetStatus";
+import type { IStake } from "../value-objects/Stakes";
+import type { Terms } from "../value-objects/Terms";
+import type {
+  BetQueryFilters,
   IBetAggregateRepository,
   IBetQueryService,
-  BetQueryFilters,
+  IBetRepository,
+  IBetRequestRepository,
 } from "./BetRepositories";
 
 /**

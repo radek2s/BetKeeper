@@ -1,13 +1,13 @@
-import { Entity, generateId, UUID } from "@domain/shared";
-import { Terms } from "../value-objects/Terms";
-import { IStake } from "../value-objects/Stakes";
-import { BetStatus, BetStatusGuards } from "../types/BetStatus";
+import { Entity, generateId, type UUID } from "@domain/shared";
 import {
-  BetCreatedEvent,
-  BetResolvedEvent,
   BetCompletedEvent,
+  BetCreatedEvent,
   BetDeletedEvent,
+  BetResolvedEvent,
 } from "../events/BetEvents";
+import { BetStatus, BetStatusGuards } from "../types/BetStatus";
+import type { IStake } from "../value-objects/Stakes";
+import type { Terms } from "../value-objects/Terms";
 
 /**
  * Bet Entity
@@ -15,22 +15,21 @@ import {
  * Created when a BetRequest is approved by all participants
  */
 export class Bet extends Entity {
-  private readonly _id: UUID;
-  private readonly _betRequestId: UUID;
-  private readonly _creatorId: UUID;
-  private readonly _participantId: UUID;
-  private readonly _terms: Terms;
-  private readonly _stakes?: IStake;
-  private _status: BetStatus;
-  private readonly _createdAt: Date;
-  private _updatedAt: Date;
-  private readonly _dueDate?: Date;
-  private _resolvedAt?: Date;
-  private _completedAt?: Date;
-  private _winnerId?: UUID;
-  private _loserId?: UUID;
-  private _evidence?: string;
-  private _completionNotes?: string;
+  readonly id: UUID;
+  readonly betRequestId: UUID;
+  readonly creatorId: UUID;
+  readonly participantId: UUID;
+  readonly terms: Terms;
+  readonly stakes?: IStake;
+  status: BetStatus;
+  readonly createdAt: Date;
+  updatedAt: Date;
+  readonly dueDate?: Date;
+  resolvedAt?: Date;
+  completedAt?: Date;
+  winnerId?: UUID;
+  evidence?: string;
+  completionNotes?: string;
 
   constructor(
     betRequestId: UUID,
@@ -42,158 +41,100 @@ export class Bet extends Entity {
     id?: UUID,
   ) {
     super();
-    this._id = id || generateId();
-    this._betRequestId = betRequestId;
-    this._creatorId = creatorId;
-    this._participantId = participantId;
-    this._terms = terms;
-    this._stakes = stakes;
-    this._status = BetStatus.PENDING;
-    this._createdAt = new Date();
-    this._updatedAt = new Date();
-    this._dueDate = dueDate;
+    this.id = id || generateId();
+    this.betRequestId = betRequestId;
+    this.creatorId = creatorId;
+    this.participantId = participantId;
+    this.terms = terms;
+    this.stakes = stakes;
+    this.status = BetStatus.PENDING;
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+    this.dueDate = dueDate;
 
     if (!id) {
       this.addDomainEvent(
         new BetCreatedEvent(
-          this._id,
-          this._betRequestId,
-          this._creatorId,
-          this._participantId,
-          this._terms.value,
-          this._dueDate,
+          this.id,
+          this.betRequestId,
+          this.creatorId,
+          this.participantId,
+          this.terms.value,
+          this.dueDate,
         ),
       );
     }
   }
 
-  // Getters
-  override get id(): UUID {
-    return this._id;
-  }
-
-  get betRequestId(): UUID {
-    return this._betRequestId;
-  }
-
-  get creatorId(): UUID {
-    return this._creatorId;
-  }
-
-  get participantId(): UUID {
-    return this._participantId;
-  }
-
-  get terms(): Terms {
-    return this._terms;
-  }
-
-  get stakes(): IStake | undefined {
-    return this._stakes;
-  }
-
-  get status(): BetStatus {
-    return this._status;
-  }
-
-  get createdAt(): Date {
-    return this._createdAt;
-  }
-
-  get updatedAt(): Date {
-    return this._updatedAt;
-  }
-
-  get dueDate(): Date | undefined {
-    return this._dueDate;
-  }
-
-  get resolvedAt(): Date | undefined {
-    return this._resolvedAt;
-  }
-
-  get completedAt(): Date | undefined {
-    return this._completedAt;
-  }
-
-  get winnerId(): UUID | undefined {
-    return this._winnerId;
+  get participants(): UUID[] {
+    return [this.creatorId, this.participantId];
   }
 
   get loserId(): UUID | undefined {
-    return this._loserId;
-  }
-
-  get evidence(): string | undefined {
-    return this._evidence;
-  }
-
-  get completionNotes(): string | undefined {
-    return this._completionNotes;
-  }
-
-  get participants(): UUID[] {
-    return [this._creatorId, this._participantId];
+    if (!this.winnerId) return undefined;
+    return this.winnerId === this.creatorId
+      ? this.participantId
+      : this.creatorId;
   }
 
   // Status checking methods
   isPending(): boolean {
-    return BetStatusGuards.isPending(this._status);
+    return BetStatusGuards.isPending(this.status);
   }
 
   isResolved(): boolean {
-    return BetStatusGuards.isResolved(this._status);
+    return BetStatusGuards.isResolved(this.status);
   }
 
   isCompleted(): boolean {
-    return BetStatusGuards.isCompleted(this._status);
+    return BetStatusGuards.isCompleted(this.status);
   }
 
   isDeleted(): boolean {
-    return BetStatusGuards.isDeleted(this._status);
+    return BetStatusGuards.isDeleted(this.status);
   }
 
   isActive(): boolean {
-    return BetStatusGuards.isActive(this._status);
+    return BetStatusGuards.isActive(this.status);
   }
 
   isFinal(): boolean {
-    return BetStatusGuards.isFinal(this._status);
+    return BetStatusGuards.isFinal(this.status);
   }
 
   canBeResolved(): boolean {
-    return BetStatusGuards.canBeResolved(this._status);
+    return BetStatusGuards.canBeResolved(this.status);
   }
 
   canBeCompleted(): boolean {
-    return BetStatusGuards.canBeCompleted(this._status);
+    return BetStatusGuards.canBeCompleted(this.status);
   }
 
   canBeDeleted(): boolean {
-    return BetStatusGuards.canBeDeleted(this._status);
+    return BetStatusGuards.canBeDeleted(this.status);
   }
 
   isParticipant(userId: UUID): boolean {
-    return userId === this._creatorId || userId === this._participantId;
+    return userId === this.creatorId || userId === this.participantId;
   }
 
   isCreator(userId: UUID): boolean {
-    return userId === this._creatorId;
+    return userId === this.creatorId;
   }
 
   isOverdue(): boolean {
-    if (!this._dueDate) {
+    if (!this.dueDate) {
       return false;
     }
-    return new Date() > this._dueDate && this.isPending();
+    return new Date() > this.dueDate && this.isPending();
   }
 
   isDueSoon(daysThreshold: number = 3): boolean {
-    if (!this._dueDate || !this.isPending()) {
+    if (!this.dueDate || !this.isPending()) {
       return false;
     }
     const now = new Date();
-    const timeDiff = this._dueDate.getTime() - now.getTime();
+    const timeDiff = this.dueDate.getTime() - now.getTime();
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
     return daysDiff <= daysThreshold && daysDiff > 0;
   }
@@ -203,7 +144,7 @@ export class Bet extends Entity {
       return false;
     }
     const now = new Date();
-    const timeDiff = now.getTime() - this._createdAt.getTime();
+    const timeDiff = now.getTime() - this.createdAt.getTime();
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
     return daysDiff > daysThreshold;
   }
@@ -222,20 +163,22 @@ export class Bet extends Entity {
       throw new Error("Winner must be one of the bet participants");
     }
 
-    this._status = BetStatus.RESOLVED;
-    this._resolvedAt = new Date();
-    this._updatedAt = new Date();
-    this._winnerId = winnerId;
-    this._loserId =
-      winnerId === this._creatorId ? this._participantId : this._creatorId;
-    this._evidence = evidence;
+    this.status = BetStatus.RESOLVED;
+    this.resolvedAt = new Date();
+    this.updatedAt = new Date();
+    this.winnerId = winnerId;
+    this.evidence = evidence;
+
+    if (!this.loserId) {
+      throw new Error("Loser Id is invalid!");
+    }
 
     this.addDomainEvent(
       new BetResolvedEvent(
-        this._id,
+        this.id,
         resolvedById,
-        this._winnerId,
-        this._loserId,
+        this.winnerId,
+        this.loserId,
         evidence,
       ),
     );
@@ -250,13 +193,13 @@ export class Bet extends Entity {
       throw new Error("Only participants can mark the bet as completed");
     }
 
-    this._status = BetStatus.COMPLETED;
-    this._completedAt = new Date();
-    this._updatedAt = new Date();
-    this._completionNotes = completionNotes;
+    this.status = BetStatus.COMPLETED;
+    this.completedAt = new Date();
+    this.updatedAt = new Date();
+    this.completionNotes = completionNotes;
 
     this.addDomainEvent(
-      new BetCompletedEvent(this._id, completedById, completionNotes),
+      new BetCompletedEvent(this.id, completedById, completionNotes),
     );
   }
 
@@ -270,10 +213,10 @@ export class Bet extends Entity {
       throw new Error("Only the creator can delete this bet");
     }
 
-    this._status = BetStatus.DELETED;
-    this._updatedAt = new Date();
+    this.status = BetStatus.DELETED;
+    this.updatedAt = new Date();
 
-    this.addDomainEvent(new BetDeletedEvent(this._id, deletedById, reason));
+    this.addDomainEvent(new BetDeletedEvent(this.id, deletedById, reason));
   }
 
   // Factory method
@@ -300,10 +243,10 @@ export class Bet extends Entity {
     if (!(other instanceof Bet)) {
       return false;
     }
-    return this._id === other._id;
+    return this.id === other.id;
   }
 
   override toString(): string {
-    return `Bet(${this._id}, ${this._status}, Creator: ${this._creatorId}, Participant: ${this._participantId})`;
+    return `Bet(${this.id}, ${this.status}, Creator: ${this.creatorId}, Participant: ${this.participantId})`;
   }
 }

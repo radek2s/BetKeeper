@@ -70,7 +70,7 @@ export class BetRequestStatusGuards {
   }
 
   static canBeDeleted(status: BetRequestStatus): boolean {
-    return !this.isDeleted(status);
+    return !BetRequestStatusGuards.isDeleted(status);
   }
 }
 
@@ -96,6 +96,6 @@ export class ParticipantVoteGuards {
   }
 
   static isFinal(vote: ParticipantVote): boolean {
-    return this.hasVoted(vote);
+    return ParticipantVoteGuards.hasVoted(vote);
   }
 }
