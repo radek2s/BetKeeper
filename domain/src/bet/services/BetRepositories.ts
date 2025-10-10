@@ -1,9 +1,67 @@
-import { UUID } from "@domain/shared";
-import { BetRequest } from "../entities/BetRequest";
-import { Bet } from "../entities/Bet";
-import { BetAggregate } from "../entities/BetAggregate";
-import { BetRequestStatus } from "../types/BetRequestStatus";
-import { BetStatus } from "../types/BetStatus";
+import type { UUID } from "@domain/shared";
+import type { Bet } from "../entities/Bet";
+import type { BetAggregate } from "../entities/BetAggregate";
+import type { BetRequest } from "../entities/BetRequest";
+import type { BetRequestStatus } from "../types/BetRequestStatus";
+import type { BetStatus } from "../types/BetStatus";
+
+/**
+ * Bet Aggregate Repository Interface
+ * Defines the contract for bet aggregate persistence operations
+ */
+export interface IBetAggregateRepository {
+  betRequestRepository: IBetRequestRepository;
+  betRepository: IBetRepository;
+  /**
+   * Find a bet aggregate by bet request ID
+   */
+  findById(betRequestId: UUID): Promise<BetAggregate | null>;
+
+  /**
+   * Find all bet aggregates for a specific user
+   */
+  findByUserId(userId: UUID): Promise<BetAggregate[]>;
+
+  /**
+   * Find bet aggregates by bet request status
+   */
+  findByBetRequestStatus(status: BetRequestStatus): Promise<BetAggregate[]>;
+
+  /**
+   * Find bet aggregates by bet status
+   */
+  findByBetStatus(status: BetStatus): Promise<BetAggregate[]>;
+
+  /**
+   * Find bet aggregates where user has pending bet requests
+   */
+  findPendingBetRequestsByUserId(userId: UUID): Promise<BetAggregate[]>;
+
+  /**
+   * Find bet aggregates where user has active bets
+   */
+  findActiveBetsByUserId(userId: UUID): Promise<BetAggregate[]>;
+
+  /**
+   * Find bet aggregates where user has completed bets
+   */
+  findCompletedBetsByUserId(userId: UUID): Promise<BetAggregate[]>;
+
+  /**
+   * Save a bet aggregate (saves both bet request and bet if exists)
+   */
+  save(betAggregate: BetAggregate): Promise<void>;
+
+  /**
+   * Delete a bet aggregate
+   */
+  delete(betRequestId: UUID): Promise<void>;
+
+  /**
+   * Check if a bet aggregate exists
+   */
+  exists(betRequestId: UUID): Promise<boolean>;
+}
 
 /**
  * Bet Request Repository Interface
@@ -153,62 +211,6 @@ export interface IBetRepository {
    * Check if a bet exists
    */
   exists(id: UUID): Promise<boolean>;
-}
-
-/**
- * Bet Aggregate Repository Interface
- * Defines the contract for bet aggregate persistence operations
- */
-export interface IBetAggregateRepository {
-  /**
-   * Find a bet aggregate by bet request ID
-   */
-  findById(betRequestId: UUID): Promise<BetAggregate | null>;
-
-  /**
-   * Find all bet aggregates for a specific user
-   */
-  findByUserId(userId: UUID): Promise<BetAggregate[]>;
-
-  /**
-   * Find bet aggregates by bet request status
-   */
-  findByBetRequestStatus(status: BetRequestStatus): Promise<BetAggregate[]>;
-
-  /**
-   * Find bet aggregates by bet status
-   */
-  findByBetStatus(status: BetStatus): Promise<BetAggregate[]>;
-
-  /**
-   * Find bet aggregates where user has pending bet requests
-   */
-  findPendingBetRequestsByUserId(userId: UUID): Promise<BetAggregate[]>;
-
-  /**
-   * Find bet aggregates where user has active bets
-   */
-  findActiveBetsByUserId(userId: UUID): Promise<BetAggregate[]>;
-
-  /**
-   * Find bet aggregates where user has completed bets
-   */
-  findCompletedBetsByUserId(userId: UUID): Promise<BetAggregate[]>;
-
-  /**
-   * Save a bet aggregate (saves both bet request and bet if exists)
-   */
-  save(betAggregate: BetAggregate): Promise<void>;
-
-  /**
-   * Delete a bet aggregate
-   */
-  delete(betRequestId: UUID): Promise<void>;
-
-  /**
-   * Check if a bet aggregate exists
-   */
-  exists(betRequestId: UUID): Promise<boolean>;
 }
 
 /**

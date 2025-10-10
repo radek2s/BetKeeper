@@ -12,8 +12,6 @@ import type {
   BetQueryFilters,
   IBetAggregateRepository,
   IBetQueryService,
-  IBetRepository,
-  IBetRequestRepository,
 } from "./BetRepositories";
 
 /**
@@ -23,8 +21,6 @@ import type {
  */
 export class BetService extends DomainService {
   constructor(
-    private readonly betRequestRepository: IBetRequestRepository,
-    private readonly betRepository: IBetRepository,
     private readonly betAggregateRepository: IBetAggregateRepository,
     private readonly betQueryService: IBetQueryService,
     eventDispatcher?: IEventDispatcher,
@@ -33,7 +29,7 @@ export class BetService extends DomainService {
   }
 
   // Bet Request Operations
-  async createBetRequest(
+  async create(
     creatorId: UUID,
     participantId: UUID,
     terms: Terms,
@@ -64,12 +60,12 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async updateBetRequestTerms(
+  async updateTerms(
     betRequestId: UUID,
     newTerms: Terms,
     updatedById: UUID,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.isParticipant(updatedById)) {
       throw new Error("Only participants can update bet request terms");
@@ -83,12 +79,12 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async updateBetRequestStakes(
+  async updateStakes(
     betRequestId: UUID,
     newStakes: IStake,
     updatedById: UUID,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.isParticipant(updatedById)) {
       throw new Error("Only participants can update bet request stakes");
@@ -102,12 +98,12 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async updateBetRequestDueDate(
+  async updateDueDate(
     betRequestId: UUID,
     newDueDate: Date | undefined,
     updatedById: UUID,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.isParticipant(updatedById)) {
       throw new Error("Only participants can update bet request due date");
@@ -125,11 +121,11 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async approveBetRequest(
+  async approve(
     betRequestId: UUID,
     participantId: UUID,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.isParticipant(participantId)) {
       throw new Error("Only participants can approve bet request");
@@ -143,11 +139,8 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async rejectBetRequest(
-    betRequestId: UUID,
-    participantId: UUID,
-  ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+  async reject(betRequestId: UUID, participantId: UUID): Promise<BetAggregate> {
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.isParticipant(participantId)) {
       throw new Error("Only participants can reject bet request");
@@ -161,11 +154,8 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async blockBetRequest(
-    betRequestId: UUID,
-    participantId: UUID,
-  ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+  async block(betRequestId: UUID, participantId: UUID): Promise<BetAggregate> {
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.isParticipant(participantId)) {
       throw new Error("Only participants can block bet request");
@@ -179,11 +169,11 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async unblockBetRequest(
+  async unblock(
     betRequestId: UUID,
     participantId: UUID,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.isParticipant(participantId)) {
       throw new Error("Only participants can unblock bet request");
@@ -197,12 +187,13 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async deleteBetRequest(
+  async delete(
     betRequestId: UUID,
     deletedById: UUID,
     isAdmin: boolean = false,
-  ): Promise<void> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    reason?: string,
+  ): Promise<BetAggregate> {
+    const betAggregate = await this.getById(betRequestId);
 
     // Business rule: Only creator or admin can delete
     if (!isAdmin && !betAggregate.isCreator(deletedById)) {
@@ -210,19 +201,23 @@ export class BetService extends DomainService {
     }
 
     betAggregate.deleteBetRequest(deletedById);
+    if (betAggregate.bet) {
+      betAggregate.deleteBet(deletedById, reason);
+    }
 
     await this.betAggregateRepository.save(betAggregate);
     await this.dispatchDomainEvents(betAggregate);
+    return betAggregate;
   }
 
   // Bet Operations
-  async resolveBet(
+  async resolve(
     betRequestId: UUID,
     resolvedById: UUID,
     winnerId: UUID,
     evidence?: string,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.hasActiveBet()) {
       throw new Error("No active bet found for this bet request");
@@ -244,12 +239,12 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async completeBet(
+  async complete(
     betRequestId: UUID,
     completedById: UUID,
     completionNotes?: string,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
+    const betAggregate = await this.getById(betRequestId);
 
     if (!betAggregate.hasActiveBet()) {
       throw new Error("No active bet found for this bet request");
@@ -267,55 +262,29 @@ export class BetService extends DomainService {
     return betAggregate;
   }
 
-  async deleteBet(
-    betRequestId: UUID,
-    deletedById: UUID,
-    reason?: string,
-    isAdmin: boolean = false,
-  ): Promise<BetAggregate> {
-    const betAggregate = await this.getBetAggregateById(betRequestId);
-
-    if (!betAggregate.hasActiveBet()) {
-      throw new Error("No active bet found for this bet request");
-    }
-
-    // Business rule: Only creator or admin can delete
-    if (!isAdmin && !betAggregate.isCreator(deletedById)) {
-      throw new Error("Only the creator or admin can delete this bet");
-    }
-
-    betAggregate.deleteBet(deletedById, reason);
-
-    await this.betAggregateRepository.save(betAggregate);
-    await this.dispatchDomainEvents(betAggregate);
-
-    return betAggregate;
-  }
-
   // Query Operations
-  async getBetAggregateById(betRequestId: UUID): Promise<BetAggregate> {
-    const betAggregate =
-      await this.betAggregateRepository.findById(betRequestId);
+  async getById(id: UUID): Promise<BetAggregate> {
+    const betAggregate = await this.betAggregateRepository.findById(id);
     if (!betAggregate) {
-      throw new Error(`Bet aggregate not found with ID: ${betRequestId}`);
+      throw new Error(`Bet aggregate not found with ID: ${id}`);
     }
     return betAggregate;
   }
 
   async getBetRequestById(betRequestId: UUID): Promise<BetRequest> {
-    const betRequest = await this.betRequestRepository.findById(betRequestId);
-    if (!betRequest) {
+    const aggregate = await this.betAggregateRepository.findById(betRequestId);
+    if (!aggregate?.betRequest) {
       throw new Error(`Bet request not found with ID: ${betRequestId}`);
     }
-    return betRequest;
+    return aggregate.betRequest;
   }
 
   async getBetById(betId: UUID): Promise<Bet> {
-    const bet = await this.betRepository.findById(betId);
-    if (!bet) {
+    const aggregate = await this.betAggregateRepository.findById(betId);
+    if (!aggregate?.bet) {
       throw new Error(`Bet not found with ID: ${betId}`);
     }
-    return bet;
+    return aggregate.bet;
   }
 
   async getUserBetRequests(
@@ -323,31 +292,42 @@ export class BetService extends DomainService {
     status?: BetRequestStatus,
   ): Promise<BetRequest[]> {
     if (status) {
-      return await this.betRequestRepository.findByUserIdAndStatus(
+      return await this.betAggregateRepository.betRequestRepository.findByUserIdAndStatus(
         userId,
         status,
       );
     }
-    return await this.betRequestRepository.findByUserId(userId);
+    return await this.betAggregateRepository.betRequestRepository.findByUserId(
+      userId,
+    );
   }
 
   async getUserBets(userId: UUID, status?: BetStatus): Promise<Bet[]> {
     if (status) {
-      return await this.betRepository.findByUserIdAndStatus(userId, status);
+      return await this.betAggregateRepository.betRepository.findByUserIdAndStatus(
+        userId,
+        status,
+      );
     }
-    return await this.betRepository.findByUserId(userId);
+    return await this.betAggregateRepository.betRepository.findByUserId(userId);
   }
 
   async getUserPendingBetRequests(userId: UUID): Promise<BetRequest[]> {
-    return await this.betRequestRepository.findPendingByUserId(userId);
+    return await this.betAggregateRepository.betRequestRepository.findPendingByUserId(
+      userId,
+    );
   }
 
   async getUserActiveBets(userId: UUID): Promise<Bet[]> {
-    return await this.betRepository.findActiveByUserId(userId);
+    return await this.betAggregateRepository.betRepository.findActiveByUserId(
+      userId,
+    );
   }
 
   async getUserCompletedBets(userId: UUID): Promise<Bet[]> {
-    return await this.betRepository.findCompletedByUserId(userId);
+    return await this.betAggregateRepository.betRepository.findCompletedByUserId(
+      userId,
+    );
   }
 
   // Advanced Query Operations
@@ -369,21 +349,27 @@ export class BetService extends DomainService {
 
   // Notification and Maintenance Operations
   async findBetsDueSoon(daysThreshold: number = 3): Promise<Bet[]> {
-    return await this.betRepository.findDueSoon(daysThreshold);
+    return await this.betAggregateRepository.betRepository.findDueSoon(
+      daysThreshold,
+    );
   }
 
   async findBetsPendingTooLong(daysThreshold: number = 7): Promise<Bet[]> {
-    return await this.betRepository.findPendingTooLong(daysThreshold);
+    return await this.betAggregateRepository.betRepository.findPendingTooLong(
+      daysThreshold,
+    );
   }
 
   async findBetRequestsPendingTooLong(
     daysThreshold: number = 7,
   ): Promise<BetRequest[]> {
-    return await this.betRequestRepository.findPendingTooLong(daysThreshold);
+    return await this.betAggregateRepository.betRequestRepository.findPendingTooLong(
+      daysThreshold,
+    );
   }
 
   async findOverdueBets(): Promise<Bet[]> {
-    return await this.betRepository.findOverdue();
+    return await this.betAggregateRepository.betRepository.findOverdue();
   }
 
   // Business Rule Validation
@@ -413,23 +399,7 @@ export class BetService extends DomainService {
     return true;
   }
 
-  // Bulk Operations
-  async deleteBetRequestsBatch(
-    betRequestIds: UUID[],
-    deletedById: UUID,
-    isAdmin: boolean = false,
-  ): Promise<void> {
-    for (const betRequestId of betRequestIds) {
-      try {
-        await this.deleteBetRequest(betRequestId, deletedById, isAdmin);
-      } catch (error) {
-        // Log error but continue with other deletions
-        console.error(`Failed to delete bet request ${betRequestId}:`, error);
-      }
-    }
-  }
-
-  async deleteBetsBatch(
+  async deleteBatch(
     betRequestIds: UUID[],
     deletedById: UUID,
     reason?: string,
@@ -437,7 +407,7 @@ export class BetService extends DomainService {
   ): Promise<void> {
     for (const betRequestId of betRequestIds) {
       try {
-        await this.deleteBet(betRequestId, deletedById, reason, isAdmin);
+        await this.delete(betRequestId, deletedById, isAdmin, reason);
       } catch (error) {
         // Log error but continue with other deletions
         console.error(

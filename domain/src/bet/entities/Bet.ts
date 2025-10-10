@@ -5,7 +5,7 @@ import {
   BetDeletedEvent,
   BetResolvedEvent,
 } from "../events/BetEvents";
-import { BetStatus, BetStatusGuards } from "../types/BetStatus";
+import { BetStatus } from "../types/BetStatus";
 import type { IStake } from "../value-objects/Stakes";
 import type { Terms } from "../value-objects/Terms";
 
@@ -79,41 +79,50 @@ export class Bet extends Entity {
 
   // Status checking methods
   isPending(): boolean {
-    return BetStatusGuards.isPending(this.status);
+    return this.status === BetStatus.PENDING;
   }
 
   isResolved(): boolean {
-    return BetStatusGuards.isResolved(this.status);
+    return this.status === BetStatus.RESOLVED;
   }
 
   isCompleted(): boolean {
-    return BetStatusGuards.isCompleted(this.status);
+    return this.status === BetStatus.COMPLETED;
   }
 
   isDeleted(): boolean {
-    return BetStatusGuards.isDeleted(this.status);
+    return this.status === BetStatus.DELETED;
   }
 
   isActive(): boolean {
-    return BetStatusGuards.isActive(this.status);
+    return (
+      this.status === BetStatus.PENDING || this.status === BetStatus.RESOLVED
+    );
   }
 
   isFinal(): boolean {
-    return BetStatusGuards.isFinal(this.status);
+    return (
+      this.status === BetStatus.COMPLETED || this.status === BetStatus.DELETED
+    );
   }
 
   canBeResolved(): boolean {
-    return BetStatusGuards.canBeResolved(this.status);
+    return this.status === BetStatus.PENDING;
   }
 
   canBeCompleted(): boolean {
-    return BetStatusGuards.canBeCompleted(this.status);
+    return this.status === BetStatus.RESOLVED;
   }
 
   canBeDeleted(): boolean {
-    return BetStatusGuards.canBeDeleted(this.status);
+    return this.status !== BetStatus.DELETED;
   }
 
+  requiresAction(): boolean {
+    return (
+      this.status === BetStatus.PENDING || this.status === BetStatus.RESOLVED
+    );
+  }
   isParticipant(userId: UUID): boolean {
     return userId === this.creatorId || userId === this.participantId;
   }

@@ -1,30 +1,30 @@
-import { Email, User, UserService } from "@domain/user";
-import { describe, it, expect, beforeEach } from "vitest";
-import { InMemoryUserRepository } from "../mocks/InMemoryUserRepository";
-import { InMemoryUserRequestRepository } from "../mocks/InMemoryUserRequestRepository";
-import { InMemoryFriendListRepository } from "../mocks/InMemoryFriendListRepository";
-import { EventDispatcherMock } from "../mocks/EventDispatcherMock";
-import { InMemoryBetAggregateRepository } from "../mocks/InMemoryBetAggregateRepository";
-import { InMemoryBetRequestRepository } from "../mocks/InMemoryBetRequestRepository";
-import { InMemoryBetRepository } from "../mocks/InMemoryBetRepository";
-import { InMemoryBetQueryService } from "../mocks/InMemoryBetQueryService";
-import { InMemoryBetService } from "../mocks/InMemoryBetService";
-import { Terms } from "../../src/bet/value-objects/Terms";
+import { Email, type User, UserService } from "@domain/user";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-  CommonStake,
-  IndividualStakes,
-} from "../../src/bet/value-objects/Stakes";
+  BetRequestApprovedEvent,
+  BetRequestCreatedEvent,
+  BetRequestDeletedEvent,
+  BetRequestRejectedEvent,
+  BetRequestUpdatedEvent,
+} from "../../src/bet/events/BetRequestEvents";
 import {
   BetRequestStatus,
   ParticipantVote,
 } from "../../src/bet/types/BetRequestStatus";
 import {
-  BetRequestCreatedEvent,
-  BetRequestDeletedEvent,
-  BetRequestRejectedEvent,
-  BetRequestApprovedEvent,
-  BetRequestUpdatedEvent,
-} from "../../src/bet/events/BetRequestEvents";
+  CommonStake,
+  IndividualStakes,
+} from "../../src/bet/value-objects/Stakes";
+import { Terms } from "../../src/bet/value-objects/Terms";
+import { EventDispatcherMock } from "../mocks/EventDispatcherMock";
+import { InMemoryBetAggregateRepository } from "../mocks/InMemoryBetAggregateRepository";
+import { InMemoryBetQueryService } from "../mocks/InMemoryBetQueryService";
+import { InMemoryBetRepository } from "../mocks/InMemoryBetRepository";
+import { InMemoryBetRequestRepository } from "../mocks/InMemoryBetRequestRepository";
+import { InMemoryBetService } from "../mocks/InMemoryBetService";
+import { InMemoryFriendListRepository } from "../mocks/InMemoryFriendListRepository";
+import { InMemoryUserRepository } from "../mocks/InMemoryUserRepository";
+import { InMemoryUserRequestRepository } from "../mocks/InMemoryUserRequestRepository";
 
 describe.sequential("User Bet Creation", () => {
   let userRepository: InMemoryUserRepository;
@@ -47,7 +47,10 @@ describe.sequential("User Bet Creation", () => {
     userFriendListRepository = new InMemoryFriendListRepository();
     betRequestRepository = new InMemoryBetRequestRepository();
     betRepository = new InMemoryBetRepository();
-    betAggregateRepository = new InMemoryBetAggregateRepository();
+    betAggregateRepository = new InMemoryBetAggregateRepository(
+      betRequestRepository,
+      betRepository,
+    );
     betQueryService = new InMemoryBetQueryService(
       betRequestRepository,
       betRepository,
@@ -63,8 +66,6 @@ describe.sequential("User Bet Creation", () => {
     );
 
     betService = new InMemoryBetService(
-      betRequestRepository,
-      betRepository,
       betAggregateRepository,
       betQueryService,
       eventDispatcher,
@@ -112,7 +113,7 @@ describe.sequential("User Bet Creation", () => {
     const dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
     // Act
-    const betAggregate = await betService.createBetRequest(
+    const betAggregate = await betService.create(
       user.id,
       friend.id,
       terms,
@@ -150,7 +151,7 @@ describe.sequential("User Bet Creation", () => {
     const terms = new Terms("Who will score the first goal in the next match?");
     const stakes = new IndividualStakes("Buy a coffee", "Buy a donut");
 
-    const betAggregate = await betService.createBetRequest(
+    const betAggregate = await betService.create(
       user.id,
       friend.id,
       terms,
@@ -160,7 +161,7 @@ describe.sequential("User Bet Creation", () => {
     eventDispatcher.dispatchedEvents = []; // Clear creation events
 
     // Act
-    await betService.deleteBetRequest(betAggregate.id, user.id);
+    await betService.delete(betAggregate.id, user.id);
 
     // Assert
     const updatedAggregate = await betAggregateRepository.findById(
@@ -184,7 +185,7 @@ describe.sequential("User Bet Creation", () => {
     const terms = new Terms("Who will win the championship this year?");
     const stakes = new CommonStake("Winner gets bragging rights for a year");
 
-    const betAggregate = await betService.createBetRequest(
+    const betAggregate = await betService.create(
       user.id,
       friend.id,
       terms,
@@ -194,7 +195,7 @@ describe.sequential("User Bet Creation", () => {
     eventDispatcher.dispatchedEvents = []; // Clear creation events
 
     // Act
-    await betService.rejectBetRequest(betAggregate.id, friend.id);
+    await betService.reject(betAggregate.id, friend.id);
 
     // Assert
     const updatedAggregate = await betAggregateRepository.findById(
@@ -221,7 +222,7 @@ describe.sequential("User Bet Creation", () => {
     const originalTerms = new Terms("Who will win the next basketball game?");
     const originalStakes = new CommonStake("Loser pays for lunch");
 
-    const betAggregate = await betService.createBetRequest(
+    const betAggregate = await betService.create(
       user.id,
       friend.id,
       originalTerms,
@@ -229,7 +230,7 @@ describe.sequential("User Bet Creation", () => {
     );
 
     // Only one participant approves initially (not both, to avoid creating active bet)
-    await betService.approveBetRequest(betAggregate.id, user.id);
+    await betService.approve(betAggregate.id, user.id);
 
     // Verify one vote is approved, one is unknown
     let currentAggregate = await betAggregateRepository.findById(
@@ -249,11 +250,7 @@ describe.sequential("User Bet Creation", () => {
     const newTerms = new Terms(
       "Who will score more points in the basketball game?",
     );
-    await betService.updateBetRequestTerms(
-      betAggregate.id,
-      newTerms,
-      friend.id,
-    );
+    await betService.updateTerms(betAggregate.id, newTerms, friend.id);
 
     // Assert - Votes should be reset
     currentAggregate = await betAggregateRepository.findById(betAggregate.id);
@@ -278,11 +275,7 @@ describe.sequential("User Bet Creation", () => {
 
     // Act - Friend changes the stakes
     const newStakes = new IndividualStakes("Buy pizza", "Buy soda");
-    await betService.updateBetRequestStakes(
-      betAggregate.id,
-      newStakes,
-      friend.id,
-    );
+    await betService.updateStakes(betAggregate.id, newStakes, friend.id);
 
     // Assert - Votes should remain reset and stakes should be updated
     currentAggregate = await betAggregateRepository.findById(betAggregate.id);
@@ -308,7 +301,7 @@ describe.sequential("User Bet Creation", () => {
       "Winner gets to choose the next team lunch venue",
     );
 
-    const betAggregate = await betService.createBetRequest(
+    const betAggregate = await betService.create(
       user.id,
       friend.id,
       terms,
@@ -318,7 +311,7 @@ describe.sequential("User Bet Creation", () => {
     eventDispatcher.dispatchedEvents = []; // Clear creation events
 
     // Act - Creator approves first
-    await betService.approveBetRequest(betAggregate.id, user.id);
+    await betService.approve(betAggregate.id, user.id);
 
     // Assert - Should still be pending with one approval
     let currentAggregate = await betAggregateRepository.findById(
@@ -334,7 +327,7 @@ describe.sequential("User Bet Creation", () => {
     expect(currentAggregate?.betRequest.allParticipantsApproved()).toBe(false);
 
     // Act - Friend approves (second approval)
-    await betService.approveBetRequest(betAggregate.id, friend.id);
+    await betService.approve(betAggregate.id, friend.id);
 
     // Assert - Should be approved with both votes
     currentAggregate = await betAggregateRepository.findById(betAggregate.id);
@@ -362,5 +355,26 @@ describe.sequential("User Bet Creation", () => {
     expect(approvedEvents).toHaveLength(1);
     const approvedEvent = approvedEvents[0] as BetRequestApprovedEvent;
     expect(approvedEvent.betRequestId).toBe(betAggregate.id);
+  });
+
+  it("Friend should not be able to delete Bet Request", async () => {
+    const terms = new Terms(
+      "Who will win the next football match between Team A and Team B?",
+    );
+    const stakes = new CommonStake("Loser buys dinner for the winner");
+    const dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+
+    // Act
+    const betAggregate = await betService.create(
+      user.id,
+      friend.id,
+      terms,
+      stakes,
+      dueDate,
+    );
+    expect(
+      async () =>
+        await betService.delete(betAggregate.betRequest.id, friend.id),
+    ).rejects.toThrow(/Only the creator or admin can delete this bet request/);
   });
 });

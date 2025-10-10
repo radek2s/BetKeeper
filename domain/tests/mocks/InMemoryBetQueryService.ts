@@ -1,14 +1,14 @@
-import { BetRequest } from "../../src/bet/entities/BetRequest";
-import { Bet } from "../../src/bet/entities/Bet";
-import { BetAggregate } from "../../src/bet/entities/BetAggregate";
-import {
-  IBetQueryService,
-  BetQueryFilters,
-} from "../../src/bet/services/BetRepositories";
-import { InMemoryBetRequestRepository } from "./InMemoryBetRequestRepository";
-import { InMemoryBetRepository } from "./InMemoryBetRepository";
-import { InMemoryBetAggregateRepository } from "./InMemoryBetAggregateRepository";
 import type { UUID } from "@domain/shared/index";
+import type { Bet } from "../../src/bet/entities/Bet";
+import type { BetAggregate } from "../../src/bet/entities/BetAggregate";
+import type { BetRequest } from "../../src/bet/entities/BetRequest";
+import type {
+  BetQueryFilters,
+  IBetQueryService,
+} from "../../src/bet/services/BetRepositories";
+import type { InMemoryBetAggregateRepository } from "./InMemoryBetAggregateRepository";
+import type { InMemoryBetRepository } from "./InMemoryBetRepository";
+import type { InMemoryBetRequestRepository } from "./InMemoryBetRequestRepository";
 
 export class InMemoryBetQueryService implements IBetQueryService {
   constructor(
