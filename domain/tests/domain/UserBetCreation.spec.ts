@@ -1,3 +1,4 @@
+import { BetStatus } from "@domain/bet/types/BetStatus";
 import { Email, type User, UserService } from "@domain/user";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
@@ -30,8 +31,6 @@ describe.sequential("User Bet Creation", () => {
   let userRepository: InMemoryUserRepository;
   let userRequestRepository: InMemoryUserRequestRepository;
   let userFriendListRepository: InMemoryFriendListRepository;
-  let betRequestRepository: InMemoryBetRequestRepository;
-  let betRepository: InMemoryBetRepository;
   let betAggregateRepository: InMemoryBetAggregateRepository;
   let betQueryService: InMemoryBetQueryService;
   let eventDispatcher: EventDispatcherMock;
@@ -45,8 +44,8 @@ describe.sequential("User Bet Creation", () => {
     userRepository = new InMemoryUserRepository();
     userRequestRepository = new InMemoryUserRequestRepository();
     userFriendListRepository = new InMemoryFriendListRepository();
-    betRequestRepository = new InMemoryBetRequestRepository();
-    betRepository = new InMemoryBetRepository();
+    const betRequestRepository = new InMemoryBetRequestRepository();
+    const betRepository = new InMemoryBetRepository();
     betAggregateRepository = new InMemoryBetAggregateRepository(
       betRequestRepository,
       betRepository,
@@ -164,9 +163,7 @@ describe.sequential("User Bet Creation", () => {
     await betService.delete(betAggregate.id, user.id);
 
     // Assert
-    const updatedAggregate = await betAggregateRepository.findById(
-      betAggregate.id,
-    );
+    const updatedAggregate = await betService.getById(betAggregate.id);
     expect(updatedAggregate?.betRequest.status).toBe(BetRequestStatus.DELETED);
     expect(updatedAggregate?.betRequest.isDeleted()).toBe(true);
 
@@ -355,6 +352,86 @@ describe.sequential("User Bet Creation", () => {
     expect(approvedEvents).toHaveLength(1);
     const approvedEvent = approvedEvents[0] as BetRequestApprovedEvent;
     expect(approvedEvent.betRequestId).toBe(betAggregate.id);
+  });
+  it("User can resolve Bet terms", async () => {
+    // Arrange
+    const testDate = new Date("2025-01-01");
+    vi.setSystemTime(testDate);
+    const terms = new Terms("Who will finish the project first?");
+    const stakes = new CommonStake(
+      "Winner gets to choose the next team lunch venue",
+    );
+    const dueDate = new Date("2026-01-01");
+    const resolveEvidence = "I finished first I don't lie!";
+
+    const betAggregate = await betService.create(
+      user.id,
+      friend.id,
+      terms,
+      stakes,
+      dueDate,
+    );
+
+    eventDispatcher.dispatchedEvents = []; // Clear creation events
+
+    // Act - Both participants approves => bet is created
+    await betService.approve(betAggregate.id, user.id);
+    await betService.approve(betAggregate.id, friend.id);
+
+    //Check if is not overdue before marking as resolved
+    expect(betAggregate.bet?.isOverdue()).toBe(false);
+
+    const dateAfterDueDate = new Date("2026-01-02");
+    vi.setSystemTime(dateAfterDueDate);
+    expect(betAggregate.bet?.isOverdue()).toBe(true);
+
+    await betService.resolve(
+      betAggregate.id,
+      user.id,
+      user.id,
+      resolveEvidence,
+    );
+
+    // Assert - Should be approved with both votes
+    const currentBet = await betService.getBetById(betAggregate.id);
+
+    expect(currentBet.status).toBe(BetStatus.RESOLVED);
+    expect(currentBet.winnerId).toBe(user.id);
+    expect(currentBet.evidence).toBe(resolveEvidence);
+
+    vi.useRealTimers();
+  });
+
+  it("User can complete Bet and did stakes", async () => {
+    // Arrange
+    const terms = new Terms("Who will finish the project first?");
+    const stakes = new CommonStake(
+      "Winner gets to choose the next team lunch venue",
+    );
+    const completionNotes = "We was at italian restaurant";
+
+    const betAggregate = await betService.create(
+      user.id,
+      friend.id,
+      terms,
+      stakes,
+    );
+
+    eventDispatcher.dispatchedEvents = []; // Clear creation events
+
+    // Act - Both participants approves => bet is created
+    await betService.approve(betAggregate.id, user.id);
+    await betService.approve(betAggregate.id, friend.id);
+
+    await betService.resolve(betAggregate.id, user.id, user.id);
+
+    await betService.complete(betAggregate.id, user.id, completionNotes);
+
+    // Assert - Should be approved with both votes
+    const currentBet = await betService.getBetById(betAggregate.id);
+
+    expect(currentBet.status).toBe(BetStatus.COMPLETED);
+    expect(currentBet.completionNotes).toBe(completionNotes);
   });
 
   it("Friend should not be able to delete Bet Request", async () => {
