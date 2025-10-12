@@ -31,7 +31,6 @@ describe("Bet", () => {
         participantId,
         terms,
         stakes,
-        dueDate,
       );
 
       expect(bet.id).toBeDefined();
@@ -41,7 +40,6 @@ describe("Bet", () => {
       expect(bet.terms).toBe(terms);
       expect(bet.stakes).toBe(stakes);
       expect(bet.status).toBe(BetStatus.PENDING);
-      expect(bet.dueDate).toBe(dueDate);
       expect(bet.participants).toEqual([creatorId, participantId]);
     });
 
@@ -68,7 +66,6 @@ describe("Bet", () => {
         participantId,
         terms,
         stakes,
-        dueDate,
         existingId,
       );
 
@@ -85,7 +82,6 @@ describe("Bet", () => {
         participantId,
         terms,
         stakes,
-        dueDate,
       );
 
       expect(bet.betRequestId).toBe(betRequestId);
@@ -93,7 +89,6 @@ describe("Bet", () => {
       expect(bet.participantId).toBe(participantId);
       expect(bet.terms).toBe(terms);
       expect(bet.stakes).toBe(stakes);
-      expect(bet.dueDate).toBe(dueDate);
     });
   });
 
@@ -141,8 +136,9 @@ describe("Bet", () => {
         participantId,
         terms,
         stakes,
-        futureDueDate,
       );
+
+      bet.resolve(creatorId, creatorId, undefined, futureDueDate);
 
       expect(bet.isOverdue()).toBe(false);
       expect(bet.isDueSoon()).toBe(false);
@@ -156,8 +152,8 @@ describe("Bet", () => {
         participantId,
         terms,
         stakes,
-        soonDueDate,
       );
+      bet.resolve(creatorId, creatorId, undefined, soonDueDate);
 
       expect(bet.isDueSoon(3)).toBe(true);
       expect(bet.isOverdue()).toBe(false);
@@ -171,8 +167,8 @@ describe("Bet", () => {
         participantId,
         terms,
         stakes,
-        pastDueDate,
       );
+      bet.resolve(creatorId, creatorId, undefined, pastDueDate);
 
       expect(bet.isOverdue()).toBe(true);
       expect(bet.isDueSoon()).toBe(false);

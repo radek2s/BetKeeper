@@ -11,7 +11,6 @@ export class BetCreatedEvent extends DomainEvent {
   public readonly participantId: UUID;
   public readonly terms: string;
   public readonly createdAt: Date;
-  public readonly dueDate?: Date;
 
   constructor(
     betId: UUID,
@@ -19,7 +18,6 @@ export class BetCreatedEvent extends DomainEvent {
     creatorId: UUID,
     participantId: UUID,
     terms: string,
-    dueDate?: Date,
   ) {
     super("BetCreated");
     this.betId = betId;
@@ -28,7 +26,6 @@ export class BetCreatedEvent extends DomainEvent {
     this.participantId = participantId;
     this.terms = terms;
     this.createdAt = new Date();
-    this.dueDate = dueDate;
   }
 
   getAggregateId(): string {
@@ -47,6 +44,7 @@ export class BetResolvedEvent extends DomainEvent {
   public readonly loserId: UUID;
   public readonly resolvedAt: Date;
   public readonly evidence?: string;
+  public readonly dueDate?: Date;
 
   constructor(
     betId: UUID,
@@ -54,6 +52,7 @@ export class BetResolvedEvent extends DomainEvent {
     winnerId: UUID,
     loserId: UUID,
     evidence?: string,
+    dueDate?: Date,
   ) {
     super("BetResolved");
     this.betId = betId;
@@ -62,6 +61,7 @@ export class BetResolvedEvent extends DomainEvent {
     this.loserId = loserId;
     this.resolvedAt = new Date();
     this.evidence = evidence;
+    this.dueDate = dueDate;
   }
 
   getAggregateId(): string {

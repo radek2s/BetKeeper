@@ -37,7 +37,6 @@ export class Bet extends Entity {
     participantId: UUID,
     terms: Terms,
     stakes?: IStake,
-    dueDate?: Date,
     id?: UUID,
   ) {
     super();
@@ -50,7 +49,6 @@ export class Bet extends Entity {
     this.status = BetStatus.PENDING;
     this.createdAt = new Date();
     this.updatedAt = new Date();
-    this._dueDate = dueDate;
 
     if (!id) {
       this.addDomainEvent(
@@ -60,7 +58,6 @@ export class Bet extends Entity {
           this.creatorId,
           this.participantId,
           this.terms.value,
-          this._dueDate,
         ),
       );
     }
@@ -221,6 +218,7 @@ export class Bet extends Entity {
         this.winnerId,
         this.loserId,
         evidence,
+        this.dueDate,
       ),
     );
   }

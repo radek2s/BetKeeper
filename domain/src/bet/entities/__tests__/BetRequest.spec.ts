@@ -39,7 +39,6 @@ describe("BetRequest", () => {
         participantId,
         terms,
         stakes,
-        dueDate,
       );
 
       expect(betRequest.id).toBeDefined();
@@ -48,7 +47,6 @@ describe("BetRequest", () => {
       expect(betRequest.terms).toBe(terms);
       expect(betRequest.stakes).toBe(stakes);
       expect(betRequest.status).toBe(BetRequestStatus.PENDING);
-      expect(betRequest.dueDate).toBe(dueDate);
       expect(betRequest.participants).toEqual([creatorId, participantId]);
     });
 
@@ -73,7 +71,6 @@ describe("BetRequest", () => {
         participantId,
         terms,
         stakes,
-        dueDate,
         existingId,
       );
 
@@ -100,14 +97,12 @@ describe("BetRequest", () => {
         participantId,
         terms,
         stakes,
-        dueDate,
       );
 
       expect(betRequest.creatorId).toBe(creatorId);
       expect(betRequest.participantId).toBe(participantId);
       expect(betRequest.terms).toBe(terms);
       expect(betRequest.stakes).toBe(stakes);
-      expect(betRequest.dueDate).toBe(dueDate);
     });
 
     it("should throw error if creator and participant are the same", () => {
@@ -484,7 +479,6 @@ describe("BetRequest", () => {
         participantId,
         terms,
         stakes,
-        dueDate,
         betRequest1.id,
       );
       const betRequest3 = new BetRequest(creatorId, participantId, terms);
