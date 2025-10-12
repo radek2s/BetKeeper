@@ -109,7 +109,6 @@ describe.sequential("User Bet Creation", () => {
       "Who will win the next football match between Team A and Team B?",
     );
     const stakes = new CommonStake("Loser buys dinner for the winner");
-    const dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
     // Act
     const betAggregate = await betService.create(
@@ -117,7 +116,6 @@ describe.sequential("User Bet Creation", () => {
       friend.id,
       terms,
       stakes,
-      dueDate,
     );
 
     // Assert
@@ -361,7 +359,7 @@ describe.sequential("User Bet Creation", () => {
     const stakes = new CommonStake(
       "Winner gets to choose the next team lunch venue",
     );
-    const dueDate = new Date("2026-01-01");
+    const dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
     const resolveEvidence = "I finished first I don't lie!";
 
     const betAggregate = await betService.create(
@@ -369,7 +367,6 @@ describe.sequential("User Bet Creation", () => {
       friend.id,
       terms,
       stakes,
-      dueDate,
     );
 
     eventDispatcher.dispatchedEvents = []; // Clear creation events
@@ -378,18 +375,12 @@ describe.sequential("User Bet Creation", () => {
     await betService.approve(betAggregate.id, user.id);
     await betService.approve(betAggregate.id, friend.id);
 
-    //Check if is not overdue before marking as resolved
-    expect(betAggregate.bet?.isOverdue()).toBe(false);
-
-    const dateAfterDueDate = new Date("2026-01-02");
-    vi.setSystemTime(dateAfterDueDate);
-    expect(betAggregate.bet?.isOverdue()).toBe(true);
-
     await betService.resolve(
       betAggregate.id,
       user.id,
       user.id,
       resolveEvidence,
+      dueDate,
     );
 
     // Assert - Should be approved with both votes
@@ -398,6 +389,11 @@ describe.sequential("User Bet Creation", () => {
     expect(currentBet.status).toBe(BetStatus.RESOLVED);
     expect(currentBet.winnerId).toBe(user.id);
     expect(currentBet.evidence).toBe(resolveEvidence);
+
+    expect(currentBet.isOverdue()).toBe(false);
+    const dateAfterDueDate = new Date("2026-01-02");
+    vi.setSystemTime(dateAfterDueDate);
+    expect(currentBet.isOverdue()).toBe(true);
 
     vi.useRealTimers();
   });
@@ -439,7 +435,6 @@ describe.sequential("User Bet Creation", () => {
       "Who will win the next football match between Team A and Team B?",
     );
     const stakes = new CommonStake("Loser buys dinner for the winner");
-    const dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
     // Act
     const betAggregate = await betService.create(
@@ -447,7 +442,6 @@ describe.sequential("User Bet Creation", () => {
       friend.id,
       terms,
       stakes,
-      dueDate,
     );
     expect(
       async () =>

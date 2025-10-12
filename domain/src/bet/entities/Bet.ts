@@ -24,7 +24,7 @@ export class Bet extends Entity {
   status: BetStatus;
   readonly createdAt: Date;
   updatedAt: Date;
-  readonly dueDate?: Date;
+  private _dueDate?: Date;
   resolvedAt?: Date;
   completedAt?: Date;
   winnerId?: UUID;
@@ -50,7 +50,7 @@ export class Bet extends Entity {
     this.status = BetStatus.PENDING;
     this.createdAt = new Date();
     this.updatedAt = new Date();
-    this.dueDate = dueDate;
+    this._dueDate = dueDate;
 
     if (!id) {
       this.addDomainEvent(
@@ -60,7 +60,7 @@ export class Bet extends Entity {
           this.creatorId,
           this.participantId,
           this.terms.value,
-          this.dueDate,
+          this._dueDate,
         ),
       );
     }
@@ -75,6 +75,15 @@ export class Bet extends Entity {
     return this.winnerId === this.creatorId
       ? this.participantId
       : this.creatorId;
+  }
+
+  get dueDate(): Date | undefined {
+    return this._dueDate;
+  }
+
+  private set dueDate(date: Date | undefined) {
+    this._dueDate = date;
+    this.updatedAt = new Date();
   }
 
   // Status checking methods
@@ -135,11 +144,11 @@ export class Bet extends Entity {
     if (!this.dueDate) {
       return false;
     }
-    return new Date() > this.dueDate && this.isPending();
+    return new Date() > this.dueDate && this.isResolved();
   }
 
   isDueSoon(daysThreshold: number = 3): boolean {
-    if (!this.dueDate || !this.isPending()) {
+    if (!this.dueDate || !this.isResolved()) {
       return false;
     }
     const now = new Date();
@@ -149,7 +158,7 @@ export class Bet extends Entity {
   }
 
   isPendingTooLong(daysThreshold: number = 7): boolean {
-    if (!this.isPending()) {
+    if (!this.isResolved()) {
       return false;
     }
     const now = new Date();
@@ -158,8 +167,30 @@ export class Bet extends Entity {
     return daysDiff > daysThreshold;
   }
 
+  updateDueDate(newDueDate: Date | undefined, updatedById: UUID): void {
+    if (this.status !== BetStatus.RESOLVED)
+      new Error(
+        "Due date can be modified only when bet is pending completion.",
+      );
+
+    if (!this.isParticipant(updatedById)) {
+      throw new Error("Only participants can update bet request due date");
+    }
+
+    if (newDueDate && newDueDate <= new Date()) {
+      throw new Error("Due date must be in the future");
+    }
+
+    this.dueDate = newDueDate;
+  }
+
   // Domain methods
-  resolve(resolvedById: UUID, winnerId: UUID, evidence?: string): void {
+  resolve(
+    resolvedById: UUID,
+    winnerId: UUID,
+    evidence?: string,
+    dueDate?: Date,
+  ): void {
     if (!this.canBeResolved()) {
       throw new Error("Cannot resolve: bet is not in pending state");
     }
@@ -177,6 +208,7 @@ export class Bet extends Entity {
     this.updatedAt = new Date();
     this.winnerId = winnerId;
     this.evidence = evidence;
+    this._dueDate = dueDate;
 
     if (!this.loserId) {
       throw new Error("Loser Id is invalid!");
@@ -235,16 +267,8 @@ export class Bet extends Entity {
     participantId: UUID,
     terms: Terms,
     stakes?: IStake,
-    dueDate?: Date,
   ): Bet {
-    return new Bet(
-      betRequestId,
-      creatorId,
-      participantId,
-      terms,
-      stakes,
-      dueDate,
-    );
+    return new Bet(betRequestId, creatorId, participantId, terms, stakes);
   }
 
   // Entity implementation

@@ -34,16 +34,10 @@ export class BetService extends DomainService {
     participantId: UUID,
     terms: Terms,
     stakes?: IStake,
-    dueDate?: Date,
   ): Promise<BetAggregate> {
     // Business rule: Creator and participant must be different
     if (creatorId === participantId) {
       throw new Error("Creator and participant cannot be the same person");
-    }
-
-    // Business rule: Due date must be in the future
-    if (dueDate && dueDate <= new Date()) {
-      throw new Error("Due date must be in the future");
     }
 
     const betAggregate = BetAggregate.createWithBetRequest(
@@ -51,7 +45,6 @@ export class BetService extends DomainService {
       participantId,
       terms,
       stakes,
-      dueDate,
     );
 
     await this.betAggregateRepository.save(betAggregate);
@@ -99,11 +92,11 @@ export class BetService extends DomainService {
   }
 
   async updateDueDate(
-    betRequestId: UUID,
+    betId: UUID,
     newDueDate: Date | undefined,
     updatedById: UUID,
   ): Promise<BetAggregate> {
-    const betAggregate = await this.getById(betRequestId);
+    const betAggregate = await this.getById(betId);
 
     if (!betAggregate.isParticipant(updatedById)) {
       throw new Error("Only participants can update bet request due date");
@@ -113,7 +106,7 @@ export class BetService extends DomainService {
       throw new Error("Due date must be in the future");
     }
 
-    betAggregate.updateBetRequestDueDate(newDueDate, updatedById);
+    betAggregate.updateBetDueDate(newDueDate, updatedById);
 
     await this.betAggregateRepository.save(betAggregate);
     await this.dispatchDomainEvents(betAggregate);
@@ -216,6 +209,7 @@ export class BetService extends DomainService {
     resolvedById: UUID,
     winnerId: UUID,
     evidence?: string,
+    dueDate?: Date,
   ): Promise<BetAggregate> {
     const betAggregate = await this.getById(betRequestId);
 
@@ -231,7 +225,7 @@ export class BetService extends DomainService {
       throw new Error("Winner must be one of the bet participants");
     }
 
-    betAggregate.resolveBet(resolvedById, winnerId, evidence);
+    betAggregate.resolveBet(resolvedById, winnerId, evidence, dueDate);
 
     await this.betAggregateRepository.save(betAggregate);
     await this.dispatchDomainEvents(betAggregate);

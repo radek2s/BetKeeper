@@ -40,7 +40,6 @@ export class BetRequest extends Entity {
   status: BetRequestStatus;
   readonly createdAt: Date;
   updatedAt: Date;
-  dueDate?: Date;
   readonly participantVotes: Map<UUID, ParticipantVoteInfo>;
   readonly blockedByParticipants: Set<UUID>;
 
@@ -49,7 +48,6 @@ export class BetRequest extends Entity {
     participantId: UUID,
     terms: Terms,
     stakes?: IStake,
-    dueDate?: Date,
     id?: UUID,
   ) {
     super();
@@ -61,7 +59,6 @@ export class BetRequest extends Entity {
     this.status = BetRequestStatus.PENDING;
     this.createdAt = new Date();
     this.updatedAt = new Date();
-    this.dueDate = dueDate;
     this.participantVotes = new Map();
     this.blockedByParticipants = new Set();
 
@@ -201,25 +198,6 @@ export class BetRequest extends Entity {
         true,
       ),
     );
-  }
-
-  updateDueDate(newDueDate: Date | undefined, updatedById: UUID): void {
-    if (!this.canBeModified()) {
-      throw new Error(
-        "Cannot update due date: bet request is not in pending state",
-      );
-    }
-
-    if (!this.isParticipant(updatedById)) {
-      throw new Error("Only participants can update bet request due date");
-    }
-
-    if (newDueDate && newDueDate <= new Date()) {
-      throw new Error("Due date must be in the future");
-    }
-
-    this.dueDate = newDueDate;
-    this.updatedAt = new Date();
   }
 
   private resetParticipantVotes(): void {
@@ -375,13 +353,12 @@ export class BetRequest extends Entity {
     participantId: UUID,
     terms: Terms,
     stakes?: IStake,
-    dueDate?: Date,
   ): BetRequest {
     if (creatorId === participantId) {
       throw new Error("Creator and participant cannot be the same person");
     }
 
-    return new BetRequest(creatorId, participantId, terms, stakes, dueDate);
+    return new BetRequest(creatorId, participantId, terms, stakes);
   }
 
   // Entity implementation

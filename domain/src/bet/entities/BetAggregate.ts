@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: <explanation> */
 import { AggregateRoot, type UUID } from "@domain/shared";
 import type { IStake } from "../value-objects/Stakes";
 import type { Terms } from "../value-objects/Terms";
@@ -103,17 +104,15 @@ export class BetAggregate extends AggregateRoot {
     this.betRequest.clearDomainEvents();
   }
 
-  updateBetRequestDueDate(
-    newDueDate: Date | undefined,
-    updatedById: UUID,
-  ): void {
+  updateBetDueDate(newDueDate: Date | undefined, updatedById: UUID): void {
+    if (!this.bet) throw new Error("Bet was not found!");
     if (this.hasActiveBet()) {
       throw new Error("Cannot update due date: bet is already active");
     }
 
-    this.betRequest.updateDueDate(newDueDate, updatedById);
-    this.addDomainEvents(this.betRequest.domainEvents);
-    this.betRequest.clearDomainEvents();
+    this.bet.updateDueDate(newDueDate, updatedById);
+    this.addDomainEvents(this.bet.domainEvents);
+    this.bet.clearDomainEvents();
   }
 
   approveBetRequest(participantId: UUID): void {
@@ -175,19 +174,23 @@ export class BetAggregate extends AggregateRoot {
       this.betRequest.participantId,
       this.betRequest.terms,
       this.betRequest.stakes,
-      this.betRequest.dueDate,
     );
 
     this.addDomainEvents(this._bet.domainEvents);
     this._bet.clearDomainEvents();
   }
 
-  resolveBet(resolvedById: UUID, winnerId: UUID, evidence?: string): void {
+  resolveBet(
+    resolvedById: UUID,
+    winnerId: UUID,
+    evidence?: string,
+    dueDate?: Date,
+  ): void {
     if (!this.hasActiveBet()) {
       throw new Error("Cannot resolve: no active bet exists");
     }
 
-    this.bet!.resolve(resolvedById, winnerId, evidence);
+    this.bet!.resolve(resolvedById, winnerId, evidence, dueDate);
     this.addDomainEvents(this.bet!.domainEvents);
     this.bet!.clearDomainEvents();
   }
@@ -218,14 +221,12 @@ export class BetAggregate extends AggregateRoot {
     participantId: UUID,
     terms: Terms,
     stakes?: IStake,
-    dueDate?: Date,
   ): BetAggregate {
     const betRequest = BetRequest.create(
       creatorId,
       participantId,
       terms,
       stakes,
-      dueDate,
     );
     return new BetAggregate(betRequest);
   }
