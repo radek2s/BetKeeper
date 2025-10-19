@@ -3,7 +3,6 @@
   "version": "3.0.0",
   "private": true,
   "homepage": "https://radek2s.github.io/BetKeeper",
-
   "scripts": {
     "test:bdd": "npx cucumber-js e2e-tests",
     "dev": "next dev",
@@ -23,11 +22,13 @@
   },
   "dependencies": {
     "@corbado/react": "^3.0.0",
+    "@prisma/client": "^6.17.1",
     "axios": "1.8.4",
     "clsx": "^2.1.0",
     "firebase": "^11.5.0",
     "nanoid": "^5.0.0",
     "next": "~15.2.4",
+    "prisma": "^6.17.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tslib": "^2.3.0",

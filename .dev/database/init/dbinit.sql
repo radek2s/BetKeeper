@@ -1,0 +1,7 @@
+CREATE DATABASE betkeeper;
+\c betkeeper;
+REVOKE ALL PRIVILEGES ON DATABASE betkeeper FROM public;
+CREATE SCHEMA betkeeper;
+CREATE USER betkeeper WITH ENCRYPTED PASSWORD 'betkeeper';
+GRANT ALL PRIVILEGES ON DATABASE betkeeper TO betkeeper;
+GRANT ALL PRIVILEGES ON SCHEMA betkeeper TO betkeeper;

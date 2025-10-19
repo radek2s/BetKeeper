@@ -64,3 +64,15 @@ There are projects within this monorepo:
 
 Images from [unDraw](https://undraw.co/)  
 Icons from [fluentIcons](https://fluenticons.co/)
+
+
+___
+
+```
+npx prisma migrate dev
+```
+
+```
+npx prisma generate
+```
+

@@ -1,7 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 .eslintcache
+.dev/database/data
+.env.local
+
+migrations
 
 application/node_modules
+application/generated
 
 # dependencies
 /node_modules

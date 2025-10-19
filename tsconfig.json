@@ -2,7 +2,11 @@
   "compilerOptions": {
     "target": "es2024",
     "baseUrl": "./",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -18,12 +22,29 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@domain/*": ["domain/src/*"],
-      "@bet-keeper/domain/test/*": ["domain/tests/*"],
-      "@test/*": ["./test/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@domain/*": [
+        "domain/src/*"
+      ],
+      "@bet-keeper/domain/test/*": [
+        "domain/tests/*"
+      ],
+      "@test/*": [
+        "./test/*"
+      ]
+    },
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
