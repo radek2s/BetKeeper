@@ -17,6 +17,7 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
+    "tests/domain/**/*.spec.ts",
     "src/**/*.d.ts"
   ]
 }

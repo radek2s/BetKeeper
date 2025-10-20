@@ -1,5 +1,5 @@
 import React from 'react'
-import { vi } from 'vitest'
+import { vi, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
 import BetProviderMock from '@test/components/BetContextMock'

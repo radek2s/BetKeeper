@@ -2,7 +2,7 @@ import { User } from "../entities/User";
 
 import { IEventDispatcher, UUID } from "@domain/shared";
 import { Email } from "../value-objects";
-import { UserFriendList, UserInvitationRequest } from "../entities";
+import { UserFriendList, UserRequest } from "../entities";
 import { IFriendListRepository, IUserRepository } from "./UserService";
 
 /**
@@ -10,9 +10,9 @@ import { IFriendListRepository, IUserRepository } from "./UserService";
  * Defines the contract for invitation request persistence operations
  */
 export interface IInvitationRequestRepository {
-  findById(id: string): Promise<UserInvitationRequest | null>;
-  findPendingByEmail(email: Email): Promise<UserInvitationRequest[]>;
-  save(request: UserInvitationRequest): Promise<void>;
+  findById(id: string): Promise<UserRequest | null>;
+  findPendingByEmail(email: Email): Promise<UserRequest[]>;
+  save(request: UserRequest): Promise<void>;
 }
 
 /**
@@ -26,44 +26,6 @@ export class InvitationService {
     private readonly invitationRequestRepository: IInvitationRequestRepository,
     private readonly eventDispatcher?: IEventDispatcher,
   ) {}
-
-  /**
-   * Sends an invitation request for a non-existing user
-   */
-  async sendInvitationRequest(
-    requesterId: UUID,
-    inviteeEmail: Email,
-  ): Promise<UserInvitationRequest> {
-    const requester = await this.userRepository.findById(requesterId);
-    if (!requester) {
-      throw new Error("Requester not found");
-    }
-
-    if (!requester.canSendFriendRequests()) {
-      throw new Error("Requester cannot send invitation requests");
-    }
-
-    const existingUser = await this.userRepository.findByEmail(inviteeEmail);
-    if (existingUser) {
-      throw new Error("User already exists. Send a friend request instead.");
-    }
-
-    const requesterFriendList =
-      await this.friendListRepository.findByUserId(requesterId);
-    if (!requesterFriendList) {
-      throw new Error("Requester friend list not found");
-    }
-
-    const invitationRequest =
-      requesterFriendList.sendInvitationRequest(inviteeEmail);
-
-    await this.friendListRepository.save(requesterFriendList);
-    await this.invitationRequestRepository.save(invitationRequest);
-
-    this.eventDispatcher;
-
-    return invitationRequest;
-  }
 
   /**
    * Approves an invitation request and creates a new user account
@@ -129,41 +91,11 @@ export class InvitationService {
   }
 
   /**
-   * Cancels an invitation request (by the requester)
-   */
-  async cancelInvitationRequest(
-    requesterId: UUID,
-    requestId: string,
-  ): Promise<void> {
-    const invitationRequest =
-      await this.invitationRequestRepository.findById(requestId);
-    if (!invitationRequest) {
-      throw new Error("Invitation request not found");
-    }
-
-    if (!(invitationRequest.requesterId === requesterId)) {
-      throw new Error("Only the requester can cancel the invitation request");
-    }
-
-    const requesterFriendList =
-      await this.friendListRepository.findByUserId(requesterId);
-    if (!requesterFriendList) {
-      throw new Error("Requester friend list not found");
-    }
-
-    requesterFriendList.cancelInvitationRequest(requestId);
-    invitationRequest.cancel();
-
-    await this.friendListRepository.save(requesterFriendList);
-    await this.invitationRequestRepository.save(invitationRequest);
-  }
-
-  /**
    * Gets all pending invitation requests for an email
    */
   async getPendingInvitationRequestsForEmail(
     email: Email,
-  ): Promise<UserInvitationRequest[]> {
+  ): Promise<UserRequest[]> {
     return await this.invitationRequestRepository.findPendingByEmail(email);
   }
 

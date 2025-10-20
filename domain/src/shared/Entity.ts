@@ -1,5 +1,5 @@
-import { UUID } from ".";
-import { DomainEvent } from "../user/events/DomainEvent";
+import type { DomainEvent } from "../user/events/DomainEvent";
+import type { UUID } from ".";
 
 /**
  * Abstract Entity Base Class
