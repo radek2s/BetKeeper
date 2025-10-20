@@ -50,18 +50,6 @@ export class InMemoryBetQueryService implements IBetQueryService {
       results = results.filter((br) => br.createdAt <= filters.toDate!);
     }
 
-    if (filters.dueDateFrom) {
-      results = results.filter(
-        (br) => br.dueDate && br.dueDate >= filters.dueDateFrom!,
-      );
-    }
-
-    if (filters.dueDateTo) {
-      results = results.filter(
-        (br) => br.dueDate && br.dueDate <= filters.dueDateTo!,
-      );
-    }
-
     // Apply limit
     if (filters.limit && filters.limit > 0) {
       results = results.slice(0, filters.limit);
@@ -150,10 +138,6 @@ export class InMemoryBetQueryService implements IBetQueryService {
       );
     }
 
-    // if (filters.betStatus) {
-    //   results = results.filter((agg) => agg.bet?.status === filters.betStatus);
-    // }
-
     if (filters.fromDate) {
       results = results.filter(
         (agg) => agg.betRequest.createdAt >= filters.fromDate!,
@@ -163,22 +147,6 @@ export class InMemoryBetQueryService implements IBetQueryService {
     if (filters.toDate) {
       results = results.filter(
         (agg) => agg.betRequest.createdAt <= filters.toDate!,
-      );
-    }
-
-    if (filters.dueDateFrom) {
-      results = results.filter(
-        (agg) =>
-          agg.betRequest.dueDate &&
-          agg.betRequest.dueDate >= filters.dueDateFrom!,
-      );
-    }
-
-    if (filters.dueDateTo) {
-      results = results.filter(
-        (agg) =>
-          agg.betRequest.dueDate &&
-          agg.betRequest.dueDate <= filters.dueDateTo!,
       );
     }
 
