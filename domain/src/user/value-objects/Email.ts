@@ -8,17 +8,17 @@ export class Email {
 
   constructor(value: string) {
     if (!value || value.trim().length === 0) {
-      throw new Error('Email cannot be empty');
+      throw new Error("Email cannot be empty");
     }
 
     const trimmedValue = value.trim().toLowerCase();
 
     if (!Email.EMAIL_REGEX.test(trimmedValue)) {
-      throw new Error('Invalid email format');
+      throw new Error("Invalid email format");
     }
 
     if (trimmedValue.length > 254) {
-      throw new Error('Email cannot exceed 254 characters');
+      throw new Error("Email cannot exceed 254 characters");
     }
 
     this._value = trimmedValue;
@@ -29,11 +29,11 @@ export class Email {
   }
 
   get domain(): string {
-    return this._value.split('@')[1];
+    return this._value.split("@")[1];
   }
 
   get localPart(): string {
-    return this._value.split('@')[0];
+    return this._value.split("@")[0];
   }
 
   equals(other: Email): boolean {

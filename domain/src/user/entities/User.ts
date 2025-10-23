@@ -1,8 +1,8 @@
-import { Entity, generateId, UUID } from "@domain/shared";
-import { Email } from "../value-objects";
-import { UserStatus, UserStatusGuards } from "../types/RequestStatus";
+import { Entity, generateId, type UUID } from "@domain/shared";
 import { UserCreatedEvent } from "../events/UserCreatedEvent";
 import { UserStatusChangedEvent } from "../events/UserStatusChangedEvent";
+import { UserStatus, UserStatusGuards } from "../types/RequestStatus";
+import type { Email } from "../value-objects";
 
 /**
  * User Entity
@@ -51,6 +51,14 @@ export class User extends Entity {
 
   get name(): string {
     return `${this._firstName} ${this._lastName}`;
+  }
+
+  get firstName(): string {
+    return this._firstName;
+  }
+
+  get lastName(): string {
+    return this._lastName;
   }
 
   get status(): UserStatus {

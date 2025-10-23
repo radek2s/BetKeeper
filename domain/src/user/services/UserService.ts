@@ -1,12 +1,11 @@
-import { User } from "../entities/User";
-
-import { Email } from "../value-objects/Email";
+import type { UUID } from "../../shared";
 import { DomainService } from "../../shared/DomainService";
-import { IEventDispatcher } from "../../shared/EventDispatcher";
-import { UserFriendList } from "../entities/UserFriendList";
-import { UUID } from "../../shared";
-import { FriendRequest } from "../entities/FriendRequest";
+import type { IEventDispatcher } from "../../shared/EventDispatcher";
 import { UserRequest } from "../entities";
+import type { FriendRequest } from "../entities/FriendRequest";
+import { User } from "../entities/User";
+import { UserFriendList } from "../entities/UserFriendList";
+import type { Email } from "../value-objects/Email";
 
 /**
  * User Repository Interface

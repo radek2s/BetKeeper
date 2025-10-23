@@ -31,6 +31,9 @@
       "@bet-keeper/domain/test/*": [
         "domain/tests/*"
       ],
+      "@db/*": [
+        "application/generated/prisma"
+      ],
       "@test/*": [
         "./test/*"
       ]

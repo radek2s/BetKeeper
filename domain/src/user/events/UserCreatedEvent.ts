@@ -1,6 +1,5 @@
-import { DomainEvent } from "./DomainEvent";
-import { Email } from "../value-objects/Email";
-import { UUID } from "../../shared";
+import { DomainEvent, type UUID } from "../../shared";
+import type { Email } from "../value-objects/Email";
 
 /**
  * User Created Domain Event
