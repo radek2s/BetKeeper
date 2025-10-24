@@ -2,6 +2,7 @@
 .eslintcache
 .dev/database/data
 .env.local
+betKeeper.db
 
 migrations
 
