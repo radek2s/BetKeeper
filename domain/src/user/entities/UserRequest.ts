@@ -1,11 +1,11 @@
-import { Email } from "../value-objects/Email";
-import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
-import {
-  InvitationRequestSentEvent,
-  InvitationRequestApprovedEvent,
-} from "../events/FriendRequestEvents";
 import { Entity } from "../../shared/Entity";
-import { generateId, UUID } from "../../shared/Uuid";
+import { generateId, type UUID } from "../../shared/Uuid";
+import {
+  InvitationRequestApprovedEvent,
+  InvitationRequestSentEvent,
+} from "../events/FriendRequestEvents";
+import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
+import type { Email } from "../value-objects/Email";
 
 /**
  * Invitation Request Entity
@@ -180,4 +180,18 @@ export class UserRequest extends Entity {
   override toString(): string {
     return `InvitationRequest(${this._id}, ${this._requesterId} -> ${this._inviteeEmail.value}, ${this._status})`;
   }
+
+  override toObject() {
+    return {
+      id: this._id,
+      requesterId: this.requesterId,
+      inviteeEmail: this.inviteeEmail,
+      status: this.status,
+      createdAt: this.createdAt,
+      approvedById: this.approvedById,
+      approvedAt: this.approvedAt,
+    };
+  }
 }
+
+export type UserRequestType = ReturnType<UserRequest["toObject"]>;

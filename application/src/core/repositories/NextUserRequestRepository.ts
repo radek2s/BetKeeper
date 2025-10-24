@@ -1,12 +1,19 @@
 import type { UUID } from "@domain/shared";
-import { Email, RequestStatus, UserRequest } from "@domain/user";
+import {
+  Email,
+  type IInvitationRequestRepository,
+  RequestStatus,
+  UserRequest,
+} from "@domain/user";
 import type { IUserRequestRepository } from "@domain/user/services/UserService";
 import prisma from "application/src/lib/prisma";
 
-export class NextUserRequestRepository implements IUserRequestRepository {
+export class NextUserRequestRepository
+  implements IUserRequestRepository, IInvitationRequestRepository
+{
   private table = prisma.userRequestTable;
 
-  private async findById(id: UUID): Promise<UserRequest | null> {
+  async findById(id: UUID): Promise<UserRequest | null> {
     const userRequest = await this.table.findUnique({ where: { id } });
     if (!userRequest) return null;
 
@@ -18,6 +25,26 @@ export class NextUserRequestRepository implements IUserRequestRepository {
       userRequest.createdAt,
       userRequest.approvedById ?? undefined,
       userRequest.approvedAt ?? undefined,
+    );
+  }
+
+  async findPendingByEmail(email: Email): Promise<UserRequest[]> {
+    const userRequestEntities = await this.table.findMany({
+      where: {
+        OR: [{ status: RequestStatus.PENDING }, { inviteeEmail: email.value }],
+      },
+    });
+
+    return userRequestEntities.map((entity) =>
+      UserRequest.reconstitute(
+        entity.id,
+        entity.requesterId,
+        new Email(entity.inviteeEmail),
+        entity.status as RequestStatus,
+        entity.createdAt,
+        entity.approvedById ?? undefined,
+        entity.approvedAt ?? undefined,
+      ),
     );
   }
 
@@ -55,29 +82,29 @@ export class NextUserRequestRepository implements IUserRequestRepository {
     }
     return null;
   }
-  async save(friendList: UserRequest): Promise<void> {
+  async save(request: UserRequest): Promise<void> {
     try {
-      const request = await this.findById(friendList.id);
-      if (request) {
+      const requestEntity = await this.findById(request.id);
+      if (requestEntity) {
         this.table.update({
-          where: { id: request.id },
+          where: { id: requestEntity.id },
           data: {
-            status: friendList.status,
-            createdAt: friendList.createdAt,
-            approvedAt: friendList.approvedAt,
-            approvedById: friendList.approvedById,
+            status: request.status,
+            createdAt: request.createdAt,
+            approvedAt: request.approvedAt,
+            approvedById: request.approvedById,
           },
         });
       } else {
         this.table.create({
           data: {
-            id: friendList.id,
-            requesterId: friendList.requesterId,
-            inviteeEmail: friendList.inviteeEmail.value,
-            status: friendList.status,
-            createdAt: friendList.createdAt,
-            approvedAt: friendList.approvedAt,
-            approvedById: friendList.approvedById,
+            id: request.id,
+            requesterId: request.requesterId,
+            inviteeEmail: request.inviteeEmail.value,
+            status: request.status,
+            createdAt: request.createdAt,
+            approvedAt: request.approvedAt,
+            approvedById: request.approvedById,
           },
         });
       }

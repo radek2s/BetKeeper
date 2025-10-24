@@ -22,7 +22,6 @@ export type {
 // Services
 export { UserService } from "./services/UserService";
 export {
-  FriendRequestType,
   RequestStatus,
   RequestStatusGuards,
   UserStatus,

@@ -155,7 +155,7 @@ export class UserService extends DomainService {
     }
 
     receiverFriendList.approveFriendRequest(requestId);
-    senderFriendList.addFriend(receiverId);
+    senderFriendList.addFriend(receiverId, requestId);
 
     await this.friendListRepository.save(receiverFriendList);
     await this.friendListRepository.save(senderFriendList);

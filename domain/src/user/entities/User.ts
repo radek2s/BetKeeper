@@ -169,4 +169,16 @@ export class User extends Entity {
   override toString(): string {
     return `User(${this._id}, ${this._email.value}, ${this._firstName} ${this._lastName})`;
   }
+
+  override toObject() {
+    return {
+      id: this._id,
+      email: this._email,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      status: this.status,
+    };
+  }
 }
+
+export type UserType = ReturnType<User["toObject"]>;

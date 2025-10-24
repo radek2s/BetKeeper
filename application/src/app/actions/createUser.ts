@@ -1,15 +1,7 @@
 "use server";
-import { Email, RequestStatus, UserService, type UUID } from "@domain/index";
-import { NextFriendListRepository } from "application/src/core/repositories/NextFriendListRepository";
-import NextUserRepository from "application/src/core/repositories/NextUserRepository";
-import { NextUserRequestRepository } from "application/src/core/repositories/NextUserRequestRepository";
+import { Email, RequestStatus, type UUID } from "@domain/index";
+import NextUserService from "application/src/core/services/NextUserService";
 import prisma from "../../lib/prisma";
-
-const NextUserService = new UserService(
-  new NextUserRepository(),
-  new NextUserRequestRepository(),
-  new NextFriendListRepository(),
-);
 
 export async function createUser({
   email,

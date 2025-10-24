@@ -48,7 +48,26 @@ export class NextFriendListRepository implements IFriendListRepository {
       receivedFriendRequests,
     );
   }
-  async save(friendList: UserFriendList): Promise<void> {}
+  async save(friendList: UserFriendList): Promise<void> {
+    friendList.sentFriendRequests.forEach(async (request) => {
+      await this.table.upsert({
+        where: { id: request.id },
+        update: {
+          status: request.status,
+          createdAt: request.createdAt,
+          expiresAt: request.expiresAt,
+        },
+        create: {
+          id: request.id,
+          senderId: request.senderId,
+          reciverId: request.receiverId,
+          createdAt: request.createdAt,
+          status: request.status,
+          expiresAt: request.expiresAt,
+        },
+      });
+    });
+  }
 
   private mapToFriendRequest(entity: FreindRequestEntity): FriendRequest {
     return FriendRequest.reconstitute(
