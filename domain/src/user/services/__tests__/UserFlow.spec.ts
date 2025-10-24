@@ -1,20 +1,21 @@
+import { EventDispatcherMock } from "@bet-keeper/domain/test/mocks/EventDispatcherMock";
+import { InMemoryFriendListRepository } from "@bet-keeper/domain/test/mocks/InMemoryFriendListRepository";
+import { InMemoryUserRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserRepository";
+import { InMemoryUserRequestRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserRequestRepository";
+import type { DomainEvent } from "@domain/shared";
+import type { User } from "@domain/user/entities";
+
+import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
+import { UserStatusChangedEvent } from "@domain/user/events/UserStatusChangedEvent";
 import { Email } from "@domain/user/value-objects";
 import { UserService } from "../UserService";
-import { InMemoryUserRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserRepository";
-import { InMemoryFriendListRepository } from "@bet-keeper/domain/test/mocks/InMemoryFriendListRepository";
-import { InMemoryUserRequestRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserRequestRepository";
-import { EventDispatcherMock } from "@bet-keeper/domain/test/mocks/EventDispatcherMock";
-import { DomainEvent } from "@domain/user/events/DomainEvent";
-import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
-import { User } from "@domain/user/entities";
-import { UserStatusChangedEvent } from "@domain/user/events/UserStatusChangedEvent";
 
 describe("User UseCases", () => {
   let userService: UserService;
-  let userRepository = new InMemoryUserRepository();
-  let userRequestRepository = new InMemoryUserRequestRepository();
-  let userFriendListRepository = new InMemoryFriendListRepository();
-  let eventDispatcher = new EventDispatcherMock();
+  const userRepository = new InMemoryUserRepository();
+  const userRequestRepository = new InMemoryUserRequestRepository();
+  const userFriendListRepository = new InMemoryFriendListRepository();
+  const eventDispatcher = new EventDispatcherMock();
 
   let admin: User;
   let user: User;

@@ -1,8 +1,7 @@
-import type { UUID } from "@domain/shared";
 import { NextFriendListRepository } from "application/src/core/repositories/NextFriendListRepository";
 import NextUserRepository from "application/src/core/repositories/NextUserRepository";
 import Link from "next/link";
-import { approveFriendRequest } from "../../actions/friendListActions";
+import { BetCreateForm } from "./BetCreateForm";
 import { FriendRequestItem } from "./FreindRequestItem";
 import { FriendRequestForm } from "./FriendRequestForm";
 
@@ -53,6 +52,8 @@ export default async function User({ params }: UserDetailsProps) {
               </ul>
             </div>
           )}
+          <h4>Bets</h4>
+          <BetCreateForm userId={user.id} />
         </div>
       </div>
     );

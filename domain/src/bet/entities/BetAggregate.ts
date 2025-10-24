@@ -247,4 +247,11 @@ export class BetAggregate extends AggregateRoot {
     const betInfo = this.betRequest ? `, Bet: ${this.bet?.status}` : "";
     return `BetAggregate(${this.id}, BetRequest: ${this.betRequest.status}${betInfo})`;
   }
+
+  override toObject() {
+    return {
+      betRequest: this.betRequest.toObject(),
+      bet: this.bet?.toObject(),
+    };
+  }
 }

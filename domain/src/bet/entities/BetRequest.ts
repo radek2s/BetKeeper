@@ -49,6 +49,9 @@ export class BetRequest extends Entity {
     terms: Terms,
     stakes?: IStake,
     id?: UUID,
+    createdAt?: Date,
+    participantVotes?: Map<UUID, ParticipantVoteInfo>,
+    blockedByParticipants?: Set<UUID>,
   ) {
     super();
     this.id = id || generateId();
@@ -57,10 +60,10 @@ export class BetRequest extends Entity {
     this.terms = terms;
     this.stakes = stakes;
     this.status = BetRequestStatus.PENDING;
-    this.createdAt = new Date();
+    this.createdAt = createdAt || new Date();
     this.updatedAt = new Date();
-    this.participantVotes = new Map();
-    this.blockedByParticipants = new Set();
+    this.participantVotes = participantVotes || new Map();
+    this.blockedByParticipants = blockedByParticipants || new Set();
 
     // Initialize participant votes as unknown
     this.participantVotes.set(creatorId, {
@@ -361,6 +364,34 @@ export class BetRequest extends Entity {
     return new BetRequest(creatorId, participantId, terms, stakes);
   }
 
+  static reconstitute(
+    id: UUID,
+    creatorId: UUID,
+    participantId: UUID,
+    terms: Terms,
+    stakes: IStake | undefined,
+    status: BetRequestStatus,
+    createdAt: Date,
+    updatedAt: Date,
+    participantVotes: Map<UUID, ParticipantVoteInfo>,
+    blockedByParticipants: Set<UUID>,
+  ): BetRequest {
+    const betRequest = new BetRequest(
+      creatorId,
+      participantId,
+      terms,
+      stakes,
+      id,
+      createdAt,
+      participantVotes,
+      blockedByParticipants,
+    );
+
+    betRequest.status = status;
+    betRequest.updatedAt = updatedAt;
+    return betRequest;
+  }
+
   // Entity implementation
   override equals(other: Entity): boolean {
     if (!(other instanceof BetRequest)) {
@@ -371,5 +402,20 @@ export class BetRequest extends Entity {
 
   override toString(): string {
     return `BetRequest(${this.id}, ${this.status}, Creator: ${this.creatorId}, Participant: ${this.participantId})`;
+  }
+
+  override toObject() {
+    return {
+      id: this.id,
+      creatorId: this.creatorId,
+      participantId: this.participantId,
+      terms: this.terms,
+      stakes: this.stakes?.toObject(),
+      status: this.status,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      participantVotes: this.participantVotes,
+      blockedByParticipants: this.blockedByParticipants,
+    };
   }
 }
