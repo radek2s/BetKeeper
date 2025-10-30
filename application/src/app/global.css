@@ -1,19 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Akatab';
+  src: url('/Akatab.ttf');
+}
+@font-face {
+  font-family: 'Heebo';
+  src: url('/Heebo.ttf');
+}
 
 html {
   -webkit-text-size-adjust: 100%;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI,
-    Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
-    Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: 'Akatab', serif;
   line-height: 1.5;
   tab-size: 4;
   scroll-behavior: smooth;
 }
 body {
-  font-family: inherit;
-  line-height: inherit;
   margin: 0;
 }
 h1,
@@ -30,10 +33,9 @@ pre {
   border-style: solid;
   border-color: currentColor;
 }
-h1,
-h2 {
-  font-size: inherit;
-  font-weight: inherit;
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Heebo', serif;
+  font-weight: bold;
 }
 a {
   color: inherit;
@@ -402,5 +404,20 @@ summary svg {
   }
   #middle-content {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+body {
+  min-height: 100dvh;
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 75%;
+}
+
+@media (prefers-color-scheme:dark) {
+  body {
+    background-image: url('/background_dark.jpg');
+    color: white;
   }
 }

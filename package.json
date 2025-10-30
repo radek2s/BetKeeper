@@ -1,6 +1,6 @@
 {
   "name": "bet-keeper",
-  "version": "3.0.0",
+  "version": "3.0.0-alpha.1",
   "private": true,
   "homepage": "https://radek2s.github.io/BetKeeper",
   "scripts": {
