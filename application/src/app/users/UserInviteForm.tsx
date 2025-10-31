@@ -1,0 +1,29 @@
+"use client";
+
+import { ACTIVE_USER_ID } from "application/src/constants";
+import { useRef } from "react";
+import { createUserRequest } from "../actions/usersActions";
+
+export function UserInviteForm() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSend = async () => {
+    try {
+      if (!inputRef.current) return;
+      const email = inputRef.current?.value;
+      if (!email) return;
+      await createUserRequest({
+        requesterId: ACTIVE_USER_ID,
+        inviteeEmail: email,
+      });
+      inputRef.current.value = "";
+    } catch (e) {}
+  };
+  return (
+    <div className="flex gap-1">
+      <input ref={inputRef} type="email" placeholder="Give email..." />
+      <button type="button" onClick={handleSend}>
+        Submit
+      </button>
+    </div>
+  );
+}

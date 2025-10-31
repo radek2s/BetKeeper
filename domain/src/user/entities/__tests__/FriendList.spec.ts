@@ -1,11 +1,12 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-import { describe, it, expect, beforeEach } from "vitest";
-import { UserFriendList } from "../UserFriendList";
-import { User } from "../User";
-import { Email } from "@domain/user/value-objects";
-import { UserStatus } from "@domain/user/types/RequestStatus";
-import { type UUID } from "@domain/shared";
+
+import type { UUID } from "@domain/shared";
 import { FriendRemovedEvent } from "@domain/user/events/FriendRequestEvents";
+import { UserStatus } from "@domain/user/types/RequestStatus";
+import { Email } from "@domain/user/value-objects";
+import { beforeEach, describe, expect, it } from "vitest";
+import { User } from "../User";
+import { UserFriendList } from "../UserFriendList";
 
 describe("FriendList", () => {
   let userId: UUID;
@@ -21,6 +22,7 @@ describe("FriendList", () => {
       "Target",
       "User",
       UserStatus.ACTIVE,
+      undefined,
       "a9404e77-befb-4c57-bb32-38490aa2eeb3",
     );
   });
@@ -85,6 +87,7 @@ describe("FriendList", () => {
           "User",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
           userId,
         ),
       );
@@ -104,6 +107,7 @@ describe("FriendList", () => {
           "Other",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
           otherUserId,
         ),
       );
@@ -123,6 +127,7 @@ describe("FriendList", () => {
           "User",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
           userId,
         ),
       );
@@ -151,6 +156,7 @@ describe("FriendList", () => {
           "User",
           "Demo",
           UserStatus.ACTIVE,
+          undefined,
           userId,
         ),
       );
@@ -230,6 +236,7 @@ describe("FriendList", () => {
         "Another",
         "User",
         UserStatus.ACTIVE,
+        undefined,
         "user_another",
       );
 

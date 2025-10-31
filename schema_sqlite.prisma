@@ -14,6 +14,8 @@ model UserTable {
     firstName   String
     lastName    String
     status      String
+    avatarUrl   String?
+    role        String?
 
     @@map("user")
 }

@@ -1,10 +1,10 @@
-import { generateId, UUID } from "@domain/shared";
-import { Email } from "@domain/user/value-objects";
-import { describe, it, expect, beforeEach } from "vitest";
-import { User } from "../User";
-import { UserStatus } from "@domain/user/types/RequestStatus";
+import { generateId, type UUID } from "@domain/shared";
 import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
 import { UserStatusChangedEvent } from "@domain/user/events/UserStatusChangedEvent";
+import { UserStatus } from "@domain/user/types/RequestStatus";
+import { Email } from "@domain/user/value-objects";
+import { beforeEach, describe, expect, it } from "vitest";
+import { User } from "../User";
 
 describe("User", () => {
   let userId: UUID;
@@ -21,7 +21,14 @@ describe("User", () => {
 
   describe("constructor", () => {
     it("should create a user with provided values", () => {
-      const user = new User(email, firstName, lastName, undefined, userId);
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
 
       expect(user.id).toBe(userId);
       expect(user.email).toBe(email);
@@ -35,6 +42,7 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
         userId,
       );
 
@@ -56,6 +64,7 @@ describe("User", () => {
         firstName,
         lastName,
         UserStatus.ACTIVE,
+        undefined,
         userId,
       );
 
@@ -331,6 +340,7 @@ describe("User", () => {
           firstName,
           lastName,
           UserStatus.ACTIVE,
+          undefined,
         );
 
         expect(user.id).toBe(userId);
@@ -344,11 +354,19 @@ describe("User", () => {
 
   describe("equality", () => {
     it("should be equal to users with same ID", () => {
-      const user1 = new User(email, firstName, lastName, undefined, userId);
+      const user1 = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
       const user2 = new User(
         new Email("other@example.com"),
         "Other",
         "Name",
+        undefined,
         undefined,
         userId,
       );
@@ -363,6 +381,7 @@ describe("User", () => {
         firstName,
         lastName,
         undefined,
+        undefined,
         generateId(),
       );
 
@@ -372,7 +391,14 @@ describe("User", () => {
 
   describe("toString", () => {
     it("should return string representation", () => {
-      const user = new User(email, firstName, lastName, undefined, userId);
+      const user = new User(
+        email,
+        firstName,
+        lastName,
+        undefined,
+        undefined,
+        userId,
+      );
 
       expect(user.toString()).toBe(
         `User(${userId}, test@example.com, John Doe)`,

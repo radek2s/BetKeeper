@@ -1,14 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import {
-  UserService,
-  IUserRepository,
-  IFriendListRepository,
-  IUserRequestRepository,
-} from "../UserService";
 import { InMemoryEventDispatcher } from "@domain/shared";
-import { Email } from "@domain/user/value-objects";
-import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
 import { User, UserFriendList, UserStatus } from "@domain/user";
+import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
+import { Email } from "@domain/user/value-objects";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  type IFriendListRepository,
+  type IUserRepository,
+  type IUserRequestRepository,
+  UserService,
+} from "../UserService";
 
 describe("UserService", () => {
   let userService: UserService;
@@ -171,6 +171,7 @@ describe("UserService", () => {
           "Receiver",
           "Testing",
           UserStatus.ACTIVE,
+          undefined,
           receiverId,
         ),
       );

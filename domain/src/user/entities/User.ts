@@ -14,6 +14,8 @@ export class User extends Entity {
   private _firstName: string;
   private _lastName: string;
   private _status: UserStatus;
+  avatarUrl: string | undefined;
+  private _role: string | undefined;
 
   /**
    * Create a new User Instance
@@ -25,6 +27,7 @@ export class User extends Entity {
     firstName: string,
     lastName: string,
     status: UserStatus = UserStatus.PENDING_ACTIVATION,
+    avatarUrl?: string,
     id?: UUID,
   ) {
     super();
@@ -33,6 +36,7 @@ export class User extends Entity {
     this._firstName = firstName;
     this._lastName = lastName;
     this._status = status;
+    this.avatarUrl = avatarUrl;
 
     if (!id) {
       this.addDomainEvent(
@@ -63,6 +67,10 @@ export class User extends Entity {
 
   get status(): UserStatus {
     return this._status;
+  }
+
+  get role(): string | undefined {
+    return this._role;
   }
 
   activate(): void {
@@ -145,6 +153,7 @@ export class User extends Entity {
       firstName,
       lastName,
       UserStatus.PENDING_ACTIVATION,
+      undefined,
       id,
     );
   }
@@ -155,8 +164,12 @@ export class User extends Entity {
     firstName: string,
     lastName: string,
     status: UserStatus,
+    avatarUrl?: string,
+    role?: string,
   ): User {
-    return new User(email, firstName, lastName, status, id);
+    const user = new User(email, firstName, lastName, status, avatarUrl, id);
+    user._role = role;
+    return user;
   }
 
   override equals(other: Entity): boolean {
@@ -173,10 +186,11 @@ export class User extends Entity {
   override toObject() {
     return {
       id: this._id,
-      email: this._email,
+      email: this._email.value,
       firstName: this.firstName,
       lastName: this.lastName,
       status: this.status,
+      avatarUrl: this.avatarUrl,
     };
   }
 }

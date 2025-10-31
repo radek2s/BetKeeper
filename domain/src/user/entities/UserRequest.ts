@@ -185,7 +185,7 @@ export class UserRequest extends Entity {
     return {
       id: this._id,
       requesterId: this.requesterId,
-      inviteeEmail: this.inviteeEmail,
+      inviteeEmail: this.inviteeEmail.value,
       status: this.status,
       createdAt: this.createdAt,
       approvedById: this.approvedById,

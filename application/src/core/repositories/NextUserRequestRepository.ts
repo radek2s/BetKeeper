@@ -86,7 +86,7 @@ export class NextUserRequestRepository
     try {
       const requestEntity = await this.findById(request.id);
       if (requestEntity) {
-        this.table.update({
+        await this.table.update({
           where: { id: requestEntity.id },
           data: {
             status: request.status,
@@ -96,7 +96,7 @@ export class NextUserRequestRepository
           },
         });
       } else {
-        this.table.create({
+        await this.table.create({
           data: {
             id: request.id,
             requesterId: request.requesterId,

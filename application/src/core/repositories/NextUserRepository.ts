@@ -11,17 +11,39 @@ import prisma from "application/src/lib/prisma";
 class NextUserRepository implements IUserRepository {
   private table = prisma.userTable;
 
+  async findAll(): Promise<User[]> {
+    try {
+      const users = await this.table.findMany();
+      return users.map((user) =>
+        User.reconstitute(
+          user.id,
+          new Email(user.email),
+          user.firstName,
+          user.lastName,
+          user.status as UserStatus,
+          user.avatarUrl ?? undefined,
+          user.role ?? undefined,
+        ),
+      );
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
   async findById(id: UUID): Promise<User | null> {
     try {
       const user = await this.table.findUnique({ where: { id } });
       if (!user) return null;
 
-      return new User(
+      return User.reconstitute(
+        user.id,
         new Email(user.email),
         user.firstName,
         user.lastName,
         user.status as UserStatus,
-        user.id,
+        user.avatarUrl ?? undefined,
+        user.role ?? undefined,
       );
     } catch (e) {
       console.error(e);
@@ -35,12 +57,14 @@ class NextUserRepository implements IUserRepository {
       });
       if (!user) return null;
 
-      return new User(
+      return User.reconstitute(
+        user.id,
         new Email(user.email),
         user.firstName,
         user.lastName,
         user.status as UserStatus,
-        user.id,
+        user.avatarUrl ?? undefined,
+        user.role ?? undefined,
       );
     } catch (e) {
       console.error(e);
@@ -58,6 +82,7 @@ class NextUserRepository implements IUserRepository {
             firstName: user.firstName,
             lastName: user.lastName,
             status: user.status,
+            avatarUrl: user.avatarUrl,
           },
         });
       } else {
@@ -69,6 +94,7 @@ class NextUserRepository implements IUserRepository {
             firstName: user.firstName,
             lastName: user.lastName,
             status: user.status,
+            avatarUrl: user.avatarUrl ?? null,
           },
         });
       }
