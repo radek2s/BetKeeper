@@ -2,6 +2,7 @@
 import type { UserRequest } from "@domain/user";
 import type { UserRequestType } from "@domain/user/entities";
 import { ACTIVE_USER_ID } from "application/src/constants";
+import { Button } from "application/src/lib/components/button/Button";
 import { approveUserRequest } from "../actions/usersActions";
 
 interface Props {
@@ -19,13 +20,11 @@ export function UserRequestComponent({ request }: Props) {
         <span>{request.inviteeEmail}</span>
         <span>{request.createdAt.toLocaleString()}</span>
       </div>
-      <div>
-        <button type="button" onClick={handleApproval}>
+      <div className="flex gap-1">
+        <Button variant="primary" onClick={handleApproval}>
           Approve
-        </button>
-        <button type="button" onClick={handleReject}>
-          Reject
-        </button>
+        </Button>
+        <Button onClick={handleReject}>Reject</Button>
       </div>
     </div>
   );

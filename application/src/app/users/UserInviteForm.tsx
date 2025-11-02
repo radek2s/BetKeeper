@@ -1,6 +1,8 @@
 "use client";
 
 import { ACTIVE_USER_ID } from "application/src/constants";
+import { Button } from "application/src/lib/components/button/Button";
+import { Input } from "application/src/lib/components/input/Input";
 import { useRef } from "react";
 import { createUserRequest } from "../actions/usersActions";
 
@@ -20,10 +22,11 @@ export function UserInviteForm() {
   };
   return (
     <div className="flex gap-1">
-      <input ref={inputRef} type="email" placeholder="Give email..." />
-      <button type="button" onClick={handleSend}>
+      <Input ref={inputRef} type="email" placeholder="Give email..." />
+      <Button onClick={handleSend}>Cancel</Button>
+      <Button variant="primary" onClick={handleSend}>
         Submit
-      </button>
+      </Button>
     </div>
   );
 }

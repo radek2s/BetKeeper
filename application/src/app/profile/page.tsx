@@ -3,10 +3,11 @@
 
 import { ACTIVE_USER_ID } from "application/src/constants";
 import NextUserRepository from "application/src/core/repositories/NextUserRepository";
-import getConfig from "next/config";
+// import getConfig from "next/config";
 import Link from "next/link";
+import { ProfileImage } from "./ProfileImage";
 
-const { publicRuntimeConfig } = getConfig();
+// const { publicRuntimeConfig } = getConfig();
 
 const repository = new NextUserRepository();
 
@@ -25,7 +26,7 @@ export default async function ProfilePage() {
       </div>
 
       <div className="flex flex-col items-center">
-        <img className="w-[128px]" src={user.avatarUrl} alt="Profile" />
+        <ProfileImage activeImage={user.avatarUrl || ""} />
         <div className="flex flex-col items-center my-2">
           <h2 className="text-xl">{user.name}</h2>
           <span>{user.email.value}</span>
@@ -48,8 +49,12 @@ export default async function ProfilePage() {
         <div>
           Created by <a href="https://github.com/radek2s">radek2s</a>
         </div>
-        <div>v{publicRuntimeConfig?.version}</div>
+        {/* <div>v{publicRuntimeConfig?.version}</div> */}
       </footer>
     </div>
   );
 }
+
+// https://headlessui.com/react/button
+// https://base-ui.com/react/components/dialog
+// https://www.radix-ui.com/primitives/docs/components/switch

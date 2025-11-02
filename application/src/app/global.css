@@ -1,17 +1,30 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Akatab';
-  src: url('/Akatab.ttf');
+  font-family: "Akatab";
+  src: url("/Akatab.ttf");
 }
 @font-face {
-  font-family: 'Heebo';
-  src: url('/Heebo.ttf');
+  font-family: "Heebo";
+  src: url("/Heebo.ttf");
+}
+
+@theme {
+  --color-primary-100: #fff9e6;
+  --color-primary-200: #feedb3;
+  --color-primary-300: #fee181;
+  --color-primary-400: #fdd54e;
+  --color-primary-500: #fdd037;
+  --color-primary-dark-400: #fdc81c;
+  --color-primary-dark-500: #ca9b02;
+
+  --color-gray-400: #d9d9d9;
+  --color-gray-500: #dfdfdf;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
-  font-family: 'Akatab', serif;
+  font-family: "Akatab", serif;
   line-height: 1.5;
   tab-size: 4;
   scroll-behavior: smooth;
@@ -27,8 +40,13 @@ body {
   border-style: solid;
   border-color: currentColor;
 }
-h1,h2,h3,h4,h5,h6 {
-  font-family: 'Heebo', serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Heebo", serif;
   font-weight: bold;
 }
 a {
@@ -36,8 +54,15 @@ a {
   text-decoration: inherit;
 }
 pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono,
-    Courier New, monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    Liberation Mono,
+    Courier New,
+    monospace;
 }
 svg {
   display: block;
@@ -49,14 +74,24 @@ pre {
   background-color: rgba(55, 65, 81, 1);
   border-radius: 0.25rem;
   color: rgba(229, 231, 235, 1);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono,
-    Courier New, monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    Liberation Mono,
+    Courier New,
+    monospace;
   overflow: scroll;
   padding: 0.5rem 0.75rem;
 }
 
 .shadow {
-  box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 0 #0000,
+    0 0 #0000,
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 .rounded {
@@ -164,8 +199,9 @@ pre {
   display: flex;
   margin-top: 1rem;
   padding: 1rem;
-  transition-property: background-color, border-color, color, fill, stroke, opacity,
-    box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property:
+    background-color, border-color, color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
   width: 100%;
@@ -173,8 +209,9 @@ pre {
 .list-item-link svg:first-child {
   margin-right: 1rem;
   height: 1.5rem;
-  transition-property: background-color, border-color, color, fill, stroke, opacity,
-    box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property:
+    background-color, border-color, color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
   width: 1.5rem;
@@ -182,8 +219,9 @@ pre {
 .list-item-link > span {
   flex-grow: 1;
   font-weight: 400;
-  transition-property: background-color, border-color, color, fill, stroke, opacity,
-    box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property:
+    background-color, border-color, color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -194,8 +232,9 @@ pre {
   font-size: 0.75rem;
   font-weight: 300;
   line-height: 1rem;
-  transition-property: background-color, border-color, color, fill, stroke, opacity,
-    box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property:
+    background-color, border-color, color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -223,15 +262,17 @@ pre {
 .button-pill {
   padding: 1.5rem 2rem;
   transition-duration: 300ms;
-  transition-property: background-color, border-color, color, fill, stroke, opacity,
-    box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property:
+    background-color, border-color, color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   align-items: center;
   display: flex;
 }
 .button-pill svg {
-  transition-property: background-color, border-color, color, fill, stroke, opacity,
-    box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property:
+    background-color, border-color, color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
   flex-shrink: 0;
@@ -361,8 +402,9 @@ summary {
   font-weight: 400;
   padding: 0.5rem;
   cursor: pointer;
-  transition-property: background-color, border-color, color, fill, stroke, opacity,
-    box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property:
+    background-color, border-color, color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -403,15 +445,59 @@ summary svg {
 
 body {
   min-height: 100dvh;
-  background-image: url('/background.jpg');
+  background-image: url("/background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 75%;
 }
 
-@media (prefers-color-scheme:dark) {
+@media (prefers-color-scheme: dark) {
   body {
-    background-image: url('/background_dark.jpg');
+    background-image: url("/background_dark.jpg");
     color: white;
   }
+}
+
+.dialog--overlay {
+  background-color: #00000085;
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(10px);
+}
+.dialog--content {
+  border: solid white 1px;
+  box-shadow: 0 4 16 #0009;
+  border-radius: 16px;
+  padding: 16px;
+  background-color: white;
+
+  width: 90vw;
+  max-width: 500px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.avatar-preview.active {
+  border: 2px solid #fdd037;
+  border-radius: 8px;
+}
+.avatar-preview:focus-visible {
+  outline: 4px solid #fdd037;
+  border-radius: 8px;
+}
+
+.btn {
+  min-width: 100px;
+  @apply px-4 py-2 rounded-full bg-gray-500 hover:bg-gray-400 outline-primary-500;
+  cursor: pointer;
+}
+
+.btn.primary {
+  @apply hover:bg-primary-400 bg-primary-500 dark:hover:bg-primary-dark-400 dark:bg-primary-dark-500;
+}
+
+.ip {
+  @apply px-4 py-2 rounded-xl bg-gray-500 outline-primary-500;
 }
