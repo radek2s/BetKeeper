@@ -10,7 +10,11 @@ interface Props {
 export function UserComponent({ user }: Props) {
   return (
     <div className="flex gap-1 items-center">
-      <img className="w-[48px]" src={user?.avatarUrl} alt="User avatar" />
+      <img
+        className="w-[48px] avatar"
+        src={user?.avatarUrl || "/avatars/avatar_01.png"}
+        alt="User avatar"
+      />
       <div className="flex flex-col">
         <span>{user.name}</span>
         <span className="text-sm text-gray-800 dark:text-gray-400">

@@ -2,7 +2,9 @@
 import { User } from "@domain/user";
 import { ACTIVE_USER_ID } from "application/src/constants";
 import NextUserRepository from "application/src/core/repositories/NextUserRepository";
+import { IconButton } from "application/src/lib/components/button/IconButton";
 import { objectToUser } from "application/src/lib/mappers/user";
+import Link from "next/link";
 import { getAllUsers, getPedingUserRequests } from "../actions/usersActions";
 import { UserComponent } from "./UserComponent";
 import { UserInviteForm } from "./UserInviteForm";
@@ -22,9 +24,11 @@ export default async function UsersManagePage() {
   return (
     <div className="min-h-dvh flex flex-col items-center">
       <div className="my-4 px-4 flex w-full justify-between">
-        <div className="flex gap-1">
-          <div>Back</div>
-          <h1>Application Users</h1>
+        <div className="flex gap-1 items-center">
+          <Link href={"/profile"}>
+            <IconButton icon="arrow-left" />
+          </Link>
+          <h1 className="text-xl">Application Users</h1>
         </div>
         <div>More</div>
       </div>

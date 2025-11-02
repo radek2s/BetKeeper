@@ -13,7 +13,7 @@ export function UserRequestPendingComponent({ requests }: Props) {
         {requests.length === 0 ? (
           <div className="text-gray-500">No pending requets</div>
         ) : (
-          <div>
+          <div className="flex flex-col gap-2">
             {requests.map((request) => (
               <UserRequestComponent request={request} key={request.id} />
             ))}

@@ -479,6 +479,11 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.avatar {
+  background-color: #fdd037;
+  border-radius: 999px;
+}
+
 .avatar-preview.active {
   border: 2px solid #fdd037;
   border-radius: 8px;
@@ -500,4 +505,25 @@ body {
 
 .ip {
   @apply px-4 py-2 rounded-xl bg-gray-500 outline-primary-500;
+}
+
+.btn-icon {
+  @apply p-2 rounded-full bg-gray-500 hover:bg-gray-400 outline-primary-500;
+  cursor: pointer;
+}
+
+.btn-icon.primary {
+  @apply hover:bg-primary-400 bg-primary-500 dark:hover:bg-primary-dark-400 dark:bg-primary-dark-500;
+}
+.btn-icon.ghost {
+  background: none;
+}
+.btn-icon.ghost:hover {
+  @apply hover:bg-gray-400;
+}
+
+@media (prefers-color-scheme: dark) {
+  .icon {
+    fill: white;
+  }
 }

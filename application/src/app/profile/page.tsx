@@ -3,6 +3,9 @@
 
 import { ACTIVE_USER_ID } from "application/src/constants";
 import NextUserRepository from "application/src/core/repositories/NextUserRepository";
+import { Button } from "application/src/lib/components/button/Button";
+import { IconButton } from "application/src/lib/components/button/IconButton";
+import { Icon } from "application/src/lib/components/icon";
 // import getConfig from "next/config";
 import Link from "next/link";
 import { ProfileImage } from "./ProfileImage";
@@ -18,30 +21,42 @@ export default async function ProfilePage() {
   return (
     <div className="min-h-dvh flex flex-col items-center">
       <div className="my-4 px-4 flex w-full justify-between">
-        <div className="flex gap-1">
-          <div>Back</div>
-          <h1>Profile</h1>
+        <div className="flex gap-1 items-center">
+          <Link href={"/"}>
+            <IconButton icon="arrow-left" />
+          </Link>
+          {/* <Icon name="arrow-left" /> */}
+          <h1 className="text-xl">Profile</h1>
         </div>
-        <div>More</div>
+        <IconButton icon="more" />
       </div>
 
       <div className="flex flex-col items-center">
         <ProfileImage activeImage={user.avatarUrl || ""} />
         <div className="flex flex-col items-center my-2">
-          <h2 className="text-xl">{user.name}</h2>
-          <span>{user.email.value}</span>
+          <h2 className="text-xl m-none">{user.name}</h2>
+          <span className="text-gray-600 text-sm">{user.email.value}</span>
         </div>
       </div>
-      <div className="grow-1">
-        <ul>
+      <div className="grow-1 mt-4">
+        <ul className="flex flex-col gap-4">
           <Link href={"/users"}>
-            <li>Application users</li>
+            <li className="flex items-center gap-2">
+              <Icon name="groups" /> Application users
+            </li>
           </Link>
-
-          <li>Bet Ideas and notes</li>
-          <li>Notification settings</li>
-          <li>Report problem</li>
-          <li>Logout</li>
+          <li className="flex items-center gap-2">
+            <Icon name="note" /> Bet Ideas and notes
+          </li>
+          <li className="flex items-center gap-2">
+            <Icon name="mail" /> Notification settings
+          </li>
+          <li className="flex items-center gap-2">
+            <Icon name="bug" /> Report problem
+          </li>
+          <li className="flex items-center gap-2">
+            <Icon name="logout" /> Logout
+          </li>
         </ul>
       </div>
       <div className="grow"></div>
@@ -49,12 +64,8 @@ export default async function ProfilePage() {
         <div>
           Created by <a href="https://github.com/radek2s">radek2s</a>
         </div>
-        {/* <div>v{publicRuntimeConfig?.version}</div> */}
+        <div>v{process.env.NEXT_PUBLIC_APP_VERSION}</div>
       </footer>
     </div>
   );
 }
-
-// https://headlessui.com/react/button
-// https://base-ui.com/react/components/dialog
-// https://www.radix-ui.com/primitives/docs/components/switch
