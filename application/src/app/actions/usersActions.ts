@@ -64,3 +64,15 @@ export async function createUserRequest({
     console.error(e);
   }
 }
+
+export async function updateAvatar(userId: string, avatarUrl: string) {
+  const repository = new NextUserRepository();
+  try {
+    const user = await repository.findById(userId);
+    if (!user) throw new Error("User was not found!");
+    user.avatarUrl = avatarUrl;
+    await repository.save(user);
+  } catch (e) {
+    console.error(e);
+  }
+}

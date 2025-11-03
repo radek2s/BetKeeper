@@ -1,7 +1,9 @@
 "use client";
+import { ACTIVE_USER_ID } from "application/src/constants";
 import { Button } from "application/src/lib/components/button/Button";
 import { Dialog } from "radix-ui";
 import { useState } from "react";
+import { updateAvatar } from "../actions/usersActions";
 
 const AVATAR_MAX_ID = 7;
 
@@ -13,6 +15,13 @@ export function ProfileImage({ activeImage }: Props) {
   const avatarIds = [...Array(AVATAR_MAX_ID).keys()].map(
     (id) => `/avatars/avatar_0${id}.png`,
   );
+  const handleSave = async () => {
+    try {
+      await updateAvatar(ACTIVE_USER_ID, selectedImage);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return (
     <div>
       <Dialog.Root>
@@ -37,7 +46,9 @@ export function ProfileImage({ activeImage }: Props) {
               ))}
             </div>
             <Dialog.Close asChild>
-              <Button variant="primary">Save</Button>
+              <Button variant="primary" onClick={handleSave}>
+                Save
+              </Button>
             </Dialog.Close>
           </Dialog.Content>
         </Dialog.Portal>
