@@ -1,6 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { composePlugins } = require("@nx/next");
-const { version } = require("../package.json");
 
 const nextConfig = {
   // Use this to set Nx-specific options
@@ -13,8 +12,4 @@ const plugins = [
   // withNx,
 ];
 
-module.exports = {
-  publicRuntimeConfig: {
-    version,
-  },
-};
+module.exports = {};

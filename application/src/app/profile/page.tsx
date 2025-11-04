@@ -1,21 +1,14 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 "use server";
 
-import { ACTIVE_USER_ID } from "application/src/constants";
-import NextUserRepository from "application/src/core/repositories/NextUserRepository";
-import { Button } from "application/src/lib/components/button/Button";
 import { IconButton } from "application/src/lib/components/button/IconButton";
 import { Icon } from "application/src/lib/components/icon";
-// import getConfig from "next/config";
 import Link from "next/link";
+import { getActiveUser } from "../actions/usersActions";
 import { ProfileImage } from "./ProfileImage";
 
-// const { publicRuntimeConfig } = getConfig();
-
-const repository = new NextUserRepository();
-
 export default async function ProfilePage() {
-  const user = await repository.findById(ACTIVE_USER_ID);
+  const user = await getActiveUser();
 
   if (!user) return <div>User with given ID does not exists!</div>;
   return (
@@ -25,7 +18,6 @@ export default async function ProfilePage() {
           <Link href={"/"}>
             <IconButton icon="arrow-left" />
           </Link>
-          {/* <Icon name="arrow-left" /> */}
           <h1 className="text-xl">Profile</h1>
         </div>
         <IconButton icon="more" />

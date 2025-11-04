@@ -1,20 +1,19 @@
 "use server";
-import { User } from "@domain/user";
-import { ACTIVE_USER_ID } from "application/src/constants";
-import NextUserRepository from "application/src/core/repositories/NextUserRepository";
+
 import { IconButton } from "application/src/lib/components/button/IconButton";
 import { objectToUser } from "application/src/lib/mappers/user";
 import Link from "next/link";
-import { getAllUsers, getPedingUserRequests } from "../actions/usersActions";
+import {
+  getActiveUser,
+  getAllUsers,
+  getPedingUserRequests,
+} from "../actions/usersActions";
 import { UserComponent } from "./UserComponent";
 import { UserInviteForm } from "./UserInviteForm";
-import { UserRequestComponent } from "./UserRequestComponent";
 import { UserRequestPendingComponent } from "./UserRequestPendingComponent";
 
-const repository = new NextUserRepository();
-
 export default async function UsersManagePage() {
-  const activeUser = await repository.findById(ACTIVE_USER_ID);
+  const activeUser = await getActiveUser();
 
   if (activeUser?.role !== "ADMINISTRATOR")
     return <div>Missing privileges</div>;
@@ -30,7 +29,7 @@ export default async function UsersManagePage() {
           </Link>
           <h1 className="text-xl">Application Users</h1>
         </div>
-        <div>More</div>
+        <IconButton icon="more" />
       </div>
       <div className="flex flex-col gap-2">
         <UserRequestPendingComponent requests={pendingRequests} />

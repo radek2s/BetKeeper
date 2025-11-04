@@ -6,7 +6,6 @@ export function userToObject(user: User): UserType {
 }
 
 export function objectToUser(user: UserType): User {
-  console.log(user);
   return User.reconstitute(
     user.id,
     new Email(user.email),

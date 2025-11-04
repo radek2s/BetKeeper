@@ -3,8 +3,13 @@
 import Link from "next/link";
 import { Button } from "../lib/components/button/Button";
 import { IconButton } from "../lib/components/button/IconButton";
+import { getActiveUser } from "./actions/usersActions";
 
-export default function Index() {
+export default async function Index() {
+  const user = await getActiveUser();
+
+  if (!user)
+    return <div>Failed to load application. Not found active user.</div>;
   /*
    * Replace the elements below with your own.
    *
@@ -17,12 +22,12 @@ export default function Index() {
           <Link href="/profile">
             <img
               className="avatar h-[48px]"
-              src="/avatars/avatar_01.png"
+              src={user.avatarUrl}
               alt="Profile"
             />
           </Link>
           <div>
-            <span>Hi Monica!</span>
+            <span>Hi {user.name}!</span>
             <h1>Bets</h1>
           </div>
         </div>

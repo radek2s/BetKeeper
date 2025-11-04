@@ -5,13 +5,24 @@ import { ACTIVE_USER_ID } from "application/src/constants";
 import { Button } from "application/src/lib/components/button/Button";
 import { IconButton } from "application/src/lib/components/button/IconButton";
 import { approveUserRequest } from "../actions/usersActions";
+import {
+  UserRequestConfirmDialog,
+  type UserRequestData,
+} from "./UserRequestConfirmDialog";
 
 interface Props {
   request: UserRequestType;
 }
 export function UserRequestComponent({ request }: Props) {
-  const handleApproval = async () => {
-    await approveUserRequest(request.id, "", "", ACTIVE_USER_ID);
+  const handleApproval = async (data: UserRequestData | null) => {
+    if (data) {
+      await approveUserRequest(
+        request.id,
+        data.firstName,
+        data.lastName,
+        ACTIVE_USER_ID,
+      );
+    }
   };
 
   const handleReject = async () => {};
@@ -22,7 +33,7 @@ export function UserRequestComponent({ request }: Props) {
         <span>{request.createdAt.toLocaleString()}</span>
       </div>
       <div className="flex gap-1">
-        <IconButton onClick={handleApproval} icon="check" variant="ghost" />
+        <UserRequestConfirmDialog onClose={handleApproval} />
         <IconButton onClick={handleReject} icon="close" variant="ghost" />
       </div>
     </div>
