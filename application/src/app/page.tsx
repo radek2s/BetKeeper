@@ -23,7 +23,7 @@ export default async function Index() {
             <img
               className="avatar h-[48px]"
               src={user.avatarUrl}
-              alt="Profile"
+              alt="Profile avatar"
             />
           </Link>
           <div>

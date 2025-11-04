@@ -3,17 +3,30 @@
 [Back to parent](../readme.md)
 
 Tech stack:
-- [Playwright](https://playwright.dev/) E2E test framework for testing async Server Components
+- [Cypress](https://docs.cypress.io/) E2E test framework for testing async Server Components
 - [Cucumber](https://cucumber.io/) Behaviour-Driven Development framework for testing requirements
 
 ## Commands
 
-Run application and perform E2E tests in Playwright UI
-Playwright start Next.js server automatically.
+Preparation of environment  
+Because Prisma can create SQLite database without any complex scripts there is prepared step-by-step generator that purge database for E2E tests and initialize default user. 
+
 ```shell
-npx nx build application
-npx nx run e2e-tests:e2e --ui
+npm run prepare-e2e
 ```
+
+Then you can execute single test run that runs server and performs full E2E execution:
+```shell
+npx nx run e2e-tests:e2e
+```
+
+To open Cypress UI use following command:
+```shell
+npx nx run e2e-tests:open-cypress
+```
+For some reasons on Windows this running server through UI blocks generated files. Then database purge might not work. To solve this issue try to logout and login into system or find process that is blocking files listed in terminal.
+
+---
 
 Run Cucumber Behaviour-Driven Development tests that verifies requirements
 ```shell

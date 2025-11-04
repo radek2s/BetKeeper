@@ -42,7 +42,7 @@ versionning of the files and keeping the audit logs with established decisions.
 
 Installation
 ```
-npm i
+npm i --lagacy-peer-deps
 ```
 
 This project is running with NX tool that provide additional project graph where developer
@@ -60,24 +60,17 @@ There are projects within this monorepo:
 - e2e-tests - end-to-end tests for BetKeeper application that check if requirements are met using cucumber and playwright.
 
 
+**Starting BetKeeper in development mode**
+```shell
+npm run dev:init # To initialize SQLite database (can be ommited when already created)
+npm run dev
+```
+
+
 ### License
 
 Images from [unDraw](https://undraw.co/)  
 Icons from [fluentIcons](https://fluenticons.co/)
 
-
-___
-
-```
-npx prisma migrate dev
-```
-
-```
-npx prisma generate
-```
-
-```
-npx prisma migrate dev --name initSqLite --schema .\schema_sqlite.prisma
-```
 
 [Using RadixUI Primitives](https://www.radix-ui.com/primitives)

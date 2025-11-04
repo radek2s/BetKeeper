@@ -3,6 +3,7 @@
 .dev/database/data
 .env.local
 betKeeper.db
+betKeeperE2E.db
 
 migrations
 

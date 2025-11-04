@@ -53,9 +53,13 @@
       }
     },
     {
-      "plugin": "@nx/playwright/plugin",
+      "plugin": "@nx/cypress/plugin",
       "options": {
-        "targetName": "e2e"
+        "targetName": "e2e",
+        "ciTargetName": "e2e-ci",
+        "componentTestingTargetName": "component-test",
+        "ciComponentTestingTargetName": "component-test-ci",
+        "openTargetName": "open-cypress"
       }
     }
   ],
