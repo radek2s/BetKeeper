@@ -1,6 +1,7 @@
 /**
  * Email Value Object
  * Represents a valid email address that serves as username in the system
+ * https://codemia.io/knowledge-hub/path/what_is_the_maximum_length_of_a_valid_email_address
  */
 export class Email {
   private readonly _value: string;
@@ -17,8 +18,12 @@ export class Email {
       throw new Error("Invalid email format");
     }
 
-    if (trimmedValue.length > 254) {
-      throw new Error("Email cannot exceed 254 characters");
+    const [localPart, domainPart] = trimmedValue.split("@");
+    if (localPart.length > 64) {
+      throw new Error("Email local part cannot exceed 64 characters");
+    }
+    if (domainPart.length > 190) {
+      throw new Error("Email domain part cannot exceed 190 characters");
     }
 
     this._value = trimmedValue;

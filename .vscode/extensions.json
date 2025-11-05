@@ -1,8 +1,10 @@
 {
   "recommendations": [
+    "eamodio.gitlens",
     "biomejs.biome",
     "firsttris.vscode-jest-runner",
     "MermaidChart.vscode-mermaid-chart",
-    "vitest.explorer"
+    "vitest.explorer",
+    "bradlc.vscode-tailwindcss"
   ]
 }

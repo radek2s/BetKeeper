@@ -1,11 +1,10 @@
 "use server";
 
 import { IconButton } from "application/src/lib/components/button/IconButton";
-import { objectToUser } from "application/src/lib/mappers/user";
 import Link from "next/link";
 import {
   getActiveUser,
-  getAllUsers,
+  getAllActiveUsers,
   getPedingUserRequests,
 } from "../actions/usersActions";
 import { UserComponent } from "./UserComponent";
@@ -19,7 +18,7 @@ export default async function UsersManagePage() {
     return <div>Missing privileges</div>;
 
   const pendingRequests = await getPedingUserRequests();
-  const users = (await getAllUsers()).map(objectToUser);
+  const users = await getAllActiveUsers();
   return (
     <div className="min-h-dvh flex flex-col items-center">
       <div className="my-4 px-4 flex w-full justify-between">
@@ -37,7 +36,7 @@ export default async function UsersManagePage() {
           <h2 className="text-xl my-2">All users</h2>
           <div className="flex flex-col gap-1">
             {users.map((user) => (
-              <UserComponent user={user} key={user.id} />
+              <UserComponent userObject={user} key={user.id} />
             ))}
           </div>
         </section>

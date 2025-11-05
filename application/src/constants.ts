@@ -1,1 +1,1 @@
-export const ACTIVE_USER_ID = process.env.DEV_USER_ID ?? "";
+export const ACTIVE_USER_ID = "00000000-0000-0000-0000-000011110000";

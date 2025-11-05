@@ -37,16 +37,16 @@ export default async function ProfilePage() {
               <Icon name="groups" /> Application users
             </li>
           </Link>
-          <li className="flex items-center gap-2">
+          <li className="flex items-center gap-2 disabled">
             <Icon name="note" /> Bet Ideas and notes
           </li>
-          <li className="flex items-center gap-2">
+          <li className="flex items-center gap-2 disabled">
             <Icon name="mail" /> Notification settings
           </li>
-          <li className="flex items-center gap-2">
+          <li className="flex items-center gap-2 disabled">
             <Icon name="bug" /> Report problem
           </li>
-          <li className="flex items-center gap-2">
+          <li className="flex items-center gap-2 disabled">
             <Icon name="logout" /> Logout
           </li>
         </ul>

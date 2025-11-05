@@ -191,6 +191,7 @@ export class User extends Entity {
       lastName: this.lastName,
       status: this.status,
       avatarUrl: this.avatarUrl,
+      role: this.role,
     };
   }
 }

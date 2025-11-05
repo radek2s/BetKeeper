@@ -4,7 +4,7 @@ import type { UserRequestType } from "@domain/user/entities";
 import { ACTIVE_USER_ID } from "application/src/constants";
 import { Button } from "application/src/lib/components/button/Button";
 import { IconButton } from "application/src/lib/components/button/IconButton";
-import { approveUserRequest } from "../actions/usersActions";
+import { approveUserRequest, rejectUserRequest } from "../actions/usersActions";
 import {
   UserRequestConfirmDialog,
   type UserRequestData,
@@ -25,7 +25,13 @@ export function UserRequestComponent({ request }: Props) {
     }
   };
 
-  const handleReject = async () => {};
+  const handleReject = async () => {
+    try {
+      await rejectUserRequest(request.id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   return (
     <div className="flex gap-2 items-center justify-between">
       <div className="flex flex-col">

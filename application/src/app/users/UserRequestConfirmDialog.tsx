@@ -25,14 +25,14 @@ export function UserRequestConfirmDialog({ onClose }: Props) {
   ) => {
     e.preventDefault();
     setError(null);
-    const firstName = firstNameRef.current?.value;
+    const firstName = firstNameRef.current?.value.trim();
     if (!firstName) {
-      setError("First name must not be null!");
+      setError("First name must not be blank!");
       return;
     }
-    const lastName = lastNameRef.current?.value;
+    const lastName = lastNameRef.current?.value.trim();
     if (!lastName) {
-      setError("Last name must not be null!");
+      setError("Last name must not be blank!");
       return;
     }
 

@@ -13,5 +13,6 @@ export function objectToUser(user: UserType): User {
     user.lastName,
     user.status,
     user.avatarUrl,
+    user.role,
   );
 }

@@ -1,0 +1,14 @@
+/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
+import type { IconProps } from "./types";
+
+export function SendIcon({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      height="24px"
+      viewBox="0 -960 960 960"
+      width="24px">
+      <path d="M173.7-165.78q-30.53 13.26-57.92-5.07-27.39-18.32-27.39-51.28V-382.3l361.52-100.57-361.52-100v-158.74q0-32.96 27.39-51.28 27.39-18.33 57.92-5.63l611.34 259.74q37.09 16.26 37.09 56.91 0 40.65-37.09 56.35L173.7-165.78Z" />
+    </svg>
+  );
+}

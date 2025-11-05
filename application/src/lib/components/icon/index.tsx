@@ -5,6 +5,7 @@ import { BugIcon } from "./bug";
 import { CalendarIcon } from "./calendar";
 import { CheckIcon } from "./check";
 import { CloseIcon } from "./close";
+import { DeleteIcon } from "./delete";
 import { ErrorIcon } from "./error";
 import { EventIcon } from "./event";
 import { GroupIcon } from "./group";
@@ -14,7 +15,10 @@ import { MailIcon } from "./mail";
 import { MoreIcon } from "./more";
 import { NoteIcon } from "./note";
 import { NotificationIcon } from "./notification";
+import { PersonIcon } from "./person";
+import { PersonOffIcon } from "./person-off";
 import { QuestionMarkIcon } from "./question-mark";
+import { SendIcon } from "./send";
 import { TimerIcon } from "./timer";
 import type { IconProps, IconType } from "./types";
 import { VerifiedIcon } from "./verified";
@@ -26,6 +30,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   calendar: CalendarIcon,
   check: CheckIcon,
   close: CloseIcon,
+  delete: DeleteIcon,
   error: ErrorIcon,
   event: EventIcon,
   group: GroupIcon,
@@ -35,7 +40,10 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   more: MoreIcon,
   note: NoteIcon,
   notification: NotificationIcon,
+  person: PersonIcon,
+  "person-off": PersonOffIcon,
   "question-mark": QuestionMarkIcon,
+  send: SendIcon,
   timer: TimerIcon,
   verified: VerifiedIcon,
 };

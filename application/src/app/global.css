@@ -125,3 +125,20 @@ body {
     fill: white;
   }
 }
+
+.user-item {
+  min-width: 350px;
+}
+.user-item .user-item__actions {
+  display: none;
+}
+.user-item:hover .user-item__actions {
+  display: flex;
+}
+
+.disabled {
+  @apply text-gray-300;
+  svg path {
+    fill: #d9d9d9;
+  }
+}

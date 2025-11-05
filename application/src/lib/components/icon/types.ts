@@ -9,6 +9,7 @@ export type IconType =
   | "calendar"
   | "check"
   | "close"
+  | "delete"
   | "error"
   | "event"
   | "group"
@@ -18,6 +19,9 @@ export type IconType =
   | "more"
   | "note"
   | "notification"
+  | "person"
+  | "person-off"
   | "question-mark"
+  | "send"
   | "timer"
   | "verified";
