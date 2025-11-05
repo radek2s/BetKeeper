@@ -42,14 +42,14 @@ versionning of the files and keeping the audit logs with established decisions.
 
 Installation
 ```
-npm i --lagacy-peer-deps
+npm i
 ```
 
 This project is running with NX tool that provide additional project graph where developer
 can check the dependencies betweeen modules.
 
 ```
-nx graph
+npx nx graph
 ```
 
 There are projects within this monorepo:

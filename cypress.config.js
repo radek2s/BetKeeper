@@ -1,10 +1,10 @@
-import { nxE2EPreset } from "@nx/cypress/plugins/cypress-preset";
+import { nxE2EPreset } from "@nx/cypress/plugins/cypress-preset.js";
 import { defineConfig } from "cypress";
 
 export default defineConfig({
   e2e: {
-    ...nxE2EPreset(__filename, {
-      cypressDir: "cypress",
+    ...nxE2EPreset("cypress.config.js", {
+      cypressDir: "e2e-tests/cypress",
       bundler: "vite",
       webServerCommands: {
         default: "nx run application:dev",

@@ -8,7 +8,7 @@
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {
-        "cypressConfig": "e2e-tests/cypress.config.ts"
+        "cypressConfig": "./cypress.config.js"
       },
       "outputs": ["{workspaceRoot}/dist/.playwright"]
     }

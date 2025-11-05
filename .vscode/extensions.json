@@ -3,8 +3,6 @@
     "biomejs.biome",
     "firsttris.vscode-jest-runner",
     "MermaidChart.vscode-mermaid-chart",
-    "nrwl.angular-console",
-    "vitest.explorer",
-    "ms-playwright.playwright"
+    "vitest.explorer"
   ]
 }
