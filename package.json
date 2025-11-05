@@ -14,8 +14,11 @@
     "build": "tsc && vite build",
     "build:ci": "CI=false && tsc && vite build",
     "e2e": "nx run e2e-tests:e2e",
-    "seed": "node ./schema_e2e.seed.js",
-    "prepare-e2e": "npx prisma migrate reset --force --schema schema_e2e.prisma && npx prisma migrate dev --name=init --schema schema_e2e.prisma && npx prisma generate --schema schema_e2e.prisma && npm run seed"
+    "e2e:db:reset": "dotenv -e .env.e2e -- npx prisma migrate reset --force",
+    "e2e:db:migrate": "dotenv -e .env.e2e -- npx prisma migrate dev --name=init",
+    "e2e:db:generate": "dotenv -e .env.e2e -- npx prisma generate",
+    "e2e:db:populate": "dotenv -e .env.e2e -- node ./schema_e2e.seed.js",
+    "prepare-e2e": "npm run e2e:db:reset && npm run e2e:db:migrate && npm run e2e:db:generate && npm run e2e:db:populate"
   },
   "dependencies": {
     "@corbado/react": "^3.5.0",
@@ -68,6 +71,7 @@
     "autoprefixer": "10.4.13",
     "babel-jest": "^29.7.0",
     "cypress": "^15.5.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.0",
     "eslint-config-next": "15.2.4",
     "eslint-config-prettier": "^10.0.0",

@@ -1,6 +1,6 @@
 datasource db {
-    url         = "postgresql://betkeeper:betkeeper@localhost:5432/betkeeper?schema=betkeeper"
-    provider    = "postgresql"
+    provider    = "sqlite"
+    url         = env("DB_PRISMA_URL")
 }
 
 generator client {
@@ -14,45 +14,47 @@ model UserTable {
     firstName   String
     lastName    String
     status      String
+    avatarUrl   String?
+    role        String?
 
     @@map("user")
 }
 
 model UserRequestTable {
     id              String @id @default(uuid())
-    requesterId     String @db.Uuid
+    requesterId     String 
     inviteeEmail    String
     status          String
-    createdAt       DateTime @db.Timestamp(3)
-    approvedById    String? @db.Uuid
-    approvedAt      DateTime? @db.Timestamp(3)
+    createdAt       DateTime 
+    approvedById    String? 
+    approvedAt      DateTime? 
 
     @@map("user_request")
 }
 
 model FriendRequestTable {
     id              String @id @default(uuid())
-    senderId        String @db.Uuid
-    reciverId       String @db.Uuid
+    senderId        String 
+    reciverId       String 
     status          String
-    createdAt       DateTime @db.Timestamp(3)
-    expiresAt       DateTime? @db.Timestamp(3)
+    createdAt       DateTime 
+    expiresAt       DateTime? 
 
     @@map("friend_request")
 }
 
 model BetTable {
     id                  String @id @default(uuid())
-    creatorId           String @db.Uuid
-    participantId       String @db.Uuid
+    creatorId           String 
+    participantId       String 
     terms               String
     status              String
-    createdAt           DateTime @db.Timestamp(3)
-    updatedAt           DateTime @db.Timestamp(3)
-    dueDate             DateTime? @db.Timestamp(3)
-    resolvedAt          DateTime? @db.Timestamp(3)
-    completedAt         DateTime? @db.Timestamp(3)
-    winnerId            String? @db.Uuid
+    createdAt           DateTime 
+    updatedAt           DateTime 
+    dueDate             DateTime? 
+    resolvedAt          DateTime? 
+    completedAt         DateTime? 
+    winnerId            String? 
     evidence            String?
     completionNotes     String?
 
@@ -61,12 +63,12 @@ model BetTable {
 
 model BetRequestTable {
     id                  String @id @default(uuid())
-    creatorId           String @db.Uuid
-    participantId       String @db.Uuid
+    creatorId           String 
+    participantId       String 
     terms               String
     status              String
-    createdAt           DateTime @db.Timestamp(3)
-    updatedAt           DateTime @db.Timestamp(3)
+    createdAt           DateTime 
+    updatedAt           DateTime 
 
     @@map("bet_request")
 }
