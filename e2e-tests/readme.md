@@ -17,12 +17,12 @@ npm run prepare-e2e
 
 Then you can execute single test run that runs server and performs full E2E execution:
 ```shell
-npx nx run e2e-tests:e2e
+npm run e2e
 ```
 
 To open Cypress UI use following command:
 ```shell
-npx nx run e2e-tests:open-cypress
+npm run e2e:ui
 ```
 For some reasons on Windows this running server through UI blocks generated files. Then database purge might not work. To solve this issue try to logout and login into system or find process that is blocking files listed in terminal.
 
