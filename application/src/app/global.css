@@ -124,6 +124,22 @@ body {
   .icon {
     fill: white;
   }
+
+  .btn-icon .icon {
+    fill: black;
+  }
+  .btn-icon.ghost .icon {
+    fill: white;
+  }
+
+  .dialog--content {
+    @apply bg-gray-900;
+  }
+
+  .btn,
+  .ip {
+    color: black;
+  }
 }
 
 .user-item {
