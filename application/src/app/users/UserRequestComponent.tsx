@@ -36,7 +36,7 @@ export function UserRequestComponent({ request }: Props) {
     <div className="flex gap-2 items-center justify-between">
       <div className="flex flex-col">
         <span>{request.inviteeEmail}</span>
-        <span>{request.createdAt.toLocaleString()}</span>
+        <span className="text-sm">{request.createdAt.toLocaleString()}</span>
       </div>
       <div className="flex gap-1">
         <UserRequestConfirmDialog onClose={handleApproval} />
