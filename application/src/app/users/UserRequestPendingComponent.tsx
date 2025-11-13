@@ -7,7 +7,7 @@ interface Props {
 }
 export function UserRequestPendingComponent({ requests }: Props) {
   return (
-    <section>
+    <section className="panel">
       <h2 className="text-xl my-2">Pending requests</h2>
       <div>
         {requests.length === 0 ? (

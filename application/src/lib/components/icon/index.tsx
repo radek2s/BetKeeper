@@ -4,6 +4,7 @@ import { ArrowLeftIcon } from "./arrow-left";
 import { BugIcon } from "./bug";
 import { CalendarIcon } from "./calendar";
 import { CheckIcon } from "./check";
+import { ChevronLeftIcon } from "./chevron-left";
 import { CloseIcon } from "./close";
 import { DeleteIcon } from "./delete";
 import { ErrorIcon } from "./error";
@@ -29,6 +30,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   bug: BugIcon,
   calendar: CalendarIcon,
   check: CheckIcon,
+  "chevron-left": ChevronLeftIcon,
   close: CloseIcon,
   delete: DeleteIcon,
   error: ErrorIcon,

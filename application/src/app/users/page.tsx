@@ -22,26 +22,26 @@ export default async function UsersManagePage() {
   return (
     <div className="min-h-dvh flex flex-col items-center">
       <div className="my-4 px-4 flex w-full justify-between">
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-2 items-center">
           <Link href={"/profile"}>
-            <IconButton icon="arrow-left" />
+            <IconButton icon="chevron-left" />
           </Link>
-          <h1 className="text-xl">Application Users</h1>
+          <h1 className="text-xl">Users management</h1>
         </div>
         <IconButton icon="more" />
       </div>
       <div className="flex flex-col gap-2">
         <UserRequestPendingComponent requests={pendingRequests} />
-        <section>
-          <h2 className="text-xl my-2">All users</h2>
+        <section className="panel">
+          <h2 className="my-2">Active accounts</h2>
           <div className="flex flex-col gap-1">
             {users.map((user) => (
               <UserComponent userObject={user} key={user.id} />
             ))}
           </div>
         </section>
-        <section>
-          <h2 className="text-xl my-2">Invite new</h2>
+        <section className="panel">
+          <h2 className="my-2">Invite new</h2>
           <UserInviteForm />
         </section>
       </div>

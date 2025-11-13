@@ -8,6 +8,7 @@ export type IconType =
   | "bug"
   | "calendar"
   | "check"
+  | "chevron-left"
   | "close"
   | "delete"
   | "error"

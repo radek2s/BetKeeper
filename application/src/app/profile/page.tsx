@@ -14,13 +14,12 @@ export default async function ProfilePage() {
   return (
     <div className="min-h-dvh flex flex-col items-center">
       <div className="my-4 px-4 flex w-full justify-between">
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-2 items-center">
           <Link href={"/"}>
-            <IconButton icon="arrow-left" />
+            <IconButton icon="chevron-left" />
           </Link>
           <h1 className="text-xl">Profile</h1>
         </div>
-        <IconButton icon="more" />
       </div>
 
       <div className="flex flex-col items-center">

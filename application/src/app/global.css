@@ -9,6 +9,33 @@
   src: url("/Heebo.ttf");
 }
 
+:root {
+  --base-text: #15161a;
+  --base-text-grayed: #626262;
+  --surface: #ffffff;
+  --surface-hovered: #e7e7e7;
+  --container: #f4f4f4;
+  --container-hovered: hsl(0, 0%, 92%);
+  --primary: #fdd037;
+  --primary-hovered: #fdd95f;
+  --secondary: #0295a9;
+  --error: #c3241f;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --base-text: #fcfcf7;
+    --base-text-grayed: #a9a9a9;
+    --surface: #181818;
+    --surface-hovered: #1f1f1f;
+    --container: #292929;
+    --container-hovered: #303030;
+    --primary: #cca933;
+    --primary-hovered: #b8982e;
+    --secondary: #0295a9;
+    --error: #7e1e1b;
+  }
+}
+
 @theme {
   --color-primary-100: #fff9e6;
   --color-primary-200: #feedb3;
@@ -38,7 +65,17 @@ h4,
 h5,
 h6 {
   font-family: "Heebo", serif;
-  font-weight: bold;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 32px;
+}
+h2 {
+  font-size: 24px;
+}
+h3 {
+  font-size: 20px;
 }
 
 body {
@@ -47,12 +84,13 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 75%;
+  font-size: 18px;
+  color: var(--base-text);
 }
 
 @media (prefers-color-scheme: dark) {
   body {
     background-image: url("/background_dark.jpg");
-    color: white;
   }
 }
 
@@ -63,11 +101,8 @@ body {
   backdrop-filter: blur(10px);
 }
 .dialog--content {
-  border: solid white 1px;
-  box-shadow: 0 4 16 #0009;
-  border-radius: 16px;
-  padding: 16px;
-  background-color: white;
+  background-color: var(--surface);
+  padding: 16px 32px 24px 32px;
 
   width: 90vw;
   max-width: 500px;
@@ -75,6 +110,18 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  border:
+    2px solid,
+    hsla(60, 0%, 35%, 0.4);
+  background-clip: padding-box;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+.dialog--title {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 16px;
 }
 
 .avatar {
@@ -93,52 +140,99 @@ body {
 
 .btn {
   min-width: 100px;
-  @apply px-4 py-2 rounded-full bg-gray-500 hover:bg-gray-400 outline-primary-500;
   cursor: pointer;
+  background-color: var(--container);
+  @apply px-4 py-2 rounded-full;
+}
+.btn:hover {
+  background-color: var(--container-hovered);
+}
+
+.btn:focus-visible {
+  outline: 1px solid var(--primary);
 }
 
 .btn.primary {
-  @apply hover:bg-primary-400 bg-primary-500 dark:hover:bg-primary-dark-400 dark:bg-primary-dark-500;
+  background-color: var(--primary);
+}
+.btn.primary:hover {
+  background-color: var(--primary-hovered);
 }
 
 .ip {
-  @apply px-4 py-2 rounded-xl bg-gray-500 outline-primary-500;
+  background-color: var(--container);
+  color: var(--base-text);
+  @apply px-4 py-2 rounded-full;
+  font-size: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  height: 40px;
+  caret-color: var(--primary);
+}
+.ip:hover {
+  background-color: var(--container-hovered);
+}
+
+.ip::placeholder {
+  color: var(--base-text-grayed);
+}
+
+.ip:focus-visible {
+  outline: 2px solid var(--primary);
+  border: none;
 }
 
 .btn-icon {
-  @apply p-2 rounded-full bg-gray-500 hover:bg-gray-400 outline-primary-500;
+  height: 40px;
+  aspect-ratio: 1;
   cursor: pointer;
+  background-color: var(--container);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  @apply p-2 rounded-full;
+}
+.btn-icon:hover {
+  background-color: var(--container-hovered);
+}
+
+.btn-icon:focus-visible {
+  outline: 2px solid var(--primary);
 }
 
 .btn-icon.primary {
   @apply hover:bg-primary-400 bg-primary-500 dark:hover:bg-primary-dark-400 dark:bg-primary-dark-500;
 }
-.btn-icon.ghost {
-  background: none;
-}
+.btn-icon.ghost,
 .btn-icon.ghost:hover {
-  @apply hover:bg-gray-400;
+  background: none;
+  border: none;
+}
+.btn-icon.ghost:hover .icon {
+  fill: var(--primary);
 }
 
-@media (prefers-color-scheme: dark) {
-  .icon {
-    fill: white;
-  }
+.panel {
+  background-color: var(--surface);
+  padding: 8px 16px 16px 16px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  position: relative;
+  background-clip: padding-box;
 
-  .btn-icon .icon {
-    fill: black;
-  }
-  .btn-icon.ghost .icon {
-    fill: white;
-  }
-
-  .dialog--content {
-    @apply bg-gray-900;
-  }
-
-  .btn,
-  .ip {
-    color: black;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: -1px;
+    background: linear-gradient(
+      to bottom,
+      hsla(60, 0%, 45%, 0.2),
+      hsl(60, 0%, 45%)
+    );
+    opacity: 0.1;
+    border-radius: inherit;
   }
 }
 
@@ -156,5 +250,35 @@ body {
   @apply text-gray-300;
   svg path {
     fill: #d9d9d9;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .icon {
+    fill: var(--base-text);
+  }
+
+  .btn,
+  .btn-icon,
+  .ip {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .btn.primary {
+    color: var(--surface);
+  }
+
+  .btn-icon .icon {
+    fill: var(--base-text);
+  }
+  .btn-icon:hover {
+    background-color: var(--container-hovered);
+  }
+
+  .panel::before {
+    background: linear-gradient(to bottom, hsla(60, 45%, 98%, 0.2), #fcfcf7);
+  }
+
+  .dialog--content {
+    border-color: hsla(60, 45%, 98%, 0.1);
   }
 }
