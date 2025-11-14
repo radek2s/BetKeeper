@@ -26,7 +26,7 @@ export default async function ProfilePage() {
         <ProfileImage activeImage={user.avatarUrl || ""} />
         <div className="flex flex-col items-center my-2">
           <h2 className="text-xl m-none">{user.name}</h2>
-          <span className="text-gray-600 text-sm">{user.email.value}</span>
+          <span className="text-gray text-sm">{user.email.value}</span>
         </div>
       </div>
       <div className="grow-1 mt-4">

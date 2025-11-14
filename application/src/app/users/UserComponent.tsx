@@ -31,7 +31,7 @@ export function UserComponent({ userObject }: Props) {
     }
   };
   return (
-    <div className="user-item flex justify-between">
+    <div className="user-item actions-wrapper flex justify-between">
       <div className="user-item__details flex gap-2">
         <img
           className="w-[48px] avatar"
@@ -45,12 +45,13 @@ export function UserComponent({ userObject }: Props) {
           </span>
         </div>
       </div>
-      <div className="user-item__actions flex gap-1 items-center">
+      <div className="actions-wrapper__actions flex gap-1 items-center">
         {user.status !== "suspended" && user.role !== "ADMINISTRATOR" && (
           <ConfirmationDialog
             content={"Do you want to delete user?"}
             title="Delete user"
             onClose={handleUserDelete}
+            variant="error"
             accept="Delete">
             <IconButton icon="delete" variant="ghost" />
           </ConfirmationDialog>

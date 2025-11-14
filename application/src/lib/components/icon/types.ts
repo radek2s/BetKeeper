@@ -25,4 +25,5 @@ export type IconType =
   | "question-mark"
   | "send"
   | "timer"
-  | "verified";
+  | "verified"
+  | "waving-hand";

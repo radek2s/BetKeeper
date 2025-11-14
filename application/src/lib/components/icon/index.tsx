@@ -23,6 +23,7 @@ import { SendIcon } from "./send";
 import { TimerIcon } from "./timer";
 import type { IconProps, IconType } from "./types";
 import { VerifiedIcon } from "./verified";
+import { WavingHandIcon } from "./waving-hand";
 
 const iconMap: Record<IconType, React.FC<IconProps>> = {
   add: AddIcon,
@@ -48,6 +49,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   send: SendIcon,
   timer: TimerIcon,
   verified: VerifiedIcon,
+  "waving-hand": WavingHandIcon,
 };
 
 function getIcon(type: IconType): FunctionComponent<IconProps> {

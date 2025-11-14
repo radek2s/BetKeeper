@@ -1,21 +1,53 @@
 "use server";
 import type { UUID } from "@domain/shared";
 import { Email, UserStatus } from "@domain/user";
-import type { UserRequestType } from "@domain/user/entities";
+import type { UserRequestType, UserType } from "@domain/user/entities";
 import { ACTIVE_USER_ID } from "application/src/constants";
 import NextUserRepository from "application/src/core/repositories/NextUserRepository";
 import { NextUserRequestRepository } from "application/src/core/repositories/NextUserRequestRepository";
 import NextUserInvitationService from "application/src/core/services/NextUserInvitationService";
 import NextUserService from "application/src/core/services/NextUserService";
-import { userToObject } from "application/src/lib/mappers/user";
+import {
+  mapUserRequestWithRequester,
+  type UserRequestWithRequester,
+  userToObject,
+} from "application/src/lib/mappers/user";
 import { revalidatePath } from "next/cache";
 
 const userRepository = new NextUserRepository();
 
-export async function getPedingUserRequests(): Promise<UserRequestType[]> {
+export async function getPedingUserRequests(): Promise<
+  UserRequestWithRequester[]
+> {
   try {
     const pending = await new NextUserRequestRepository().findAllPending();
-    return pending.map((request) => request.toObject());
+    const requesterIdSet = new Set(
+      pending.map((request) => request.requesterId),
+    );
+    const requesterMap = new Map<string, UserType>();
+    const requesterPromises = await Promise.allSettled(
+      requesterIdSet.values().map((userId) => userRepository.findById(userId)),
+    );
+
+    requesterPromises.forEach((promise) => {
+      if (promise.status === "fulfilled") {
+        if (promise.value != null) {
+          requesterMap.set(promise.value.id, promise.value.toObject());
+        }
+      }
+      if (promise.status === "rejected") {
+        console.error(`Failed to load user! ${promise.reason}`);
+      }
+    });
+
+    return pending
+      .map((request) => request.toObject())
+      .map((request) =>
+        mapUserRequestWithRequester(
+          request,
+          requesterMap.get(request.requesterId),
+        ),
+      );
   } catch (e) {
     console.error(e);
     throw e;

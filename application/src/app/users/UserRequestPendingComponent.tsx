@@ -1,14 +1,14 @@
-import { UserRequest } from "@domain/user";
 import type { UserRequestType } from "@domain/user/entities";
+import { Panel } from "application/src/lib/components/layout/Panel";
+import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
 import { UserRequestComponent } from "./UserRequestComponent";
 
 interface Props {
-  requests: UserRequestType[];
+  requests: UserRequestWithRequester[];
 }
 export function UserRequestPendingComponent({ requests }: Props) {
   return (
-    <section className="panel">
-      <h2 className="text-xl my-2">Pending requests</h2>
+    <Panel header={{ title: "Pending requests", icon: "waving-hand" }}>
       <div>
         {requests.length === 0 ? (
           <div className="text-gray-500">No pending requets</div>
@@ -20,6 +20,6 @@ export function UserRequestPendingComponent({ requests }: Props) {
           </div>
         )}
       </div>
-    </section>
+    </Panel>
   );
 }

@@ -4,6 +4,8 @@ import type { UserRequestType } from "@domain/user/entities";
 import { ACTIVE_USER_ID } from "application/src/constants";
 import { Button } from "application/src/lib/components/button/Button";
 import { IconButton } from "application/src/lib/components/button/IconButton";
+import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
+import { toRelativeTime } from "application/src/lib/utils/timeUtils";
 import { approveUserRequest, rejectUserRequest } from "../actions/usersActions";
 import {
   UserRequestConfirmDialog,
@@ -11,7 +13,7 @@ import {
 } from "./UserRequestConfirmDialog";
 
 interface Props {
-  request: UserRequestType;
+  request: UserRequestWithRequester;
 }
 export function UserRequestComponent({ request }: Props) {
   const handleApproval = async (data: UserRequestData | null) => {
@@ -32,13 +34,21 @@ export function UserRequestComponent({ request }: Props) {
       console.error(e);
     }
   };
+
+  const relativeTime = () => {
+    const [value, unit] = toRelativeTime(request.createdAt);
+    if (unit === "seconds") return "now";
+    return `${value} ${unit} ago`;
+  };
   return (
-    <div className="flex gap-2 items-center justify-between">
+    <div className="flex gap-2 items-center justify-between actions-wrapper">
       <div className="flex flex-col">
         <span>{request.inviteeEmail}</span>
-        <span className="text-sm">{request.createdAt.toLocaleString()}</span>
+        <span className="text-sm text-gray">
+          {relativeTime()} by {request.requesterName}
+        </span>
       </div>
-      <div className="flex gap-1">
+      <div className="flex gap-1 actions-wrapper__actions">
         <UserRequestConfirmDialog onClose={handleApproval} />
         <IconButton onClick={handleReject} icon="close" variant="ghost" />
       </div>

@@ -9,12 +9,14 @@ interface Props extends PropsWithChildren {
   content: ReactNode;
   cancel?: ReactNode;
   accept?: ReactNode;
+  variant?: "error" | "warn" | "primary";
   onClose: (accepted: boolean) => void;
 }
 export function ConfirmationDialog({
   title,
   content,
   accept,
+  variant,
   cancel,
   onClose,
   children,
@@ -27,8 +29,8 @@ export function ConfirmationDialog({
         <Dialog.Content className="dialog--content">
           <Dialog.Title className="dialog--title">{title}</Dialog.Title>
           <div className="flex flex-col items-center">
-            <div className="my-2">{content}</div>
-            <div className="flex items-center">
+            <div>{content}</div>
+            <div className="flex mt-6 items-center gap-2">
               <Dialog.Close asChild>
                 <Button
                   onClick={() => {
@@ -38,7 +40,9 @@ export function ConfirmationDialog({
                 </Button>
               </Dialog.Close>
               <Dialog.Close asChild>
-                <Button variant="primary" onClick={() => onClose(true)}>
+                <Button
+                  variant={variant ?? "primary"}
+                  onClick={() => onClose(true)}>
                   {accept ?? "Accept"}
                 </Button>
               </Dialog.Close>
