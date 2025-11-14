@@ -2,6 +2,7 @@
 import type { UUID } from "@domain/shared";
 import { Email, UserStatus } from "@domain/user";
 import type { UserRequestType, UserType } from "@domain/user/entities";
+import logger from "application/logger";
 import { ACTIVE_USER_ID } from "application/src/constants";
 import NextUserRepository from "application/src/core/repositories/NextUserRepository";
 import { NextUserRequestRepository } from "application/src/core/repositories/NextUserRequestRepository";
@@ -36,7 +37,7 @@ export async function getPedingUserRequests(): Promise<
         }
       }
       if (promise.status === "rejected") {
-        console.error(`Failed to load user! ${promise.reason}`);
+        logger.error(`Failed to load user! ${promise.reason}`);
       }
     });
 
@@ -49,7 +50,7 @@ export async function getPedingUserRequests(): Promise<
         ),
       );
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     throw e;
   }
 }
@@ -59,7 +60,7 @@ export async function getAllUsers() {
     const users = await new NextUserRepository().findAll();
     return users.map(userToObject);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     throw e;
   }
 }
@@ -69,7 +70,7 @@ export async function getAllActiveUsers() {
     const users = await getAllUsers();
     return users.filter(({ status }) => status !== UserStatus.SUSPENDED);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     throw e;
   }
 }
@@ -87,9 +88,10 @@ export async function approveUserRequest(
       firstName,
       lastName,
     );
+    logger.info(`[User Request][${requestId}][Approved] - by ${approvedBy}`);
     revalidatePath(`/users`);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     throw e;
   }
 }
@@ -97,9 +99,10 @@ export async function approveUserRequest(
 export async function rejectUserRequest(requestId: UUID) {
   try {
     await NextUserInvitationService.rejectInvitationRequest(requestId);
+    logger.info(`[User Request][${requestId}][Rejected]`);
     revalidatePath(`/users`);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     throw e;
   }
 }
@@ -114,10 +117,16 @@ export async function createUserRequest({
   inviteeEmail,
 }: SendUserRequestType) {
   try {
-    await NextUserService.sendUserRequest(requesterId, new Email(inviteeEmail));
+    const userRequest = await NextUserService.sendUserRequest(
+      requesterId,
+      new Email(inviteeEmail),
+    );
+    logger.info(
+      `[User Request][${userRequest.id}][Created] - Invited ${userRequest.inviteeEmail} by ${requesterId}`,
+    );
     revalidatePath(`/users`);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
   }
 }
 
@@ -127,9 +136,10 @@ export async function updateAvatar(userId: string, avatarUrl: string) {
     if (!user) throw new Error("User was not found!");
     user.avatarUrl = avatarUrl;
     await userRepository.save(user);
+    logger.info(`[User][${userId}][Updated] - Updated avatar to ${avatarUrl}`);
     revalidatePath(`/profile`);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
   }
 }
 
@@ -137,16 +147,17 @@ export async function toggleUserStatus(userId: string) {
   try {
     const user = await userRepository.findById(userId);
     if (!user) throw new Error("User with id not found!");
-    console.log(user.isActive());
     if (user.isActive()) {
       user.deactivate();
+      logger.info(`[User][${userId}][Deactivated]`);
     } else {
       user.activate();
+      logger.info(`[User][${userId}][Activated]`);
     }
     await userRepository.save(user);
     revalidatePath(`/users`);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
   }
 }
 
@@ -156,9 +167,10 @@ export async function suspendUser(userId: string) {
     if (!user) throw new Error("User with id not found!");
     user.suspend();
     await userRepository.save(user);
+    logger.info(`[User][${userId}][Suspended]`);
     revalidatePath(`/users`);
   } catch (e) {
-    console.error(e);
+    logger.error(e);
   }
 }
 
