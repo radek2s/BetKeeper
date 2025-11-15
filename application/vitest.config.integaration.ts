@@ -6,6 +6,7 @@ export default defineConfig(() => ({
   plugins: [react()],
   resolve: {
     alias: [
+      { find: "@app", replacement: resolve(__dirname, "./src") },
       { find: "@domain", replacement: resolve(__dirname, "../domain/src") },
       { find: "@db", replacement: resolve(__dirname, "../generated/prisma") },
       { find: "application", replacement: resolve(__dirname, "./") },

@@ -1,5 +1,5 @@
+import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import { Email, User } from "@domain/user";
-import NextUserRepository from "application/src/core/repositories/NextUserRepository";
 
 describe("UserRepository", () => {
   const repository = new NextUserRepository();

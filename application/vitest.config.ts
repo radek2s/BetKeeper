@@ -1,16 +1,9 @@
 import react from "@vitejs/plugin-react";
-import { resolve } from "path";
+import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig(() => ({
-  plugins: [react()],
-  resolve: {
-    alias: [
-      { find: "@domain", replacement: resolve(__dirname, "../domain/src") },
-      { find: "@db", replacement: resolve(__dirname, "../generated/prisma") },
-      { find: "application", replacement: resolve(__dirname, "./") },
-    ],
-  },
+  plugins: [react(), tsconfigPaths()],
   test: {
     name: "Application Unit Tests",
     watch: false,
