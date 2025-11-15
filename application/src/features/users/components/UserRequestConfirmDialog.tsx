@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "application/src/lib/components/button/Button";
-import { IconButton } from "application/src/lib/components/button/IconButton";
-import { Input } from "application/src/lib/components/input/Input";
+import { Button } from "@app/ui/button/Button";
+import { IconButton } from "@app/ui/button/IconButton";
+import { Input } from "@app/ui/input/Input";
 import { Dialog } from "radix-ui";
 import { useRef, useState } from "react";
 

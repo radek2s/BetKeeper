@@ -1,10 +1,10 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 "use server";
 
-import { IconButton } from "application/src/lib/components/button/IconButton";
-import { Icon } from "application/src/lib/components/icon";
+import { getActiveUser } from "@app/features/users/actions";
+import { IconButton } from "@app/ui/button/IconButton";
+import { Icon } from "@app/ui/icon";
 import Link from "next/link";
-import { getActiveUser } from "../actions/usersActions";
 import { ProfileImage } from "./ProfileImage";
 
 export default async function ProfilePage() {

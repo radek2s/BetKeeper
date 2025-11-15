@@ -1,17 +1,16 @@
 "use server";
 
-import { IconButton } from "application/src/lib/components/button/IconButton";
-import { Icon } from "application/src/lib/components/icon";
-import { Panel } from "application/src/lib/components/layout/Panel";
-import Link from "next/link";
 import {
   getActiveUser,
   getAllActiveUsers,
   getPedingUserRequests,
-} from "../actions/usersActions";
-import { UserComponent } from "./UserComponent";
-import { UserInviteForm } from "./UserInviteForm";
-import { UserRequestPendingComponent } from "./UserRequestPendingComponent";
+} from "@app/features/users/actions";
+import { UserComponent } from "@app/features/users/components/UserComponent";
+import { UserInviteForm } from "@app/features/users/components/UserInviteForm";
+import { UserRequestPendingComponent } from "@app/features/users/components/UserRequestPendingComponent";
+import { IconButton } from "@app/ui/button/IconButton";
+import { Panel } from "@app/ui/layout/Panel";
+import Link from "next/link";
 
 export default async function UsersManagePage() {
   const activeUser = await getActiveUser();

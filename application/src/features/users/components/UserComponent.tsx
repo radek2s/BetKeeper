@@ -1,12 +1,11 @@
 "use client";
+import { suspendUser, toggleUserStatus } from "@app/features/users/actions";
+import { IconButton } from "@app/ui/button/IconButton";
+import { ConfirmationDialog } from "@app/ui/confirm-dialog";
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 import type { User } from "@domain/user";
 import type { UserType } from "@domain/user/entities";
-import { Button } from "application/src/lib/components/button/Button";
-import { IconButton } from "application/src/lib/components/button/IconButton";
-import { ConfirmationDialog } from "application/src/lib/components/confirm-dialog";
 import { objectToUser } from "application/src/lib/mappers/user";
-import { suspendUser, toggleUserStatus } from "../actions/usersActions";
 
 interface Props {
   userObject: UserType;

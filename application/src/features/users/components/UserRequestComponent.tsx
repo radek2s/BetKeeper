@@ -1,12 +1,14 @@
 "use client";
+import {
+  approveUserRequest,
+  rejectUserRequest,
+} from "@app/features/users/actions";
+import { IconButton } from "@app/ui/button/IconButton";
 import type { UserRequest } from "@domain/user";
 import type { UserRequestType } from "@domain/user/entities";
 import { ACTIVE_USER_ID } from "application/src/constants";
-import { Button } from "application/src/lib/components/button/Button";
-import { IconButton } from "application/src/lib/components/button/IconButton";
 import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
 import { toRelativeTime } from "application/src/lib/utils/timeUtils";
-import { approveUserRequest, rejectUserRequest } from "../actions/usersActions";
 import {
   UserRequestConfirmDialog,
   type UserRequestData,

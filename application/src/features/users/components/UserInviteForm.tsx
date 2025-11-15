@@ -1,11 +1,11 @@
 "use client";
 
+import { createUserRequest } from "@app/features/users/actions";
+import { IconButton } from "@app/ui/button/IconButton";
+import { Input } from "@app/ui/input/Input";
 import { ACTIVE_USER_ID } from "application/src/constants";
-import { Button } from "application/src/lib/components/button/Button";
-import { IconButton } from "application/src/lib/components/button/IconButton";
-import { Input } from "application/src/lib/components/input/Input";
+
 import { useRef } from "react";
-import { createUserRequest } from "../actions/usersActions";
 
 export function UserInviteForm() {
   const inputRef = useRef<HTMLInputElement>(null);

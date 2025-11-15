@@ -1,5 +1,4 @@
-import type { UserRequestType } from "@domain/user/entities";
-import { Panel } from "application/src/lib/components/layout/Panel";
+import { Panel } from "@app/ui/layout/Panel";
 import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
 import { UserRequestComponent } from "./UserRequestComponent";
 

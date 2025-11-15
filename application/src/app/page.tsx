@@ -1,9 +1,9 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
 
+import { getActiveUser } from "@app/features/users/actions";
+import { Button } from "@app/ui/button/Button";
+import { IconButton } from "@app/ui/button/IconButton";
 import Link from "next/link";
-import { Button } from "../lib/components/button/Button";
-import { IconButton } from "../lib/components/button/IconButton";
-import { getActiveUser } from "./actions/usersActions";
 
 export default async function Index() {
   const user = await getActiveUser();

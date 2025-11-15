@@ -6,7 +6,7 @@ import {
   UserRequest,
 } from "@domain/user";
 import type { IUserRequestRepository } from "@domain/user/services/UserService";
-import prisma from "application/src/lib/prisma";
+import prisma from "../db";
 
 export class NextUserRequestRepository
   implements IUserRequestRepository, IInvitationRequestRepository

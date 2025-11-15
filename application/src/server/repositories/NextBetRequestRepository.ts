@@ -5,7 +5,7 @@ import {
   Terms,
 } from "@domain/bet";
 import type { UUID } from "@domain/shared";
-import prisma from "application/src/lib/prisma";
+import prisma from "../db";
 
 export class NextBetRequestRepository implements IBetRequestRepository {
   private table = prisma.betRequestTable;

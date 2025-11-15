@@ -1,13 +1,14 @@
 "use server";
+import NextUserRepository from "@app/server/repositories/NextUserRepository";
+import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequestRepository";
+import NextUserInvitationService from "@app/server/services/NextUserInvitationService";
+import NextUserService from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email, UserStatus } from "@domain/user";
 import type { UserRequestType, UserType } from "@domain/user/entities";
 import logger from "application/logger";
 import { ACTIVE_USER_ID } from "application/src/constants";
-import NextUserRepository from "application/src/core/repositories/NextUserRepository";
-import { NextUserRequestRepository } from "application/src/core/repositories/NextUserRequestRepository";
-import NextUserInvitationService from "application/src/core/services/NextUserInvitationService";
-import NextUserService from "application/src/core/services/NextUserService";
+
 import {
   mapUserRequestWithRequester,
   type UserRequestWithRequester,

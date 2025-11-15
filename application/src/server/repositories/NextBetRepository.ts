@@ -1,6 +1,6 @@
 import { Bet, type BetStatus, type IBetRepository, Terms } from "@domain/bet";
 import type { UUID } from "@domain/shared";
-import prisma from "application/src/lib/prisma";
+import prisma from "../db";
 
 export class NextBetRepository implements IBetRepository {
   private table = prisma.betTable;

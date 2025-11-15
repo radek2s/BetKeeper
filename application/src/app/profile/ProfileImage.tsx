@@ -1,9 +1,10 @@
 "use client";
+import { updateAvatar } from "@app/features/users/actions";
+import { Button } from "@app/ui/button/Button";
 import { ACTIVE_USER_ID } from "application/src/constants";
-import { Button } from "application/src/lib/components/button/Button";
+
 import { Dialog } from "radix-ui";
 import { useState } from "react";
-import { updateAvatar } from "../actions/usersActions";
 
 const AVATAR_MAX_ID = 7;
 

@@ -5,7 +5,7 @@ import {
   RequestStatus,
   UserFriendList,
 } from "@domain/user";
-import prisma from "application/src/lib/prisma";
+import prisma from "../db";
 
 export class NextFriendListRepository implements IFriendListRepository {
   private table = prisma.friendRequestTable;

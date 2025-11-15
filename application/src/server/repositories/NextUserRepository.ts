@@ -6,7 +6,7 @@ import {
   type UserStatus,
 } from "@domain/user";
 import { PrismaClientKnownRequestError } from "application/generated/prisma/runtime/edge-esm";
-import prisma from "application/src/lib/prisma";
+import prisma from "../db";
 
 class NextUserRepository implements IUserRepository {
   private table = prisma.userTable;
