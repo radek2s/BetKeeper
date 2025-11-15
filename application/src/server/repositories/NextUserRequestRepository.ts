@@ -7,6 +7,7 @@ import {
 } from "@domain/user";
 import type { IUserRequestRepository } from "@domain/user/services/UserService";
 import prisma from "../db";
+import { handleDbError } from "../db/exceptions";
 
 export class NextUserRequestRepository
   implements IUserRequestRepository, IInvitationRequestRepository
@@ -84,34 +85,26 @@ export class NextUserRequestRepository
   }
   async save(request: UserRequest): Promise<void> {
     try {
-      const requestEntity = await this.findById(request.id);
-      if (requestEntity) {
-        await this.table.update({
-          where: { id: requestEntity.id },
-          data: {
-            status: request.status,
-            createdAt: request.createdAt,
-            approvedAt: request.approvedAt,
-            approvedById: request.approvedById,
-          },
-        });
-      } else {
-        await this.table.create({
-          data: {
-            id: request.id,
-            requesterId: request.requesterId,
-            inviteeEmail: request.inviteeEmail.value,
-            status: request.status,
-            createdAt: request.createdAt,
-            approvedAt: request.approvedAt,
-            approvedById: request.approvedById,
-          },
-        });
-      }
-      //TODO update when exisits
+      await this.table.upsert({
+        where: { id: request.id },
+        update: {
+          status: request.status,
+          createdAt: request.createdAt,
+          approvedAt: request.approvedAt,
+          approvedById: request.approvedById,
+        },
+        create: {
+          id: request.id,
+          requesterId: request.requesterId,
+          inviteeEmail: request.inviteeEmail.value,
+          status: request.status,
+          createdAt: request.createdAt,
+          approvedAt: request.approvedAt,
+          approvedById: request.approvedById,
+        },
+      });
     } catch (e) {
-      console.error(e);
-      throw e;
+      throw handleDbError(e);
     }
   }
 }

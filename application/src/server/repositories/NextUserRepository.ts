@@ -5,8 +5,9 @@ import {
   User,
   type UserStatus,
 } from "@domain/user";
-import { PrismaClientKnownRequestError } from "application/generated/prisma/runtime/edge-esm";
+
 import prisma from "../db";
+import { handleDbError } from "../db/exceptions";
 
 class NextUserRepository implements IUserRepository {
   private table = prisma.userTable;
@@ -46,8 +47,7 @@ class NextUserRepository implements IUserRepository {
         user.role ?? undefined,
       );
     } catch (e) {
-      console.error(e);
-      throw e;
+      throw handleDbError(e);
     }
   }
   async findByEmail(email: Email): Promise<User | null> {
@@ -67,43 +67,30 @@ class NextUserRepository implements IUserRepository {
         user.role ?? undefined,
       );
     } catch (e) {
-      console.error(e);
-      throw e;
+      throw handleDbError(e);
     }
   }
   async save(user: User): Promise<void> {
     try {
-      const userEntity = await this.findByEmail(user.email);
-      if (userEntity) {
-        console.debug("User does already exists");
-        await this.table.update({
-          where: { id: userEntity.id },
-          data: {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            status: user.status,
-            avatarUrl: user.avatarUrl,
-          },
-        });
-      } else {
-        console.debug("New User created");
-        await this.table.create({
-          data: {
-            id: user.id,
-            email: user.email.value,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            status: user.status,
-            avatarUrl: user.avatarUrl ?? null,
-          },
-        });
-      }
+      await this.table.upsert({
+        where: { email: user.email.value },
+        update: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          status: user.status,
+          avatarUrl: user.avatarUrl,
+        },
+        create: {
+          id: user.id,
+          email: user.email.value,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          status: user.status,
+          avatarUrl: user.avatarUrl ?? null,
+        },
+      });
     } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-        console.error(e.message);
-        throw new Error(e.message);
-      }
-      throw e;
+      throw handleDbError(e);
     }
   }
   async exists(email: Email): Promise<boolean> {
