@@ -1,14 +1,21 @@
 import { toRelativeTime } from "application/src/lib/utils/timeUtils";
+import { vi } from "vitest";
 
 describe("TimeUtils", () => {
-  it("Convert days", () => {
-    const date = new Date(2025, 10, 8);
-    const result = toRelativeTime(date);
-    console.log(result);
+  beforeEach(() => {
+    vi.useFakeTimers();
   });
-  it("Convert hours", () => {
-    const date = new Date(2025, 10, 14);
-    const result = toRelativeTime(date);
-    console.log(result);
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+  it("Convert days", () => {
+    const now = new Date(2000, 1, 12, 12);
+    const daysAgo = new Date(2000, 1, 10, 11);
+    vi.setSystemTime(now);
+
+    const [days, unit] = toRelativeTime(daysAgo);
+    expect(days).toBe(2);
+    expect(unit).toBe("days");
   });
 });

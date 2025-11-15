@@ -30,11 +30,11 @@
     --surface-hovered: #1f1f1f;
     --container: #292929;
     --container-hovered: #303030;
-    --primary: #cca933;
-    --primary-hovered: #b8982e;
+    --primary: hsl(40, 100%, 65%);
+    --primary-hovered: hsl(40, 100%, 70%);
     --secondary: #0295a9;
-    --error: #7e1e1b;
-    --error-hovered: #691916;
+    --error: hsl(2, 60%, 45%);
+    --error-hovered: hsl(2, 60%, 50%);
   }
 }
 
@@ -92,6 +92,9 @@ body {
 
 .text-gray {
   color: var(--base-text-grayed);
+}
+.text-error {
+  color: var(--error);
 }
 
 @media (prefers-color-scheme: dark) {

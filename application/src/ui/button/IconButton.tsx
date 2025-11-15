@@ -16,6 +16,7 @@ export function IconButton({
     <button
       className={`btn-icon ${variant} ${className}`}
       type="button"
+      aria-label={icon}
       {...props}>
       <Icon name={icon} />
     </button>

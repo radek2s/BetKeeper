@@ -10,7 +10,7 @@ export function UserRequestPendingComponent({ requests }: Props) {
     <Panel header={{ title: "Pending requests", icon: "waving-hand" }}>
       <div>
         {requests.length === 0 ? (
-          <div className="text-gray-500">No pending requets</div>
+          <div className="text-gray">No pending requets</div>
         ) : (
           <div className="flex flex-col gap-2">
             {requests.map((request) => (

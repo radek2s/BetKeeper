@@ -57,7 +57,7 @@ export function UserRequestConfirmDialog({ onClose }: Props) {
           <div className="flex flex-col gap-2">
             <Input placeholder="First name" ref={firstNameRef} />
             <Input placeholder="Last name" ref={lastNameRef} />
-            {error && <div>{error}</div>}
+            {error && <div className="text-error">{error}</div>}
             <Button variant="primary" onClick={(e) => handleCreate(e)}>
               Create
             </Button>
