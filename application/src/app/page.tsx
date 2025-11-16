@@ -1,12 +1,12 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
 
-import { getActiveUser } from "@app/features/users/actions";
+import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
 import { Button } from "@app/ui/button/Button";
 import { IconButton } from "@app/ui/button/IconButton";
 import Link from "next/link";
 
 export default async function Index() {
-  const user = await getActiveUser();
+  const user = await getAuthenticatedUserFromCookie();
 
   if (!user)
     return <div>Failed to load application. Not found active user.</div>;

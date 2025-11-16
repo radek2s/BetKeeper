@@ -9,13 +9,13 @@ import type { Email } from "../value-objects";
  * Represents a user in the BetKeeper system following DDD principles
  */
 export class User extends Entity {
-  private readonly _id: UUID;
-  private _email: Email;
-  private _firstName: string;
-  private _lastName: string;
-  private _status: UserStatus;
+  protected readonly _id: UUID;
+  protected _email: Email;
+  protected _firstName: string;
+  protected _lastName: string;
+  protected _status: UserStatus;
   avatarUrl: string | undefined;
-  private _role: string | undefined;
+  protected _role: string | undefined;
 
   /**
    * Create a new User Instance

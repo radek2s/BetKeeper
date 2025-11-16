@@ -1,5 +1,6 @@
 import Head from "next/head";
 import "./global.css";
+import AuthProvider from "./AuthProvider";
 
 export const metadata = {
   title: "Bet Keeper",
@@ -22,7 +23,9 @@ export default function RootLayout({
       </Head>
 
       <html lang="en">
-        <body>{children}</body>
+        <body>
+          <AuthProvider>{children}</AuthProvider>
+        </body>
       </html>
     </>
   );

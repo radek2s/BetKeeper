@@ -21,8 +21,8 @@ export default function UsersManageClient({ pendingRequests, users }: Props) {
         <UserRequestPendingComponent requests={pendingRequests} />
         <Panel header={{ title: "Active accounts", icon: "group" }}>
           <div className="flex flex-col gap-1">
-            {users.map((user) => (
-              <UserComponent userObject={user} key={user.id} />
+            {users.map((userObject) => (
+              <UserComponent userObject={userObject} key={userObject.id} />
             ))}
           </div>
         </Panel>

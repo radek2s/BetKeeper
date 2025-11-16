@@ -26,6 +26,7 @@
     "prepare-e2e": "npm run e2e:db:reset && npm run e2e:db:migrate && npm run e2e:db:generate && npm run e2e:db:populate"
   },
   "dependencies": {
+    "@corbado/node-sdk": "^3.0.5",
     "@corbado/react": "^3.5.0",
     "@prisma/client": "~6.0.0",
     "axios": "1.13.1",

@@ -6,6 +6,7 @@ async function initE2E() {
   const adminUser = await prisma.userTable.create({
     data: {
       id: "00000000-0000-0000-0000-000011110000",
+      providerId: "EXTERNAL_USER_ID",
       email: "john.doe@email.com",
       firstName: "John",
       lastName: "Doe",

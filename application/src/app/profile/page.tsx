@@ -1,15 +1,16 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 "use server";
 
+import LogoutButton from "@app/features/profile/components/Logout";
 import { ProfileImage } from "@app/features/profile/components/ProfileImage";
-import { getActiveUser } from "@app/features/users/actions";
+import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
 import { Icon } from "@app/ui/icon";
 import PageHeader from "@app/ui/layout/Header";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
 import Link from "next/link";
 
 export default async function ProfilePage() {
-  const user = await getActiveUser();
+  const user = await getAuthenticatedUserFromCookie();
 
   if (!user) return <div>User with given ID does not exists!</div>;
   return (
@@ -38,9 +39,12 @@ export default async function ProfilePage() {
           <li className="flex items-center gap-2 disabled">
             <Icon name="bug" /> Report problem
           </li>
-          <li className="flex items-center gap-2 disabled">
-            <Icon name="logout" /> Logout
-          </li>
+          <Link href={"/profile/passkey"}>
+            <li className="flex items-center gap-2">
+              <Icon name="event" /> Manage passkeys
+            </li>
+          </Link>
+          <LogoutButton />
         </ul>
       </div>
       <div className="grow"></div>

@@ -1,27 +1,23 @@
+import { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
 import type { UUID } from "@domain/shared";
-import {
-  Email,
-  type IUserRepository,
-  User,
-  type UserStatus,
-} from "@domain/user";
-
+import { Email, type IUserRepository, type UserStatus } from "@domain/user";
 import prisma from "../db";
 import { handleDbError } from "../db/exceptions";
 
 class NextUserRepository implements IUserRepository {
   private table = prisma.userTable;
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<AuthorizedUser[]> {
     try {
       const users = await this.table.findMany();
       return users.map((user) =>
-        User.reconstitute(
+        AuthorizedUser.reconstituteAuth(
           user.id,
           new Email(user.email),
           user.firstName,
           user.lastName,
           user.status as UserStatus,
+          user.providerId,
           user.avatarUrl ?? undefined,
           user.role ?? undefined,
         ),
@@ -32,17 +28,18 @@ class NextUserRepository implements IUserRepository {
     }
   }
 
-  async findById(id: UUID): Promise<User | null> {
+  async findById(id: UUID): Promise<AuthorizedUser | null> {
     try {
       const user = await this.table.findUnique({ where: { id } });
       if (!user) return null;
 
-      return User.reconstitute(
+      return AuthorizedUser.reconstituteAuth(
         user.id,
         new Email(user.email),
         user.firstName,
         user.lastName,
         user.status as UserStatus,
+        user.providerId,
         user.avatarUrl ?? undefined,
         user.role ?? undefined,
       );
@@ -50,19 +47,40 @@ class NextUserRepository implements IUserRepository {
       throw handleDbError(e);
     }
   }
-  async findByEmail(email: Email): Promise<User | null> {
+
+  async findByProviderId(providerId: string): Promise<AuthorizedUser | null> {
+    try {
+      const user = await this.table.findUnique({ where: { providerId } });
+      if (!user) return null;
+
+      return AuthorizedUser.reconstituteAuth(
+        user.id,
+        new Email(user.email),
+        user.firstName,
+        user.lastName,
+        user.status as UserStatus,
+        user.providerId,
+        user.avatarUrl ?? undefined,
+        user.role ?? undefined,
+      );
+    } catch (e) {
+      throw handleDbError(e);
+    }
+  }
+  async findByEmail(email: Email): Promise<AuthorizedUser | null> {
     try {
       const user = await this.table.findUnique({
         where: { email: email.value },
       });
       if (!user) return null;
 
-      return User.reconstitute(
+      return AuthorizedUser.reconstituteAuth(
         user.id,
         new Email(user.email),
         user.firstName,
         user.lastName,
         user.status as UserStatus,
+        user.providerId,
         user.avatarUrl ?? undefined,
         user.role ?? undefined,
       );
@@ -70,7 +88,7 @@ class NextUserRepository implements IUserRepository {
       throw handleDbError(e);
     }
   }
-  async save(user: User): Promise<void> {
+  async save(user: AuthorizedUser): Promise<void> {
     try {
       await this.table.upsert({
         where: { email: user.email.value },
@@ -87,6 +105,7 @@ class NextUserRepository implements IUserRepository {
           lastName: user.lastName,
           status: user.status,
           avatarUrl: user.avatarUrl ?? null,
+          providerId: user.providerId,
         },
       });
     } catch (e) {
