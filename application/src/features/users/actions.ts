@@ -118,16 +118,23 @@ export async function createUserRequest({
   inviteeEmail,
 }: SendUserRequestType) {
   try {
+    const email = new Email(inviteeEmail);
+    if (await NextUserService.userExists(email)) {
+      throw new Error("User already exists!");
+    }
     const userRequest = await NextUserService.sendUserRequest(
       requesterId,
-      new Email(inviteeEmail),
+      email,
     );
     logger.info(
       `[User Request][${userRequest.id}][Created] - Invited ${userRequest.inviteeEmail} by ${requesterId}`,
     );
     revalidatePath(`/users`);
   } catch (e) {
-    logger.error(e);
+    if (e instanceof Error) {
+      logger.error(e.message);
+    }
+    throw e;
   }
 }
 

@@ -9,8 +9,9 @@ vi.mock("@app/features/users/actions", () => ({
 }));
 
 import UsersManagePage from "@app/app/users/page";
-import UsersManageClient from "@app/app/users/UsersManageClient";
+
 import { getActiveUser } from "@app/features/users/actions";
+import UsersManageClient from "@app/features/users/components/UsersManageClient";
 import { Suspense } from "react";
 
 describe("UserPageTest", () => {

@@ -5,11 +5,11 @@ import {
   getAllActiveUsers,
   getPedingUserRequests,
 } from "@app/features/users/actions";
+import UsersManageClient from "@app/features/users/components/UsersManageClient";
+import { UserPageHeader } from "@app/features/users/components/UsersPageHeader";
 
 import { MissingPrivileges } from "@app/ui/error-pages/MissingPrivileges";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
-import UsersManageClient from "./UsersManageClient";
-import { UserPageHeader } from "./UsersPageHeader";
 
 export default async function UsersManagePage() {
   const activeUser = await getActiveUser();

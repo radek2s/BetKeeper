@@ -2,6 +2,7 @@
 
 import { Button } from "@app/ui/button/Button";
 import { IconButton } from "@app/ui/button/IconButton";
+import FormField from "@app/ui/form-field";
 import { Input } from "@app/ui/input/Input";
 import { Dialog } from "radix-ui";
 import { useRef, useState } from "react";
@@ -55,10 +56,13 @@ export function UserRequestConfirmDialog({ onClose }: Props) {
         <Dialog.Content className="dialog--content">
           <Dialog.Title className="dialog--title">Setup user</Dialog.Title>
           <div className="flex flex-col gap-2">
-            <Input placeholder="First name" ref={firstNameRef} />
-            <Input placeholder="Last name" ref={lastNameRef} />
+            <FormField name="firstName" label="First name" ref={firstNameRef} />
+            <FormField name="lastName" label="Last name" ref={lastNameRef} />
             {error && <div className="text-error">{error}</div>}
-            <Button variant="primary" onClick={(e) => handleCreate(e)}>
+            <Button
+              className="mt-4"
+              variant="primary"
+              onClick={(e) => handleCreate(e)}>
               Create
             </Button>
           </div>

@@ -59,8 +59,8 @@ describe("UserRequestComponentTests", () => {
     const acceptButton = screen.getByRole("button", { name: "check" });
     await fireEvent.click(acceptButton);
 
-    const firstNameInput = screen.getByPlaceholderText("First name");
-    const lastNameInput = screen.getByPlaceholderText("Last name");
+    const firstNameInput = screen.getByLabelText("First name");
+    const lastNameInput = screen.getByLabelText("Last name");
     const createButton = screen.getByRole("button", { name: "Create" });
 
     fireEvent.change(firstNameInput, { target: { value: "Tester" } });
