@@ -33,7 +33,11 @@ export function UserInviteForm() {
         <Input ref={inputRef} type="email" placeholder="Give email..." />
         <IconButton icon="send" onClick={handleSend} />
       </div>
-      {error && <span className="text-error">{error}</span>}
+      {error && (
+        <span role="alert" className="text-error">
+          {error}
+        </span>
+      )}
     </div>
   );
 }
