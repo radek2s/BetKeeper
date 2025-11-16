@@ -10,7 +10,7 @@ generator client {
 
 model UserTable {
     id          String @id @default(uuid())
-    providerId  String @unique
+    providerId  String? @unique
     email       String @unique
     firstName   String
     lastName    String

@@ -1,4 +1,9 @@
 "use server";
+import {
+  getAuthHeader,
+  getBackendApi,
+  validateToken,
+} from "@app/server/auth/authentication";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequestRepository";
 import NextUserInvitationService from "@app/server/services/NextUserInvitationService";
@@ -83,12 +88,18 @@ export async function approveUserRequest(
   approvedBy: UUID,
 ) {
   try {
-    await NextUserInvitationService.approveInvitationRequest(
+    const user = await NextUserInvitationService.approveInvitationRequest(
       requestId,
       approvedBy,
       firstName,
       lastName,
     );
+
+    const providerId = await createCorbadoUser(
+      user.email.value,
+      `${firstName} ${lastName}`,
+    );
+    await new NextUserRepository().attachProviderId(user.id, providerId);
     logger.info(`[User Request][${requestId}][Approved] - by ${approvedBy}`);
     revalidatePath(`/users`);
   } catch (e) {
@@ -108,26 +119,19 @@ export async function rejectUserRequest(requestId: UUID) {
   }
 }
 
-interface SendUserRequestType {
-  requesterId: UUID;
-  inviteeEmail: string;
-}
-
-export async function createUserRequest({
-  requesterId,
-  inviteeEmail,
-}: SendUserRequestType) {
+export async function createUserRequest(
+  inviteeEmail: string,
+  token: string | undefined,
+) {
+  const user = await validateToken(token);
   try {
     const email = new Email(inviteeEmail);
     if (await NextUserService.userExists(email)) {
       throw new Error("User already exists!");
     }
-    const userRequest = await NextUserService.sendUserRequest(
-      requesterId,
-      email,
-    );
+    const userRequest = await NextUserService.sendUserRequest(user.id, email);
     logger.info(
-      `[User Request][${userRequest.id}][Created] - Invited ${userRequest.inviteeEmail} by ${requesterId}`,
+      `[User Request][${userRequest.id}][Created] - Invited ${userRequest.inviteeEmail} by ${user.id}`,
     );
     revalidatePath(`/users`);
   } catch (e) {
@@ -184,4 +188,30 @@ export async function suspendUser(userId: string) {
 
 export async function getActiveUser() {
   return await userRepository.findById(ACTIVE_USER_ID);
+}
+
+async function createCorbadoUser(userEmail: string, fullName: string) {
+  const res = await fetch(`${getBackendApi()}/v2/users`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${getAuthHeader()}`,
+      "Content-Type": "application/json",
+    },
+    body: `{"fullName":"${fullName}", "status":"active"}`,
+  });
+  const { userID } = await res.json();
+
+  const res2 = await fetch(
+    `${getBackendApi()}/v2/users/${userID}/identifiers`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${getAuthHeader()}`,
+        "Content-Type": "application/json",
+      },
+      body: `{"identifierType":"email","identifierValue":"${userEmail}","status":"verified"}`,
+    },
+  );
+
+  return userID;
 }

@@ -54,3 +54,19 @@ export async function getAuthenticatedUserFromAuthorizationHeader(
     return null;
   }
 }
+
+export async function validateToken(token?: string) {
+  if (!token) throw new Error("Access Token is missing!");
+  const result = await sdk.sessions().validateToken(token);
+  const user = await new NextUserRepository().findByProviderId(result.userId);
+  if (!user) throw new Error("User does not exists in BetKeeper");
+  return user;
+}
+
+export function getAuthHeader() {
+  return Buffer.from(`${projectId}:${apiSecret}`).toString("base64");
+}
+
+export function getBackendApi() {
+  return backendApi;
+}

@@ -112,6 +112,19 @@ class NextUserRepository implements IUserRepository {
       throw handleDbError(e);
     }
   }
+
+  async attachProviderId(userId: string, providerId: string) {
+    try {
+      await this.table.update({
+        where: { id: userId },
+        data: {
+          providerId,
+        },
+      });
+    } catch (e) {
+      throw handleDbError(e);
+    }
+  }
   async exists(email: Email): Promise<boolean> {
     return !!(await this.findByEmail(email));
   }

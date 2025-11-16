@@ -3,14 +3,14 @@ import { type Email, UserStatus } from "@domain/user";
 import { User, type UserType } from "@domain/user/entities";
 
 export class AuthorizedUser extends User {
-  providerId: string;
+  providerId: string | null;
 
   constructor(
     email: Email,
     firstName: string,
     lastName: string,
     status: UserStatus = UserStatus.PENDING_ACTIVATION,
-    providerId: string,
+    providerId: string | null,
     avatarUrl?: string,
     id?: UUID,
   ) {
@@ -24,7 +24,7 @@ export class AuthorizedUser extends User {
     firstName: string,
     lastName: string,
     status: UserStatus,
-    providerId: string,
+    providerId: string | null,
     avatarUrl?: string,
     role?: string,
   ): AuthorizedUser {
