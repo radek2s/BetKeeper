@@ -59,12 +59,14 @@ export function UserRequestConfirmDialog({ onClose }: Props) {
             <FormField name="firstName" label="First name" ref={firstNameRef} />
             <FormField name="lastName" label="Last name" ref={lastNameRef} />
             {error && <div className="text-error">{error}</div>}
-            <Button
-              className="mt-4"
-              variant="primary"
-              onClick={(e) => handleCreate(e)}>
-              Create
-            </Button>
+            <div className="flex mt-6 justify-center gap-2">
+              <Dialog.Close asChild>
+                <Button>Cancel</Button>
+              </Dialog.Close>
+              <Button variant="primary" onClick={(e) => handleCreate(e)}>
+                Create
+              </Button>
+            </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

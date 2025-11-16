@@ -78,6 +78,9 @@ describe("UserRequestComponentTests", () => {
     const rejectButton = screen.getByRole("button", { name: "close" });
     await fireEvent.click(rejectButton);
 
+    const rejectConfirmButton = screen.getByRole("button", { name: "Reject" });
+    await fireEvent.click(rejectConfirmButton);
+
     expect(rejectUserRequest).toHaveBeenCalledTimes(1);
   });
 });

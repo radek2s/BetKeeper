@@ -33,7 +33,6 @@ export function ProfileImage({ activeImage }: Props) {
           <Dialog.Overlay className="dialog--overlay" />
           <Dialog.Content className="dialog--content">
             <Dialog.Title className="dialog--title">Choose image</Dialog.Title>
-            <Dialog.Description>Whats up</Dialog.Description>
             <div className="flex flex-wrap justify-center">
               {avatarIds.map((avatar) => (
                 <button
@@ -41,16 +40,23 @@ export function ProfileImage({ activeImage }: Props) {
                   type="button"
                   onClick={() => setSelectedImage(avatar)}
                   key={avatar}
+                  name={avatar}
                   className={`avatar-preview w-1/4 m-2 ${avatar === selectedImage ? "active" : ""}`}>
                   <img src={avatar} alt={avatar} />
                 </button>
               ))}
             </div>
-            <Dialog.Close asChild>
-              <Button variant="primary" onClick={handleSave}>
-                Save
-              </Button>
-            </Dialog.Close>
+
+            <div className="flex mt-6 justify-center gap-2">
+              <Dialog.Close asChild>
+                <Button>Cancel</Button>
+              </Dialog.Close>
+              <Dialog.Close asChild>
+                <Button variant="primary" onClick={handleSave}>
+                  Save
+                </Button>
+              </Dialog.Close>
+            </div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

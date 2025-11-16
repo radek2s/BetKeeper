@@ -1,7 +1,5 @@
-import { UserStatus } from "@domain/user";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import { UserComponent } from "./UserComponent";
 
 vi.mock("@app/features/users/actions", () => ({
   createUserRequest: vi.fn(),
@@ -10,7 +8,7 @@ vi.mock("@app/features/users/actions", () => ({
 import { createUserRequest } from "../actions";
 import { UserInviteForm } from "./UserInviteForm";
 
-describe("UserComponentTests", () => {
+describe("User Invite Form Tests", () => {
   afterEach(() => {
     vi.clearAllMocks();
   });

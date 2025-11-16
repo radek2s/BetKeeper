@@ -4,6 +4,7 @@ import {
   rejectUserRequest,
 } from "@app/features/users/actions";
 import { IconButton } from "@app/ui/button/IconButton";
+import { ConfirmationDialog } from "@app/ui/confirm-dialog";
 import type { UserRequest } from "@domain/user";
 import type { UserRequestType } from "@domain/user/entities";
 import { ACTIVE_USER_ID } from "application/src/constants";
@@ -29,7 +30,8 @@ export function UserRequestComponent({ request }: Props) {
     }
   };
 
-  const handleReject = async () => {
+  const handleReject = async (performAction: boolean) => {
+    if (!performAction) return;
     try {
       await rejectUserRequest(request.id);
     } catch (e) {
@@ -52,7 +54,14 @@ export function UserRequestComponent({ request }: Props) {
       </div>
       <div className="flex gap-1 actions-wrapper__actions">
         <UserRequestConfirmDialog onClose={handleApproval} />
-        <IconButton onClick={handleReject} icon="close" variant="ghost" />
+        <ConfirmationDialog
+          content="Do you want to reject this invitation?"
+          title="Reject user request"
+          onClose={handleReject}
+          variant="error"
+          accept="Reject">
+          <IconButton icon="close" variant="ghost" />
+        </ConfirmationDialog>
       </div>
     </div>
   );

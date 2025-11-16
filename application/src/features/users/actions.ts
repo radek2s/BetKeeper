@@ -5,7 +5,7 @@ import NextUserInvitationService from "@app/server/services/NextUserInvitationSe
 import NextUserService from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email, UserStatus } from "@domain/user";
-import type { UserRequestType, UserType } from "@domain/user/entities";
+import type { UserType } from "@domain/user/entities";
 import logger from "application/logger";
 import { ACTIVE_USER_ID } from "application/src/constants";
 
