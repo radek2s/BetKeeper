@@ -17,7 +17,9 @@ export default async function ProfilePage() {
     <PageWrapper>
       <ProfilePageHeader />
       <div className="flex flex-col items-center">
-        <ProfileImage activeImage={user.avatarUrl || ""} />
+        <ProfileImage
+          activeImage={user.avatarUrl || "/avatars/avatar_00.png"}
+        />
         <div className="flex flex-col items-center my-2">
           <h2 className="text-xl m-none">{user.name}</h2>
           <span className="text-gray text-sm">{user.email.value}</span>

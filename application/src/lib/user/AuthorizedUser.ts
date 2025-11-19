@@ -10,7 +10,7 @@ export class AuthorizedUser extends User {
     firstName: string,
     lastName: string,
     status: UserStatus = UserStatus.PENDING_ACTIVATION,
-    providerId: string | null,
+    providerId: string | null = null,
     avatarUrl?: string,
     id?: UUID,
   ) {

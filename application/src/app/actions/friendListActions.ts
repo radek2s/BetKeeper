@@ -1,7 +1,7 @@
 "use server";
+import NextUserService from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email } from "@domain/user";
-import NextUserService from "application/src/core/services/NextUserService";
 
 export async function sendFriendRequest(
   senderId: UUID,

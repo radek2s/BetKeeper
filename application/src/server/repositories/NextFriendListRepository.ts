@@ -34,12 +34,11 @@ export class NextFriendListRepository implements IFriendListRepository {
       }
     });
 
-    const friendsIds = new Set(
+    const friendsIdSet = new Set(
       friends.flatMap((friend) => [friend.senderId, friend.receiverId]),
-    )
-      .values()
-      .filter((id) => id !== userId)
-      .toArray();
+    );
+
+    const friendsIds = [...friendsIdSet].filter((id: string) => id !== userId);
 
     return UserFriendList.reconstitute(
       userId,

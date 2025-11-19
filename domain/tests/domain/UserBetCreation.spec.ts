@@ -1,6 +1,6 @@
 import { BetStatus } from "@domain/bet/types/BetStatus";
 import { Email, type User, UserService } from "@domain/user";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   BetRequestApprovedEvent,
   BetRequestCreatedEvent,

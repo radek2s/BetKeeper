@@ -33,7 +33,7 @@ export async function getPedingUserRequests(): Promise<
     );
     const requesterMap = new Map<string, UserType>();
     const requesterPromises = await Promise.allSettled(
-      requesterIdSet.values().map((userId) => userRepository.findById(userId)),
+      [...requesterIdSet].map((userId) => userRepository.findById(userId)),
     );
 
     requesterPromises.forEach((promise) => {
@@ -191,10 +191,10 @@ export async function getActiveUser() {
 }
 
 async function createCorbadoUser(userEmail: string, fullName: string) {
-  const res = await fetch(`${getBackendApi()}/v2/users`, {
+  const res = await fetch(`${await getBackendApi()}/v2/users`, {
     method: "POST",
     headers: {
-      Authorization: `Basic ${getAuthHeader()}`,
+      Authorization: `Basic ${await getAuthHeader()}`,
       "Content-Type": "application/json",
     },
     body: `{"fullName":"${fullName}", "status":"active"}`,
@@ -206,7 +206,7 @@ async function createCorbadoUser(userEmail: string, fullName: string) {
     {
       method: "POST",
       headers: {
-        Authorization: `Basic ${getAuthHeader()}`,
+        Authorization: `Basic ${await getAuthHeader()}`,
         "Content-Type": "application/json",
       },
       body: `{"identifierType":"email","identifierValue":"${userEmail}","status":"verified"}`,

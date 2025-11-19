@@ -11,6 +11,15 @@ export default function Error({ error }: ErrorPageType) {
   useEffect(() => {
     console.log(error);
   }, [error]);
+
+  if (error.name === "UserNotProvided")
+    return (
+      <PageWrapper>
+        <h1 className="mt-6">Your account is not allowed to use BetKeeper</h1>
+        <p>Try to contact application admin to grant access to application.</p>
+      </PageWrapper>
+    );
+
   return (
     <PageWrapper>
       <h1 className="my-4">Unexpeced error occured</h1>

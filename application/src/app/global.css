@@ -22,6 +22,41 @@
   --error: #c3241f;
   --error-hovered: #dd2922;
 }
+.app-logo {
+  max-width: 300px;
+}
+.cb-container {
+  box-shadow: none !important;
+  background-color: var(--surface) !important;
+  padding: 8px 16px 16px 16px !important;
+  border-radius: 16px;
+  border: 2px solid transparent !important;
+  position: relative;
+  background-clip: padding-box !important;
+  --cb-secondary-link-color: #fdd037;
+  --cb-primary-color: #fdd037;
+  --cb-primary-color-hover: #fdd95f;
+  --cb-button-text-primary-color: #15161a;
+  --cb-primary-color-disabled: #626262;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: -2px;
+    background: linear-gradient(
+      to bottom,
+      hsla(60, 0%, 45%, 0.2),
+      hsl(60, 0%, 45%)
+    );
+    opacity: 0.2;
+    border-radius: inherit;
+  }
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --base-text: #fcfcf7;
@@ -147,6 +182,7 @@ body {
   border-radius: 8px;
 }
 
+.cb-container .cb-primary-button,
 .btn {
   min-width: 100px;
   cursor: pointer;
@@ -161,6 +197,7 @@ body {
   outline: 1px solid var(--primary);
 }
 
+.cb-container .cb-primary-button,
 .btn.primary {
   background-color: var(--primary);
 }
@@ -173,7 +210,12 @@ body {
 .btn.primary:hover {
   background-color: var(--primary-hovered);
 }
+.cb-container .cb-input {
+  margin-top: unset;
+  border: unset;
+}
 
+.cb-container .cb-input,
 .ip {
   background-color: var(--container);
   color: var(--base-text);

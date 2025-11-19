@@ -1,20 +1,17 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
+/** biome-ignore-all lint/performance/noImgElement: <explanation> */
 
 import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
 import { Button } from "@app/ui/button/Button";
 import { IconButton } from "@app/ui/button/IconButton";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function Index() {
   const user = await getAuthenticatedUserFromCookie();
 
-  if (!user)
-    return <div>Failed to load application. Not found active user.</div>;
-  /*
-   * Replace the elements below with your own.
-   *
-   * Note: The corresponding styles are in the ./index.tailwind file.
-   */
+  if (!user) redirect("/login");
+
   return (
     <div>
       <header className="flex justify-between items-center mx-4 py-6">
@@ -22,7 +19,7 @@ export default async function Index() {
           <Link href="/profile">
             <img
               className="avatar h-[48px]"
-              src={user.avatarUrl}
+              src={user.avatarUrl ?? "/avatars/avatar_00.png"}
               alt="Profile avatar"
             />
           </Link>

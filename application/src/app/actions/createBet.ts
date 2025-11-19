@@ -1,7 +1,7 @@
 "use server";
+import NextBetService from "@app/server/services/NextBetService";
 import { Terms } from "@domain/bet";
 import type { UUID } from "@domain/shared";
-import NextBetService from "application/src/core/services/NextBetService";
 
 export async function createBetRequest(
   creatorId: UUID,

@@ -35,8 +35,11 @@ export async function getAuthenticatedUserFromCookie() {
   }
   try {
     const result = await sdk.sessions().validateToken(sessionToken);
-    return await new NextUserRepository().findByProviderId(result.userId);
-  } catch {
+    const user = await new NextUserRepository().findByProviderId(result.userId);
+    if (!user) throw new UserNotProvidedError(result.userId);
+    return user;
+  } catch (e) {
+    if (e instanceof AuthenticationError) throw e;
     return null;
   }
 }
@@ -56,17 +59,26 @@ export async function getAuthenticatedUserFromAuthorizationHeader(
 }
 
 export async function validateToken(token?: string) {
-  if (!token) throw new Error("Access Token is missing!");
+  if (!token) throw new AuthenticationError("Access Token is missing!");
   const result = await sdk.sessions().validateToken(token);
   const user = await new NextUserRepository().findByProviderId(result.userId);
-  if (!user) throw new Error("User does not exists in BetKeeper");
+  if (!user) throw new UserNotProvidedError(result.userId);
   return user;
 }
 
-export function getAuthHeader() {
+export async function getAuthHeader() {
   return Buffer.from(`${projectId}:${apiSecret}`).toString("base64");
 }
 
-export function getBackendApi() {
+export async function getBackendApi() {
   return backendApi;
+}
+
+export class AuthenticationError extends Error {}
+
+export class UserNotProvidedError extends AuthenticationError {
+  constructor(public providerId: string) {
+    super(`Provided UserId=${providerId} is not allowed to use BetKeeper`);
+    this.name = "UserNotProvided";
+  }
 }

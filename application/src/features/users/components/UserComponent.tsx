@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/performance/noImgElement: <explanation> */
 "use client";
 import { suspendUser, toggleUserStatus } from "@app/features/users/actions";
 import { IconButton } from "@app/ui/button/IconButton";
@@ -34,7 +35,7 @@ export function UserComponent({ userObject }: Props) {
       <div className="user-item__details flex gap-2">
         <img
           className="w-[48px] avatar"
-          src={user?.avatarUrl || "/avatars/avatar_01.png"}
+          src={user?.avatarUrl || "/avatars/avatar_00.png"}
           alt="User avatar"
         />
         <div className="flex flex-col">

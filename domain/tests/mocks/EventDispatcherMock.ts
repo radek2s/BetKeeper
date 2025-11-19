@@ -1,4 +1,4 @@
-import { DomainEvent } from "../../src/user/events/DomainEvent";
+import type { DomainEvent } from "@domain/shared";
 import type { IEventDispatcher } from "../../src/shared/EventDispatcher";
 
 export type EventHandler<T extends DomainEvent = DomainEvent> = (

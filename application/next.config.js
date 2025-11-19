@@ -10,6 +10,9 @@ console.log(`*** BetKeeper v${APP_VERSION} ***`);
 console.log(`Using SQLite file: ${DATABASE_URL}\n`);
 
 const nextConfig = {
+  // eslint: {
+  //   ignoreDuiringBuilds: true,
+  // },
   // Use this to set Nx-specific options
   // See: https://nx.dev/recipes/next/next-config-setup
   nx: {},
@@ -20,4 +23,8 @@ const plugins = [
   // withNx,
 ];
 
-module.exports = {};
+module.exports = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+};

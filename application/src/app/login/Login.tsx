@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/performance/noImgElement: <explanation> */
 "use client";
 import { CorbadoAuth } from "@corbado/react";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -10,8 +11,12 @@ async function onSignIn(router: AppRouterInstance) {
 export function Login() {
   const router = useRouter();
   return (
-    <div>
-      <h1>Signup</h1>
+    <div className="flex flex-col gap-2 justify-center h-[70vh] items-center">
+      <img
+        className="app-logo"
+        src="/BetKeeper_Logo.png"
+        alt="Application Logo"
+      />
       <CorbadoAuth
         onLoggedIn={() => {
           onSignIn(router);
