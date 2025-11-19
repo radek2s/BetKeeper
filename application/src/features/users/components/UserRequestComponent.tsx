@@ -5,9 +5,7 @@ import {
 } from "@app/features/users/actions";
 import { IconButton } from "@app/ui/button/IconButton";
 import { ConfirmationDialog } from "@app/ui/confirm-dialog";
-import type { UserRequest } from "@domain/user";
-import type { UserRequestType } from "@domain/user/entities";
-import { ACTIVE_USER_ID } from "application/src/constants";
+import { useCorbado } from "@corbado/react";
 import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
 import { toRelativeTime } from "application/src/lib/utils/timeUtils";
 import {
@@ -19,13 +17,14 @@ interface Props {
   request: UserRequestWithRequester;
 }
 export function UserRequestComponent({ request }: Props) {
+  const { sessionToken } = useCorbado();
   const handleApproval = async (data: UserRequestData | null) => {
     if (data) {
       await approveUserRequest(
         request.id,
         data.firstName,
         data.lastName,
-        ACTIVE_USER_ID,
+        sessionToken,
       );
     }
   };
@@ -33,7 +32,7 @@ export function UserRequestComponent({ request }: Props) {
   const handleReject = async (performAction: boolean) => {
     if (!performAction) return;
     try {
-      await rejectUserRequest(request.id);
+      await rejectUserRequest(request.id, sessionToken);
     } catch (e) {
       console.error(e);
     }

@@ -4,6 +4,11 @@ import {
   getBackendApi,
   validateToken,
 } from "@app/server/auth/authentication";
+import {
+  getIdentifierRequest,
+  getRequestInt,
+  getUserRequest,
+} from "@app/server/auth/dto";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequestRepository";
 import NextUserInvitationService from "@app/server/services/NextUserInvitationService";
@@ -12,7 +17,6 @@ import type { UUID } from "@domain/shared";
 import { Email, UserStatus } from "@domain/user";
 import type { UserType } from "@domain/user/entities";
 import logger from "application/logger";
-import { ACTIVE_USER_ID } from "application/src/constants";
 
 import {
   mapUserRequestWithRequester,
@@ -85,12 +89,14 @@ export async function approveUserRequest(
   requestId: UUID,
   firstName: string,
   lastName: string,
-  approvedBy: UUID,
+  token: string | undefined,
 ) {
+  const requestingUser = await validateToken(token);
+
   try {
     const user = await NextUserInvitationService.approveInvitationRequest(
       requestId,
-      approvedBy,
+      requestingUser.id,
       firstName,
       lastName,
     );
@@ -100,7 +106,9 @@ export async function approveUserRequest(
       `${firstName} ${lastName}`,
     );
     await new NextUserRepository().attachProviderId(user.id, providerId);
-    logger.info(`[User Request][${requestId}][Approved] - by ${approvedBy}`);
+    logger.info(
+      `[User Request][${requestId}][Approved] - by ${requestingUser.id}`,
+    );
     revalidatePath(`/users`);
   } catch (e) {
     logger.error(e);
@@ -108,10 +116,15 @@ export async function approveUserRequest(
   }
 }
 
-export async function rejectUserRequest(requestId: UUID) {
+export async function rejectUserRequest(
+  requestId: UUID,
+  token: string | undefined,
+) {
+  const user = await validateToken(token);
+
   try {
     await NextUserInvitationService.rejectInvitationRequest(requestId);
-    logger.info(`[User Request][${requestId}][Rejected]`);
+    logger.info(`[User Request][${requestId}][Rejected] by ${user.id}`);
     revalidatePath(`/users`);
   } catch (e) {
     logger.error(e);
@@ -142,29 +155,42 @@ export async function createUserRequest(
   }
 }
 
-export async function updateAvatar(userId: string, avatarUrl: string) {
+export async function updateAvatar(
+  userId: string,
+  avatarUrl: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
   try {
     const user = await userRepository.findById(userId);
     if (!user) throw new Error("User was not found!");
     user.avatarUrl = avatarUrl;
     await userRepository.save(user);
-    logger.info(`[User][${userId}][Updated] - Updated avatar to ${avatarUrl}`);
+    logger.info(
+      `[User][${userId}][Updated] - Updated avatar to ${avatarUrl} by ${requestingUser.id}`,
+    );
     revalidatePath(`/profile`);
   } catch (e) {
     logger.error(e);
   }
 }
 
-export async function toggleUserStatus(userId: string) {
+export async function toggleUserStatus(
+  userId: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
   try {
     const user = await userRepository.findById(userId);
     if (!user) throw new Error("User with id not found!");
     if (user.isActive()) {
       user.deactivate();
-      logger.info(`[User][${userId}][Deactivated]`);
+      logger.info(`[User][${userId}][Deactivated] by ${requestingUser.id}`);
     } else {
       user.activate();
-      logger.info(`[User][${userId}][Activated]`);
+      logger.info(`[User][${userId}][Activated] by ${requestingUser.id}`);
     }
     await userRepository.save(user);
     revalidatePath(`/users`);
@@ -173,44 +199,31 @@ export async function toggleUserStatus(userId: string) {
   }
 }
 
-export async function suspendUser(userId: string) {
+export async function suspendUser(userId: string, token: string | undefined) {
+  const requestingUser = await validateToken(token);
+
   try {
     const user = await userRepository.findById(userId);
     if (!user) throw new Error("User with id not found!");
     user.suspend();
     await userRepository.save(user);
-    logger.info(`[User][${userId}][Suspended]`);
+    logger.info(`[User][${userId}][Suspended] by ${requestingUser.id}`);
     revalidatePath(`/users`);
   } catch (e) {
     logger.error(e);
   }
 }
 
-export async function getActiveUser() {
-  return await userRepository.findById(ACTIVE_USER_ID);
-}
-
 async function createCorbadoUser(userEmail: string, fullName: string) {
-  const res = await fetch(`${await getBackendApi()}/v2/users`, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${await getAuthHeader()}`,
-      "Content-Type": "application/json",
-    },
-    body: `{"fullName":"${fullName}", "status":"active"}`,
-  });
+  const res = await fetch(
+    `${getBackendApi()}/v2/users`,
+    getRequestInt(getAuthHeader(), getUserRequest(fullName)),
+  );
   const { userID } = await res.json();
 
-  const res2 = await fetch(
+  await fetch(
     `${getBackendApi()}/v2/users/${userID}/identifiers`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${await getAuthHeader()}`,
-        "Content-Type": "application/json",
-      },
-      body: `{"identifierType":"email","identifierValue":"${userEmail}","status":"verified"}`,
-    },
+    getRequestInt(getAuthHeader(), getIdentifierRequest(userEmail)),
   );
 
   return userID;

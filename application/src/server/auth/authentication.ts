@@ -2,9 +2,11 @@ import { Config, SDK } from "@corbado/node-sdk";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import NextUserRepository from "../repositories/NextUserRepository";
+import { getTestUser } from "./authentication.mock";
 
 const projectId = process.env.NEXT_PUBLIC_CORBADO_PROJECT_ID;
 const apiSecret = process.env.CORBADO_API_SECRET;
+const isTestMode = process.env.DISABLE_AUTH;
 
 if (!projectId) {
   throw Error("Project ID is not set");
@@ -59,6 +61,7 @@ export async function getAuthenticatedUserFromAuthorizationHeader(
 }
 
 export async function validateToken(token?: string) {
+  if (isTestMode) return await getTestUser();
   if (!token) throw new AuthenticationError("Access Token is missing!");
   const result = await sdk.sessions().validateToken(token);
   const user = await new NextUserRepository().findByProviderId(result.userId);
@@ -66,11 +69,11 @@ export async function validateToken(token?: string) {
   return user;
 }
 
-export async function getAuthHeader() {
+export function getAuthHeader() {
   return Buffer.from(`${projectId}:${apiSecret}`).toString("base64");
 }
 
-export async function getBackendApi() {
+export function getBackendApi() {
   return backendApi;
 }
 

@@ -38,14 +38,14 @@ export default async function ProfilePage() {
           <li className="flex items-center gap-2 disabled">
             <Icon name="mail" /> Notification settings
           </li>
+          <Link href={"/profile/passkey"}>
+            <li className="flex items-center gap-2">
+              <Icon name="security-key" /> Manage passkeys
+            </li>
+          </Link>
           <li className="flex items-center gap-2 disabled">
             <Icon name="bug" /> Report problem
           </li>
-          <Link href={"/profile/passkey"}>
-            <li className="flex items-center gap-2">
-              <Icon name="event" /> Manage passkeys
-            </li>
-          </Link>
           <LogoutButton />
         </ul>
       </div>

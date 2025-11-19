@@ -23,6 +23,7 @@ export type IconType =
   | "person"
   | "person-off"
   | "question-mark"
+  | "security-key"
   | "send"
   | "timer"
   | "verified"

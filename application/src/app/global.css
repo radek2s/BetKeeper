@@ -25,7 +25,12 @@
 .app-logo {
   max-width: 300px;
 }
-.cb-container {
+.cb-passkey-list-title {
+  display: none !important;
+}
+.cb-container,
+.cb-passkey-list-container,
+.cb-passkey-list-card {
   box-shadow: none !important;
   background-color: var(--surface) !important;
   padding: 8px 16px 16px 16px !important;
@@ -182,6 +187,7 @@ body {
   border-radius: 8px;
 }
 
+.cb-passkey-list-container .cb-primary-button,
 .cb-container .cb-primary-button,
 .btn {
   min-width: 100px;
@@ -197,6 +203,7 @@ body {
   outline: 1px solid var(--primary);
 }
 
+.cb-passkey-list-container .cb-primary-button,
 .cb-container .cb-primary-button,
 .btn.primary {
   background-color: var(--primary);

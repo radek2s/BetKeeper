@@ -19,6 +19,7 @@ import { NotificationIcon } from "./notification";
 import { PersonIcon } from "./person";
 import { PersonOffIcon } from "./person-off";
 import { QuestionMarkIcon } from "./question-mark";
+import { SecurityKeyIcon } from "./security-key";
 import { SendIcon } from "./send";
 import { TimerIcon } from "./timer";
 import type { IconProps, IconType } from "./types";
@@ -46,6 +47,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   person: PersonIcon,
   "person-off": PersonOffIcon,
   "question-mark": QuestionMarkIcon,
+  "security-key": SecurityKeyIcon,
   send: SendIcon,
   timer: TimerIcon,
   verified: VerifiedIcon,

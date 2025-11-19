@@ -1,6 +1,7 @@
 "use client";
 import { updateAvatar } from "@app/features/users/actions";
 import { Button } from "@app/ui/button/Button";
+import { useCorbado } from "@corbado/react";
 import { ACTIVE_USER_ID } from "application/src/constants";
 
 import { Dialog } from "radix-ui";
@@ -12,13 +13,14 @@ interface Props {
   activeImage: string;
 }
 export function ProfileImage({ activeImage }: Props) {
+  const { sessionToken } = useCorbado();
   const [selectedImage, setSelectedImage] = useState<string>(activeImage);
   const avatarIds = [...Array(AVATAR_MAX_ID).keys()].map(
     (id) => `/avatars/avatar_0${id}.png`,
   );
   const handleSave = async () => {
     try {
-      await updateAvatar(ACTIVE_USER_ID, selectedImage);
+      await updateAvatar(ACTIVE_USER_ID, selectedImage, sessionToken);
     } catch (e) {
       console.error(e);
     }
