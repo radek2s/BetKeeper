@@ -109,6 +109,17 @@ export async function approveUserRequest(
     logger.info(
       `[User Request][${requestId}][Approved] - by ${requestingUser.id}`,
     );
+
+    // biome-ignore lint/style/noNonNullAssertion: Request must exist because was previously approved.
+    const request = (await new NextUserRequestRepository().findById(
+      requestId,
+    ))!;
+    await NextUserService.sendFriendRequest(
+      request.requesterId,
+      request.inviteeEmail,
+    );
+
+    //Approved and created user -> so send invitation to friend
     revalidatePath(`/users`);
   } catch (e) {
     logger.error(e);
@@ -135,6 +146,7 @@ export async function rejectUserRequest(
 export async function createUserRequest(
   inviteeEmail: string,
   token: string | undefined,
+  revalidate: boolean = true,
 ) {
   const user = await validateToken(token);
   try {
@@ -146,7 +158,7 @@ export async function createUserRequest(
     logger.info(
       `[User Request][${userRequest.id}][Created] - Invited ${userRequest.inviteeEmail} by ${user.id}`,
     );
-    revalidatePath(`/users`);
+    if (revalidate) revalidatePath(`/users`);
   } catch (e) {
     if (e instanceof Error) {
       logger.error(e.message);
@@ -216,15 +228,21 @@ export async function suspendUser(userId: string, token: string | undefined) {
 
 async function createCorbadoUser(userEmail: string, fullName: string) {
   const res = await fetch(
-    `${getBackendApi()}/v2/users`,
-    getRequestInt(getAuthHeader(), getUserRequest(fullName)),
+    `${await getBackendApi()}/v2/users`,
+    getRequestInt(await getAuthHeader(), getUserRequest(fullName)),
   );
   const { userID } = await res.json();
 
   await fetch(
-    `${getBackendApi()}/v2/users/${userID}/identifiers`,
-    getRequestInt(getAuthHeader(), getIdentifierRequest(userEmail)),
+    `${await getBackendApi()}/v2/users/${userID}/identifiers`,
+    getRequestInt(await getAuthHeader(), getIdentifierRequest(userEmail)),
   );
 
   return userID;
+}
+
+export async function getUserDetails(userId: string) {
+  const user = await userRepository.findById(userId);
+  if (!user) throw new Error("User not found");
+  return user;
 }

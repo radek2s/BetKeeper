@@ -1,8 +1,10 @@
+"use server";
 import { Config, SDK } from "@corbado/node-sdk";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import NextUserRepository from "../repositories/NextUserRepository";
 import { getTestUser } from "./authentication.mock";
+import { AuthenticationError, UserNotProvidedError } from "./dto";
 
 const projectId = process.env.NEXT_PUBLIC_CORBADO_PROJECT_ID;
 const apiSecret = process.env.CORBADO_API_SECRET;
@@ -69,19 +71,10 @@ export async function validateToken(token?: string) {
   return user;
 }
 
-export function getAuthHeader() {
+export async function getAuthHeader() {
   return Buffer.from(`${projectId}:${apiSecret}`).toString("base64");
 }
 
-export function getBackendApi() {
+export async function getBackendApi() {
   return backendApi;
-}
-
-export class AuthenticationError extends Error {}
-
-export class UserNotProvidedError extends AuthenticationError {
-  constructor(public providerId: string) {
-    super(`Provided UserId=${providerId} is not allowed to use BetKeeper`);
-    this.name = "UserNotProvided";
-  }
 }

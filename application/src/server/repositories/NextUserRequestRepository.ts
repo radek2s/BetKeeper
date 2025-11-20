@@ -66,6 +66,25 @@ export class NextUserRequestRepository
       ),
     );
   }
+
+  async findAllPendingByRequesterId(requesterId: string) {
+    const userRequestEntities = await this.table.findMany({
+      where: { AND: [{ status: RequestStatus.PENDING }, { requesterId }] },
+    });
+
+    return userRequestEntities.map((entity) =>
+      UserRequest.reconstitute(
+        entity.id,
+        entity.requesterId,
+        new Email(entity.inviteeEmail),
+        entity.status as RequestStatus,
+        entity.createdAt,
+        entity.approvedById ?? undefined,
+        entity.approvedAt ?? undefined,
+      ),
+    );
+  }
+
   async findByUserId(userId: UUID): Promise<UserRequest | null> {
     const userRequestEntity = await this.table.findFirst({
       where: { requesterId: userId },

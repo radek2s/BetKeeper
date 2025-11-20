@@ -1,3 +1,12 @@
+export class AuthenticationError extends Error {}
+
+export class UserNotProvidedError extends AuthenticationError {
+  constructor(public providerId: string) {
+    super(`Provided UserId=${providerId} is not allowed to use BetKeeper`);
+    this.name = "UserNotProvided";
+  }
+}
+
 export const getIdentifierRequest = (email: string) => ({
   identifierValue: email,
   identifierType: "email",

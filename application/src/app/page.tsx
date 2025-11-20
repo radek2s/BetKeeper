@@ -30,7 +30,9 @@ export default async function Index() {
         </div>
         <div className="flex gap-1">
           <IconButton icon="notification" />
-          <IconButton icon="group" />
+          <Link href="/friends">
+            <IconButton icon="group" />
+          </Link>
         </div>
       </header>
       <section>
