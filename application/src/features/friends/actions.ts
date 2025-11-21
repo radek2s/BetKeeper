@@ -8,8 +8,7 @@ import type { UUID } from "@domain/shared";
 import { Email } from "@domain/user";
 import { createUserRequest } from "../users/actions";
 import {
-  type FriendInvitationNonUser,
-  type FriendInvitationUser,
+  type FriendInvitation,
   friendRequestToInvitationDto,
   userRequestToInvitationDto,
 } from "./model/friendsDto";
@@ -34,7 +33,7 @@ export async function sendFriendRequest(
 
 export async function getSentInvitations(
   userId: UUID,
-): Promise<[FriendInvitationNonUser[], FriendInvitationUser[]]> {
+): Promise<FriendInvitation[]> {
   const userRepository = new NextUserRepository();
   const userRequestRepository = new NextUserRequestRepository();
 
@@ -50,7 +49,8 @@ export async function getSentInvitations(
       friendRequestToInvitationDto(request, userRepository),
     ),
   );
-  return [nonUserInvitations, invitations];
+
+  return [...invitations, ...nonUserInvitations];
 }
 
 export async function getFriendList(userId: string) {

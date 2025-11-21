@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@app/ui/button/Button";
 import FormField from "@app/ui/form-field";
+import { Icon } from "@app/ui/icon";
 import { useCorbado } from "@corbado/react";
 import { Dialog } from "radix-ui";
 import { useRef, useState } from "react";
@@ -32,7 +33,10 @@ export function FriendInvite() {
     <Dialog.Root open={isOpen} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         <div className="btn-fab">
-          <Button variant="primary">Invite</Button>
+          <Button variant="primary">
+            <span>Invite</span>
+            <Icon name="group-add" />
+          </Button>
         </div>
       </Dialog.Trigger>
       <Dialog.Portal>

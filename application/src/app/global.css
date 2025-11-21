@@ -199,6 +199,16 @@ body {
   background-color: var(--container-hovered);
 }
 
+.btn-fab {
+  position: fixed;
+  right: 10vw;
+  bottom: 5vh;
+  font-size: 24px;
+  .btn {
+    padding: 12px 24px;
+  }
+}
+
 .btn:focus-visible {
   outline: 1px solid var(--primary);
 }
@@ -330,6 +340,10 @@ body {
   }
   .btn.primary {
     color: var(--surface);
+
+    svg path {
+      fill: var(--surface);
+    }
   }
 
   .btn-icon .icon {

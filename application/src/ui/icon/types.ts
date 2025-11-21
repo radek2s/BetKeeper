@@ -14,6 +14,7 @@ export type IconType =
   | "error"
   | "event"
   | "group"
+  | "group-add"
   | "groups"
   | "logout"
   | "mail"

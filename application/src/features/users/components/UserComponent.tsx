@@ -6,6 +6,7 @@ import { ConfirmationDialog } from "@app/ui/confirm-dialog";
 import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
 import { objectToUser } from "application/src/lib/mappers/user";
+import { UserListItem } from "./UserListItem";
 
 interface Props {
   userObject: UserType;
@@ -31,50 +32,35 @@ export function UserComponent({ userObject }: Props) {
     }
   };
   return (
-    <div className="user-item actions-wrapper flex justify-between">
-      <div className="user-item__details flex gap-2">
-        <img
-          className="w-[48px] avatar"
-          src={user?.avatarUrl || "/avatars/avatar_00.png"}
-          alt="User avatar"
-        />
-        <div className="flex flex-col">
-          <span>{user.name}</span>
-          <span className="text-sm text-gray-800 dark:text-gray-400">
-            {user.email.value}
-          </span>
-        </div>
-      </div>
-      <div className="actions-wrapper__actions flex gap-1 items-center">
-        {user.status !== "suspended" && user.role !== "ADMINISTRATOR" && (
-          <ConfirmationDialog
-            content={"Do you want to delete user?"}
-            title="Delete user"
-            onClose={handleUserDelete}
-            variant="error"
-            accept="Delete">
-            <IconButton icon="delete" variant="ghost" />
-          </ConfirmationDialog>
-        )}
-        {user.status === "active" && (
-          <ConfirmationDialog
-            content={"Do you want to disable?"}
-            title="Disable user"
-            onClose={handleStatusUpdate}
-            accept="Disable">
-            <IconButton icon="person" variant="ghost" />
-          </ConfirmationDialog>
-        )}
-        {user.status === "inactive" && (
-          <ConfirmationDialog
-            content={"Do you want to enable?"}
-            title="Enable user"
-            onClose={handleStatusUpdate}
-            accept="Enable">
-            <IconButton icon="person-off" variant="ghost" />
-          </ConfirmationDialog>
-        )}
-      </div>
-    </div>
+    <UserListItem user={userObject}>
+      {user.status !== "suspended" && user.role !== "ADMINISTRATOR" && (
+        <ConfirmationDialog
+          content={"Do you want to delete user?"}
+          title="Delete user"
+          onClose={handleUserDelete}
+          variant="error"
+          accept="Delete">
+          <IconButton icon="delete" variant="ghost" />
+        </ConfirmationDialog>
+      )}
+      {user.status === "active" && (
+        <ConfirmationDialog
+          content={"Do you want to disable?"}
+          title="Disable user"
+          onClose={handleStatusUpdate}
+          accept="Disable">
+          <IconButton icon="person" variant="ghost" />
+        </ConfirmationDialog>
+      )}
+      {user.status === "inactive" && (
+        <ConfirmationDialog
+          content={"Do you want to enable?"}
+          title="Enable user"
+          onClose={handleStatusUpdate}
+          accept="Enable">
+          <IconButton icon="person-off" variant="ghost" />
+        </ConfirmationDialog>
+      )}
+    </UserListItem>
   );
 }

@@ -10,6 +10,7 @@ import { DeleteIcon } from "./delete";
 import { ErrorIcon } from "./error";
 import { EventIcon } from "./event";
 import { GroupIcon } from "./group";
+import { GroupAddIcon } from "./group-add";
 import { GroupsIcon } from "./groups";
 import { LogoutIcon } from "./logout";
 import { MailIcon } from "./mail";
@@ -38,6 +39,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   error: ErrorIcon,
   event: EventIcon,
   group: GroupIcon,
+  "group-add": GroupAddIcon,
   groups: GroupsIcon,
   logout: LogoutIcon,
   mail: MailIcon,

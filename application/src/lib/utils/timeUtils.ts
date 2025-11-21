@@ -12,12 +12,13 @@ export function toRelativeTime(date: Date) {
     const seconds = Math.floor(value / 1000);
     const divide = (unit: number) => divideRound(seconds, unit);
 
-    if (seconds < TimeUnits.SECONDS) return [seconds, "seconds"];
+    if (seconds < TimeUnits.SECONDS) return [seconds, "second(s)"];
     if (seconds < TimeUnits.MINUTES)
-      return [divide(TimeUnits.SECONDS), "minutes"];
-    if (seconds < TimeUnits.HOURS) return [divide(TimeUnits.MINUTES), "hours"];
-    if (seconds < TimeUnits.DAYS) return [divide(TimeUnits.HOURS), "days"];
-    return [divide(TimeUnits.DAYS), "months"];
+      return [divide(TimeUnits.SECONDS), "minute(s)"];
+    if (seconds < TimeUnits.HOURS)
+      return [divide(TimeUnits.MINUTES), "hour(s)"];
+    if (seconds < TimeUnits.DAYS) return [divide(TimeUnits.HOURS), "day(s)"];
+    return [divide(TimeUnits.DAYS), "month(s)"];
   }
 }
 

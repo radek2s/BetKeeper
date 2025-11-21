@@ -1,23 +1,17 @@
 import type NextUserRepository from "@app/server/repositories/NextUserRepository";
 import type { FriendRequest, UserRequest } from "@domain/user";
 
-export type FriendInvitation = FriendInvitationUser | FriendInvitationNonUser;
-export type FriendInvitationNonUser = {
+export type FriendInvitation = {
   id: string;
   createdAt: Date;
   email: string;
-};
-export type FriendInvitationUser = {
-  id: string;
-  createdAt: Date;
-  name: string;
-  email: string;
+  name?: string;
   avatarUrl?: string;
 };
 
 export function userRequestToInvitationDto(
   userRequest: UserRequest,
-): FriendInvitationNonUser {
+): FriendInvitation {
   return {
     id: userRequest.id,
     createdAt: userRequest.createdAt,
@@ -28,7 +22,7 @@ export function userRequestToInvitationDto(
 export async function friendRequestToInvitationDto(
   friendRequest: FriendRequest,
   userRepository: NextUserRepository,
-): Promise<FriendInvitationUser> {
+): Promise<FriendInvitation> {
   const user = await userRepository.findById(friendRequest.receiverId);
   if (!user) throw new Error(`Unable to find user ${friendRequest.receiverId}`);
   return {

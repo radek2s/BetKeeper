@@ -12,7 +12,9 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button className={`btn ${variant} ${className}`} {...props}>
+    <button
+      className={`btn flex gap-1 items-center justify-center ${variant} ${className}`}
+      {...props}>
       {children}
     </button>
   );

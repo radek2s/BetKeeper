@@ -37,14 +37,16 @@ export default async function FriendsPage() {
   return (
     <PageWrapper>
       <PageHeader title="Friends" returnUrl="/" />
-      <FriendRequestReceived
-        users={users}
-        invitingUserId={friendList.pendingReceivedRequests.map(
-          ({ senderId }) => senderId,
-        )}
-      />
-      <FriendRequestsSent invitations={invitations} />
-      <FriendList friendIds={friendList.friends} users={users} />
+      <div className="flex flex-col gap-3">
+        <FriendRequestReceived
+          users={users}
+          invitingUserId={friendList.pendingReceivedRequests.map(
+            ({ senderId }) => senderId,
+          )}
+        />
+        <FriendRequestsSent invitations={invitations} />
+        <FriendList friendIds={friendList.friends} users={users} />
+      </div>
 
       <FriendInvite />
     </PageWrapper>
