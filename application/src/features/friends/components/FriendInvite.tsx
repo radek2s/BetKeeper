@@ -10,12 +10,14 @@ import { sendFriendRequest } from "../actions";
 export function FriendInvite() {
   const { sessionToken } = useCorbado();
   const [isOpen, setOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const friendEmailRef = useRef<HTMLInputElement>(null);
 
   const handleInvitation = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
+    setError(null);
     e.preventDefault();
     const email = friendEmailRef.current?.value.trim();
     if (!email) return;
@@ -25,6 +27,9 @@ export function FriendInvite() {
 
       setOpen(false);
     } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      }
       console.error("Failed to send friend request", e);
     }
   };
@@ -49,6 +54,11 @@ export function FriendInvite() {
               label="Friend email"
               ref={friendEmailRef}
             />
+            {error && (
+              <span role="alert" className="text-error">
+                {error}
+              </span>
+            )}
             <div className="flex mt-6 justify-center gap-2">
               <Dialog.Close asChild>
                 <Button>Cancel</Button>
