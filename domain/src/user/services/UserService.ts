@@ -149,14 +149,6 @@ export class UserService extends DomainService {
     if (!friendRequest) {
       throw new Error("Friend request not found");
     }
-
-    // const senderFriendList = await this.friendListRepository.findByUserId(
-    //   friendRequest.senderId,
-    // );
-    // if (!senderFriendList) {
-    //   throw new Error("Sender friend list not found");
-    // }
-
     const request = receiverFriendList.approveFriendRequest(requestId);
 
     await this.friendListRepository.saveRequest(request);

@@ -40,7 +40,7 @@ export function UserRequestComponent({ request }: Props) {
 
   const relativeTime = () => {
     const [value, unit] = toRelativeTime(request.createdAt);
-    if (unit === "seconds") return "now";
+    if (unit === "second(s)") return "now";
     return `${value} ${unit} ago`;
   };
   return (

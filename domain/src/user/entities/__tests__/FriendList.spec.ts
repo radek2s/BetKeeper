@@ -2,9 +2,10 @@
 
 import type { UUID } from "@domain/shared";
 import { FriendRemovedEvent } from "@domain/user/events/FriendRequestEvents";
-import { UserStatus } from "@domain/user/types/RequestStatus";
+import { RequestStatus, UserStatus } from "@domain/user/types/RequestStatus";
 import { Email } from "@domain/user/value-objects";
 import { beforeEach, describe, expect, it } from "vitest";
+import { FriendRequest } from "../FriendRequest";
 import { User } from "../User";
 import { UserFriendList } from "../UserFriendList";
 
@@ -62,6 +63,8 @@ describe("FriendList", () => {
     });
 
     it("should throw error when user is already a friend", () => {
+      const friendRequest = new FriendRequest("req-1", targetUser.id, userId);
+      friendList.receiveFriendRequest(friendRequest);
       friendList.addFriend(targetUser.id);
 
       expect(() => friendList.sendFriendRequest(targetUser)).toThrow(
@@ -177,6 +180,8 @@ describe("FriendList", () => {
 
   describe("addFriend", () => {
     it("should add a friend to the list", () => {
+      const friendRequest = new FriendRequest("req-1", targetUser.id, userId);
+      friendList.receiveFriendRequest(friendRequest);
       friendList.addFriend(targetUser.id);
 
       expect(friendList.isFriend(targetUser.id)).toBe(true);
@@ -191,6 +196,9 @@ describe("FriendList", () => {
     });
 
     it("should not add duplicate friends", () => {
+      const friendRequest = new FriendRequest("req-1", targetUser.id, userId);
+      friendList.receiveFriendRequest(friendRequest);
+
       friendList.addFriend(targetUser.id);
       friendList.addFriend(targetUser.id); // Should not throw or duplicate
 
@@ -200,6 +208,8 @@ describe("FriendList", () => {
 
   describe("removeFriend", () => {
     it("should remove a friend from the list", () => {
+      const friendRequest = new FriendRequest("req-1", targetUser.id, userId);
+      friendList.receiveFriendRequest(friendRequest);
       friendList.addFriend(targetUser.id);
       friendList.clearDomainEvents();
 
@@ -222,6 +232,8 @@ describe("FriendList", () => {
 
   describe("query methods", () => {
     beforeEach(() => {
+      const friendRequest = new FriendRequest("req-1", targetUser.id, userId);
+      friendList.receiveFriendRequest(friendRequest);
       friendList.addFriend(targetUser.id);
     });
 
@@ -249,6 +261,8 @@ describe("FriendList", () => {
 
   describe("business rules", () => {
     it("should allow bet request creation when user has friends", () => {
+      const friendRequest = new FriendRequest("req-1", targetUser.id, userId);
+      friendList.receiveFriendRequest(friendRequest);
       friendList.addFriend(targetUser.id);
 
       expect(friendList.canCreateBetRequest()).toBe(true);
@@ -271,7 +285,14 @@ describe("FriendList", () => {
 
     describe("reconstitute", () => {
       it("should reconstitute a friend list from persistence data", () => {
-        const friends = [targetUser.id];
+        const friends = [
+          new FriendRequest(
+            "req-1",
+            targetUser.id,
+            userId,
+            RequestStatus.APPROVED,
+          ),
+        ];
         const sentRequests: any[] = [];
         const receivedRequests: any[] = [];
 
@@ -291,6 +312,8 @@ describe("FriendList", () => {
 
   describe("toString", () => {
     it("should return string representation", () => {
+      const friendRequest = new FriendRequest("req-1", targetUser.id, userId);
+      friendList.receiveFriendRequest(friendRequest);
       friendList.addFriend(targetUser.id);
 
       expect(friendList.toString()).toBe(

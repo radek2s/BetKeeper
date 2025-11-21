@@ -16,6 +16,6 @@ describe("TimeUtils", () => {
 
     const [days, unit] = toRelativeTime(daysAgo);
     expect(days).toBe(2);
-    expect(unit).toBe("days");
+    expect(unit).toBe("day(s)");
   });
 });

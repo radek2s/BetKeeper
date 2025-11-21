@@ -31,6 +31,10 @@ export class UserFriendList extends Entity {
     return Array.from(this._friends.keys());
   }
 
+  get friendRequests(): FriendRequest[] {
+    return Array.from(this._friends.values());
+  }
+
   get friendCount(): number {
     return this._friends.size;
   }

@@ -47,7 +47,7 @@ describe("UserRequestComponentTests", () => {
       />,
     );
     expect(screen.getByText("test@email.com")).toBeDefined();
-    expect(screen.getByText("1 hours ago by Requester")).toBeDefined();
+    expect(screen.getByText("1 hour(s) ago by Requester")).toBeDefined();
   });
 
   it("Should approve request and create user", async () => {
