@@ -10,6 +10,15 @@ import prisma from "../db";
 export class NextFriendListRepository implements IFriendListRepository {
   private table = prisma.friendRequestTable;
 
+  async findRequestById(requestId: UUID): Promise<FriendRequest | null> {
+    const request = await this.table.findUnique({
+      where: { id: requestId },
+    });
+    if (!request) return null;
+
+    return this.mapToFriendRequest(request);
+  }
+
   async findByUserId(userId: UUID): Promise<UserFriendList | null> {
     const friendRequests = await this.table.findMany({
       where: { OR: [{ senderId: userId }, { reciverId: userId }] },
@@ -25,7 +34,10 @@ export class NextFriendListRepository implements IFriendListRepository {
         friends.push(this.mapToFriendRequest(element));
         return;
       }
-      if (element.senderId === userId) {
+      if (
+        element.senderId === userId &&
+        element.status === RequestStatus.PENDING
+      ) {
         sentFriendRequests.push(this.mapToFriendRequest(element));
         return;
       }
@@ -34,15 +46,9 @@ export class NextFriendListRepository implements IFriendListRepository {
       }
     });
 
-    const friendsIdSet = new Set(
-      friends.flatMap((friend) => [friend.senderId, friend.receiverId]),
-    );
-
-    const friendsIds = [...friendsIdSet].filter((id: string) => id !== userId);
-
     return UserFriendList.reconstitute(
       userId,
-      friendsIds,
+      friends,
       sentFriendRequests,
       receivedFriendRequests,
     );
@@ -66,6 +72,29 @@ export class NextFriendListRepository implements IFriendListRepository {
         },
       });
     });
+  }
+
+  async saveRequest(request: FriendRequest): Promise<void> {
+    await this.table.upsert({
+      where: { id: request.id },
+      update: {
+        status: request.status,
+        createdAt: request.createdAt,
+        expiresAt: request.expiresAt,
+      },
+      create: {
+        id: request.id,
+        senderId: request.senderId,
+        reciverId: request.receiverId,
+        createdAt: request.createdAt,
+        status: request.status,
+        expiresAt: request.expiresAt,
+      },
+    });
+  }
+
+  async deleteRequest(requestId: UUID): Promise<void> {
+    await this.table.delete({ where: { id: requestId } });
   }
 
   private mapToFriendRequest(entity: FreindRequestEntity): FriendRequest {

@@ -12,6 +12,8 @@ import type { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
 import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
 import PageHeader from "@app/ui/layout/Header";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
+import type { FriendRequest } from "@domain/user";
+import type { UserType } from "@domain/user/entities";
 
 export default async function FriendsPage() {
   const user = await getAuthenticatedUserFromCookie();
@@ -39,9 +41,8 @@ export default async function FriendsPage() {
       <PageHeader title="Friends" returnUrl="/" />
       <div className="flex flex-col gap-3">
         <FriendRequestReceived
-          users={users}
-          invitingUserId={friendList.pendingReceivedRequests.map(
-            ({ senderId }) => senderId,
+          users={friendList.pendingReceivedRequests.map((request) =>
+            mapToUsers(request, users),
           )}
         />
         <FriendRequestsSent invitations={invitations} />
@@ -51,4 +52,13 @@ export default async function FriendsPage() {
       <FriendInvite />
     </PageWrapper>
   );
+}
+
+function mapToUsers(friendRequest: FriendRequest, users: UserType[]) {
+  const sender = users.find(({ id }) => id === friendRequest.senderId);
+  if (!sender) throw new Error("Unable to find sender!");
+  return {
+    ...sender,
+    requestId: friendRequest.id,
+  };
 }

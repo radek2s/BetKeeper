@@ -9,7 +9,7 @@ import type { User } from "./User";
  */
 export class UserFriendList extends Entity {
   private readonly _userId: UUID;
-  private readonly _friends: Map<string, UUID> = new Map();
+  private readonly _friends: Map<string, FriendRequest> = new Map();
   private readonly _sentFriendRequests: Map<string, FriendRequest> = new Map();
   private readonly _receivedFriendRequests: Map<string, FriendRequest> =
     new Map();
@@ -28,7 +28,7 @@ export class UserFriendList extends Entity {
   }
 
   get friends(): UUID[] {
-    return Array.from(this._friends.values());
+    return Array.from(this._friends.keys());
   }
 
   get friendCount(): number {
@@ -81,20 +81,21 @@ export class UserFriendList extends Entity {
     this._receivedFriendRequests.set(friendRequest.id, friendRequest);
   }
 
-  approveFriendRequest(requestId: string): void {
+  approveFriendRequest(requestId: string): FriendRequest {
     const request = this._receivedFriendRequests.get(requestId);
     if (!request) {
       throw new Error("Friend request not found");
     }
 
     request.approve();
-    this.addFriend(request.senderId);
+    this.addFriend(request.senderId, requestId);
 
     this.addDomainEvents(request.domainEvents);
     request.clearDomainEvents();
+    return request;
   }
 
-  rejectFriendRequest(requestId: string): void {
+  rejectFriendRequest(requestId: string): FriendRequest {
     const request = this._receivedFriendRequests.get(requestId);
     if (!request) {
       throw new Error("Friend request not found");
@@ -104,6 +105,7 @@ export class UserFriendList extends Entity {
 
     this.addDomainEvents(request.domainEvents);
     request.clearDomainEvents();
+    return request;
   }
 
   cancelSentFriendRequest(requestId: string): void {
@@ -116,6 +118,31 @@ export class UserFriendList extends Entity {
   }
 
   addFriend(friendId: UUID, requestId?: UUID): void {
+    const getFriendRequest = (requestId: string) => {
+      const sent = this._sentFriendRequests.get(requestId);
+      const recived = this._receivedFriendRequests.get(requestId);
+      const request = sent || recived;
+      if (!request) throw new Error(`Unable to find request ${requestId}`);
+      return request;
+    };
+
+    const getFriendRequestByFriendId = (friendId: string) => {
+      const sent = this.sentFriendRequests.find(
+        ({ receiverId }) => receiverId === friendId,
+      );
+      const recived = this.receivedFriendRequests.find(
+        ({ senderId }) => senderId === friendId,
+      );
+      const request = sent || recived;
+      if (!request) throw new Error(`Unable to find request ${requestId}`);
+      return request;
+    };
+
+    const getRequest = () => {
+      if (requestId) return getFriendRequest(requestId);
+      return getFriendRequestByFriendId(friendId);
+    };
+
     if (friendId === this._userId) {
       throw new Error("Cannot add yourself as a friend");
     }
@@ -124,23 +151,26 @@ export class UserFriendList extends Entity {
       return;
     }
 
-    if (requestId) {
-      const request = this._sentFriendRequests.get(requestId);
-      if (!request?.isApproved()) {
-        request?.approve();
-      }
+    const request = getRequest();
+
+    if (!request.isApproved()) {
+      request.approve();
     }
 
-    this._friends.set(friendId, friendId);
+    this._friends.set(friendId, request);
   }
 
-  removeFriend(friendId: UUID): void {
+  removeFriend(friendId: UUID): UUID {
     if (!this.isFriend(friendId)) {
       throw new Error("User is not in friend list");
     }
 
+    const request = this._friends.get(friendId);
+    if (!request) throw new Error("Request not found!");
+
     this._friends.delete(friendId);
     this.addDomainEvent(new FriendRemovedEvent(this._userId, friendId));
+    return request.id;
   }
 
   isFriend(userId: UUID): boolean {
@@ -187,14 +217,19 @@ export class UserFriendList extends Entity {
 
   static reconstitute(
     userId: UUID,
-    friends: UUID[],
+    friends: FriendRequest[],
     sentFriendRequests: FriendRequest[],
     receivedFriendRequests: FriendRequest[],
   ): UserFriendList {
     const friendList = new UserFriendList(userId);
 
-    friends.forEach((friendId) => {
-      friendList._friends.set(friendId, friendId);
+    friends.forEach((request) => {
+      const received = request.receiverId === userId;
+      if (received) {
+        friendList._friends.set(request.senderId, request);
+      } else {
+        friendList._friends.set(request.receiverId, request);
+      }
     });
 
     sentFriendRequests.forEach((request) => {

@@ -23,8 +23,11 @@ export interface IUserRepository {
  * Defines the contract for friend list persistence operations
  */
 export interface IFriendListRepository {
+  findRequestById(requestId: UUID): Promise<FriendRequest | null>;
   findByUserId(userId: UUID): Promise<UserFriendList | null>;
   save(friendList: UserFriendList): Promise<void>;
+  saveRequest(friendRequest: FriendRequest): Promise<void>;
+  deleteRequest(requestId: UUID): Promise<void>;
 }
 
 export interface IUserRequestRepository {
@@ -147,18 +150,36 @@ export class UserService extends DomainService {
       throw new Error("Friend request not found");
     }
 
-    const senderFriendList = await this.friendListRepository.findByUserId(
-      friendRequest.senderId,
-    );
-    if (!senderFriendList) {
-      throw new Error("Sender friend list not found");
+    // const senderFriendList = await this.friendListRepository.findByUserId(
+    //   friendRequest.senderId,
+    // );
+    // if (!senderFriendList) {
+    //   throw new Error("Sender friend list not found");
+    // }
+
+    const request = receiverFriendList.approveFriendRequest(requestId);
+
+    await this.friendListRepository.saveRequest(request);
+    // await this.friendListRepository.save(senderFriendList);
+  }
+
+  async rejectFriendRequest(senderId: UUID, requestId: string) {
+    const friendList = await this.friendListRepository.findByUserId(senderId);
+    if (!friendList) {
+      throw new Error("Receiver friend list not found");
     }
 
-    receiverFriendList.approveFriendRequest(requestId);
-    senderFriendList.addFriend(receiverId, requestId);
+    const request = friendList.rejectFriendRequest(requestId);
 
-    await this.friendListRepository.save(receiverFriendList);
-    await this.friendListRepository.save(senderFriendList);
+    await this.friendListRepository.saveRequest(request);
+  }
+
+  async cancelFriendRequest(requestId: UUID) {
+    const request = await this.friendListRepository.findRequestById(requestId);
+    if (!request)
+      throw new Error(`Friend request with ID ${requestId} was not found!`);
+    request.cancel();
+    await this.friendListRepository.saveRequest(request);
   }
 
   /**
@@ -177,7 +198,7 @@ export class UserService extends DomainService {
       throw new Error("Friend friend list not found");
     }
 
-    userFriendList.removeFriend(friendId);
+    const requestId = userFriendList.removeFriend(friendId);
 
     if (friendFriendList.isFriend(userId)) {
       friendFriendList.removeFriend(userId);
@@ -185,6 +206,8 @@ export class UserService extends DomainService {
 
     await this.friendListRepository.save(userFriendList);
     await this.friendListRepository.save(friendFriendList);
+
+    await this.friendListRepository.deleteRequest(requestId);
   }
 
   async userExists(email: Email): Promise<boolean> {

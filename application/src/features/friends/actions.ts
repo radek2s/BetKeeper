@@ -6,6 +6,7 @@ import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequ
 import NextUserService from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email } from "@domain/user";
+import { revalidatePath } from "next/cache";
 import { createUserRequest } from "../users/actions";
 import {
   type FriendInvitation,
@@ -21,14 +22,11 @@ export async function sendFriendRequest(
   const friendEmail = new Email(email);
   const userExists = await NextUserService.userExists(friendEmail);
   if (userExists) {
-    const request = await NextUserService.sendFriendRequest(
-      requestingUser.id,
-      friendEmail,
-    );
-    return request.id;
+    await NextUserService.sendFriendRequest(requestingUser.id, friendEmail);
   } else {
-    createUserRequest(email, token, false);
+    await createUserRequest(email, token, false);
   }
+  revalidatePath(`/friends`);
 }
 
 export async function getSentInvitations(
@@ -60,6 +58,36 @@ export async function getFriendList(userId: string) {
   return friendList;
 }
 
-export async function approveFriendRequest(reciverId: UUID, requestId: UUID) {
-  await NextUserService.approveFriendRequest(reciverId, requestId);
+export async function approveFriendRequest(
+  requestId: UUID,
+  token: string | undefined,
+) {
+  const user = await validateToken(token);
+  await NextUserService.approveFriendRequest(user.id, requestId);
+  revalidatePath("/friends");
+}
+
+export async function rejectFriendRequest(
+  requestId: UUID,
+  token: string | undefined,
+) {
+  const user = await validateToken(token);
+  await NextUserService.rejectFriendRequest(user.id, requestId);
+  revalidatePath("/friends");
+}
+
+export async function cancelRequest(
+  requestId: UUID,
+  token: string | undefined,
+) {
+  const user = await validateToken(token);
+  await NextUserService.cancelFriendRequest(requestId);
+  revalidatePath("/friends");
+}
+
+export async function removeFriend(friendId: UUID, token: string | undefined) {
+  const user = await validateToken(token);
+  await NextUserService.removeFriend(user.id, friendId);
+
+  revalidatePath("/friends");
 }

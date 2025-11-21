@@ -1,15 +1,39 @@
 "use client";
 
 import { UserListItem } from "@app/features/users/components/UserListItem";
+import { IconButton } from "@app/ui/button/IconButton";
 import { Panel } from "@app/ui/layout/Panel";
+import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
+import { approveFriendRequest, rejectFriendRequest } from "../actions";
+
+type FriendRequestUser = UserType & {
+  requestId: string;
+};
 
 interface Props {
-  invitingUserId: string[];
-  users: UserType[];
+  users: FriendRequestUser[];
 }
-export function FriendRequestReceived({ users, invitingUserId }: Props) {
-  const friends = users.filter(({ id }) => invitingUserId.includes(id));
+export function FriendRequestReceived({ users }: Props) {
+  const { sessionToken } = useCorbado();
+  const friends = users;
+
+  const handleApprove = async (requestId: string) => {
+    try {
+      approveFriendRequest(requestId, sessionToken);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleReject = async (requestId: string) => {
+    try {
+      rejectFriendRequest(requestId, sessionToken);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <Panel header={{ title: "Pending request", icon: "waving-hand" }}>
       <div className="flex flex-col gap-2">
@@ -18,7 +42,16 @@ export function FriendRequestReceived({ users, invitingUserId }: Props) {
         )}
         {friends.map((friend) => (
           <UserListItem key={friend.id} user={friend}>
-            <div></div>
+            <IconButton
+              icon="check"
+              variant="ghost"
+              onClick={() => handleApprove(friend.requestId)}
+            />
+            <IconButton
+              icon="close"
+              variant="ghost"
+              onClick={() => handleReject(friend.requestId)}
+            />
           </UserListItem>
         ))}
       </div>

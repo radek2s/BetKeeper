@@ -1,13 +1,26 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 "use client";
 import { toRelativeTime } from "@app/lib/utils/timeUtils";
+import { IconButton } from "@app/ui/button/IconButton";
 import { Panel } from "@app/ui/layout/Panel";
+import { useCorbado } from "@corbado/react";
+import { cancelRequest } from "../actions";
 import type { FriendInvitation } from "../model/friendsDto";
 
 interface Props {
   invitations: FriendInvitation[];
 }
 export function FriendRequestsSent({ invitations }: Props) {
+  const { sessionToken } = useCorbado();
+
+  const handleCancel = async (requestId: string) => {
+    try {
+      cancelRequest(requestId, sessionToken);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const relativeTime = (invitation: FriendInvitation) => {
     const [value, unit] = toRelativeTime(invitation.createdAt);
     if (unit === "seconds") return "now";
@@ -45,7 +58,15 @@ export function FriendRequestsSent({ invitations }: Props) {
                 </span>
               </div>
             )}
-            <div className="flex gap-1 actions-wrapper__actions"></div>
+            <div className="flex gap-1 actions-wrapper__actions">
+              {invitation.name && (
+                <IconButton
+                  icon="close"
+                  variant="ghost"
+                  onClick={() => handleCancel(invitation.id)}
+                />
+              )}
+            </div>
           </div>
         ))}
       </div>
