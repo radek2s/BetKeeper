@@ -12,7 +12,7 @@ import {
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequestRepository";
 import NextUserInvitationService from "@app/server/services/NextUserInvitationService";
-import NextUserService from "@app/server/services/NextUserService";
+import { NextUserService } from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email, UserStatus } from "@domain/user";
 import type { UserType } from "@domain/user/entities";

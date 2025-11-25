@@ -15,6 +15,7 @@
     "test:domain:ci": "npx nx run test domain --reporter junit --output-file ./tests-domain.xml",
     "test:ci": "vitest run",
     "test:coverage": "vitest run --coverage --reporter junit --output-file ./test-report.xml",
+    "test:coverage:report": "vitest run --coverage",
     "build": "npx nx run application:build",
     "preview": "npx nx run application:preview",
     "build:ci": "CI=false && tsc && vite build",

@@ -3,7 +3,7 @@ import { validateToken } from "@app/server/auth/authentication";
 import { NextFriendListRepository } from "@app/server/repositories/NextFriendListRepository";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequestRepository";
-import NextUserService from "@app/server/services/NextUserService";
+import { NextUserService } from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email } from "@domain/user";
 import { revalidatePath } from "next/cache";

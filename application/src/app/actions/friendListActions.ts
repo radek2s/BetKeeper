@@ -1,5 +1,5 @@
 "use server";
-import NextUserService from "@app/server/services/NextUserService";
+import { NextUserService } from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email } from "@domain/user";
 
