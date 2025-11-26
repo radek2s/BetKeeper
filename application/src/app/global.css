@@ -137,6 +137,61 @@ body {
   color: var(--error);
 }
 
+.main-title {
+  line-height: 32px;
+}
+
+.wizzard-progress {
+  width: 100%;
+  border-bottom: 1px solid var(--color-white);
+  min-height: 16px;
+  margin-bottom: 15px;
+  position: relative;
+
+  .wizzard-progress__active {
+    position: absolute;
+    top: 15px;
+    background-color: var(--secondary);
+    height: 1px;
+  }
+
+  .dot {
+    position: absolute;
+    top: 12px;
+    background-color: var(--color-white);
+    height: 8px;
+    width: 8px;
+    border-radius: 99px;
+  }
+  .dot.completed {
+    background-color: var(--secondary);
+  }
+  .dot__active {
+    position: absolute;
+    top: 100%;
+    transform: translateY(-50%);
+    background-color: var(--secondary);
+    height: 24px;
+    width: 24px;
+    border-radius: 99px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    font-family: "Heebo", serif;
+    line-height: 12px;
+  }
+
+  .dot:nth-of-type(2) {
+    left: 50%;
+  }
+  .dot:nth-of-type(3) {
+    left: 100%;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-image: url("/background_dark.jpg");
@@ -218,6 +273,10 @@ body {
 .btn.primary {
   background-color: var(--primary);
 }
+.btn.primary[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 .btn.error {
   background-color: var(--error);
 }
@@ -233,7 +292,8 @@ body {
 }
 
 .cb-container .cb-input,
-.ip {
+.ip,
+.ta {
   background-color: var(--container);
   color: var(--base-text);
   @apply px-4 py-2 rounded-full;
@@ -242,17 +302,55 @@ body {
   height: 40px;
   caret-color: var(--primary);
 }
+.ta:hover,
 .ip:hover {
   background-color: var(--container-hovered);
 }
 
+.ta::placeholder,
 .ip::placeholder {
   color: var(--base-text-grayed);
 }
 
+.ta:focus-visible,
 .ip:focus-visible {
   outline: 2px solid var(--primary);
   border: none;
+}
+
+.ta {
+  height: unset;
+  border-radius: 12px;
+}
+
+.resizable-y {
+  resize: vertical;
+}
+
+.select__triger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  color: var(--base-text);
+  background-color: var(--container);
+  font-size: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  @apply px-4 py-2 rounded-full;
+}
+
+.select__content {
+  z-index: 1000;
+  overflow: hidden;
+  padding: 6px 12px;
+
+  background-color: var(--container);
+  border-radius: 8px;
+}
+.select__viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .btn-icon {
@@ -281,6 +379,33 @@ body {
 }
 .btn-icon.ghost:hover .icon {
   fill: var(--primary);
+}
+input[type="radio"] {
+  appearance: none;
+  background-color: var(--container);
+  margin: 0;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid var(--color-white);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  box-sizing: border-box;
+}
+input[type="radio"]::before {
+  box-sizing: border-box;
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--primary);
+}
+input[type="radio"]:checked::before {
+  transform: scale(1);
 }
 
 .panel {

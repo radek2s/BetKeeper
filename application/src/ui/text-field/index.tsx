@@ -1,14 +1,14 @@
 import { type ForwardedRef, forwardRef } from "react";
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   id?: string;
   name: string;
   label?: string;
 }
-export const FormField = forwardRef(
+export const TextField = forwardRef(
   (
     { className, id, name, label, ...props }: Props,
-    ref: ForwardedRef<HTMLInputElement>,
+    ref: ForwardedRef<HTMLTextAreaElement>,
   ) => {
     return (
       <div className="form-field flex flex-col">
@@ -17,11 +17,11 @@ export const FormField = forwardRef(
             {label}
           </label>
         )}
-        <input
+        <textarea
           id={id ?? name}
           name={name}
           ref={ref}
-          className={`ip ${className}`}
+          className={`ta ${className}`}
           {...props}
         />
       </div>
@@ -29,6 +29,6 @@ export const FormField = forwardRef(
   },
 );
 
-FormField.displayName = "FormField";
+TextField.displayName = "TextField";
 
-export default FormField;
+export default TextField;
