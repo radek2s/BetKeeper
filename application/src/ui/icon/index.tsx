@@ -1,5 +1,6 @@
 import type { FunctionComponent } from "react";
 import { AddIcon } from "./add";
+import { ArrowDropdownIcon } from "./arrow-dropdown";
 import { ArrowLeftIcon } from "./arrow-left";
 import { BugIcon } from "./bug";
 import { CalendarIcon } from "./calendar";
@@ -30,6 +31,7 @@ import { WavingHandIcon } from "./waving-hand";
 const iconMap: Record<IconType, React.FC<IconProps>> = {
   add: AddIcon,
   "arrow-left": ArrowLeftIcon,
+  "arrow-dropdown": ArrowDropdownIcon,
   bug: BugIcon,
   calendar: CalendarIcon,
   check: CheckIcon,

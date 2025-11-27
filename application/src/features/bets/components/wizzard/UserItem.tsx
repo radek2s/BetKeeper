@@ -10,7 +10,7 @@ export function UserItem({ user, children }: Props) {
       <div className="flex gap-2 items-center">
         <img
           className="w-9 h-9 avatar"
-          src={user.avatarUrl}
+          src={user.avatarUrl || "/avatars/avatar_00.png"}
           aria-label="Profile"
         />
         <div className="flex flex-col">

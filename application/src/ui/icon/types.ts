@@ -5,6 +5,7 @@ export type IconProps = {
 export type IconType =
   | "add"
   | "arrow-left"
+  | "arrow-dropdown"
   | "bug"
   | "calendar"
   | "check"

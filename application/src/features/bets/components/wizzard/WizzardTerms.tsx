@@ -30,6 +30,8 @@ export function WizzardTerms({ terms, onCancel, onNext }: Props) {
         requestDescriptionRef.current.value = terms.description;
     }
   }, []);
+
+  //Change description to "term" and enforce to be required.
   return (
     <div>
       <h3 className="text-center my-1">Terms</h3>

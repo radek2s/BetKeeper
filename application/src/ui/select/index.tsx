@@ -1,21 +1,32 @@
+"use client";
 import { Select as RadixSelect } from "radix-ui";
-import { forwardRef } from "react";
+import { forwardRef, type PropsWithChildren, useState } from "react";
 import { Icon } from "../icon";
-export function Select() {
+
+interface SelectProps extends PropsWithChildren {
+  value?: string;
+  placeholder: string;
+  onChange: (value: string) => void;
+}
+export function Select({
+  placeholder,
+  children,
+  value,
+  onChange,
+}: SelectProps) {
   return (
-    <RadixSelect.Root open={true}>
+    <RadixSelect.Root onValueChange={onChange} value={value}>
       <RadixSelect.Trigger className="select__triger">
-        <RadixSelect.Value placeholder="Select..." />
+        <RadixSelect.Value placeholder={placeholder} />
         <RadixSelect.Icon>
-          <Icon name="arrow-left" />
+          <Icon name="arrow-dropdown" />
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
       <RadixSelect.Portal>
         <RadixSelect.Content className="select__content">
           <RadixSelect.ScrollUpButton>Up</RadixSelect.ScrollUpButton>
           <RadixSelect.Viewport className="select__viewport">
-            <SelectItem value="comon">Common</SelectItem>
-            <SelectItem value="shared">Shared</SelectItem>
+            {children}
           </RadixSelect.Viewport>
           <RadixSelect.ScrollDownButton>Down</RadixSelect.ScrollDownButton>
         </RadixSelect.Content>
@@ -24,15 +35,19 @@ export function Select() {
   );
 }
 
-const SelectItem = forwardRef<HTMLDivElement, RadixSelect.SelectItemProps>(
-  ({ children, className, ...props }, forwardedRef) => {
-    return (
-      <RadixSelect.Item className={className} {...props} ref={forwardedRef}>
-        <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
-        <RadixSelect.ItemIndicator className="SelectItemIndicator">
-          Ok
-        </RadixSelect.ItemIndicator>
-      </RadixSelect.Item>
-    );
-  },
-);
+export const SelectItem = forwardRef<
+  HTMLDivElement,
+  RadixSelect.SelectItemProps
+>(({ children, className, ...props }, forwardedRef) => {
+  return (
+    <RadixSelect.Item
+      className={`select__item ${className}`}
+      {...props}
+      ref={forwardedRef}>
+      <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
+      <RadixSelect.ItemIndicator className="SelectItemIndicator">
+        <Icon name="check" />
+      </RadixSelect.ItemIndicator>
+    </RadixSelect.Item>
+  );
+});

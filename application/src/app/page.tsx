@@ -2,11 +2,12 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
+import { getFriendList } from "@app/features/friends/actions";
+import { getUserDetails } from "@app/features/users/actions";
 import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
 import { Button } from "@app/ui/button/Button";
 import { IconButton } from "@app/ui/button/IconButton";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
-import { Select } from "@app/ui/select";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -14,6 +15,17 @@ export default async function Index() {
   const user = await getAuthenticatedUserFromCookie();
 
   if (!user) redirect("/login");
+
+  const friendList = await getFriendList(user.id);
+
+  const friends = await getUsers([...friendList.friends]);
+
+  async function getUsers(userIds: string[]) {
+    if (userIds.length === 0) return [];
+
+    const userPromises = userIds.map(getUserDetails);
+    return (await Promise.all(userPromises)).map((u) => u.toObject());
+  }
 
   return (
     <PageWrapper>
@@ -39,7 +51,6 @@ export default async function Index() {
         </div>
       </header>
       <div>
-        <Select />
         <section>
           <h2>Pending requests</h2>
         </section>
@@ -50,7 +61,7 @@ export default async function Index() {
           <h2>Uncompleted</h2>
         </section>
         <Button>Show all</Button>
-        <BetRequestCreateBtn />
+        <BetRequestCreateBtn friends={friends} />
       </div>
     </PageWrapper>
   );

@@ -1,19 +1,29 @@
 import { UserStatus } from "@domain/user";
 import type { UserType } from "@domain/user/entities";
 import { useState } from "react";
-import { isTermsResult, type TermsResult } from "./types";
+import {
+  type BetRequestCreate,
+  isTermsResult,
+  type StakeResult,
+  type TermsResult,
+} from "./types";
 import { WizzardParticipants } from "./WizzardParticipants";
 import { WizzardProgress } from "./WizzardProgress";
 import { WizzardStake } from "./WizzardStake";
 import { WizzardTerms } from "./WizzardTerms";
 
-export function BetRequestWizzard() {
+interface Props {
+  friends: UserType[];
+  onCancel: () => void;
+  onSend: (request: BetRequestCreate) => void;
+}
+export function BetRequestWizzard({ friends, onCancel, onSend }: Props) {
   const [step, setStep] = useState<number>(0);
   const [terms, setTerms] = useState<TermsResult>();
   const [friend, setFriend] = useState<UserType>();
 
   const handleCancel = () => {
-    console.log("cancelled");
+    onCancel();
   };
 
   const handleBack = () => {
@@ -29,6 +39,20 @@ export function BetRequestWizzard() {
     setStep((s) => s + 1);
   };
 
+  const handleSend = (stake: StakeResult) => {
+    if (!terms) return;
+    if (!friend) return;
+
+    const request = {
+      title: terms.title,
+      description: terms.description,
+      friendId: friend.id,
+      ...stake,
+    };
+
+    onSend(request);
+  };
+
   const getComponent = (step: number) => {
     switch (step) {
       case 0:
@@ -41,26 +65,7 @@ export function BetRequestWizzard() {
             selectedFriend={friend}
             onNext={onNext}
             onBack={handleBack}
-            friends={[
-              {
-                id: "1",
-                email: "test@email.com",
-                firstName: "Brian",
-                lastName: "Smith",
-                avatarUrl: "avatars/avatar_01.png",
-                role: undefined,
-                status: UserStatus.ACTIVE,
-              },
-              {
-                id: "2",
-                email: "noone@email.com",
-                firstName: "Josh",
-                lastName: "Smith",
-                avatarUrl: "avatars/avatar_03.png",
-                role: undefined,
-                status: UserStatus.ACTIVE,
-              },
-            ]}
+            friends={friends}
           />
         );
       case 2:
@@ -68,6 +73,7 @@ export function BetRequestWizzard() {
           <WizzardStake
             selectedFriendName={friend?.firstName || ""}
             onCancel={handleBack}
+            onSend={handleSend}
           />
         );
     }
