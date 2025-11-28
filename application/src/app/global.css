@@ -459,6 +459,28 @@ input[type="radio"]:checked::before {
   }
 }
 
+.bet-card {
+  width: clamp(10vw, 400px, 90vw);
+}
+.bet-card:hover {
+  cursor: pointer;
+  outline: 2px solid var(--container);
+}
+
+.bet-card__avatars {
+  display: flex;
+  width: 64px;
+}
+
+.bet-card__avatars .avatar.participant {
+  position: absolute;
+  outline: 3px solid var(--container);
+}
+.bet-card__avatars .avatar.creator {
+  position: relative;
+  left: 24px;
+}
+
 @media (prefers-color-scheme: dark) {
   .icon {
     fill: var(--base-text);

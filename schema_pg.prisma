@@ -10,6 +10,7 @@ generator client {
 
 model UserTable {
     id          String @id @default(uuid())
+    providerId  String? @unique
     email       String @unique
     firstName   String
     lastName    String
@@ -47,10 +48,14 @@ model BetTable {
     id                  String @id @default(uuid())
     creatorId           String 
     participantId       String 
+    title               String 
     terms               String
     status              String
     createdAt           DateTime 
-    updatedAt           DateTime 
+    updatedAt           DateTime
+    stakeType           String
+    stakeBase           String
+    stakeAdditional     String?
     dueDate             DateTime? 
     resolvedAt          DateTime? 
     completedAt         DateTime? 
@@ -65,10 +70,24 @@ model BetRequestTable {
     id                  String @id @default(uuid())
     creatorId           String 
     participantId       String 
+    title               String
     terms               String
     status              String
     createdAt           DateTime 
     updatedAt           DateTime 
+    stakeType           String
+    stakeBase           String
+    stakeAdditional     String?
 
     @@map("bet_request")
+}
+
+model BetRequestVoteTable {
+    requestId       String
+    participantId   String
+    vote            String
+    votedAt         DateTime?
+
+    @@id(name: "voteId", [requestId, participantId])
+    @@map("bet_request_vote")
 }

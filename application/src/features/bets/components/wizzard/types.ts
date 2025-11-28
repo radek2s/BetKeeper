@@ -1,6 +1,6 @@
 export type TermsResult = {
   title: string;
-  description?: string;
+  description: string;
 };
 
 export type StakeResult =

@@ -5,10 +5,11 @@ import type { IconType } from "../icon/types";
 interface PanelProps {
   header?: PanelHeaderProps;
   children: ReactNode;
+  className?: string;
 }
-export function Panel({ header, children }: PanelProps) {
+export function Panel({ header, children, className }: PanelProps) {
   return (
-    <section className="panel">
+    <section className={`panel ${className}`}>
       {header && <PanelHeader title={header.title} icon={header.icon} />}
       {children}
     </section>

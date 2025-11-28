@@ -1,6 +1,8 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 
+import { getBetRequests } from "@app/features/bets/actions";
+import { BetCard } from "@app/features/bets/components/BetCard";
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
 import { getFriendList } from "@app/features/friends/actions";
 import { getUserDetails } from "@app/features/users/actions";
@@ -26,6 +28,8 @@ export default async function Index() {
     const userPromises = userIds.map(getUserDetails);
     return (await Promise.all(userPromises)).map((u) => u.toObject());
   }
+
+  const requests = await getBetRequests(user.id);
 
   return (
     <PageWrapper>
@@ -53,6 +57,11 @@ export default async function Index() {
       <div>
         <section>
           <h2>Pending requests</h2>
+          <div className="flex flex-col gap-3">
+            {requests.map((request) => (
+              <BetCard key={request.id} bet={request} />
+            ))}
+          </div>
         </section>
         <section>
           <h2>Unresolved</h2>

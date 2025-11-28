@@ -20,6 +20,19 @@ export enum ParticipantVote {
   REJECTED = "rejected",
 }
 
+export function getParticipantVote(vote: string) {
+  switch (vote) {
+    case "unknown":
+      return ParticipantVote.UNKNOWN;
+    case "approved":
+      return ParticipantVote.APPROVED;
+    case "rejected":
+      return ParticipantVote.REJECTED;
+    default:
+      throw new Error("Invalid vote state!");
+  }
+}
+
 /**
  * Bet Request Status Guards
  * Utility functions for checking bet request status states
