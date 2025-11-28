@@ -20,6 +20,7 @@ import { BetRequest } from "../BetRequest";
 describe("BetRequest", () => {
   let creatorId: UUID;
   let participantId: UUID;
+  let title: string;
   let terms: Terms;
   let stakes: CommonStake;
   let dueDate: Date;
@@ -27,6 +28,7 @@ describe("BetRequest", () => {
   beforeEach(() => {
     creatorId = generateId();
     participantId = generateId();
+    title = "Short summary";
     terms = new Terms("This is a test bet about who will win the game");
     stakes = new CommonStake("Loser buys coffee for the winner");
     dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
@@ -37,6 +39,7 @@ describe("BetRequest", () => {
       const betRequest = new BetRequest(
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
       );
@@ -44,6 +47,7 @@ describe("BetRequest", () => {
       expect(betRequest.id).toBeDefined();
       expect(betRequest.creatorId).toBe(creatorId);
       expect(betRequest.participantId).toBe(participantId);
+      expect(betRequest.title).toBe(title);
       expect(betRequest.terms).toBe(terms);
       expect(betRequest.stakes).toBe(stakes);
       expect(betRequest.status).toBe(BetRequestStatus.PENDING);
@@ -51,7 +55,7 @@ describe("BetRequest", () => {
     });
 
     it("should emit BetRequestCreatedEvent when created without ID", () => {
-      const betRequest = new BetRequest(creatorId, participantId, terms);
+      const betRequest = new BetRequest(creatorId, participantId, title, terms);
 
       const events = betRequest.domainEvents;
       expect(events).toHaveLength(1);
@@ -69,6 +73,7 @@ describe("BetRequest", () => {
       const betRequest = new BetRequest(
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
         existingId,
@@ -79,7 +84,7 @@ describe("BetRequest", () => {
     });
 
     it("should initialize participant votes as unknown", () => {
-      const betRequest = new BetRequest(creatorId, participantId, terms);
+      const betRequest = new BetRequest(creatorId, participantId, title, terms);
 
       expect(betRequest.getParticipantVote(creatorId)).toBe(
         ParticipantVote.UNKNOWN,
@@ -95,6 +100,7 @@ describe("BetRequest", () => {
       const betRequest = BetRequest.create(
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
       );
@@ -107,7 +113,7 @@ describe("BetRequest", () => {
 
     it("should throw error if creator and participant are the same", () => {
       expect(() => {
-        BetRequest.create(creatorId, creatorId, terms);
+        BetRequest.create(creatorId, creatorId, title, terms);
       }).toThrow("Creator and participant cannot be the same person");
     });
   });
@@ -116,7 +122,7 @@ describe("BetRequest", () => {
     let betRequest: BetRequest;
 
     beforeEach(() => {
-      betRequest = new BetRequest(creatorId, participantId, terms);
+      betRequest = new BetRequest(creatorId, participantId, title, terms);
     });
 
     it("should correctly identify pending status", () => {
@@ -148,7 +154,7 @@ describe("BetRequest", () => {
     let betRequest: BetRequest;
 
     beforeEach(() => {
-      betRequest = new BetRequest(creatorId, participantId, terms);
+      betRequest = new BetRequest(creatorId, participantId, title, terms);
       betRequest.clearDomainEvents(); // Clear creation events
     });
 
@@ -237,7 +243,13 @@ describe("BetRequest", () => {
     let betRequest: BetRequest;
 
     beforeEach(() => {
-      betRequest = new BetRequest(creatorId, participantId, terms, stakes);
+      betRequest = new BetRequest(
+        creatorId,
+        participantId,
+        title,
+        terms,
+        stakes,
+      );
       betRequest.clearDomainEvents();
     });
 
@@ -293,7 +305,7 @@ describe("BetRequest", () => {
     let betRequest: BetRequest;
 
     beforeEach(() => {
-      betRequest = new BetRequest(creatorId, participantId, terms);
+      betRequest = new BetRequest(creatorId, participantId, title, terms);
       betRequest.clearDomainEvents();
     });
 
@@ -354,7 +366,7 @@ describe("BetRequest", () => {
     let betRequest: BetRequest;
 
     beforeEach(() => {
-      betRequest = new BetRequest(creatorId, participantId, terms);
+      betRequest = new BetRequest(creatorId, participantId, title, terms);
       betRequest.clearDomainEvents();
     });
 
@@ -389,7 +401,7 @@ describe("BetRequest", () => {
     let betRequest: BetRequest;
 
     beforeEach(() => {
-      betRequest = new BetRequest(creatorId, participantId, terms);
+      betRequest = new BetRequest(creatorId, participantId, title, terms);
       betRequest.clearDomainEvents();
     });
 
@@ -434,7 +446,7 @@ describe("BetRequest", () => {
     let betRequest: BetRequest;
 
     beforeEach(() => {
-      betRequest = new BetRequest(creatorId, participantId, terms);
+      betRequest = new BetRequest(creatorId, participantId, title, terms);
       betRequest.clearDomainEvents();
     });
 
@@ -473,22 +485,33 @@ describe("BetRequest", () => {
 
   describe("Entity implementation", () => {
     it("should implement equals correctly", () => {
-      const betRequest1 = new BetRequest(creatorId, participantId, terms);
+      const betRequest1 = new BetRequest(
+        creatorId,
+        participantId,
+        title,
+        terms,
+      );
       const betRequest2 = new BetRequest(
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
         betRequest1.id,
       );
-      const betRequest3 = new BetRequest(creatorId, participantId, terms);
+      const betRequest3 = new BetRequest(
+        creatorId,
+        participantId,
+        title,
+        terms,
+      );
 
       expect(betRequest1.equals(betRequest2)).toBe(true);
       expect(betRequest1.equals(betRequest3)).toBe(false);
     });
 
     it("should implement toString correctly", () => {
-      const betRequest = new BetRequest(creatorId, participantId, terms);
+      const betRequest = new BetRequest(creatorId, participantId, title, terms);
       const result = betRequest.toString();
 
       expect(result).toContain("BetRequest");
@@ -501,7 +524,7 @@ describe("BetRequest", () => {
 
   describe("Business rules", () => {
     it("should not allow modification when not pending", () => {
-      const betRequest = new BetRequest(creatorId, participantId, terms);
+      const betRequest = new BetRequest(creatorId, participantId, title, terms);
       betRequest.approve(creatorId);
       betRequest.approve(participantId);
 
@@ -509,7 +532,7 @@ describe("BetRequest", () => {
     });
 
     it("should track participant votes correctly", () => {
-      const betRequest = new BetRequest(creatorId, participantId, terms);
+      const betRequest = new BetRequest(creatorId, participantId, title, terms);
 
       expect(betRequest.allParticipantsApproved()).toBe(false);
       expect(betRequest.hasAnyRejection()).toBe(false);
@@ -524,7 +547,7 @@ describe("BetRequest", () => {
     });
 
     it("should detect rejections correctly", () => {
-      const betRequest = new BetRequest(creatorId, participantId, terms);
+      const betRequest = new BetRequest(creatorId, participantId, title, terms);
 
       betRequest.approve(creatorId);
       betRequest.reject(participantId);

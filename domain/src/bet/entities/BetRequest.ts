@@ -35,6 +35,7 @@ export class BetRequest extends Entity {
   readonly id: UUID;
   readonly creatorId: UUID;
   readonly participantId: UUID;
+  title: string;
   terms: Terms;
   stakes?: IStake;
   status: BetRequestStatus;
@@ -46,6 +47,7 @@ export class BetRequest extends Entity {
   constructor(
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes?: IStake,
     id?: UUID,
@@ -57,6 +59,7 @@ export class BetRequest extends Entity {
     this.id = id || generateId();
     this.creatorId = creatorId;
     this.participantId = participantId;
+    this.title = title;
     this.terms = terms;
     this.stakes = stakes;
     this.status = BetRequestStatus.PENDING;
@@ -354,6 +357,7 @@ export class BetRequest extends Entity {
   static create(
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes?: IStake,
   ): BetRequest {
@@ -361,13 +365,14 @@ export class BetRequest extends Entity {
       throw new Error("Creator and participant cannot be the same person");
     }
 
-    return new BetRequest(creatorId, participantId, terms, stakes);
+    return new BetRequest(creatorId, participantId, title, terms, stakes);
   }
 
   static reconstitute(
     id: UUID,
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes: IStake | undefined,
     status: BetRequestStatus,
@@ -379,6 +384,7 @@ export class BetRequest extends Entity {
     const betRequest = new BetRequest(
       creatorId,
       participantId,
+      title,
       terms,
       stakes,
       id,
@@ -401,7 +407,7 @@ export class BetRequest extends Entity {
   }
 
   override toString(): string {
-    return `BetRequest(${this.id}, ${this.status}, Creator: ${this.creatorId}, Participant: ${this.participantId})`;
+    return `BetRequest(${this.id}, ${this.status}, ${this.title}, Creator: ${this.creatorId}, Participant: ${this.participantId})`;
   }
 
   override toObject() {
@@ -409,6 +415,7 @@ export class BetRequest extends Entity {
       id: this.id,
       creatorId: this.creatorId,
       participantId: this.participantId,
+      title: this.title,
       terms: this.terms,
       stakes: this.stakes?.toObject(),
       status: this.status,

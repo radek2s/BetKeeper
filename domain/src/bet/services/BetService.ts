@@ -32,6 +32,7 @@ export class BetService extends DomainService {
   async create(
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes?: IStake,
   ): Promise<BetAggregate> {
@@ -43,6 +44,7 @@ export class BetService extends DomainService {
     const betAggregate = BetAggregate.createWithBetRequest(
       creatorId,
       participantId,
+      title,
       terms,
       stakes,
     );

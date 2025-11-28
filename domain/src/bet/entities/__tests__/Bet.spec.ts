@@ -10,6 +10,7 @@ describe("Bet", () => {
   let betRequestId: UUID;
   let creatorId: UUID;
   let participantId: UUID;
+  let title: string;
   let terms: Terms;
   let stakes: CommonStake;
   let dueDate: Date;
@@ -18,6 +19,7 @@ describe("Bet", () => {
     betRequestId = generateId();
     creatorId = generateId();
     participantId = generateId();
+    title = "Short summary";
     terms = new Terms("This is a test bet about who will win the game");
     stakes = new CommonStake("Loser buys coffee for the winner");
     dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
@@ -29,6 +31,7 @@ describe("Bet", () => {
         betRequestId,
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
       );
@@ -37,6 +40,7 @@ describe("Bet", () => {
       expect(bet.betRequestId).toBe(betRequestId);
       expect(bet.creatorId).toBe(creatorId);
       expect(bet.participantId).toBe(participantId);
+      expect(bet.title).toBe(title);
       expect(bet.terms).toBe(terms);
       expect(bet.stakes).toBe(stakes);
       expect(bet.status).toBe(BetStatus.PENDING);
@@ -44,7 +48,7 @@ describe("Bet", () => {
     });
 
     it("should emit BetCreatedEvent when created without ID", () => {
-      const bet = new Bet(betRequestId, creatorId, participantId, terms);
+      const bet = new Bet(betRequestId, creatorId, participantId, title, terms);
 
       const events = bet.domainEvents;
       expect(events).toHaveLength(1);
@@ -64,6 +68,7 @@ describe("Bet", () => {
         betRequestId,
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
         existingId,
@@ -80,6 +85,7 @@ describe("Bet", () => {
         betRequestId,
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
       );
@@ -96,7 +102,7 @@ describe("Bet", () => {
     let bet: Bet;
 
     beforeEach(() => {
-      bet = new Bet(betRequestId, creatorId, participantId, terms);
+      bet = new Bet(betRequestId, creatorId, participantId, title, terms);
     });
 
     it("should correctly identify pending status", () => {
@@ -134,6 +140,7 @@ describe("Bet", () => {
         betRequestId,
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
       );
@@ -150,6 +157,7 @@ describe("Bet", () => {
         betRequestId,
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
       );
@@ -165,6 +173,7 @@ describe("Bet", () => {
         betRequestId,
         creatorId,
         participantId,
+        title,
         terms,
         stakes,
       );
@@ -176,13 +185,13 @@ describe("Bet", () => {
 
     it("should be pending too long when threshold exceeded", () => {
       // Create bet with past creation date by manipulating the internal state
-      const bet = new Bet(betRequestId, creatorId, participantId, terms);
+      const bet = new Bet(betRequestId, creatorId, participantId, title, terms);
       // We can't directly set creation date, so we test with current logic
       expect(bet.isPendingTooLong(1)).toBe(false); // 1 day threshold
     });
 
     it("should not be pending too long when resolved", () => {
-      const bet = new Bet(betRequestId, creatorId, participantId, terms);
+      const bet = new Bet(betRequestId, creatorId, participantId, title, terms);
       bet.resolve(creatorId, creatorId);
 
       expect(bet.isPendingTooLong(0)).toBe(false);
@@ -193,7 +202,7 @@ describe("Bet", () => {
     let bet: Bet;
 
     beforeEach(() => {
-      bet = new Bet(betRequestId, creatorId, participantId, terms);
+      bet = new Bet(betRequestId, creatorId, participantId, title, terms);
       bet.clearDomainEvents();
     });
 

@@ -105,6 +105,7 @@ describe.sequential("User Bet Creation", () => {
 
   it("User can create BetRequest and assign his friend", async () => {
     // Arrange
+    const title = "Bet summary";
     const terms = new Terms(
       "Who will win the next football match between Team A and Team B?",
     );
@@ -114,6 +115,7 @@ describe.sequential("User Bet Creation", () => {
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       terms,
       stakes,
     );
@@ -122,6 +124,7 @@ describe.sequential("User Bet Creation", () => {
     expect(betAggregate).toBeDefined();
     expect(betAggregate.betRequest.creatorId).toBe(user.id);
     expect(betAggregate.betRequest.participantId).toBe(friend.id);
+    expect(betAggregate.betRequest.title).toBe(title);
     expect(betAggregate.betRequest.terms.value).toBe(terms.value);
     expect(betAggregate.betRequest.stakes).toEqual(stakes);
     expect(betAggregate.betRequest.status).toBe(BetRequestStatus.PENDING);
@@ -145,12 +148,14 @@ describe.sequential("User Bet Creation", () => {
 
   it("Creator will be able to delete BetRequest", async () => {
     // Arrange
+    const title = "Bet summary";
     const terms = new Terms("Who will score the first goal in the next match?");
     const stakes = new IndividualStakes("Buy a coffee", "Buy a donut");
 
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       terms,
       stakes,
     );
@@ -177,12 +182,14 @@ describe.sequential("User Bet Creation", () => {
 
   it("Invited friend can reject BetRequest", async () => {
     // Arrange
+    const title = "Bet summary";
     const terms = new Terms("Who will win the championship this year?");
     const stakes = new CommonStake("Winner gets bragging rights for a year");
 
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       terms,
       stakes,
     );
@@ -214,12 +221,14 @@ describe.sequential("User Bet Creation", () => {
 
   it("Invited friend can change BetRequest stakes or terms and this should reset given votes", async () => {
     // Arrange
+    const title = "Short bet summary";
     const originalTerms = new Terms("Who will win the next basketball game?");
     const originalStakes = new CommonStake("Loser pays for lunch");
 
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       originalTerms,
       originalStakes,
     );
@@ -291,6 +300,7 @@ describe.sequential("User Bet Creation", () => {
 
   it("Invited friend should be able to approve BetRequest (there should be 2 positive votes)", async () => {
     // Arrange
+    const title = "Short bet summary";
     const terms = new Terms("Who will finish the project first?");
     const stakes = new CommonStake(
       "Winner gets to choose the next team lunch venue",
@@ -299,6 +309,7 @@ describe.sequential("User Bet Creation", () => {
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       terms,
       stakes,
     );
@@ -355,6 +366,7 @@ describe.sequential("User Bet Creation", () => {
     // Arrange
     const testDate = new Date("2025-01-01");
     vi.setSystemTime(testDate);
+    const title = "Bet summary";
     const terms = new Terms("Who will finish the project first?");
     const stakes = new CommonStake(
       "Winner gets to choose the next team lunch venue",
@@ -365,6 +377,7 @@ describe.sequential("User Bet Creation", () => {
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       terms,
       stakes,
     );
@@ -400,6 +413,7 @@ describe.sequential("User Bet Creation", () => {
 
   it("User can complete Bet and did stakes", async () => {
     // Arrange
+    const title = "Bet summary";
     const terms = new Terms("Who will finish the project first?");
     const stakes = new CommonStake(
       "Winner gets to choose the next team lunch venue",
@@ -409,6 +423,7 @@ describe.sequential("User Bet Creation", () => {
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       terms,
       stakes,
     );
@@ -431,6 +446,7 @@ describe.sequential("User Bet Creation", () => {
   });
 
   it("Friend should not be able to delete Bet Request", async () => {
+    const title = "Bet summary";
     const terms = new Terms(
       "Who will win the next football match between Team A and Team B?",
     );
@@ -440,6 +456,7 @@ describe.sequential("User Bet Creation", () => {
     const betAggregate = await betService.create(
       user.id,
       friend.id,
+      title,
       terms,
       stakes,
     );

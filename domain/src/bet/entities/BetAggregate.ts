@@ -46,6 +46,10 @@ export class BetAggregate extends AggregateRoot {
     return this.betRequest.participants;
   }
 
+  get title(): string {
+    return this.betRequest.title;
+  }
+
   get terms(): Terms {
     return this.betRequest.terms;
   }
@@ -172,6 +176,7 @@ export class BetAggregate extends AggregateRoot {
       this.betRequest.id,
       this.betRequest.creatorId,
       this.betRequest.participantId,
+      this.betRequest.title,
       this.betRequest.terms,
       this.betRequest.stakes,
     );
@@ -219,12 +224,14 @@ export class BetAggregate extends AggregateRoot {
   static createWithBetRequest(
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes?: IStake,
   ): BetAggregate {
     const betRequest = BetRequest.create(
       creatorId,
       participantId,
+      title,
       terms,
       stakes,
     );

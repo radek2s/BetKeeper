@@ -19,6 +19,7 @@ export class Bet extends Entity {
   readonly betRequestId: UUID;
   readonly creatorId: UUID;
   readonly participantId: UUID;
+  readonly title: string;
   readonly terms: Terms;
   readonly stakes?: IStake;
   status: BetStatus;
@@ -35,6 +36,7 @@ export class Bet extends Entity {
     betRequestId: UUID,
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes?: IStake,
     id?: UUID,
@@ -45,6 +47,7 @@ export class Bet extends Entity {
     this.betRequestId = betRequestId;
     this.creatorId = creatorId;
     this.participantId = participantId;
+    this.title = title;
     this.terms = terms;
     this.stakes = stakes;
     this.status = BetStatus.PENDING;
@@ -264,10 +267,18 @@ export class Bet extends Entity {
     betRequestId: UUID,
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes?: IStake,
   ): Bet {
-    return new Bet(betRequestId, creatorId, participantId, terms, stakes);
+    return new Bet(
+      betRequestId,
+      creatorId,
+      participantId,
+      title,
+      terms,
+      stakes,
+    );
   }
 
   static reconstitute(
@@ -275,6 +286,7 @@ export class Bet extends Entity {
     betRequestId: UUID,
     creatorId: UUID,
     participantId: UUID,
+    title: string,
     terms: Terms,
     stakes: IStake | undefined,
     status: BetStatus,
@@ -291,6 +303,7 @@ export class Bet extends Entity {
       betRequestId,
       creatorId,
       participantId,
+      title,
       terms,
       stakes,
       id,
@@ -316,7 +329,7 @@ export class Bet extends Entity {
   }
 
   override toString(): string {
-    return `Bet(${this.id}, ${this.status}, Creator: ${this.creatorId}, Participant: ${this.participantId})`;
+    return `Bet(${this.id}, ${this.status}, ${this.title}, Creator: ${this.creatorId}, Participant: ${this.participantId})`;
   }
 
   override toObject() {
@@ -325,6 +338,7 @@ export class Bet extends Entity {
       betRequestId: this.betRequestId,
       creatorId: this.creatorId,
       participantId: this.participantId,
+      title: this.title,
       terms: this.terms,
       stakes: this.stakes?.toObject(),
       status: this.status,
