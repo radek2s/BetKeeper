@@ -19,7 +19,7 @@ import type { IStake } from "../value-objects/Stakes";
 import type { Terms } from "../value-objects/Terms";
 import type {
   BetParticipant,
-  IndividualBetParticipant,
+  IndividualBetParticipantType,
 } from "./BetParticipant";
 
 export type StakeType = "INDIVIDUAL" | "COMMON";
@@ -40,15 +40,20 @@ export type CommonBetRequestType = BetRequestType & {
   stake: string;
 };
 
+export type IndividualBetRequestType = BetRequestType & {
+  stakeType: "INDIVIDUAL";
+  participants: IndividualBetParticipantType[];
+};
+
 export abstract class AbstractBetRequest extends Entity {
   readonly id: UUID;
   readonly creatorId: UUID;
   abstract readonly stakeType: StakeType;
   readonly createdAt: Date;
-  title: string;
-  terms: string;
+  protected _title: string;
+  protected _terms: string;
   participants: BetParticipant[];
-  updatedAt: Date;
+  protected _updatedAt: Date;
 
   constructor(
     creatorId: UUID,
@@ -58,20 +63,118 @@ export abstract class AbstractBetRequest extends Entity {
     id: string | undefined,
   ) {
     super();
+    this.isValidCreator(creatorId, participants);
     const now = new Date();
     this.id = id || generateId();
     this.creatorId = creatorId;
-    this.title = title;
-    this.terms = terms;
+    this._title = title;
+    this._terms = terms;
     this.participants = participants;
     this.createdAt = now;
-    this.updatedAt = now;
+    this._updatedAt = now;
+  }
+
+  get title(): string {
+    return this._title;
+  }
+
+  setTitle(value: string, updatingId: UUID) {
+    this._title = value;
+    this._updatedAt = new Date();
+    this.resetVotes(updatingId);
+  }
+
+  get terms(): string {
+    return this._terms;
+  }
+
+  setTerms(value: string, updatingId: UUID) {
+    this._terms = value;
+    this._updatedAt = new Date();
+    this.resetVotes(updatingId);
+  }
+
+  setClaims(value: string, participantId: UUID) {
+    this.participants = this.participants.map((participant) => {
+      if (participant.userId === participantId) {
+        return {
+          ...participant,
+          claim: value,
+        };
+      }
+      return participant;
+    });
+    this.resetVotes(participantId);
+    this._updatedAt = new Date();
+  }
+
+  get updatedAt() {
+    return this._updatedAt;
+  }
+
+  approve(participantId: UUID) {
+    if (!this.isParticipant(participantId)) {
+      throw new Error("Only bet participant can approve bet request!");
+    }
+    this.participants = this.participants.map((participant) => {
+      if (participant.userId === participantId) {
+        return {
+          ...participant,
+          vote: "approved",
+        };
+      }
+      return participant;
+    });
+    this._updatedAt = new Date();
+  }
+
+  reject(participantId: UUID) {
+    if (!this.isParticipant(participantId)) {
+      throw new Error("Only bet participant can reject bet request!");
+    }
+    this.participants = this.participants.map((participant) => {
+      if (participant.userId === participantId) {
+        return {
+          ...participant,
+          vote: "rejected",
+        };
+      }
+      return participant;
+    });
+    this._updatedAt = new Date();
+  }
+
+  isApproved(): boolean {
+    return this.participants.every(({ vote }) => vote === "approved");
+  }
+
+  hasEnoughParticipants(): boolean {
+    return this.participants.length >= 2;
+  }
+
+  protected isParticipant(participantId: UUID) {
+    return !!this.participants.find(({ userId }) => userId === participantId);
+  }
+
+  protected resetVotes(updatingId: UUID) {
+    this.participants = this.participants.map((participant) => {
+      if (participant.userId === updatingId) return participant;
+      return { ...participant, vote: "unknown" };
+    });
+  }
+
+  private isValidCreator(creatorId: UUID, participants: BetParticipant[]) {
+    const creator = participants.some(({ userId }) => userId === creatorId);
+    if (!creator)
+      throw new Error(
+        "Invalid creatorId! Creator must be participant of bet request!",
+      );
   }
 }
 
 export class CommonBetRequest extends AbstractBetRequest {
   stakeType: StakeType = "COMMON";
-  stake: string;
+  _stake: string;
 
   constructor(
     creatorId: UUID,
@@ -79,10 +182,20 @@ export class CommonBetRequest extends AbstractBetRequest {
     terms: string,
     stake: string,
     participants: BetParticipant[],
-    id: string | undefined,
+    id: string = generateId(),
   ) {
     super(creatorId, title, terms, participants, id);
-    this.stake = stake;
+    this._stake = stake;
+  }
+
+  get stake() {
+    return this._stake;
+  }
+
+  setStake(value: string, updatingId: string) {
+    this._stake = value;
+    this.resetVotes(updatingId);
+    this._updatedAt = new Date();
   }
 
   static reconstitute(betRequest: CommonBetRequestType): CommonBetRequest {
@@ -94,8 +207,8 @@ export class CommonBetRequest extends AbstractBetRequest {
       betRequest.participants,
       betRequest.id,
     );
-    newBetRequest.stake = betRequest.stake;
-    newBetRequest.updatedAt = betRequest.updatedAt;
+    newBetRequest._stake = betRequest.stake;
+    newBetRequest._updatedAt = betRequest.updatedAt;
     return newBetRequest;
   }
 
@@ -112,18 +225,36 @@ export class CommonBetRequest extends AbstractBetRequest {
 
 export class IndividualBetRequest extends AbstractBetRequest {
   stakeType: StakeType = "INDIVIDUAL";
-  override participants: IndividualBetParticipant[];
+  override participants: IndividualBetParticipantType[];
 
   constructor(
     creatorId: UUID,
     title: string,
     terms: string,
-    participants: IndividualBetParticipant[],
-    id: string | undefined,
+    participants: IndividualBetParticipantType[],
+    id: string = generateId(),
   ) {
     super(creatorId, title, terms, participants, id);
     this.participants = participants;
   }
+
+  setStake(stake: string, participantId: UUID) {
+    if (!this.isParticipant(participantId)) {
+      throw new Error("Only participant can change his stakes!");
+    }
+    this.participants = this.participants.map((participant) => {
+      if (participant.userId === participantId) {
+        return {
+          ...participant,
+          stake,
+        };
+      }
+      return participant;
+    });
+    this.resetVotes(participantId);
+    this._updatedAt = new Date();
+  }
+
   override equals(other: Entity): boolean {
     throw new Error("Method not implemented.");
   }

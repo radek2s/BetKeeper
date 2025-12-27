@@ -5,6 +5,10 @@ import { BetStatus } from "../../types/BetStatus";
 import { CommonStake } from "../../value-objects/Stakes";
 import { Terms } from "../../value-objects/Terms";
 import { Bet, CommonBet } from "../Bet";
+import {
+  CommonBetParticipant,
+  type CommonBetParticipantType,
+} from "../BetParticipant";
 import { CommonBetRequest, type CommonBetRequestType } from "../BetRequest";
 import {
   CreatorCommonBetParticipantMock,
@@ -34,6 +38,43 @@ describe("Bet Context", () => {
       expect(bet.id).toBe(betRequest.id);
       expect(bet.status).toBe("pending");
       expect(bet.updatedAt).not.toBe(betRequest.updatedAt);
+    });
+
+    it("should throw error if participant not approved request", () => {
+      const friend: CommonBetParticipantType = {
+        ...FriendCommonBetParticipantMock,
+        vote: "unknown",
+      };
+
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+        betRequestMock.id,
+      );
+
+      expect(() => {
+        new CommonBet(betRequest);
+      }).toThrow(
+        "Bet Request is not approved by all participants! Can't create bet",
+      );
+    });
+
+    it("should throw error if there is not enough participants", () => {
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator],
+        betRequestMock.id,
+      );
+
+      expect(() => {
+        new CommonBet(betRequest);
+      }).toThrow("Bet Request does not have enough participants to create bet");
     });
   });
 });

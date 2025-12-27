@@ -15,7 +15,237 @@ import {
 } from "../../types/BetRequestStatus";
 import { CommonStake, IndividualStakes } from "../../value-objects/Stakes";
 import { Terms } from "../../value-objects/Terms";
-import { BetRequest } from "../BetRequest";
+import type {
+  CommonBetParticipantType,
+  IndividualBetParticipantType,
+} from "../BetParticipant";
+import {
+  BetRequest,
+  CommonBetRequest,
+  type CommonBetRequestType,
+  IndividualBetRequest,
+  type IndividualBetRequestType,
+} from "../BetRequest";
+import {
+  CreatorCommonBetParticipantMock,
+  FriendCommonBetParticipantMock,
+} from "./mocks/BetParticipantMock";
+import {
+  BasicCommonBetRequestMock,
+  BasicIndividualBetRequestMock,
+} from "./mocks/BetRequestMocks";
+
+describe("Bet Request Context", () => {
+  describe("Common Bet Request", () => {
+    const creator: CommonBetParticipantType = {
+      ...CreatorCommonBetParticipantMock,
+      vote: "approved",
+    };
+    const friend: CommonBetParticipantType = {
+      ...FriendCommonBetParticipantMock,
+      vote: "unknown",
+    };
+    const betRequestMock: CommonBetRequestType = {
+      ...BasicCommonBetRequestMock,
+      participants: [creator, friend],
+    };
+
+    it("Should throw error when creatorId not in participants", () => {
+      expect(() => {
+        new CommonBetRequest(
+          "user",
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+        );
+      }).toThrow(
+        "Invalid creatorId! Creator must be participant of bet request!",
+      );
+    });
+
+    it("Should create bet request with random id", () => {
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+      );
+      expect(betRequest.id).not.toBe(betRequestMock.id);
+      expect(betRequest.id).toBeTruthy();
+    });
+
+    it("Should update of title reset votes", () => {
+      const updatedValue = "Updated title";
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+      );
+      //act
+      betRequest.setTitle(updatedValue, friend.userId);
+
+      //assert
+      expect(betRequest.createdAt).not.toBe(betRequest.updatedAt);
+      expect(betRequest.title).toBe(updatedValue);
+      expect(
+        betRequest.participants.find(({ userId }) => userId === creator.userId)
+          ?.vote,
+      ).toBe("unknown");
+    });
+
+    it("Should update of terms reset votes", () => {
+      const updatedValue = "Updated terms";
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+      );
+      //act
+      betRequest.setTerms(updatedValue, friend.userId);
+
+      //assert
+      expect(betRequest.terms).toBe(updatedValue);
+      expect(betRequest.createdAt).not.toBe(betRequest.updatedAt);
+      expect(
+        betRequest.participants.find(({ userId }) => userId === creator.userId)
+          ?.vote,
+      ).toBe("unknown");
+    });
+
+    it("Should update of stake reset votes", () => {
+      const updatedValue = "Updated common stake";
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+      );
+      //act
+      betRequest.setStake(updatedValue, friend.userId);
+
+      //assert
+      expect(betRequest.stake).toBe(updatedValue);
+      expect(betRequest.createdAt).not.toBe(betRequest.updatedAt);
+      expect(
+        betRequest.participants.find(({ userId }) => userId === creator.userId)
+          ?.vote,
+      ).toBe("unknown");
+    });
+
+    it("Should update of claims reset votes", () => {
+      const updatedValue = "Updated claims of friend";
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+      );
+      //act
+      betRequest.setClaims(updatedValue, friend.userId);
+
+      //assert
+      expect(
+        betRequest.participants.find(({ userId }) => userId === friend.userId)
+          ?.claim,
+      ).toBe(updatedValue);
+      expect(betRequest.createdAt).not.toBe(betRequest.updatedAt);
+      expect(
+        betRequest.participants.find(({ userId }) => userId === creator.userId)
+          ?.vote,
+      ).toBe("unknown");
+    });
+
+    it("Should friend reject bet request", () => {
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+      );
+      //act
+      betRequest.reject(friend.userId);
+
+      //assert
+      expect(betRequest.createdAt).not.toBe(betRequest.updatedAt);
+      expect(
+        betRequest.participants.find(({ userId }) => userId === friend.userId)
+          ?.vote,
+      ).toBe("rejected");
+    });
+
+    it("Should friend approve bet request", () => {
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+      );
+
+      expect(betRequest.isApproved()).toBeFalsy();
+
+      //act
+      betRequest.approve(friend.userId);
+
+      //assert
+      expect(betRequest.createdAt).not.toBe(betRequest.updatedAt);
+      expect(
+        betRequest.participants.find(({ userId }) => userId === friend.userId)
+          ?.vote,
+      ).toBe("approved");
+      expect(betRequest.isApproved()).toBeTruthy();
+    });
+  });
+
+  describe("Individual Bet Request", () => {
+    const creator: IndividualBetParticipantType = {
+      ...CreatorCommonBetParticipantMock,
+      vote: "approved",
+      stake: "I want that all loosers should take selfie with mustache",
+    };
+    const friend: IndividualBetParticipantType = {
+      ...FriendCommonBetParticipantMock,
+      vote: "unknown",
+      stake: "I want to gain 5$ from other participants",
+    };
+    const betRequestMock: IndividualBetRequestType = {
+      ...BasicIndividualBetRequestMock,
+      participants: [creator, friend],
+    };
+
+    it("Should update of user stakes reset votes", () => {
+      const updatedValue = "Updated common stake";
+      const betRequest = new IndividualBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        [creator, friend],
+      );
+      //act
+      betRequest.setStake(updatedValue, friend.userId);
+
+      //assert
+      expect(
+        betRequest.participants.find(({ userId }) => userId === friend.userId)
+          ?.stake,
+      ).toBe(updatedValue);
+      expect(betRequest.createdAt).not.toBe(betRequest.updatedAt);
+      expect(
+        betRequest.participants.find(({ userId }) => userId === creator.userId)
+          ?.vote,
+      ).toBe("unknown");
+    });
+  });
+});
 
 describe("BetRequest", () => {
   let creatorId: UUID;

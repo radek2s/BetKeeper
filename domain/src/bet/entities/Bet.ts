@@ -10,7 +10,7 @@ import type { IStake } from "../value-objects/Stakes";
 import type { Terms } from "../value-objects/Terms";
 import type {
   BetParticipant,
-  IndividualBetParticipant,
+  IndividualBetParticipantType,
 } from "./BetParticipant";
 import {
   type AbstractBetRequest,
@@ -60,6 +60,17 @@ export abstract class AbstractBet extends Entity {
 
   constructor(betRequest: AbstractBetRequest) {
     super();
+    if (!betRequest.isApproved())
+      throw new Error(
+        `Bet Request is not approved by all participants! Can't create bet`,
+      );
+
+    if (!betRequest.hasEnoughParticipants()) {
+      throw new Error(
+        `Bet Request does not have enough participants to create bet`,
+      );
+    }
+
     this.id = betRequest.id;
     this.creatorId = betRequest.creatorId;
     this.title = betRequest.title;
@@ -108,6 +119,7 @@ export abstract class AbstractBet extends Entity {
     const now = new Date();
     this._status = "resolved";
     this._resolvedAt = now;
+    this._resolvedBy = resolvedByParticipantId;
     this._updatedAt = now;
     this._winnerId = winnerId;
     this.dueDate = dueDate;
@@ -143,7 +155,7 @@ export class CommonBet extends AbstractBet {
         stake: bet.stake,
         participants: bet.participants,
         updatedAt: bet.updatedAt,
-        stakeType: bet.stakeType,
+        stakeType: "COMMON",
         createdAt: bet.createdAt,
       }),
     );
@@ -163,7 +175,7 @@ export class CommonBet extends AbstractBet {
 }
 
 export class IndividualBet extends AbstractBet {
-  override participants: IndividualBetParticipant[];
+  override participants: IndividualBetParticipantType[];
   constructor(individualBetRequest: IndividualBetRequest) {
     super(individualBetRequest);
     this.participants = individualBetRequest.participants;
