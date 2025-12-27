@@ -8,6 +8,7 @@ import {
   BetRequestRejectedEvent,
   BetRequestUpdatedEvent,
 } from "../events/BetRequestEvents";
+import type { BetStatus } from "../types";
 import {
   BetRequestStatus,
   BetRequestStatusGuards,
@@ -16,6 +17,123 @@ import {
 } from "../types/BetRequestStatus";
 import type { IStake } from "../value-objects/Stakes";
 import type { Terms } from "../value-objects/Terms";
+import type {
+  BetParticipant,
+  IndividualBetParticipant,
+} from "./BetParticipant";
+
+export type StakeType = "INDIVIDUAL" | "COMMON";
+
+export type BetRequestType = {
+  id: UUID;
+  creatorId: UUID;
+  title: string;
+  terms: string;
+  participants: BetParticipant[];
+  stakeType: StakeType;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CommonBetRequestType = BetRequestType & {
+  stakeType: "COMMON";
+  stake: string;
+};
+
+export abstract class AbstractBetRequest extends Entity {
+  readonly id: UUID;
+  readonly creatorId: UUID;
+  abstract readonly stakeType: StakeType;
+  readonly createdAt: Date;
+  title: string;
+  terms: string;
+  participants: BetParticipant[];
+  updatedAt: Date;
+
+  constructor(
+    creatorId: UUID,
+    title: string,
+    terms: string,
+    participants: BetParticipant[],
+    id: string | undefined,
+  ) {
+    super();
+    const now = new Date();
+    this.id = id || generateId();
+    this.creatorId = creatorId;
+    this.title = title;
+    this.terms = terms;
+    this.participants = participants;
+    this.createdAt = now;
+    this.updatedAt = now;
+  }
+}
+
+export class CommonBetRequest extends AbstractBetRequest {
+  stakeType: StakeType = "COMMON";
+  stake: string;
+
+  constructor(
+    creatorId: UUID,
+    title: string,
+    terms: string,
+    stake: string,
+    participants: BetParticipant[],
+    id: string | undefined,
+  ) {
+    super(creatorId, title, terms, participants, id);
+    this.stake = stake;
+  }
+
+  static reconstitute(betRequest: CommonBetRequestType): CommonBetRequest {
+    const newBetRequest = new CommonBetRequest(
+      betRequest.creatorId,
+      betRequest.title,
+      betRequest.terms,
+      betRequest.stake,
+      betRequest.participants,
+      betRequest.id,
+    );
+    newBetRequest.stake = betRequest.stake;
+    newBetRequest.updatedAt = betRequest.updatedAt;
+    return newBetRequest;
+  }
+
+  override equals(other: Entity): boolean {
+    throw new Error("Method not implemented.");
+  }
+  override toString(): string {
+    throw new Error("Method not implemented.");
+  }
+  override toObject(): object {
+    throw new Error("Method not implemented.");
+  }
+}
+
+export class IndividualBetRequest extends AbstractBetRequest {
+  stakeType: StakeType = "INDIVIDUAL";
+  override participants: IndividualBetParticipant[];
+
+  constructor(
+    creatorId: UUID,
+    title: string,
+    terms: string,
+    participants: IndividualBetParticipant[],
+    id: string | undefined,
+  ) {
+    super(creatorId, title, terms, participants, id);
+    this.participants = participants;
+  }
+  override equals(other: Entity): boolean {
+    throw new Error("Method not implemented.");
+  }
+  override toString(): string {
+    throw new Error("Method not implemented.");
+  }
+  override toObject(): object {
+    throw new Error("Method not implemented.");
+  }
+}
 
 /**
  * Participant Vote Information

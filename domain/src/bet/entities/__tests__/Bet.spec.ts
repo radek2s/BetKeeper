@@ -4,7 +4,39 @@ import { BetCreatedEvent, BetResolvedEvent } from "../../events/BetEvents";
 import { BetStatus } from "../../types/BetStatus";
 import { CommonStake } from "../../value-objects/Stakes";
 import { Terms } from "../../value-objects/Terms";
-import { Bet } from "../Bet";
+import { Bet, CommonBet } from "../Bet";
+import { CommonBetRequest, type CommonBetRequestType } from "../BetRequest";
+import {
+  CreatorCommonBetParticipantMock,
+  FriendCommonBetParticipantMock,
+} from "./mocks/BetParticipantMock";
+import { BasicCommonBetRequestMock } from "./mocks/BetRequestMocks";
+
+describe("Bet Context", () => {
+  describe("Common Bet", () => {
+    const creator = { ...CreatorCommonBetParticipantMock };
+    const friend = { ...FriendCommonBetParticipantMock };
+    const betRequestMock: CommonBetRequestType = {
+      ...BasicCommonBetRequestMock,
+      participants: [creator, friend],
+    };
+    it("should create bet from common bet request", () => {
+      const betRequest = new CommonBetRequest(
+        creator.userId,
+        betRequestMock.title,
+        betRequestMock.terms,
+        betRequestMock.stake,
+        [creator, friend],
+        betRequestMock.id,
+      );
+      const bet = new CommonBet(betRequest);
+
+      expect(bet.id).toBe(betRequest.id);
+      expect(bet.status).toBe("pending");
+      expect(bet.updatedAt).not.toBe(betRequest.updatedAt);
+    });
+  });
+});
 
 describe("Bet", () => {
   let betRequestId: UUID;

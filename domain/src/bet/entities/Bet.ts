@@ -5,9 +5,179 @@ import {
   BetDeletedEvent,
   BetResolvedEvent,
 } from "../events/BetEvents";
-import { BetStatus } from "../types/BetStatus";
+// import { BetStatus } from "../types/BetStatus";
 import type { IStake } from "../value-objects/Stakes";
 import type { Terms } from "../value-objects/Terms";
+import type {
+  BetParticipant,
+  IndividualBetParticipant,
+} from "./BetParticipant";
+import {
+  type AbstractBetRequest,
+  CommonBetRequest,
+  type IndividualBetRequest,
+  type StakeType,
+} from "./BetRequest";
+
+export type BetStatus = "pending" | "resolved" | "completed" | "deleted";
+
+export type BetType = {
+  id: UUID;
+  creatorId: UUID;
+  status: BetStatus;
+  title: string;
+  terms: string;
+  participants: BetParticipant[];
+  stakeType: StakeType;
+  createdAt: Date;
+  updatedAt: Date;
+  resolvedBy: UUID | undefined;
+  resolvedAt: Date | undefined;
+  winnerId: UUID | undefined;
+  completedAt: Date | undefined;
+  dueDate: Date | undefined;
+};
+
+export type CommonBetType = BetType & {
+  stake: string;
+};
+
+export abstract class AbstractBet extends Entity {
+  readonly id: UUID;
+  readonly creatorId: UUID;
+  readonly title: string;
+  readonly terms: string;
+  readonly participants: BetParticipant[];
+  readonly stakeType: StakeType;
+  readonly createdAt: Date;
+  protected _updatedAt: Date;
+  protected _resolvedBy: string | undefined;
+  protected _resolvedAt: Date | undefined;
+  protected _winnerId: string | undefined;
+  protected _completedAt: Date | undefined;
+  protected _status: BetStatus;
+  protected _dueDate: Date | undefined;
+
+  constructor(betRequest: AbstractBetRequest) {
+    super();
+    this.id = betRequest.id;
+    this.creatorId = betRequest.creatorId;
+    this.title = betRequest.title;
+    this.terms = betRequest.terms;
+    this.participants = betRequest.participants;
+    this.stakeType = betRequest.stakeType;
+    this.createdAt = betRequest.createdAt;
+    this._status = "pending";
+    this._updatedAt = new Date();
+  }
+
+  get status(): BetStatus {
+    return this._status;
+  }
+
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
+
+  get resolvedBy(): string | undefined {
+    return this._resolvedBy;
+  }
+
+  get resolvedAt(): Date | undefined {
+    return this._resolvedAt;
+  }
+
+  get winnerId(): string | undefined {
+    return this._winnerId;
+  }
+
+  get completedAt(): Date | undefined {
+    return this._completedAt;
+  }
+
+  get dueDate(): Date | undefined {
+    return this._dueDate;
+  }
+
+  set dueDate(date: Date | undefined) {
+    this._dueDate = date;
+    this._updatedAt = new Date();
+  }
+
+  resolve(resolvedByParticipantId: UUID, winnerId: UUID, dueDate?: Date) {
+    const now = new Date();
+    this._status = "resolved";
+    this._resolvedAt = now;
+    this._updatedAt = now;
+    this._winnerId = winnerId;
+    this.dueDate = dueDate;
+  }
+
+  complete(completedByParticipantId: UUID) {
+    const now = new Date();
+    this._status = "completed";
+    this._completedAt = now;
+    this._updatedAt = now;
+  }
+
+  delete(deletedById: UUID) {
+    this._status = "deleted";
+    this._updatedAt = new Date();
+  }
+}
+
+export class CommonBet extends AbstractBet {
+  readonly stake: string;
+  constructor(commonBetRequest: CommonBetRequest) {
+    super(commonBetRequest);
+    this.stake = commonBetRequest.stake;
+  }
+
+  static reconstitute(bet: CommonBetType): CommonBet {
+    const commonBet = new CommonBet(
+      CommonBetRequest.reconstitute({
+        id: bet.id,
+        creatorId: bet.creatorId,
+        title: bet.title,
+        terms: bet.terms,
+        stake: bet.stake,
+        participants: bet.participants,
+        updatedAt: bet.updatedAt,
+        stakeType: bet.stakeType,
+        createdAt: bet.createdAt,
+      }),
+    );
+    commonBet._updatedAt = bet.updatedAt;
+    return commonBet;
+  }
+
+  override equals(other: Entity): boolean {
+    throw new Error("Method not implemented.");
+  }
+  override toString(): string {
+    throw new Error("Method not implemented.");
+  }
+  override toObject(): CommonBetType {
+    throw new Error("Method not implemented.");
+  }
+}
+
+export class IndividualBet extends AbstractBet {
+  override participants: IndividualBetParticipant[];
+  constructor(individualBetRequest: IndividualBetRequest) {
+    super(individualBetRequest);
+    this.participants = individualBetRequest.participants;
+  }
+  override equals(other: Entity): boolean {
+    throw new Error("Method not implemented.");
+  }
+  override toString(): string {
+    throw new Error("Method not implemented.");
+  }
+  override toObject(): object {
+    throw new Error("Method not implemented.");
+  }
+}
 
 /**
  * Bet Entity
@@ -50,7 +220,7 @@ export class Bet extends Entity {
     this.title = title;
     this.terms = terms;
     this.stakes = stakes;
-    this.status = BetStatus.PENDING;
+    this.status = "pending";
     this.createdAt = createdAt || new Date();
     this.updatedAt = new Date();
 
@@ -89,49 +259,60 @@ export class Bet extends Entity {
 
   // Status checking methods
   isPending(): boolean {
-    return this.status === BetStatus.PENDING;
+    throw new Error("Not implemented");
+    // return this.status === BetStatus.PENDING;
   }
 
   isResolved(): boolean {
-    return this.status === BetStatus.RESOLVED;
+    throw new Error("Not implemented");
+    // return this.status === BetStatus.RESOLVED;
   }
 
   isCompleted(): boolean {
-    return this.status === BetStatus.COMPLETED;
+    throw new Error("Not implemented");
+    // return this.status === BetStatus.COMPLETED;
   }
 
   isDeleted(): boolean {
-    return this.status === BetStatus.DELETED;
+    throw new Error("Not implemented");
+    // return this.status === BetStatus.DELETED;
   }
 
   isActive(): boolean {
-    return (
-      this.status === BetStatus.PENDING || this.status === BetStatus.RESOLVED
-    );
+    throw new Error("Not implemented");
+    // return (
+
+    //   // this.status === BetStatus.PENDING || this.status === BetStatus.RESOLVED
+    // );
   }
 
   isFinal(): boolean {
-    return (
-      this.status === BetStatus.COMPLETED || this.status === BetStatus.DELETED
-    );
+    throw new Error("Not implemented");
+    // return (
+    //   this.status === BetStatus.COMPLETED || this.status === BetStatus.DELETED
+    // );
   }
 
   canBeResolved(): boolean {
-    return this.status === BetStatus.PENDING;
+    throw new Error("Not implemented");
+    // return this.status === BetStatus.PENDING;
   }
 
   canBeCompleted(): boolean {
-    return this.status === BetStatus.RESOLVED;
+    throw new Error("Not implemented");
+    // return this.status === BetStatus.RESOLVED;
   }
 
   canBeDeleted(): boolean {
-    return this.status !== BetStatus.DELETED;
+    throw new Error("Not implemented");
+    // return this.status !== BetStatus.DELETED;
   }
 
   requiresAction(): boolean {
-    return (
-      this.status === BetStatus.PENDING || this.status === BetStatus.RESOLVED
-    );
+    throw new Error("Not implemented");
+    // return (
+    //   this.status === BetStatus.PENDING || this.status === BetStatus.RESOLVED
+    // );
   }
   isParticipant(userId: UUID): boolean {
     return userId === this.creatorId || userId === this.participantId;
@@ -169,7 +350,7 @@ export class Bet extends Entity {
   }
 
   updateDueDate(newDueDate: Date | undefined, updatedById: UUID): void {
-    if (this.status !== BetStatus.RESOLVED)
+    if (this.status !== "resolved")
       new Error(
         "Due date can be modified only when bet is pending completion.",
       );
@@ -204,7 +385,7 @@ export class Bet extends Entity {
       throw new Error("Winner must be one of the bet participants");
     }
 
-    this.status = BetStatus.RESOLVED;
+    this.status = "resolved";
     this.resolvedAt = new Date();
     this.updatedAt = new Date();
     this.winnerId = winnerId;
@@ -236,7 +417,7 @@ export class Bet extends Entity {
       throw new Error("Only participants can mark the bet as completed");
     }
 
-    this.status = BetStatus.COMPLETED;
+    this.status = "completed";
     this.completedAt = new Date();
     this.updatedAt = new Date();
     this.completionNotes = completionNotes;
@@ -256,7 +437,7 @@ export class Bet extends Entity {
       throw new Error("Only the creator can delete this bet");
     }
 
-    this.status = BetStatus.DELETED;
+    this.status = "deleted";
     this.updatedAt = new Date();
 
     this.addDomainEvent(new BetDeletedEvent(this.id, deletedById, reason));
