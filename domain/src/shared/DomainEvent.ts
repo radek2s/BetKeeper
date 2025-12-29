@@ -12,4 +12,6 @@ export abstract class DomainEvent {
   }
 
   abstract getAggregateId(): string;
+
+  abstract toLog(): string;
 }

@@ -1,30 +1,74 @@
 import { DomainEvent, type UUID } from "@domain/shared";
+import type { AbstractBetRequest, StakeType } from "../entities";
+import type { BetParticipant } from "../entities/BetParticipant";
+
+export class BetRequestEvent extends DomainEvent {
+  readonly betId: UUID;
+
+  constructor(betId: UUID, eventType: string) {
+    super(eventType);
+    this.betId = betId;
+  }
+
+  getAggregateId(): string {
+    return this.betId;
+  }
+
+  override toLog(): string {
+    return `BetRequest[${this.betId}]`;
+  }
+}
 
 /**
  * Bet Request Created Domain Event
  * Raised when a new bet request is created
  */
-export class BetRequestCreatedEvent extends DomainEvent {
-  public readonly betRequestId: UUID;
-  public readonly creatorId: UUID;
-  public readonly participantId: UUID;
-  public readonly terms: string;
+export class BetRequestCreatedEvent extends BetRequestEvent {
+  readonly creatorId: UUID;
+  readonly title: string;
+  readonly terms: string;
+  readonly participants: BetParticipant[];
+  readonly createdAt: Date;
+  readonly stakeType: StakeType;
 
   constructor(
-    betRequestId: UUID,
+    betId: UUID,
     creatorId: UUID,
-    participantId: UUID,
+    title: string,
     terms: string,
+    participants: BetParticipant[],
+    createdAt: Date,
+    stakeType: StakeType,
   ) {
-    super("BetRequestCreated");
-    this.betRequestId = betRequestId;
+    super(betId, "BetRequestCreated");
     this.creatorId = creatorId;
-    this.participantId = participantId;
+    this.title = title;
     this.terms = terms;
+    this.participants = participants;
+    this.createdAt = createdAt;
+    this.stakeType = stakeType;
   }
 
-  getAggregateId(): string {
-    return this.betRequestId;
+  static fromBet(bet: AbstractBetRequest) {
+    return new BetRequestCreatedEvent(
+      bet.id,
+      bet.creatorId,
+      bet.title,
+      bet.terms,
+      bet.participants,
+      bet.createdAt,
+      bet.stakeType,
+    );
+  }
+
+  private getClaims(): string {
+    return this.participants
+      .map((p) => [p.userId, p.claim].join("->"))
+      .join(",");
+  }
+
+  override toLog(): string {
+    return `BetRequest[${this.betId}]::Created by ${this.creatorId} (title=${this.title}, terms=${this.terms}, claims=[${this.getClaims()}])`;
   }
 }
 
@@ -32,143 +76,44 @@ export class BetRequestCreatedEvent extends DomainEvent {
  * Bet Request Updated Domain Event
  * Raised when bet request terms or stakes are updated
  */
-export class BetRequestUpdatedEvent extends DomainEvent {
-  public readonly betRequestId: UUID;
-  public readonly updatedById: UUID;
-  public readonly previousTerms: string;
-  public readonly newTerms: string;
-  public readonly votesReset: boolean;
+export class BetRequestUpdatedEvent extends BetRequestEvent {
+  readonly property: string;
+  readonly oldValue: string;
+  readonly newValue: string;
+  readonly changedBy: UUID;
 
   constructor(
-    betRequestId: UUID,
-    updatedById: UUID,
-    previousTerms: string,
-    newTerms: string,
-    votesReset: boolean = true,
+    betId: UUID,
+    property: string,
+    oldValue: string,
+    newValue: string,
+    changedBy: UUID,
   ) {
-    super("BetRequestUpdated");
-    this.betRequestId = betRequestId;
-    this.updatedById = updatedById;
-    this.previousTerms = previousTerms;
-    this.newTerms = newTerms;
-    this.votesReset = votesReset;
+    super(betId, "BetRequestUpdated");
+    this.property = property;
+    this.oldValue = oldValue;
+    this.newValue = newValue;
+    this.changedBy = changedBy;
   }
 
-  getAggregateId(): string {
-    return this.betRequestId;
-  }
-}
-
-/**
- * Bet Request Participant Vote Changed Domain Event
- * Raised when a participant approves or rejects a bet request
- */
-export class BetRequestParticipantVoteChangedEvent extends DomainEvent {
-  public readonly betRequestId: UUID;
-  public readonly participantId: UUID;
-  public readonly previousVote: string;
-  public readonly newVote: string;
-
-  constructor(
-    betRequestId: UUID,
-    participantId: UUID,
-    previousVote: string,
-    newVote: string,
-  ) {
-    super("BetRequestParticipantVoteChanged");
-    this.betRequestId = betRequestId;
-    this.participantId = participantId;
-    this.previousVote = previousVote;
-    this.newVote = newVote;
-  }
-
-  getAggregateId(): string {
-    return this.betRequestId;
+  override toLog(): string {
+    return `BetRequest[${this.betId}]::Updated by ${this.changedBy} (${this.property}::${this.oldValue}->${this.newValue})`;
   }
 }
 
-/**
- * Bet Request Approved Domain Event
- * Raised when all participants have approved the bet request
- */
-export class BetRequestApprovedEvent extends DomainEvent {
-  public readonly betRequestId: UUID;
-  public readonly creatorId: UUID;
-  public readonly participantId: UUID;
-  public readonly approvedAt: Date;
+export type ActionEventType = "approve" | "reject";
 
-  constructor(betRequestId: UUID, creatorId: UUID, participantId: UUID) {
-    super("BetRequestApproved");
-    this.betRequestId = betRequestId;
-    this.creatorId = creatorId;
-    this.participantId = participantId;
-    this.approvedAt = new Date();
+export class BetRequestActionEvent extends BetRequestEvent {
+  readonly action: ActionEventType;
+  readonly executedBy: string;
+
+  constructor(betId: UUID, action: ActionEventType, executedBy: UUID) {
+    super(betId, "BetRequestActionExecuted");
+    this.action = action;
+    this.executedBy = executedBy;
   }
 
-  getAggregateId(): string {
-    return this.betRequestId;
-  }
-}
-
-/**
- * Bet Request Rejected Domain Event
- * Raised when a participant rejects a bet request
- */
-export class BetRequestRejectedEvent extends DomainEvent {
-  public readonly betRequestId: UUID;
-  public readonly rejectedById: UUID;
-  public readonly rejectedAt: Date;
-
-  constructor(betRequestId: UUID, rejectedById: UUID) {
-    super("BetRequestRejected");
-    this.betRequestId = betRequestId;
-    this.rejectedById = rejectedById;
-    this.rejectedAt = new Date();
-  }
-
-  getAggregateId(): string {
-    return this.betRequestId;
-  }
-}
-
-/**
- * Bet Request Blocked Domain Event
- * Raised when a participant blocks a bet request
- */
-export class BetRequestBlockedEvent extends DomainEvent {
-  public readonly betRequestId: UUID;
-  public readonly blockedById: UUID;
-  public readonly blockedAt: Date;
-
-  constructor(betRequestId: UUID, blockedById: UUID) {
-    super("BetRequestBlocked");
-    this.betRequestId = betRequestId;
-    this.blockedById = blockedById;
-    this.blockedAt = new Date();
-  }
-
-  getAggregateId(): string {
-    return this.betRequestId;
-  }
-}
-
-/**
- * Bet Request Deleted Domain Event
- * Raised when a bet request is deleted by creator or admin
- */
-export class BetRequestDeletedEvent extends DomainEvent {
-  public readonly betRequestId: UUID;
-  public readonly deletedById: UUID;
-  public readonly deletedAt: Date;
-
-  constructor(betRequestId: UUID, deletedById: UUID) {
-    super("BetRequestDeleted");
-    this.betRequestId = betRequestId;
-    this.deletedById = deletedById;
-    this.deletedAt = new Date();
-  }
-
-  getAggregateId(): string {
-    return this.betRequestId;
+  override toLog(): string {
+    return `BetRequest[${this.betId}]::${this.action} - by ${this.executedBy}`;
   }
 }
