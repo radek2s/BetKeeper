@@ -49,6 +49,7 @@ export abstract class AbstractBetRequest extends Entity {
     terms: string,
     participants: BetParticipant[],
     id: string | undefined,
+    createdAt?: Date,
   ) {
     super();
     this.isValidCreator(creatorId, participants);
@@ -58,7 +59,7 @@ export abstract class AbstractBetRequest extends Entity {
     this._title = title;
     this._terms = terms;
     this.participants = participants;
-    this.createdAt = now;
+    this.createdAt = createdAt || now;
     this._updatedAt = now;
 
     if (id === undefined) {
@@ -203,8 +204,9 @@ export class CommonBetRequest extends AbstractBetRequest {
     stake: string,
     participants: BetParticipant[],
     id: string | undefined = undefined,
+    createdAt?: Date,
   ) {
-    super(creatorId, title, terms, participants, id);
+    super(creatorId, title, terms, participants, id, createdAt);
     this._stake = stake;
   }
 
@@ -230,6 +232,7 @@ export class CommonBetRequest extends AbstractBetRequest {
       betRequest.stake,
       betRequest.participants,
       betRequest.id,
+      betRequest.createdAt,
     );
     newBetRequest._stake = betRequest.stake;
     newBetRequest._updatedAt = betRequest.updatedAt;
@@ -268,8 +271,9 @@ export class IndividualBetRequest extends AbstractBetRequest {
     terms: string,
     participants: IndividualBetParticipantType[],
     id: string | undefined = undefined,
+    createdAt?: Date,
   ) {
-    super(creatorId, title, terms, participants, id);
+    super(creatorId, title, terms, participants, id, createdAt);
     this.participants = participants;
   }
 
@@ -313,6 +317,7 @@ export class IndividualBetRequest extends AbstractBetRequest {
       betRequest.terms,
       betRequest.participants,
       betRequest.id,
+      betRequest.createdAt,
     );
     newBetRequest._updatedAt = betRequest.updatedAt;
     return newBetRequest;

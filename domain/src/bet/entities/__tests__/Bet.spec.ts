@@ -1,20 +1,25 @@
-import { generateId, type UUID } from "@domain/shared";
-import { beforeEach, describe, expect, it } from "vitest";
-import { BetCreatedEvent, BetResolvedEvent } from "../../events/BetEvents";
-import { BetStatus } from "../../types/BetStatus";
-import { CommonStake } from "../../value-objects/Stakes";
-import { Terms } from "../../value-objects/Terms";
-import { Bet, CommonBet } from "../Bet";
-import {
-  CommonBetParticipant,
-  type CommonBetParticipantType,
+import { describe, expect, it } from "vitest";
+import { BetActionEvent } from "../../events/BetEvents";
+import { CommonBet, type CommonBetType, IndividualBet } from "../Bet";
+import type {
+  CommonBetParticipantType,
+  IndividualBetParticipantType,
 } from "../BetParticipant";
-import { CommonBetRequest, type CommonBetRequestType } from "../BetRequest";
+import {
+  CommonBetRequest,
+  type CommonBetRequestType,
+  IndividualBetRequest,
+  type IndividualBetRequestType,
+} from "../BetRequest";
 import {
   CreatorCommonBetParticipantMock,
   FriendCommonBetParticipantMock,
 } from "./mocks/BetParticipantMock";
-import { BasicCommonBetRequestMock } from "./mocks/BetRequestMocks";
+import {
+  BasicCommonBetMock,
+  BasicCommonBetRequestMock,
+  BasicIndividualBetRequestMock,
+} from "./mocks/BetRequestMocks";
 
 describe("Bet Context", () => {
   describe("Common Bet", () => {
@@ -76,260 +81,362 @@ describe("Bet Context", () => {
         new CommonBet(betRequest);
       }).toThrow("Bet Request does not have enough participants to create bet");
     });
+
+    describe("resolve", () => {
+      it("should friend resolve bet without due date", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        bet.resolve(friend.userId, friend.userId);
+
+        expect(bet.status).toBe("resolved");
+        expect(bet.winnerId).toBe(friend.userId);
+        expect(bet.resolvedBy).toBe(friend.userId);
+        expect(bet.dueDate).toBeUndefined();
+
+        expect((bet.domainEvents.at(-1) as BetActionEvent).action).toBe(
+          "resolve",
+        );
+      });
+
+      it("should creator resolve bet with due date", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        const dueDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000); //5 days
+        bet.resolve(creator.userId, friend.userId, dueDate);
+
+        expect(bet.status).toBe("resolved");
+        expect(bet.winnerId).toBe(friend.userId);
+        expect(bet.resolvedBy).toBe(creator.userId);
+        expect(bet.dueDate).toBeDefined();
+        expect(bet.isDueSoon()).toBeFalsy();
+      });
+
+      it("should remove due date when bet is resolved", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        const dueDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000); //5 days
+        bet.resolve(creator.userId, friend.userId, dueDate);
+
+        bet.dueDate = undefined;
+
+        expect(bet.dueDate).toBeUndefined();
+      });
+
+      it("should throw error when setting due date in pending state", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        expect(() => {
+          bet.dueDate = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000); //5 days
+        }).toThrow(
+          "Due date can be modified only when bet is pending completion.",
+        );
+      });
+
+      it("should throw error if due date is from past", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        const dueDate = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000); //5 days
+
+        expect(() => {
+          bet.resolve(creator.userId, friend.userId, dueDate);
+        }).toThrow("Due date must be in the future");
+      });
+
+      it("should throw error resolved by not participant", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        expect(() => {
+          bet.resolve("user-3", friend.userId);
+        }).toThrow("Only bet participant can resolve bet!");
+      });
+
+      it("should throw error resolved winner id is not participant", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        expect(() => {
+          bet.resolve(friend.userId, "user-3");
+        }).toThrow("Provided winnerId is not bet participant!");
+      });
+
+      it("should throw error when try to complete when bet is pending", () => {
+        const betRequest = new CommonBetRequest(
+          creator.userId,
+          betRequestMock.title,
+          betRequestMock.terms,
+          betRequestMock.stake,
+          [creator, friend],
+          betRequestMock.id,
+        );
+        const bet = new CommonBet(betRequest);
+
+        expect(() => {
+          bet.complete(creator.userId);
+        }).toThrow("Cannot complete: bet is not in resolved state");
+      });
+    });
+
+    describe("complete", () => {
+      const betMock: CommonBetType = {
+        ...BasicCommonBetMock,
+        participants: [creator, friend],
+        status: "resolved",
+        resolvedBy: friend.userId,
+        resolvedAt: new Date(Date.parse("2025-01-01T13:00:00Z")),
+      };
+      it("should friend complete bet", () => {
+        const bet = CommonBet.reconstitute(betMock);
+
+        bet.complete(friend.userId);
+
+        expect(bet.status).toBe("completed");
+      });
+
+      it("should emit event when complete bet", () => {
+        const bet = CommonBet.reconstitute(betMock);
+
+        bet.complete(friend.userId);
+
+        expect((bet.domainEvents.at(-1) as BetActionEvent).action).toBe(
+          "complete",
+        );
+      });
+
+      it("should throw exception when completed by not participant", () => {
+        const bet = CommonBet.reconstitute(betMock);
+
+        expect(() => {
+          bet.complete("user-3");
+        }).toThrow("Only bet participant can complete bet!");
+      });
+    });
+
+    describe("delete", () => {
+      const betMock: CommonBetType = {
+        ...BasicCommonBetMock,
+        participants: [creator, friend],
+      };
+
+      it("should delete pending bet", () => {
+        const bet = CommonBet.reconstitute(betMock);
+
+        bet.delete("admin");
+
+        expect(bet.status).toBe("deleted");
+      });
+
+      it("should throw error when delete already deleted bet", () => {
+        const bet = CommonBet.reconstitute({ ...betMock, status: "deleted" });
+
+        expect(() => {
+          bet.delete(creator.userId);
+        }).toThrow("Cannot delete: bet is already deleted!");
+      });
+    });
+
+    describe("Factory methods", () => {
+      it('should reconsitute "pending" from object', () => {
+        const betMock: CommonBetType = {
+          ...BasicCommonBetMock,
+          participants: [creator, friend],
+        };
+        const bet = CommonBet.reconstitute(betMock);
+
+        expect(bet.id).toBe(betMock.id);
+        expect(bet.creatorId).toBe(betMock.creatorId);
+        expect(bet.status).toBe(betMock.status);
+        expect(bet.title).toBe(betMock.title);
+        expect(bet.terms).toBe(betMock.terms);
+        expect(bet.stakeType).toBe(betMock.stakeType);
+        expect(bet.stake).toBe(betMock.stake);
+        expect(bet.createdAt).toBe(betMock.createdAt);
+        expect(bet.updatedAt).toBe(betMock.updatedAt);
+        expect(bet.resolvedBy).toBeUndefined();
+        expect(bet.resolvedAt).toBeUndefined();
+        expect(bet.completedBy).toBeUndefined();
+        expect(bet.completedAt).toBeUndefined();
+        expect(bet.winnerId).toBeUndefined();
+      });
+
+      it('should reconsitute "resolved" from object', () => {
+        const betMock: CommonBetType = {
+          ...BasicCommonBetMock,
+          participants: [creator, friend],
+          status: "resolved",
+          resolvedBy: friend.userId,
+          resolvedAt: new Date(Date.parse("2025-01-01T13:00:00Z")),
+          winnerId: creator.userId,
+          dueDate: new Date(Date.parse("2025-01-05T12:00:00Z")),
+        };
+        const bet = CommonBet.reconstitute(betMock);
+
+        expect(bet.id).toBe(betMock.id);
+        expect(bet.creatorId).toBe(betMock.creatorId);
+        expect(bet.status).toBe(betMock.status);
+        expect(bet.title).toBe(betMock.title);
+        expect(bet.terms).toBe(betMock.terms);
+        expect(bet.stakeType).toBe(betMock.stakeType);
+        expect(bet.stake).toBe(betMock.stake);
+        expect(bet.createdAt).toBe(betMock.createdAt);
+        expect(bet.updatedAt).toBe(betMock.updatedAt);
+        expect(bet.resolvedBy).toBe(betMock.resolvedBy);
+        expect(bet.resolvedAt).toBe(betMock.resolvedAt);
+        expect(bet.winnerId).toBe(betMock.winnerId);
+        expect(bet.dueDate).toBe(betMock.dueDate);
+        expect(bet.completedBy).toBeUndefined();
+        expect(bet.completedAt).toBeUndefined();
+      });
+
+      it('should reconsitute "completed" from object', () => {
+        const betMock: CommonBetType = {
+          ...BasicCommonBetMock,
+          participants: [creator, friend],
+          status: "completed",
+          resolvedBy: friend.userId,
+          resolvedAt: new Date(Date.parse("2025-01-01T13:00:00Z")),
+          winnerId: creator.userId,
+          completedAt: new Date(Date.parse("2025-01-01T14:00:00Z")),
+          completedBy: friend.userId,
+        };
+        const bet = CommonBet.reconstitute(betMock);
+
+        expect(bet.id).toBe(betMock.id);
+        expect(bet.creatorId).toBe(betMock.creatorId);
+        expect(bet.status).toBe(betMock.status);
+        expect(bet.title).toBe(betMock.title);
+        expect(bet.terms).toBe(betMock.terms);
+        expect(bet.stakeType).toBe(betMock.stakeType);
+        expect(bet.stake).toBe(betMock.stake);
+        expect(bet.createdAt).toBe(betMock.createdAt);
+        expect(bet.updatedAt).toBe(betMock.updatedAt);
+        expect(bet.resolvedBy).toBe(betMock.resolvedBy);
+        expect(bet.resolvedAt).toBe(betMock.resolvedAt);
+        expect(bet.winnerId).toBe(betMock.winnerId);
+        expect(bet.dueDate).toBeUndefined;
+        expect(bet.completedBy).toBe(betMock.completedBy);
+        expect(bet.completedAt).toBe(betMock.completedAt);
+      });
+    });
+
+    describe("Equal methods", () => {
+      it("Should two the same id be equal", () => {
+        const bet1 = CommonBet.reconstitute({
+          ...BasicCommonBetMock,
+          participants: [creator, friend],
+        });
+        const bet2 = CommonBet.reconstitute({
+          ...BasicCommonBetMock,
+          participants: [creator, friend],
+        });
+        expect(bet1.equals(bet2)).toBeTruthy();
+      });
+    });
   });
 });
 
-describe("Bet", () => {
-  let betRequestId: UUID;
-  let creatorId: UUID;
-  let participantId: UUID;
-  let title: string;
-  let terms: Terms;
-  let stakes: CommonStake;
-  let dueDate: Date;
+describe("Bet Flow", () => {
+  describe("Simple resolution and completion flow for Individual Stake", () => {
+    const creator: IndividualBetParticipantType = {
+      ...CreatorCommonBetParticipantMock,
+      vote: "approved",
+      stake: "I want that all loosers should take selfie with mustache",
+    };
+    const friend: IndividualBetParticipantType = {
+      ...FriendCommonBetParticipantMock,
+      vote: "approved",
+      stake: "I want to gain 5$ from other participants",
+    };
+    const betRequestMock: IndividualBetRequestType = {
+      ...BasicIndividualBetRequestMock,
+      participants: [creator, friend],
+    };
 
-  beforeEach(() => {
-    betRequestId = generateId();
-    creatorId = generateId();
-    participantId = generateId();
-    title = "Short summary";
-    terms = new Terms("This is a test bet about who will win the game");
-    stakes = new CommonStake("Loser buys coffee for the winner");
-    dueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
-  });
+    const betRequest = new IndividualBetRequest(
+      creator.userId,
+      betRequestMock.title,
+      betRequestMock.terms,
+      [creator, friend],
+    );
 
-  describe("Creation", () => {
-    it("should create a bet with valid parameters", () => {
-      const bet = new Bet(
-        betRequestId,
-        creatorId,
-        participantId,
-        title,
-        terms,
-        stakes,
-      );
+    const bet = new IndividualBet(betRequest);
 
-      expect(bet.id).toBeDefined();
-      expect(bet.betRequestId).toBe(betRequestId);
-      expect(bet.creatorId).toBe(creatorId);
-      expect(bet.participantId).toBe(participantId);
-      expect(bet.title).toBe(title);
-      expect(bet.terms).toBe(terms);
-      expect(bet.stakes).toBe(stakes);
-      expect(bet.status).toBe(BetStatus.PENDING);
-      expect(bet.participants).toEqual([creatorId, participantId]);
+    it("Should created date be not changed", () => {
+      expect(bet.createdAt).toBe(betRequest.createdAt);
     });
 
-    it("should emit BetCreatedEvent when created without ID", () => {
-      const bet = new Bet(betRequestId, creatorId, participantId, title, terms);
-
-      const events = bet.domainEvents;
-      expect(events).toHaveLength(1);
-      expect(events[0]).toBeInstanceOf(BetCreatedEvent);
-
-      const createdEvent = events[0] as BetCreatedEvent;
-      expect(createdEvent.betId).toBe(bet.id);
-      expect(createdEvent.betRequestId).toBe(betRequestId);
-      expect(createdEvent.creatorId).toBe(creatorId);
-      expect(createdEvent.participantId).toBe(participantId);
-      expect(createdEvent.terms).toBe(terms.value);
+    it("Should update date be changed", () => {
+      expect(bet.updatedAt).not.toBe(betRequest.updatedAt);
     });
 
-    it("should not emit events when created with existing ID", () => {
-      const existingId = generateId();
-      const bet = new Bet(
-        betRequestId,
-        creatorId,
-        participantId,
-        title,
-        terms,
-        stakes,
-        existingId,
-      );
+    it("Should resolve bet emit event", () => {
+      const dueDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000); //2 days
+      bet.resolve(friend.userId, creator.userId, dueDate);
 
-      expect(bet.domainEvents).toHaveLength(0);
-      expect(bet.id).toBe(existingId);
-    });
-  });
-
-  describe("Factory method", () => {
-    it("should create bet using factory method", () => {
-      const bet = Bet.createFromBetRequest(
-        betRequestId,
-        creatorId,
-        participantId,
-        title,
-        terms,
-        stakes,
-      );
-
-      expect(bet.betRequestId).toBe(betRequestId);
-      expect(bet.creatorId).toBe(creatorId);
-      expect(bet.participantId).toBe(participantId);
-      expect(bet.terms).toBe(terms);
-      expect(bet.stakes).toBe(stakes);
-    });
-  });
-
-  describe("Status checking methods", () => {
-    let bet: Bet;
-
-    beforeEach(() => {
-      bet = new Bet(betRequestId, creatorId, participantId, title, terms);
+      expect(bet.status).toBe("resolved");
+      expect(bet.isDueSoon()).toBeTruthy();
+      expect(bet.domainEvents.at(-1)).toBeInstanceOf(BetActionEvent);
     });
 
-    it("should correctly identify pending status", () => {
-      expect(bet.isPending()).toBe(true);
-      expect(bet.isResolved()).toBe(false);
-      expect(bet.isCompleted()).toBe(false);
-      expect(bet.isDeleted()).toBe(false);
-      expect(bet.isActive()).toBe(true);
-      expect(bet.isFinal()).toBe(false);
-    });
+    it("Should complete bet", () => {
+      bet.complete(creator.userId);
 
-    it("should correctly identify if user is participant", () => {
-      expect(bet.isParticipant(creatorId)).toBe(true);
-      expect(bet.isParticipant(participantId)).toBe(true);
-      expect(bet.isParticipant(generateId())).toBe(false);
-    });
-
-    it("should correctly identify creator", () => {
-      expect(bet.isCreator(creatorId)).toBe(true);
-      expect(bet.isCreator(participantId)).toBe(false);
-      expect(bet.isCreator(generateId())).toBe(false);
-    });
-
-    it("should allow resolution when pending", () => {
-      expect(bet.canBeResolved()).toBe(true);
-      expect(bet.canBeCompleted()).toBe(false);
-      expect(bet.canBeDeleted()).toBe(true);
-    });
-  });
-
-  describe("Due date checking", () => {
-    it("should not be overdue when due date is in future", () => {
-      const futureDueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      const bet = new Bet(
-        betRequestId,
-        creatorId,
-        participantId,
-        title,
-        terms,
-        stakes,
-      );
-
-      bet.resolve(creatorId, creatorId, undefined, futureDueDate);
-
-      expect(bet.isOverdue()).toBe(false);
-      expect(bet.isDueSoon()).toBe(false);
-    });
-
-    it("should be due soon when within threshold", () => {
-      const soonDueDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000); // 2 days
-      const bet = new Bet(
-        betRequestId,
-        creatorId,
-        participantId,
-        title,
-        terms,
-        stakes,
-      );
-      bet.resolve(creatorId, creatorId, undefined, soonDueDate);
-
-      expect(bet.isDueSoon(3)).toBe(true);
-      expect(bet.isOverdue()).toBe(false);
-    });
-
-    it("should be overdue when past due date", () => {
-      const pastDueDate = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000); // 1 day ago
-      const bet = new Bet(
-        betRequestId,
-        creatorId,
-        participantId,
-        title,
-        terms,
-        stakes,
-      );
-      bet.resolve(creatorId, creatorId, undefined, pastDueDate);
-
-      expect(bet.isOverdue()).toBe(true);
-      expect(bet.isDueSoon()).toBe(false);
-    });
-
-    it("should be pending too long when threshold exceeded", () => {
-      // Create bet with past creation date by manipulating the internal state
-      const bet = new Bet(betRequestId, creatorId, participantId, title, terms);
-      // We can't directly set creation date, so we test with current logic
-      expect(bet.isPendingTooLong(1)).toBe(false); // 1 day threshold
-    });
-
-    it("should not be pending too long when resolved", () => {
-      const bet = new Bet(betRequestId, creatorId, participantId, title, terms);
-      bet.resolve(creatorId, creatorId);
-
-      expect(bet.isPendingTooLong(0)).toBe(false);
-    });
-  });
-
-  describe("Resolution", () => {
-    let bet: Bet;
-
-    beforeEach(() => {
-      bet = new Bet(betRequestId, creatorId, participantId, title, terms);
-      bet.clearDomainEvents();
-    });
-
-    it("should resolve bet successfully", () => {
-      const evidence = "Photo evidence of the outcome";
-
-      bet.resolve(creatorId, creatorId, evidence);
-
-      expect(bet.isResolved()).toBe(true);
-      expect(bet.winnerId).toBe(creatorId);
-      expect(bet.loserId).toBe(participantId);
-      expect(bet.evidence).toBe(evidence);
-      expect(bet.resolvedAt).toBeDefined();
-    });
-
-    it("should emit BetResolvedEvent when resolved", () => {
-      const evidence = "Photo evidence of the outcome";
-
-      bet.resolve(creatorId, participantId, evidence);
-
-      const events = bet.domainEvents;
-      expect(events).toHaveLength(1);
-      expect(events[0]).toBeInstanceOf(BetResolvedEvent);
-
-      const resolvedEvent = events[0] as BetResolvedEvent;
-      expect(resolvedEvent.betId).toBe(bet.id);
-      expect(resolvedEvent.resolvedById).toBe(creatorId);
-      expect(resolvedEvent.winnerId).toBe(participantId);
-      expect(resolvedEvent.loserId).toBe(creatorId);
-      expect(resolvedEvent.evidence).toBe(evidence);
-    });
-
-    it("should throw error if non-participant tries to resolve", () => {
-      const nonParticipant = generateId();
-
-      expect(() => {
-        bet.resolve(nonParticipant, creatorId);
-      }).toThrow("Only participants can resolve the bet");
-    });
-
-    it("should throw error if winner is not a participant", () => {
-      const nonParticipant = generateId();
-
-      expect(() => {
-        bet.resolve(creatorId, nonParticipant);
-      }).toThrow("Winner must be one of the bet participants");
-    });
-
-    it("should throw error if bet is not pending", () => {
-      bet.resolve(creatorId, creatorId);
-
-      expect(() => {
-        bet.resolve(participantId, participantId);
-      }).toThrow("Cannot resolve: bet is not in pending state");
+      expect(bet.status).toBe("completed");
+      expect(bet.isDueSoon()).toBeFalsy();
     });
   });
 });

@@ -1,5 +1,6 @@
 import type {
   CommonBetRequestType,
+  CommonBetType,
   IndividualBetRequestType,
 } from "@domain/bet";
 
@@ -27,3 +28,17 @@ export const BasicIndividualBetRequestMock: IndividualBetRequestType = {
   createdAt: new Date(Date.parse("2025-01-01T00:00:00Z")),
   updatedAt: new Date(Date.parse("2025-01-01T00:00:00Z")),
 } as const;
+
+export const BasicCommonBetMock: CommonBetType = {
+  id: "bet-01",
+  creatorId: "user-01",
+  status: "pending",
+  title: "Short bet title",
+  terms:
+    "Content of the bet. Long terms where we bet that application will be running smoothly",
+  participants: [],
+  stakeType: "COMMON",
+  stake: 'Winner receives "golden badge" reward',
+  createdAt: new Date(Date.parse("2025-01-01T00:00:00Z")),
+  updatedAt: new Date(Date.parse("2025-01-01T12:00:00Z")),
+};
