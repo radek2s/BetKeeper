@@ -47,47 +47,30 @@ model FriendRequestTable {
 model BetTable {
     id                  String @id @default(uuid())
     creatorId           String 
-    participantId       String 
+    status              String?
     title               String 
     terms               String
-    status              String
-    createdAt           DateTime 
-    updatedAt           DateTime
     stakeType           String
-    stakeBase           String
-    stakeAdditional     String?
-    dueDate             DateTime? 
+    stake               String?
+    createdAt           DateTime 
+    updatedAt           DateTime 
     resolvedAt          DateTime? 
-    completedAt         DateTime? 
+    resolvedBy          String? 
     winnerId            String? 
-    evidence            String?
-    completionNotes     String?
+    dueDate             DateTime? 
+    completedAt         DateTime? 
+    completedBy         String? 
 
     @@map("bet")
 }
 
-model BetRequestTable {
-    id                  String @id @default(uuid())
-    creatorId           String 
-    participantId       String 
-    title               String
-    terms               String
-    status              String
-    createdAt           DateTime 
-    updatedAt           DateTime 
-    stakeType           String
-    stakeBase           String
-    stakeAdditional     String?
-
-    @@map("bet_request")
-}
-
-model BetRequestVoteTable {
-    requestId       String
-    participantId   String
-    vote            String
-    votedAt         DateTime?
-
-    @@id(name: "voteId", [requestId, participantId])
-    @@map("bet_request_vote")
+model BetParticipantTable {
+    betId               String
+    userId              String 
+    vote                String 
+    claim               String
+    stake               String?
+    
+    @@id(name: "participantId", [betId, userId])
+    @@map("bet_participant")
 }

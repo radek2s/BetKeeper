@@ -19,7 +19,7 @@ export function WizzardTerms({ terms, onCancel, onNext }: Props) {
     const description = requestDescriptionRef.current?.value;
     onNext({
       title,
-      description,
+      description: description || "",
     });
   };
 

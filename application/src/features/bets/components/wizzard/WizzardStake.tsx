@@ -12,9 +12,7 @@ interface Props {
   onSend: (result: StakeResult) => void;
 }
 export function WizzardStake({ selectedFriendName, onCancel, onSend }: Props) {
-  const [stakeType, setStakeType] = useState<string>(
-    StakeType.COMMON.toString(),
-  );
+  const [stakeType, setStakeType] = useState<string>("common");
 
   const commonStakeRef = useRef<HTMLTextAreaElement>(null);
   const userStakeRef = useRef<HTMLTextAreaElement>(null);
@@ -45,7 +43,7 @@ export function WizzardStake({ selectedFriendName, onCancel, onSend }: Props) {
           <SelectItem value="common">Common</SelectItem>
           <SelectItem value="individual">Individual</SelectItem>
         </Select>
-        {stakeType === StakeType.COMMON ? (
+        {stakeType === "common" ? (
           <TextField
             label="Stake"
             name="stake"

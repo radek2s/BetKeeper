@@ -1,10 +1,3 @@
-import {
-  type BetRequest,
-  CommonStake,
-  IndividualStakes,
-  type IStake,
-  StakeType,
-} from "@domain/bet";
 import type { UserType } from "@domain/user/entities";
 
 export type ParticipantVoteType = "unknown" | "approved" | "rejected";
@@ -61,7 +54,8 @@ export interface BetRequestResponse {
 }
 
 export function mapToResponse(
-  betRequest: BetRequest,
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  betRequest: any,
   users: Map<string, UserType>,
 ): BetRequestResponse {
   return {
@@ -76,7 +70,7 @@ export function mapToResponse(
     },
     title: betRequest.title,
     terms: betRequest.terms.value,
-    stakes: stakeToReponse(betRequest.stakes),
+    stakes: betRequest.stakes,
     status: betRequest.status,
     createdAt: betRequest.createdAt,
     updatedAt: betRequest.updatedAt,
@@ -85,20 +79,20 @@ export function mapToResponse(
   };
 }
 
-function stakeToReponse(stake: IStake | undefined): IStakeReponse {
-  if (!stake) throw new Error("Stake is missing!");
-  if (stake instanceof CommonStake) {
-    return {
-      type: "common",
-      description: stake.description,
-    };
-  } else if (stake instanceof IndividualStakes) {
-    return {
-      type: "individual",
-      creatorStake: stake.creatorStake,
-      participantStake: stake.participantStake,
-    };
-  } else {
-    throw new Error("Unrecognized stake type");
-  }
-}
+// function stakeToReponse(stake: IStake | undefined): IStakeReponse {
+//   if (!stake) throw new Error("Stake is missing!");
+//   if (stake instanceof CommonStake) {
+//     return {
+//       type: "common",
+//       description: stake.description,
+//     };
+//   } else if (stake instanceof IndividualStakes) {
+//     return {
+//       type: "individual",
+//       creatorStake: stake.creatorStake,
+//       participantStake: stake.participantStake,
+//     };
+//   } else {
+//     throw new Error("Unrecognized stake type");
+//   }
+// }

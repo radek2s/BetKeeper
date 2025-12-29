@@ -1,204 +1,103 @@
-import { Bet, type BetStatus, type IBetRepository, Terms } from "@domain/bet";
+import type {
+  BetStatus,
+  BetTableRecord,
+  IBetRepository,
+  StakeType,
+} from "@domain/bet";
 import type { UUID } from "@domain/shared";
 import prisma from "../db";
 
 export class NextBetRepository implements IBetRepository {
   private table = prisma.betTable;
 
-  async findById(id: UUID): Promise<Bet | null> {
-    const betEntity = await this.table.findUnique({ where: { id } });
-    if (!betEntity) return null;
-
-    return Bet.reconstitute(
-      betEntity.id,
-      betEntity.id,
-      betEntity.creatorId,
-      betEntity.participantId,
-      new Terms(betEntity.terms),
-      undefined,
-      betEntity.status as BetStatus,
-      betEntity.createdAt,
-      betEntity.updatedAt,
-      betEntity.dueDate ?? undefined,
-      betEntity.resolvedAt ?? undefined,
-      betEntity.completedAt ?? undefined,
-      betEntity.winnerId ?? undefined,
-      betEntity.evidence ?? undefined,
-      betEntity.completionNotes ?? undefined,
-    );
+  async findAll(): Promise<BetTableRecord[]> {
+    const bets = await this.table.findMany();
+    return bets.map((bet) => ({
+      id: bet.id,
+      creatorId: bet.creatorId,
+      status: bet.status as BetStatus,
+      title: bet.title,
+      terms: bet.terms,
+      stakeType: bet.stakeType as StakeType,
+      stake: bet.stake || undefined,
+      createdAt: bet.createdAt,
+      updatedAt: bet.updatedAt,
+      resolvedBy: bet.resolvedBy || undefined,
+      resolvedAt: bet.resolvedAt || undefined,
+      winnerId: bet.winnerId || undefined,
+      dueDate: bet.dueDate || undefined,
+      completedBy: bet.completedBy || undefined,
+      completedAt: bet.completedAt || undefined,
+    }));
   }
-  findByBetRequestId(betRequestId: UUID): Promise<Bet | null> {
-    return this.findById(betRequestId);
-  }
-  async findByParticipantId(participantId: UUID): Promise<Bet[]> {
-    const betEntities = await this.table.findMany({ where: { participantId } });
-    if (!betEntities) return [];
-
-    return betEntities.map((betEntity) =>
-      Bet.reconstitute(
-        betEntity.id,
-        betEntity.id,
-        betEntity.creatorId,
-        betEntity.participantId,
-        new Terms(betEntity.terms),
-        undefined,
-        betEntity.status as BetStatus,
-        betEntity.createdAt,
-        betEntity.updatedAt,
-        betEntity.dueDate ?? undefined,
-        betEntity.resolvedAt ?? undefined,
-        betEntity.completedAt ?? undefined,
-        betEntity.winnerId ?? undefined,
-        betEntity.evidence ?? undefined,
-        betEntity.completionNotes ?? undefined,
-      ),
-    );
-  }
-  async findByCreatorId(creatorId: UUID): Promise<Bet[]> {
-    const betEntities = await this.table.findMany({ where: { creatorId } });
-    if (!betEntities) return [];
-
-    return betEntities.map((betEntity) =>
-      Bet.reconstitute(
-        betEntity.id,
-        betEntity.id,
-        betEntity.creatorId,
-        betEntity.participantId,
-        new Terms(betEntity.terms),
-        undefined,
-        betEntity.status as BetStatus,
-        betEntity.createdAt,
-        betEntity.updatedAt,
-        betEntity.dueDate ?? undefined,
-        betEntity.resolvedAt ?? undefined,
-        betEntity.completedAt ?? undefined,
-        betEntity.winnerId ?? undefined,
-        betEntity.evidence ?? undefined,
-        betEntity.completionNotes ?? undefined,
-      ),
-    );
-  }
-  async findByUserId(userId: UUID): Promise<Bet[]> {
-    const betEntities = await this.table.findMany({
-      where: { OR: [{ creatorId: userId }, { participantId: userId }] },
-    });
-    if (!betEntities) return [];
-
-    return betEntities.map((betEntity) =>
-      Bet.reconstitute(
-        betEntity.id,
-        betEntity.id,
-        betEntity.creatorId,
-        betEntity.participantId,
-        new Terms(betEntity.terms),
-        undefined,
-        betEntity.status as BetStatus,
-        betEntity.createdAt,
-        betEntity.updatedAt,
-        betEntity.dueDate ?? undefined,
-        betEntity.resolvedAt ?? undefined,
-        betEntity.completedAt ?? undefined,
-        betEntity.winnerId ?? undefined,
-        betEntity.evidence ?? undefined,
-        betEntity.completionNotes ?? undefined,
-      ),
-    );
-  }
-  async findByStatus(status: BetStatus): Promise<Bet[]> {
-    const betEntities = await this.table.findMany({
-      where: { status },
-    });
-    if (!betEntities) return [];
-
-    return betEntities.map((betEntity) =>
-      Bet.reconstitute(
-        betEntity.id,
-        betEntity.id,
-        betEntity.creatorId,
-        betEntity.participantId,
-        new Terms(betEntity.terms),
-        undefined,
-        betEntity.status as BetStatus,
-        betEntity.createdAt,
-        betEntity.updatedAt,
-        betEntity.dueDate ?? undefined,
-        betEntity.resolvedAt ?? undefined,
-        betEntity.completedAt ?? undefined,
-        betEntity.winnerId ?? undefined,
-        betEntity.evidence ?? undefined,
-        betEntity.completionNotes ?? undefined,
-      ),
-    );
-  }
-  async findByUserIdAndStatus(userId: UUID, status: BetStatus): Promise<Bet[]> {
-    const betEntities = await this.table.findMany({
-      where: {
-        AND: [
-          { OR: [{ participantId: userId }, { creatorId: userId }] },
-          { status },
-        ],
-      },
-    });
-    if (!betEntities) return [];
-
-    return betEntities.map((betEntity) =>
-      Bet.reconstitute(
-        betEntity.id,
-        betEntity.id,
-        betEntity.creatorId,
-        betEntity.participantId,
-        new Terms(betEntity.terms),
-        undefined,
-        betEntity.status as BetStatus,
-        betEntity.createdAt,
-        betEntity.updatedAt,
-        betEntity.dueDate ?? undefined,
-        betEntity.resolvedAt ?? undefined,
-        betEntity.completedAt ?? undefined,
-        betEntity.winnerId ?? undefined,
-        betEntity.evidence ?? undefined,
-        betEntity.completionNotes ?? undefined,
-      ),
-    );
-  }
-  findActiveByUserId(userId: UUID): Promise<Bet[]> {
+  findAllBetRequests(): Promise<BetTableRecord[]> {
     throw new Error("Method not implemented.");
   }
-  findCompletedByUserId(userId: UUID): Promise<Bet[]> {
+  findAllBets(): Promise<BetTableRecord[]> {
     throw new Error("Method not implemented.");
   }
-  findDueSoon(daysThreshold: number): Promise<Bet[]> {
+  findAllByCreatorId(): Promise<BetTableRecord[]> {
     throw new Error("Method not implemented.");
   }
-  findPendingTooLong(daysThreshold: number): Promise<Bet[]> {
-    throw new Error("Method not implemented.");
+
+  async findById(id: UUID): Promise<BetTableRecord | null> {
+    const bet = await this.table.findUnique({ where: { id } });
+    if (!bet) return null;
+
+    return {
+      id: bet.id,
+      creatorId: bet.creatorId,
+      status: bet.status as BetStatus,
+      title: bet.title,
+      terms: bet.terms,
+      stakeType: bet.stakeType as StakeType,
+      stake: bet.stake || undefined,
+      createdAt: bet.createdAt,
+      updatedAt: bet.updatedAt,
+      resolvedBy: bet.resolvedBy || undefined,
+      resolvedAt: bet.resolvedAt || undefined,
+      winnerId: bet.winnerId || undefined,
+      dueDate: bet.dueDate || undefined,
+      completedBy: bet.completedBy || undefined,
+      completedAt: bet.completedAt || undefined,
+    };
   }
-  findOverdue(): Promise<Bet[]> {
-    throw new Error("Method not implemented.");
-  }
-  async save(bet: Bet): Promise<void> {
+
+  async save(bet: BetTableRecord): Promise<void> {
     try {
       this.table.upsert({
         where: { id: bet.id },
         update: {
           status: bet.status,
+          title: bet.title,
+          terms: bet.terms,
+          stakeType: bet.stakeType,
+          stake: bet.stake,
+          createdAt: bet.createdAt,
           updatedAt: bet.updatedAt,
-          terms: bet.terms.value,
-          dueDate: bet.dueDate,
+          resolvedBy: bet.resolvedBy,
           resolvedAt: bet.resolvedAt,
-          completedAt: bet.completedAt,
           winnerId: bet.winnerId,
-          evidence: bet.evidence,
-          completionNotes: bet.completionNotes,
+          dueDate: bet.dueDate,
+          completedBy: bet.completedBy,
+          completedAt: bet.completedAt,
         },
         create: {
           id: bet.id,
-          createdAt: bet.createdAt,
           creatorId: bet.creatorId,
-          participantId: bet.participantId,
           status: bet.status,
+          title: bet.title,
+          terms: bet.terms,
+          stakeType: bet.stakeType,
+          stake: bet.stake,
+          createdAt: bet.createdAt,
           updatedAt: bet.updatedAt,
-          terms: bet.terms.value,
+          resolvedBy: bet.resolvedBy,
+          resolvedAt: bet.resolvedAt,
+          winnerId: bet.winnerId,
+          dueDate: bet.dueDate,
+          completedBy: bet.completedBy,
+          completedAt: bet.completedAt,
         },
       });
     } catch (e) {
@@ -213,8 +112,5 @@ export class NextBetRepository implements IBetRepository {
       console.error(e);
       throw e;
     }
-  }
-  async exists(id: UUID): Promise<boolean> {
-    return !!(await this.table.findUnique({ where: { id } }));
   }
 }

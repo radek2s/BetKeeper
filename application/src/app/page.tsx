@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <explanation> */
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 
-import { getBetRequests } from "@app/features/bets/actions";
+// import { getBetRequests } from "@app/features/bets/actions";
 import { BetCard } from "@app/features/bets/components/BetCard";
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
+import type { BetRequestResponse } from "@app/features/bets/model/betDto";
 import { getFriendList } from "@app/features/friends/actions";
 import { getUserDetails } from "@app/features/users/actions";
 import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
@@ -29,7 +30,7 @@ export default async function Index() {
     return (await Promise.all(userPromises)).map((u) => u.toObject());
   }
 
-  const requests = await getBetRequests(user.id);
+  const requests: BetRequestResponse[] = []; // await getBetRequests(user.id);
 
   return (
     <PageWrapper>

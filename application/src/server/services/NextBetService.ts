@@ -1,10 +1,10 @@
 import { BetService } from "@domain/bet";
-import { NextBetAggregateRepository } from "../repositories/NextBetAggregateRepository";
-import { NextBetQueryService } from "./NextBetQueryService";
+import { NextBetParticipantRepository } from "../repositories/NextBetParticipantRepository";
+import { NextBetRepository } from "../repositories/NextBetRepository";
 
 const NextBetService = new BetService(
-  new NextBetAggregateRepository(),
-  new NextBetQueryService(),
+  new NextBetRepository(),
+  new NextBetParticipantRepository(),
 );
 
 export default NextBetService;
