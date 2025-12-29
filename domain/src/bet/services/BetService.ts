@@ -142,6 +142,11 @@ export class BetService extends DomainService {
 
     const { participants, ...bet } = betRequest.toObject();
     await this.betRepository.save(bet as BetTableRecord);
+    participants.forEach(async (participant) => {
+      await this.betParticipantRepository.save(
+        participantToRecord(participant, bet.id),
+      );
+    });
 
     await this.dispatchDomainEvents(betRequest);
 
@@ -158,6 +163,11 @@ export class BetService extends DomainService {
 
     const { participants, ...bet } = betRequest.toObject();
     await this.betRepository.save(bet as BetTableRecord);
+    participants.forEach(async (participant) => {
+      await this.betParticipantRepository.save(
+        participantToRecord(participant, bet.id),
+      );
+    });
 
     await this.dispatchDomainEvents(betRequest);
 
@@ -322,7 +332,7 @@ export class BetService extends DomainService {
     isAdmin: boolean = false,
   ): Promise<void> {
     const bet = await this.getBetById(betId);
-    if (!isAdmin || bet.creatorId !== deletedById)
+    if (!isAdmin && bet.creatorId !== deletedById)
       throw new Error("Only creator can delete bet");
     bet.delete(deletedById);
 

@@ -174,6 +174,33 @@ describe("Bet Service", () => {
       expect(participants.every((p) => p.vote === "approved")).toBeTruthy();
     });
 
+    it("Reject of bet request by friend", async () => {
+      const betRequest = await betService.create(
+        "Simple bet",
+        "Bet longer terms to be created",
+        "user-01",
+        [
+          {
+            userId: "user-01",
+            claim: "I want prize",
+          },
+          {
+            userId: "user-02",
+            claim: "I want trophy",
+          },
+        ],
+        "Common stake",
+      );
+
+      await betService.reject(betRequest.id, "user-02");
+
+      const participant = await betParticipantRepository.findByUserIdAndBetId(
+        "user-02",
+        betRequest.id,
+      );
+      expect(participant?.vote).toBe("rejected");
+    });
+
     it("Approved bet request can be converted to Bet", async () => {
       const betRequest = await betService.create(
         "Simple bet",
@@ -303,6 +330,126 @@ describe("Bet Service", () => {
           )
         )?.stake,
       ).toBe("I want trophy");
+    });
+
+    it("Update individual stakes bet request", async () => {
+      const betRequest = await betService.create(
+        "Simple bet",
+        "Bet longer terms to be created",
+        "user-01",
+        [
+          {
+            userId: "user-01",
+            claim: "Bet is too long",
+            stake: "I want GOTY",
+          },
+          {
+            userId: "user-02",
+            claim: "Bet is too short",
+            stake: "I want trophy",
+          },
+        ],
+      );
+
+      const updatedStake = "I want a 5$";
+      expect(
+        (
+          await betParticipantRepository.findByUserIdAndBetId(
+            "user-02",
+            betRequest.id,
+          )
+        )?.stake,
+      ).toBe("I want trophy");
+      await betService.updateStakes(betRequest.id, updatedStake, "user-02");
+      expect(
+        (
+          await betParticipantRepository.findByUserIdAndBetId(
+            "user-02",
+            betRequest.id,
+          )
+        )?.stake,
+      ).toBe(updatedStake);
+    });
+  });
+
+  describe("Common Bet", () => {
+    beforeEach(() => {
+      betRepository.save({
+        id: "bet-01",
+        creatorId: "user-01",
+        status: "pending",
+        title: "Simple title",
+        terms: "Longer bet terms with details",
+        stakeType: "COMMON",
+        stake: "Winner gets 5$",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      betParticipantRepository.save({
+        betId: "bet-01",
+        userId: "user-01",
+        claim: "Faster",
+        vote: "approved",
+        stake: null,
+      });
+      betParticipantRepository.save({
+        betId: "bet-01",
+        userId: "user-02",
+        claim: "Slower",
+        vote: "approved",
+        stake: null,
+      });
+    });
+
+    afterEach(() => {
+      betRepository.storage.clear();
+      betParticipantRepository.storage.filter(() => true);
+    });
+
+    it("Should get bet", async () => {
+      const bet = await betService.getBetById("bet-01");
+      expect(bet).toBeInstanceOf(CommonBet);
+    });
+
+    it("Should resolve bet", async () => {
+      const bet = await betService.getBetById("bet-01");
+      const dueDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+      await betService.resolve(bet.id, "user-02", "user-01", dueDate);
+
+      const betRecord = await betRepository.findById("bet-01");
+      expect(betRecord?.status).toBe("resolved");
+      expect(betRecord?.dueDate).toBe(dueDate);
+    });
+
+    it("Should complete bet", async () => {
+      const bet = await betService.getBetById("bet-01");
+      await betService.resolve(bet.id, "user-02", "user-01");
+      await betService.complete(bet.id, "user-01");
+
+      expect((await betRepository.findById("bet-01"))?.status).toBe(
+        "completed",
+      );
+    });
+
+    it("Creator should delete bet", async () => {
+      const bet = await betService.getBetById("bet-01");
+      await betService.deleteBet(bet.id, "user-01");
+
+      expect((await betRepository.findById("bet-01"))?.status).toBe("deleted");
+    });
+
+    it("Admin should delete bet", async () => {
+      const bet = await betService.getBetById("bet-01");
+      await betService.deleteBet(bet.id, "admin", true);
+
+      expect((await betRepository.findById("bet-01"))?.status).toBe("deleted");
+    });
+
+    it("Admin should delete bet completly", async () => {
+      const bet = await betService.getBetById("bet-01");
+      await betService.deleteBetCompletly(bet.id, "admin", true);
+
+      expect(await betRepository.findById("bet-01")).toBeNull();
     });
   });
 });
