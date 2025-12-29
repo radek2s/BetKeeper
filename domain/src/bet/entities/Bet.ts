@@ -199,6 +199,8 @@ export abstract class AbstractBet extends Entity {
     const now = new Date();
     if (dueDate <= now) throw new Error("Due date must be in the future");
   }
+
+  abstract override toObject(): BetType;
 }
 
 export class CommonBet extends AbstractBet {

@@ -18,7 +18,6 @@ export type BetRequestType = {
   title: string;
   terms: string;
   participants: BetParticipant[];
-  stakeType: StakeType;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -123,6 +122,8 @@ export abstract class AbstractBetRequest extends Entity {
     }
   }
 
+  abstract setStake(value: string, updatingId: string): void;
+
   get updatedAt() {
     return this._updatedAt;
   }
@@ -191,11 +192,23 @@ export abstract class AbstractBetRequest extends Entity {
         "Invalid creatorId! Creator must be participant of bet request!",
       );
   }
+
+  override toObject(): BetRequestType {
+    return {
+      id: this.id,
+      title: this.title,
+      terms: this.terms,
+      createdAt: this.createdAt,
+      creatorId: this.creatorId,
+      participants: this.participants,
+      updatedAt: this.updatedAt,
+    };
+  }
 }
 
 export class CommonBetRequest extends AbstractBetRequest {
   stakeType: StakeType = "COMMON";
-  _stake: string;
+  protected _stake: string;
 
   constructor(
     creatorId: UUID,
