@@ -185,9 +185,12 @@ body {
   }
 
   .dot:nth-of-type(2) {
-    left: 50%;
+    left: 33%;
   }
   .dot:nth-of-type(3) {
+    left: 66%;
+  }
+  .dot:nth-of-type(4) {
     left: 100%;
   }
 }

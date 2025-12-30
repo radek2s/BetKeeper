@@ -8,6 +8,7 @@ import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCre
 import type { BetRequestResponse } from "@app/features/bets/model/betDto";
 import { getFriendList } from "@app/features/friends/actions";
 import { getUserDetails } from "@app/features/users/actions";
+import { authorizedUserToUserType } from "@app/features/users/model/userDto";
 import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
 import { Button } from "@app/ui/button/Button";
 import { IconButton } from "@app/ui/button/IconButton";
@@ -72,7 +73,10 @@ export default async function Index() {
           <h2>Uncompleted</h2>
         </section>
         <Button>Show all</Button>
-        <BetRequestCreateBtn friends={friends} />
+        <BetRequestCreateBtn
+          friends={friends}
+          creator={authorizedUserToUserType(user)}
+        />
       </div>
     </PageWrapper>
   );

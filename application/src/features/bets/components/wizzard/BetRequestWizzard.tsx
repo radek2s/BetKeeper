@@ -1,26 +1,34 @@
-import { UserStatus } from "@domain/user";
+import type { BetParticipantRequest } from "@domain/bet";
 import type { UserType } from "@domain/user/entities";
 import { useState } from "react";
 import {
   type BetRequestCreate,
+  isBetParticipantRequest,
   isTermsResult,
-  type StakeResult,
   type TermsResult,
 } from "./types";
+import { WizzardCreator } from "./WizzardCreator";
+import { WizzardFriend } from "./WizzardFriend";
 import { WizzardParticipants } from "./WizzardParticipants";
 import { WizzardProgress } from "./WizzardProgress";
-import { WizzardStake } from "./WizzardStake";
 import { WizzardTerms } from "./WizzardTerms";
 
 interface Props {
+  creator: UserType;
   friends: UserType[];
   onCancel: () => void;
   onSend: (request: BetRequestCreate) => void;
 }
-export function BetRequestWizzard({ friends, onCancel, onSend }: Props) {
+export function BetRequestWizzard({
+  creator,
+  friends,
+  onCancel,
+  onSend,
+}: Props) {
   const [step, setStep] = useState<number>(0);
   const [terms, setTerms] = useState<TermsResult>();
   const [friend, setFriend] = useState<UserType>();
+  const [participants, setParticipants] = useState<BetParticipantRequest[]>([]);
 
   const handleCancel = () => {
     onCancel();
@@ -30,24 +38,29 @@ export function BetRequestWizzard({ friends, onCancel, onSend }: Props) {
     setStep((s) => s - 1);
   };
 
-  const onNext = (result: TermsResult | UserType) => {
+  const onNext = (result: TermsResult | UserType | BetParticipantRequest) => {
+    console.log(result);
     if (isTermsResult(result)) {
       setTerms(result);
+    } else if (isBetParticipantRequest(result)) {
+      setParticipants([result]);
     } else {
       setFriend(result);
     }
     setStep((s) => s + 1);
   };
 
-  const handleSend = (stake: StakeResult) => {
+  const handleSend = (friendRequest: BetParticipantRequest) => {
     if (!terms) return;
     if (!friend) return;
 
-    const request = {
+    const request: BetRequestCreate = {
       title: terms.title,
-      description: terms.description,
-      friendId: friend.id,
-      ...stake,
+      terms: terms.terms,
+      stake: terms.stake,
+      stakeType: terms.stakeType,
+      creatorId: creator.id,
+      participants: [...participants, friendRequest],
     };
 
     onSend(request);
@@ -61,19 +74,28 @@ export function BetRequestWizzard({ friends, onCancel, onSend }: Props) {
         );
       case 1:
         return (
-          <WizzardParticipants
-            selectedFriend={friend}
+          <WizzardCreator
+            creator={creator}
+            terms={terms}
             onNext={onNext}
             onBack={handleBack}
-            friends={friends}
           />
         );
       case 2:
         return (
-          <WizzardStake
-            selectedFriendName={friend?.firstName || ""}
-            onCancel={handleBack}
-            onSend={handleSend}
+          <WizzardParticipants
+            friends={friends}
+            onBack={handleBack}
+            onNext={onNext}
+          />
+        );
+      case 3:
+        return (
+          <WizzardFriend
+            friend={friend}
+            terms={terms}
+            onBack={handleBack}
+            onNext={handleSend}
           />
         );
     }

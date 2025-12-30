@@ -1,8 +1,10 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
 import { Button } from "@app/ui/button/Button";
 import FormField from "@app/ui/form-field";
+import { Select, SelectItem } from "@app/ui/select";
 import TextField from "@app/ui/text-field";
-import { useEffect, useRef } from "react";
+import type { StakeType } from "@domain/bet";
+import { useEffect, useRef, useState } from "react";
 import type { TermsResult } from "./types";
 
 interface Props {
@@ -11,27 +13,39 @@ interface Props {
   onNext: (result: TermsResult) => void;
 }
 export function WizzardTerms({ terms, onCancel, onNext }: Props) {
+  const [stakeType, setStakeType] = useState<StakeType>(
+    terms?.stakeType || "INDIVIDUAL",
+  );
   const requestTitleRef = useRef<HTMLInputElement>(null);
-  const requestDescriptionRef = useRef<HTMLTextAreaElement>(null);
+  const requestTermsRef = useRef<HTMLTextAreaElement>(null);
+  const requestStakeRef = useRef<HTMLTextAreaElement>(null);
   const handleNext = () => {
     const title = requestTitleRef.current?.value;
     if (!title) return;
-    const description = requestDescriptionRef.current?.value;
+    const terms = requestTermsRef.current?.value;
+    if (!terms) return;
+    const stake = requestStakeRef.current?.value;
     onNext({
       title,
-      description: description || "",
+      terms,
+      stakeType,
+      stake,
     });
   };
 
   useEffect(() => {
-    if (terms && requestTitleRef.current && requestDescriptionRef.current) {
+    if (
+      terms &&
+      requestTitleRef.current &&
+      requestTermsRef.current &&
+      requestStakeRef.current
+    ) {
       requestTitleRef.current.value = terms.title;
-      if (terms.description)
-        requestDescriptionRef.current.value = terms.description;
+      requestTermsRef.current.value = terms.terms;
+      if (terms.stake) requestStakeRef.current.value = terms.stake;
     }
   }, []);
 
-  //Change description to "term" and enforce to be required.
   return (
     <div>
       <h3 className="text-center my-1">Terms</h3>
@@ -48,8 +62,25 @@ export function WizzardTerms({ terms, onCancel, onNext }: Props) {
           placeholder="Explanation what the bet stake is..."
           rows={4}
           className="resizable-y"
-          ref={requestDescriptionRef}
+          ref={requestTermsRef}
         />
+        <Select
+          value={stakeType}
+          onChange={(v) => setStakeType(v as StakeType)}
+          placeholder="Select stake type...">
+          <SelectItem value="COMMON">Common</SelectItem>
+          <SelectItem value="INDIVIDUAL">Individual</SelectItem>
+        </Select>
+        {stakeType === "COMMON" && (
+          <TextField
+            label="Stake"
+            name="stake"
+            placeholder="When anybody win he..."
+            rows={4}
+            className="resizable-y"
+            ref={requestStakeRef}
+          />
+        )}
       </div>
       <div className="flex gap-2 justify-center mt-4 w-full">
         <Button className="w-full" onClick={onCancel}>

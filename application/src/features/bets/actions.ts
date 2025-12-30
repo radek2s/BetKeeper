@@ -21,19 +21,10 @@ export async function createBetRequest(
 
   const betRequest = await NextBetService.create(
     request.title,
-    request.description,
-    requestingUser.id,
-    [
-      {
-        userId: requestingUser.id,
-        claim: "",
-      },
-      {
-        userId: request.friendId,
-        claim: "",
-      },
-    ],
-    "",
+    request.terms,
+    request.creatorId,
+    request.participants,
+    request.stake,
   );
   await NextBetService.approve(betRequest.id, requestingUser.id);
 }

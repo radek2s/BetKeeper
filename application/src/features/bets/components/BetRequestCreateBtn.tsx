@@ -1,4 +1,5 @@
 "use client";
+import type { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
 import { Button } from "@app/ui/button/Button";
 import { Icon } from "@app/ui/icon";
 import { useCorbado } from "@corbado/react";
@@ -10,9 +11,10 @@ import { BetRequestWizzard } from "./wizzard/BetRequestWizzard";
 import type { BetRequestCreate } from "./wizzard/types";
 
 interface Props {
+  creator: UserType;
   friends: UserType[];
 }
-export function BetRequestCreateBtn({ friends }: Props) {
+export function BetRequestCreateBtn({ creator, friends }: Props) {
   const { sessionToken } = useCorbado();
   const [isOpen, setOpen] = useState<boolean>(false);
 
@@ -41,6 +43,7 @@ export function BetRequestCreateBtn({ friends }: Props) {
             Create bet request
           </Dialog.Title>
           <BetRequestWizzard
+            creator={creator}
             onCancel={() => setOpen(false)}
             onSend={handleSend}
             friends={friends}

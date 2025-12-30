@@ -41,7 +41,6 @@ export class NextBetRepository implements IBetRepository {
   }
 
   async findById(id: UUID): Promise<BetTableRecord | null> {
-    console.log({ betId: id });
     const bet = await this.table.findUnique({ where: { id } });
     if (!bet) return null;
 
@@ -66,7 +65,7 @@ export class NextBetRepository implements IBetRepository {
 
   async save(bet: BetTableRecord): Promise<void> {
     try {
-      this.table.upsert({
+      await this.table.upsert({
         where: { id: bet.id },
         update: {
           status: bet.status,
