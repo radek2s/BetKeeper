@@ -12,6 +12,9 @@
         "outputPath": "dist/application"
       }
     },
+    "preview": {
+      "executor": "@nx/next:preview"
+    },
     "serve": {
       "executor": "@nx/next:server",
       "options": {

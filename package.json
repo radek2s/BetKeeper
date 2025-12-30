@@ -17,7 +17,7 @@
     "test:coverage": "vitest run --coverage --reporter junit --output-file ./test-report.xml",
     "test:coverage:report": "vitest run --coverage",
     "build": "npx nx run application:build",
-    "preview": "npx nx run application:preview",
+    "preview": "npx nx run application:start",
     "build:ci": "CI=false && tsc && vite build",
     "e2e": "nx run e2e-tests:e2e",
     "e2e:ui": "nx run e2e-tests:open-cypress",

@@ -5,7 +5,7 @@ import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.
 import { useRouter } from "next/navigation";
 
 async function onSignIn(router: AppRouterInstance) {
-  router.push("/");
+  router.push("/profile");
 }
 
 export function Login() {
@@ -18,8 +18,8 @@ export function Login() {
         alt="Application Logo"
       />
       <CorbadoAuth
-        onLoggedIn={() => {
-          onSignIn(router);
+        onLoggedIn={async () => {
+          await onSignIn(router);
         }}
         initialBlock="login-init"
       />
