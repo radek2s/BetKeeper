@@ -29,7 +29,7 @@ export default async function BetDetailsPage({ params }: PageProps) {
         <PageHeader title="Details" returnUrl="/" />
         <Panel>
           {bet.status === "pending" && <PendingBetDetails bet={bet} />}
-          {bet.status === "resolved" && (
+          {(bet.status === "resolved" || bet.status === "completed") && (
             <ResolvedBetDetails
               bet={bet}
               activeUser={authorizedUserToUserType(user)}

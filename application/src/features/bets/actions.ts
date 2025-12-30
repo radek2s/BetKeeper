@@ -112,3 +112,10 @@ export async function resolveBet(
   await NextBetService.resolve(betId, user.id, winnerId);
   revalidatePath(`/details/${betId}`);
 }
+
+export async function completeBet(betId: string, token: string | undefined) {
+  const user = await validateToken(token);
+
+  await NextBetService.complete(betId, user.id);
+  revalidatePath(`/details/${betId}`);
+}

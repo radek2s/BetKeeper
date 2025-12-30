@@ -91,6 +91,12 @@ export type IndividualBetResponse = BaseBetResponse & {
 
 export type BetResponse = CommonBetResponse | IndividualBetResponse;
 
+export function isCommonBetResponse(
+  bet: BetResponse,
+): bet is CommonBetResponse {
+  return Object.hasOwn(bet, "stake");
+}
+
 export function isBetResponse(
   bet: BetResponse | BetRequestResponse,
 ): bet is BetResponse {

@@ -1,22 +1,19 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 /** biome-ignore-all lint/a11y/useAltText: <explanation> */
 "use client";
-import { resolveBet } from "@app/features/bets/actions";
-import type {
-  BetParticipantResponse,
-  BetResponse,
+import { completeBet } from "@app/features/bets/actions";
+import {
+  type BetParticipantResponse,
+  type BetResponse,
+  isCommonBetResponse,
 } from "@app/features/bets/model/betDto";
-import { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
 import { Button } from "@app/ui/button/Button";
+import { ConfirmationDialog } from "@app/ui/confirm-dialog";
 import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
-import { Dialog } from "radix-ui";
-import { useState } from "react";
 import BetCommonStake from "../BetCommonStake";
 import BetCreationDate from "../BetCreationDate";
 import ParticipantsAvatars from "../ParticipantAvatars";
-import ParticipantDetails from "../ParticipantDetails";
-import { BetResolver } from "./BetResolver";
 import { BetStatusComponent } from "./BetStatusComponent";
 
 interface Props {
@@ -24,6 +21,8 @@ interface Props {
   activeUser: UserType;
 }
 export function ResolvedBetDetails({ bet, activeUser }: Props) {
+  const isActiveUserWinner = activeUser.id === bet.winnerId;
+
   const getWinner = () => {
     if (!bet.winnerId)
       throw new Error("Resolved bet must have defined winner!");
@@ -32,6 +31,22 @@ export function ResolvedBetDetails({ bet, activeUser }: Props) {
     );
     if (!winner) throw new Error("Resolved bet must have defined winner!");
     return winner;
+  };
+
+  const getStakes = () => {
+    if (isCommonBetResponse(bet)) {
+      return bet.stake;
+    } else {
+      const user = bet.participants.find(
+        ({ userId }) => bet.winnerId === userId,
+      );
+      if (!user) throw new Error("Unable to find winner");
+      return user.stake;
+    }
+  };
+
+  const getWinnerName = () => {
+    return isActiveUserWinner ? "You" : getWinner().firstName;
   };
 
   return (
@@ -43,23 +58,34 @@ export function ResolvedBetDetails({ bet, activeUser }: Props) {
         <BetCreationDate date={bet.createdAt} />
       </header>
 
-      <div className="flex flex-col items-center max-w-[600px] text-center">
+      <div className="flex flex-col items-center max-w-[600px] md:min-w-[500px] text-center">
         <span className="text-2xl font-bold my-2">{bet.title}</span>
         <h2 className="font-bold">Terms</h2>
         <p className="text-xs text-gray">bet defined</p>
         <p className="my-3">{bet.terms}</p>
 
-        <WinnerComponent winner={getWinner()} activeUser={activeUser} />
+        <WinnerComponent
+          winner={getWinner()}
+          activeUser={activeUser}
+          resolvedAt={bet.resolvedAt}
+        />
         <hr className="vertical-line" />
-        {bet.stakeType === "COMMON" && <BetCommonStake stake={bet.stake} />}
 
-        <h2 className="font-bold">Claims</h2>
-        <p className="text-xs text-center text-gray">What has been agreed</p>
-        {/* <VoteActions betRequestId={betRequest.id} />
-        <StartBetButton
-          betRequestId={betRequest.id}
-          participants={betRequest.participants}
-        /> */}
+        <div className="mb-2">
+          <h2 className="font-bold">Stake</h2>
+          <p className="text-xs text-gray">{getWinnerName()} gain:</p>
+          <p>{getStakes()}</p>
+        </div>
+        <hr className="vertical-line" />
+
+        {bet.status === "completed" ? (
+          <div>
+            <h2 className="font-bold">Completed</h2>
+            <p className="text-sm">{bet.completedAt?.toLocaleString()}</p>
+          </div>
+        ) : (
+          <CompleteBtn betId={bet.id} />
+        )}
       </div>
     </div>
   );
@@ -68,49 +94,52 @@ export function ResolvedBetDetails({ bet, activeUser }: Props) {
 interface WinnerComponentProps {
   winner: BetParticipantResponse;
   activeUser: UserType;
+  resolvedAt?: Date;
 }
-function WinnerComponent({ winner, activeUser }: WinnerComponentProps) {
+function WinnerComponent({
+  winner,
+  activeUser,
+  resolvedAt,
+}: WinnerComponentProps) {
   const isActiveUserWinner = activeUser.id === winner.userId;
   const winnerName = isActiveUserWinner
     ? "You won"
     : `${winner.firstName} ${winner.lastName} won`;
   return (
     <div className="flex flex-col items-center">
-      <img className="w-[48px] avatar" src={winner.avatarUrl} />
-      <span>{winnerName}</span>
+      <div className="avatar-laurel">
+        <img className="w-[64px] avatar" src={winner.avatarUrl} />
+        <img className="h-[78px] laurel" src="/laurel.png" />
+      </div>
+      <span className="font-bold text-primary-500">{winnerName}</span>
+      <span>{winner.claim}</span>
+      <span className="text-xs text-gray">{resolvedAt?.toLocaleString()}</span>
     </div>
   );
 }
 
-interface ResolveProps {
+interface CompleteBtnProps {
   betId: string;
-  participants: BetParticipantResponse[];
 }
-function ResolveBtn({ betId, participants }: ResolveProps) {
+function CompleteBtn({ betId }: CompleteBtnProps) {
   const { sessionToken } = useCorbado();
-  const [isOpen, setOpen] = useState<boolean>(false);
 
-  const handleSelect = async (winnerId: string) => {
+  const handleComplete = async () => {
     try {
-      resolveBet(betId, winnerId, sessionToken);
-      setOpen(false);
+      completeBet(betId, sessionToken);
     } catch (e) {
       console.error(e);
     }
   };
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
-        <Button variant="primary">Resolve</Button>
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className="dialog--overlay" />
-        <Dialog.Content className="dialog--content">
-          <Dialog.Title className="dialog--title">Choose winner</Dialog.Title>
-          <BetResolver participants={participants} onSelect={handleSelect} />
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+    <ConfirmationDialog
+      content={""}
+      title="Complete Bet"
+      onClose={handleComplete}
+      variant="primary"
+      accept="Complete">
+      <Button variant="primary">Complete</Button>
+    </ConfirmationDialog>
   );
 }

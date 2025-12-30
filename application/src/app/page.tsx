@@ -5,6 +5,7 @@
 import { getBets } from "@app/features/bets/actions";
 import { BetCard } from "@app/features/bets/components/BetCard";
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
+import BetBrowser from "@app/features/bets/components/browser/BetBrowser";
 import { BetTabIcon } from "@app/features/bets/components/browser/BetTabIcon";
 import {
   type BetRequestResponse,
@@ -37,9 +38,7 @@ export default async function Index() {
     return (await Promise.all(userPromises)).map((u) => u.toObject());
   }
 
-  const { requests, pending, resolved, completed } = groupBets(
-    await getBets(user.id),
-  );
+  const bets = await getBets(user.id);
 
   return (
     <PageWrapper>
@@ -65,19 +64,7 @@ export default async function Index() {
         </div>
       </header>
       <div>
-        <div className="flex justify-between my-4">
-          <BetTabIcon isActive icon="waving-hand" name="Requests" />
-          <BetTabIcon icon="handshake" name="Unresolved" />
-          <BetTabIcon icon="timeline" name="In progress" />
-          <BetTabIcon icon="fact-check" name="Finished" />
-        </div>
-        <section>
-          <div className="flex flex-col gap-3">
-            {requests.map((request) => (
-              <BetCard key={request.id} bet={request} />
-            ))}
-          </div>
-        </section>
+        <BetBrowser bets={bets} />
 
         <BetRequestCreateBtn
           friends={friends}
@@ -86,38 +73,4 @@ export default async function Index() {
       </div>
     </PageWrapper>
   );
-}
-
-function groupBets(bets: (BetRequestResponse | BetResponse)[]) {
-  const requests: BetRequestResponse[] = [];
-  const pending: BetResponse[] = [];
-  const resolved: BetResponse[] = [];
-  const completed: BetResponse[] = [];
-
-  bets.forEach((bet) => {
-    if (isBetResponse(bet)) {
-      switch (bet.status) {
-        case "pending": {
-          pending.push(bet);
-          break;
-        }
-        case "resolved": {
-          resolved.push(bet);
-          break;
-        }
-        case "completed": {
-          completed.push(bet);
-          break;
-        }
-      }
-    } else {
-      requests.push(bet);
-    }
-  });
-  return {
-    requests,
-    pending,
-    resolved,
-    completed,
-  };
 }

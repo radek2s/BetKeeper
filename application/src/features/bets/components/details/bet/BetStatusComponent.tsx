@@ -5,13 +5,25 @@ interface Props {
   status: BetStatus;
 }
 export function BetStatusComponent({ status }: Props) {
+  const getStatus = () => {
+    switch (status) {
+      case "completed":
+        return "Completed";
+      case "pending":
+        return "Pending";
+      case "resolved":
+        return "Resolved";
+      case "deleted":
+        return "Deleted";
+    }
+  };
   return (
     <div
       className={clsx([
         "py-1 px-4 rounded-xl bet-request-status",
         status.toLowerCase(),
       ])}>
-      {status}
+      {getStatus()}
     </div>
   );
 }

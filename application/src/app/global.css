@@ -517,10 +517,12 @@ input[type="radio"]:checked::before {
   fill: var(--primary);
 }
 
+.bet-request-status.resolved,
 .bet-request-status.pending {
   background-color: var(--secondary);
 }
 
+.bet-request-status.completed,
 .bet-request-status.approved {
   background-color: var(--primary);
   color: var(--surface);
@@ -555,6 +557,20 @@ input[type="radio"]:checked::before {
 
 .bet-resolve--participant.active {
   outline: 2px solid var(--primary);
+}
+
+.avatar-laurel {
+  position: relative;
+}
+.avatar-laurel .laurel {
+  position: relative;
+  z-index: 10;
+}
+.avatar-laurel .avatar {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .vertical-line {

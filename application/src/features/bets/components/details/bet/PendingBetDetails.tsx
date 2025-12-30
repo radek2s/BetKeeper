@@ -28,7 +28,7 @@ export function PendingBetDetails({ bet }: Props) {
         <BetCreationDate date={bet.createdAt} />
       </header>
 
-      <div className="flex flex-col items-center max-w-[600px] text-center">
+      <div className="flex flex-col items-center max-w-[600px] md:min-w-[500px] text-center">
         <span className="text-2xl font-bold my-2">{bet.title}</span>
         <h2 className="font-bold">Terms</h2>
         <p className="text-xs text-gray">bet defined</p>
@@ -43,11 +43,6 @@ export function PendingBetDetails({ bet }: Props) {
           <hr className="vertical-line" />
           <ParticipantDetails participant={bet.participants[1]} hideVotes />
         </div>
-        {/* <VoteActions betRequestId={betRequest.id} />
-        <StartBetButton
-          betRequestId={betRequest.id}
-          participants={betRequest.participants}
-        /> */}
         <ResolveBtn betId={bet.id} participants={bet.participants} />
       </div>
     </div>
