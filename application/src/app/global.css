@@ -544,6 +544,19 @@ input[type="radio"]:checked::before {
   fill: var(--error);
 }
 
+.bet-resolve--participant {
+  border: 1px solid var(--surface);
+  background-color: var(--container);
+  cursor: pointer;
+}
+.bet-resolve--participant:hover {
+  background-color: var(--container-hovered);
+}
+
+.bet-resolve--participant.active {
+  outline: 2px solid var(--primary);
+}
+
 .vertical-line {
   display: block;
   min-height: 24px;

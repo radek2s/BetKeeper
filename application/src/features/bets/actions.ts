@@ -5,6 +5,7 @@ import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import NextBetService from "@app/server/services/NextBetService";
 
 import type { UserType } from "@domain/user/entities";
+import { revalidatePath } from "next/cache";
 import { userIdToUserType } from "../users/model/userDto";
 import type { BetRequestCreate } from "./components/wizzard/types";
 import {
@@ -27,6 +28,7 @@ export async function createBetRequest(
     request.stake,
   );
   await NextBetService.approve(betRequest.id, requestingUser.id);
+  revalidatePath(`/`);
 }
 
 export async function getBets(
@@ -68,4 +70,45 @@ export async function getBet(betId: string) {
   });
 
   return mapToResponse(bet, userMap);
+}
+
+export async function approveBet(
+  betRequestId: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
+  await NextBetService.approve(betRequestId, requestingUser.id);
+  revalidatePath(`/details/${betRequestId}`);
+}
+
+export async function rejectBet(
+  betRequestId: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
+  await NextBetService.reject(betRequestId, requestingUser.id);
+  revalidatePath(`/details/${betRequestId}`);
+}
+
+export async function startBet(
+  betRequestId: string,
+  token: string | undefined,
+) {
+  await validateToken(token);
+
+  await NextBetService.convertToBet(betRequestId);
+  revalidatePath(`/details/${betRequestId}`);
+}
+
+export async function resolveBet(
+  betId: string,
+  winnerId: string,
+  token: string | undefined,
+) {
+  const user = await validateToken(token);
+
+  await NextBetService.resolve(betId, user.id, winnerId);
+  revalidatePath(`/details/${betId}`);
 }

@@ -2,15 +2,18 @@
 /** biome-ignore-all lint/a11y/useAltText: <explanation> */
 "use client";
 
-import {
-  type BetParticipantResponse,
-  type BetRequestResponse,
-  isIndividualBetParticipantResponse,
+import { approveBet, rejectBet, startBet } from "@app/features/bets/actions";
+import type {
+  BetParticipantResponse,
+  BetRequestResponse,
 } from "@app/features/bets/model/betDto";
 import { Button } from "@app/ui/button/Button";
-import { Icon } from "@app/ui/icon";
-import { StakeType, type VoteType } from "@domain/bet";
+import { useCorbado } from "@corbado/react";
 import clsx from "clsx";
+import BetCommonStake from "../BetCommonStake";
+import BetCreationDate from "../BetCreationDate";
+import ParticipantsAvatars from "../ParticipantAvatars";
+import ParticipantDetails from "../ParticipantDetails";
 
 interface Props {
   betRequest: BetRequestResponse;
@@ -18,8 +21,11 @@ interface Props {
 export function BetRequestDetails({ betRequest }: Props) {
   return (
     <div className="">
-      <header>
-        <ParticipantsAndStatus participants={betRequest.participants} />
+      <header className="flex justify-between items-center">
+        <ParticipantsAvatars participants={betRequest.participants}>
+          <RequestStatus participants={betRequest.participants} />
+        </ParticipantsAvatars>
+        <BetCreationDate date={betRequest.createdAt} />
       </header>
 
       <div className="flex flex-col items-center max-w-[600px] text-center">
@@ -29,7 +35,7 @@ export function BetRequestDetails({ betRequest }: Props) {
         <p className="my-3">{betRequest.terms}</p>
         <hr className="vertical-line" />
         {betRequest.stakeType === "COMMON" && (
-          <CommonStakes stake={betRequest.stake} />
+          <BetCommonStake stake={betRequest.stake} />
         )}
         <h2 className="font-bold">Aggreements</h2>
         <p className="text-xs text-center text-gray">
@@ -42,80 +48,18 @@ export function BetRequestDetails({ betRequest }: Props) {
           <hr className="vertical-line" />
           <ParticipantDetails participant={betRequest.participants[1]} />
         </div>
-        <VoteActions />
+        <VoteActions betRequestId={betRequest.id} />
+        <StartBetButton
+          betRequestId={betRequest.id}
+          participants={betRequest.participants}
+        />
       </div>
-    </div>
-  );
-}
-
-interface CommonStakesProps {
-  stake: string;
-}
-function CommonStakes({ stake }: CommonStakesProps) {
-  return (
-    <div className="flex flex-col items-center">
-      <h2 className="font-bold">Stakes</h2>
-      <p className="text-xs text-gray">when anyone win he:</p>
-      <p className="my-3">{stake}</p>
-      <hr className="vertical-line" />
-    </div>
-  );
-}
-
-interface ParticipantDetailsProps {
-  participant: BetParticipantResponse;
-}
-function ParticipantDetails({ participant }: ParticipantDetailsProps) {
-  return (
-    <div className="flex flex-col items-center w-full mx-1">
-      <div className="my-2 flex flex-col items-center">
-        <img className="w-[32px] avatar" src={participant.avatarUrl} />
-        <p>
-          {participant.firstName} {participant.lastName}
-        </p>
-      </div>
-      <div className="my-2">
-        <p className="text-xs text-gray">claims that:</p>
-        <p className="text-center text-sm">{participant.claim}</p>
-      </div>
-      {isIndividualBetParticipantResponse(participant) && (
-        <ParticipantStake stake={participant.stake} />
-      )}
-      <ParticipantVote vote={participant.vote} />
     </div>
   );
 }
 
 interface ParticipantsAndStatusProps {
   participants: BetParticipantResponse[];
-}
-function ParticipantsAndStatus({ participants }: ParticipantsAndStatusProps) {
-  return (
-    <div className="flex items-center">
-      <div className="bet-request__avatars">
-        {participants.map((participant) => (
-          <img
-            key={participant.userId}
-            className="w-[48px] avatar"
-            src={participant.avatarUrl}
-          />
-        ))}
-      </div>
-      <RequestStatus participants={participants} />
-    </div>
-  );
-}
-
-interface ParticipantStakeProps {
-  stake: string;
-}
-function ParticipantStake({ stake }: ParticipantStakeProps) {
-  return (
-    <div className="flex flex-col items-center my-2">
-      <p className="text-xs text-gray">when win:</p>
-      <p className="text-sm">{stake}</p>
-    </div>
-  );
 }
 
 function RequestStatus({ participants }: ParticipantsAndStatusProps) {
@@ -139,26 +83,63 @@ function RequestStatus({ participants }: ParticipantsAndStatusProps) {
   );
 }
 
-interface ParticipantVoteProps {
-  vote: VoteType;
+interface BetIdProps {
+  betRequestId: string;
 }
-function ParticipantVote({ vote }: ParticipantVoteProps) {
-  switch (vote) {
-    case "approved":
-      return <Icon name="check" className="vote-approved" />;
-    case "rejected":
-      return <Icon name="close" className="vote-rejected" />;
-    case "unknown":
-      return <Icon name="question-mark" />;
-  }
-}
+function VoteActions({ betRequestId }: BetIdProps) {
+  const { sessionToken } = useCorbado();
 
-function VoteActions() {
+  const handleApprove = async () => {
+    try {
+      await approveBet(betRequestId, sessionToken);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await rejectBet(betRequestId, sessionToken);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div className="flex justify-center gap-4 my-4">
-      <Button variant="error">Reject</Button>
+      <Button variant="error" onClick={handleReject}>
+        Reject
+      </Button>
       <Button>Modify</Button>
-      <Button variant="primary">Accept</Button>
+      <Button variant="primary" onClick={handleApprove}>
+        Accept
+      </Button>
     </div>
   );
+}
+
+interface StartBetButtonProps {
+  betRequestId: string;
+  participants: BetParticipantResponse[];
+}
+function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
+  const { sessionToken } = useCorbado();
+
+  const approved = participants.every(({ vote }) => vote === "approved");
+
+  const handleStart = async () => {
+    try {
+      await startBet(betRequestId, sessionToken);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  if (approved)
+    return (
+      <Button className="w-full" variant="primary" onClick={handleStart}>
+        Start
+      </Button>
+    );
+  return null;
 }
