@@ -107,7 +107,6 @@ h4,
 h5,
 h6 {
   font-family: "Heebo", serif;
-  font-weight: 600;
 }
 
 h1 {
@@ -229,6 +228,7 @@ body {
   font-size: 32px;
   text-align: center;
   margin-bottom: 16px;
+  font-weight: 600;
 }
 
 .avatar {
@@ -473,6 +473,7 @@ input[type="radio"]:checked::before {
 .bet-card__avatars {
   display: flex;
   width: 64px;
+  min-width: 64px;
 }
 
 .bet-card__avatars .avatar {

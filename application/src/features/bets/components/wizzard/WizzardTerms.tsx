@@ -4,7 +4,7 @@ import FormField from "@app/ui/form-field";
 import { Select, SelectItem } from "@app/ui/select";
 import TextField from "@app/ui/text-field";
 import type { StakeType } from "@domain/bet";
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import type { TermsResult } from "./types";
 
 interface Props {
@@ -13,72 +13,74 @@ interface Props {
   onNext: (result: TermsResult) => void;
 }
 export function WizzardTerms({ terms, onCancel, onNext }: Props) {
-  const [stakeType, setStakeType] = useState<StakeType>(
+  const [title, setTitle] = useState<string>(terms?.title || "");
+  const [description, setDescription] = useState<string>(terms?.terms || "");
+  const [stakeType, _setStakeType] = useState<StakeType>(
     terms?.stakeType || "INDIVIDUAL",
   );
-  const requestTitleRef = useRef<HTMLInputElement>(null);
-  const requestTermsRef = useRef<HTMLTextAreaElement>(null);
-  const requestStakeRef = useRef<HTMLTextAreaElement>(null);
+  const [stake, setStake] = useState<string | undefined>(terms?.stake);
+
+  const setStakeType = (stakeType: string) => {
+    if (stakeType === "COMMON") {
+      _setStakeType("COMMON");
+    } else {
+      setStake(undefined);
+      _setStakeType("INDIVIDUAL");
+    }
+  };
+
   const handleNext = () => {
-    const title = requestTitleRef.current?.value;
-    if (!title) return;
-    const terms = requestTermsRef.current?.value;
-    if (!terms) return;
-    const stake = requestStakeRef.current?.value;
     onNext({
       title,
-      terms,
+      terms: description,
       stakeType,
       stake,
     });
   };
 
-  useEffect(() => {
-    if (
-      terms &&
-      requestTitleRef.current &&
-      requestTermsRef.current &&
-      requestStakeRef.current
-    ) {
-      requestTitleRef.current.value = terms.title;
-      requestTermsRef.current.value = terms.terms;
-      if (terms.stake) requestStakeRef.current.value = terms.stake;
-    }
-  }, []);
+  const isValid = useMemo(() => {
+    const isValidStake = stakeType === "COMMON" ? !!stake : true;
+    return !!title && !!description && isValidStake;
+  }, [title, description, stake, stakeType]);
 
   return (
-    <div>
-      <h3 className="text-center my-1">Terms</h3>
+    <div className="mt-4">
+      <h3 className="text-center mb-2">Terms</h3>
       <div className="flex flex-col gap-2">
         <FormField
+          value={title}
           label="Short title"
           name="title"
           placeholder="Bet short title..."
-          ref={requestTitleRef}
+          onChange={(e) => setTitle(e.target.value)}
         />
         <TextField
+          value={description}
           label="Description"
           name="description"
           placeholder="Explanation what the bet stake is..."
           rows={4}
           className="resizable-y"
-          ref={requestTermsRef}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <Select
+          label="Stake type"
+          name="stakeType"
           value={stakeType}
-          onChange={(v) => setStakeType(v as StakeType)}
+          onChange={(v) => setStakeType(v)}
           placeholder="Select stake type...">
           <SelectItem value="COMMON">Common</SelectItem>
           <SelectItem value="INDIVIDUAL">Individual</SelectItem>
         </Select>
         {stakeType === "COMMON" && (
           <TextField
+            value={stake}
             label="Stake"
             name="stake"
             placeholder="When anybody win he..."
             rows={4}
             className="resizable-y"
-            ref={requestStakeRef}
+            onChange={(e) => setStake(e.target.value)}
           />
         )}
       </div>
@@ -86,7 +88,11 @@ export function WizzardTerms({ terms, onCancel, onNext }: Props) {
         <Button className="w-full" onClick={onCancel}>
           Cancel
         </Button>
-        <Button className="w-full" variant="primary" onClick={handleNext}>
+        <Button
+          className="w-full"
+          variant="primary"
+          disabled={!isValid}
+          onClick={handleNext}>
           Next
         </Button>
       </div>

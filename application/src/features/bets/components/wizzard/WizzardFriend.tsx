@@ -1,10 +1,8 @@
-import { ProfileImage } from "@app/features/profile/components/ProfileImage";
-import type { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
 import { Button } from "@app/ui/button/Button";
 import FormField from "@app/ui/form-field";
 import type { BetParticipantRequest } from "@domain/bet";
 import type { UserType } from "@domain/user/entities";
-import { useRef } from "react";
+import { useMemo, useState } from "react";
 import type { TermsResult } from "./types";
 
 interface Props {
@@ -14,13 +12,10 @@ interface Props {
   onNext: (creator: BetParticipantRequest) => void;
 }
 export function WizzardFriend({ friend, terms, onBack, onNext }: Props) {
-  const requestClaimRef = useRef<HTMLInputElement>(null);
-  const requestStakeRef = useRef<HTMLInputElement>(null);
+  const [claim, setClaim] = useState<string>("");
+  const [stake, setStake] = useState<string>("");
 
   const handleNext = () => {
-    const claim = requestClaimRef.current?.value;
-    const stake = requestStakeRef.current?.value;
-
     if (!claim) return;
     if (!friend) return;
 
@@ -31,30 +26,37 @@ export function WizzardFriend({ friend, terms, onBack, onNext }: Props) {
     });
   };
 
+  const isValid = useMemo(() => {
+    const isValidStake = terms?.stakeType === "INDIVIDUAL" ? !!stake : true;
+    return !!claim && isValidStake;
+  }, [claim, stake, terms]);
+
   if (!terms || !friend) return <div>Setup terms!</div>;
 
   return (
-    <div>
-      <p className="text-center my-1">{terms.terms}</p>
-      <div className="flex flex-col items-center">
+    <div className="mt-4">
+      <p className="text-center text-xs">{terms.terms}</p>
+      <div className="flex flex-col items-center my-2">
         <img src={friend.avatarUrl} className="avatar w-[64px]" alt="Profile" />
 
-        <div className="flex flex-col items-center my-2">
-          <h2 className="text-xl m-none">
+        <div className="flex flex-col items-center mb-2">
+          <h3 className="mt-1">
             {friend.firstName} {friend.lastName}
-          </h2>
+          </h3>
         </div>
       </div>
       <div className="flex flex-col gap-2">
         <FormField
-          ref={requestClaimRef}
-          label="Claim"
+          value={claim}
+          onChange={(e) => setClaim(e.target.value)}
+          label="Claims"
           name="claim"
           placeholder={`What ${friend.firstName} claim...`}
         />
         {terms.stakeType === "INDIVIDUAL" && (
           <FormField
-            ref={requestStakeRef}
+            value={stake}
+            onChange={(e) => setStake(e.target.value)}
             label="Stake"
             name="stake"
             placeholder={`When ${friend.firstName} win...`}
@@ -65,8 +67,12 @@ export function WizzardFriend({ friend, terms, onBack, onNext }: Props) {
         <Button className="w-full" onClick={onBack}>
           Back
         </Button>
-        <Button className="w-full" variant="primary" onClick={handleNext}>
-          Next
+        <Button
+          disabled={!isValid}
+          className="w-full"
+          variant="primary"
+          onClick={handleNext}>
+          Create
         </Button>
       </div>
     </div>

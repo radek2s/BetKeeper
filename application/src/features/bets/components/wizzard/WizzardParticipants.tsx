@@ -49,12 +49,10 @@ export function WizzardParticipants({
   };
 
   return (
-    <div>
-      <h3 className="text-center my-1">Participants</h3>
-
+    <div className="mt-4">
       <div className="flex flex-col gap-2">
         <FormField
-          label="Select friend who you want to invite to bet"
+          label="Who you want to invite to bet?"
           name="title"
           value={search}
           onChange={(e) => setSearch(e.target.value)}

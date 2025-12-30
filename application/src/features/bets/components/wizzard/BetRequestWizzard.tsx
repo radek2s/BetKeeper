@@ -28,7 +28,7 @@ export function BetRequestWizzard({
   const [step, setStep] = useState<number>(0);
   const [terms, setTerms] = useState<TermsResult>();
   const [friend, setFriend] = useState<UserType>();
-  const [participants, setParticipants] = useState<BetParticipantRequest[]>([]);
+  const [creatorRequest, setCreatorRequest] = useState<BetParticipantRequest>();
 
   const handleCancel = () => {
     onCancel();
@@ -39,11 +39,10 @@ export function BetRequestWizzard({
   };
 
   const onNext = (result: TermsResult | UserType | BetParticipantRequest) => {
-    console.log(result);
     if (isTermsResult(result)) {
       setTerms(result);
     } else if (isBetParticipantRequest(result)) {
-      setParticipants([result]);
+      setCreatorRequest(result);
     } else {
       setFriend(result);
     }
@@ -53,6 +52,7 @@ export function BetRequestWizzard({
   const handleSend = (friendRequest: BetParticipantRequest) => {
     if (!terms) return;
     if (!friend) return;
+    if (!creatorRequest) return;
 
     const request: BetRequestCreate = {
       title: terms.title,
@@ -60,7 +60,7 @@ export function BetRequestWizzard({
       stake: terms.stake,
       stakeType: terms.stakeType,
       creatorId: creator.id,
-      participants: [...participants, friendRequest],
+      participants: [creatorRequest, friendRequest],
     };
 
     onSend(request);
@@ -76,6 +76,7 @@ export function BetRequestWizzard({
         return (
           <WizzardCreator
             creator={creator}
+            creatorRequest={creatorRequest}
             terms={terms}
             onNext={onNext}
             onBack={handleBack}
@@ -85,6 +86,7 @@ export function BetRequestWizzard({
         return (
           <WizzardParticipants
             friends={friends}
+            selectedFriend={friend}
             onBack={handleBack}
             onNext={onNext}
           />
