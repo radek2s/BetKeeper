@@ -2,6 +2,7 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 
 // import { getBetRequests } from "@app/features/bets/actions";
+import { getBets } from "@app/features/bets/actions";
 import { BetCard } from "@app/features/bets/components/BetCard";
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
 import type { BetRequestResponse } from "@app/features/bets/model/betDto";
@@ -30,7 +31,7 @@ export default async function Index() {
     return (await Promise.all(userPromises)).map((u) => u.toObject());
   }
 
-  const requests: BetRequestResponse[] = []; // await getBetRequests(user.id);
+  const requests = await getBets(user.id);
 
   return (
     <PageWrapper>

@@ -41,6 +41,7 @@ export class NextBetRepository implements IBetRepository {
   }
 
   async findById(id: UUID): Promise<BetTableRecord | null> {
+    console.log({ betId: id });
     const bet = await this.table.findUnique({ where: { id } });
     if (!bet) return null;
 

@@ -16,14 +16,13 @@ export function BetCard({ bet }: Props) {
         className="w-full text-left flex flex-col gap-1 pt-1">
         <header className="flex items-center">
           <div className="bet-card__avatars">
-            <img
-              className="w-[32px] avatar creator"
-              src={bet.creator.avatarUrl}
-            />
-            <img
-              className="w-[32px] avatar participant"
-              src={bet.participant.avatarUrl}
-            />
+            {bet.participants.map((participant) => (
+              <img
+                key={participant.userId}
+                className="w-[32px] avatar"
+                src={participant.avatarUrl}
+              />
+            ))}
           </div>
           <div className="text-xl font-medium">{bet.title}</div>
         </header>

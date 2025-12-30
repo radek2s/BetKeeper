@@ -377,7 +377,8 @@ export class BetService extends DomainService {
     } catch {
       try {
         return await this.getBetRequestById(id);
-      } catch {
+      } catch (e) {
+        console.error(e);
         throw new Error(`Unable to find bet or betRequest with id=${id}`);
       }
     }
@@ -398,13 +399,22 @@ export class BetService extends DomainService {
     return this.getBetFromRecord(betRecord);
   }
 
-  async getBetRequestFromRecord(
+  async getAllByParticipantId(
+    participantId: UUID,
+  ): Promise<(AbstractBetRequest | AbstractBet)[]> {
+    const participatedBets = (
+      await this.betParticipantRepository.findAllByUserId(participantId)
+    ).map(({ betId }) => betId);
+    return await Promise.all(participatedBets.map(this.getById.bind(this)));
+  }
+
+  private async getBetRequestFromRecord(
     record: BetTableRecord,
   ): Promise<AbstractBetRequest> {
     return getBetRequestFromRecord(record, this.betParticipantRepository);
   }
 
-  async getBetFromRecord(record: BetTableRecord): Promise<AbstractBet> {
+  private async getBetFromRecord(record: BetTableRecord): Promise<AbstractBet> {
     return await getBetFromRecord(record, this.betParticipantRepository);
   }
 }

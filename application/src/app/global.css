@@ -472,11 +472,11 @@ input[type="radio"]:checked::before {
   width: 64px;
 }
 
-.bet-card__avatars .avatar.participant {
+.bet-card__avatars .avatar {
   position: absolute;
   outline: 3px solid var(--container);
 }
-.bet-card__avatars .avatar.creator {
+.bet-card__avatars .avatar:last-of-type {
   position: relative;
   left: 24px;
 }

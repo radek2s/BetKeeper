@@ -1,98 +1,239 @@
+import {
+  AbstractBet,
+  AbstractBetRequest,
+  type BetParticipant,
+  CommonBet,
+  CommonBetRequest,
+  IndividualBet,
+  type IndividualBetParticipantType,
+  IndividualBetRequest,
+  type VoteType,
+} from "@domain/bet";
 import type { UserType } from "@domain/user/entities";
 
-export type ParticipantVoteType = "unknown" | "approved" | "rejected";
-export type BetRequestStatusType =
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "blocked"
-  | "deleted";
+type BaseBetParticipantResponse = {
+  userId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string;
+  vote: VoteType;
+  claim: string;
+};
+
+export type CommonBetParticipantResponse = BaseBetParticipantResponse;
+
+export type IndividualBetParticipantResponse = BaseBetParticipantResponse & {
+  stake: string;
+};
+
+export type BetParticipantResponse =
+  | CommonBetParticipantResponse
+  | IndividualBetParticipantResponse;
+
+type BaseBetRequestResponse = {
+  id: string;
+  creatorId: string;
+  title: string;
+  terms: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CommonBetRequestResponse = BaseBetRequestResponse & {
+  stakeType: "COMMON";
+  stake: string;
+  participants: CommonBetParticipantResponse[];
+};
+
+export type IndividualBetRequestResponse = BaseBetRequestResponse & {
+  stakeType: "INDIVIDUAL";
+  participants: IndividualBetParticipantResponse[];
+};
+
+export function isCommonBetRequestResponse(
+  betResponse: BetRequestResponse,
+): betResponse is CommonBetRequestResponse {
+  return betResponse.stakeType === "COMMON";
+}
+
+export type BetRequestResponse =
+  | CommonBetRequestResponse
+  | IndividualBetRequestResponse;
+
+type BaseBetResponse = BaseBetRequestResponse & {
+  status: string;
+  resolvedBy?: string;
+  resolvedAt?: Date;
+  winnerId?: string;
+  completedAt?: Date;
+  completedBy?: string;
+  dueDate?: Date;
+};
+
+export type CommonBetResponse = BaseBetResponse & {
+  stakeType: "COMMON";
+  stake: string;
+  participants: CommonBetParticipantResponse[];
+};
+
+export type IndividualBetResponse = BaseBetResponse & {
+  stakeType: "INDIVIDUAL";
+  participants: IndividualBetParticipantResponse[];
+};
+
+export type BetResponse = CommonBetResponse | IndividualBetResponse;
 
 export type BetSummary = Pick<
   BetRequestResponse,
   | "id"
-  | "creator"
-  | "participant"
+  | "creatorId"
+  | "participants"
   | "title"
   | "terms"
-  | "status"
   | "createdAt"
   | "updatedAt"
 >;
 
-export type IStakeReponse = CommonStakeResponse | IndividualStakeResponse;
-
-export type CommonStakeResponse = {
-  type: "common";
-  description: string;
-};
-
-export type IndividualStakeResponse = {
-  type: "individual";
-  creatorStake: string;
-  participantStake: string;
-};
-
-export type ParticipantVoteInfoReponse = {
-  participantId: string;
-  vote: ParticipantVoteType;
-  votedAt?: Date;
-};
-
-export interface BetRequestResponse {
-  id: string;
-  creator: UserType;
-  participant: UserType;
-  title: string;
-  terms: string;
-  stakes: IStakeReponse;
-  status: BetRequestStatusType;
-  createdAt: Date;
-  updatedAt: Date;
-  participantVotes: ParticipantVoteInfoReponse[];
-  blockedByParticipants: string[];
+export function mapToResponse(
+  betRequest: AbstractBetRequest | AbstractBet,
+  users: Map<string, UserType>,
+): BetRequestResponse | BetResponse {
+  if (betRequest instanceof AbstractBetRequest) {
+    if (betRequest instanceof CommonBetRequest) {
+      return mapToCommonBetRequestResponse(betRequest, users);
+    } else if (betRequest instanceof IndividualBetRequest) {
+      return mapToIndividualBetRequestResponse(betRequest, users);
+    }
+  } else if (betRequest instanceof AbstractBet) {
+    if (betRequest instanceof CommonBet) {
+      return mapToCommonBetResponse(betRequest, users);
+    } else if (betRequest instanceof IndividualBet) {
+      return mapToIndividualBetResponse(betRequest, users);
+    }
+  }
+  throw new Error("Invalid response type");
 }
 
-export function mapToResponse(
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  betRequest: any,
+function mapToCommonBetRequestResponse(
+  betRequest: CommonBetRequest,
   users: Map<string, UserType>,
-): BetRequestResponse {
+): CommonBetRequestResponse {
   return {
     id: betRequest.id,
-    creator: {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      ...users.get(betRequest.creatorId)!,
-    },
-    participant: {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      ...users.get(betRequest.participantId)!,
-    },
+    creatorId: betRequest.creatorId,
     title: betRequest.title,
-    terms: betRequest.terms.value,
-    stakes: betRequest.stakes,
-    status: betRequest.status,
+    terms: betRequest.terms,
     createdAt: betRequest.createdAt,
     updatedAt: betRequest.updatedAt,
-    participantVotes: betRequest.participantVotes.values().toArray(),
-    blockedByParticipants: betRequest.blockedByParticipants.values().toArray(),
+    stakeType: "COMMON",
+    stake: betRequest.stake,
+    participants: betRequest.participants.map((p) =>
+      mapCommonParticipant(p, users.get(p.userId)),
+    ),
   };
 }
 
-// function stakeToReponse(stake: IStake | undefined): IStakeReponse {
-//   if (!stake) throw new Error("Stake is missing!");
-//   if (stake instanceof CommonStake) {
-//     return {
-//       type: "common",
-//       description: stake.description,
-//     };
-//   } else if (stake instanceof IndividualStakes) {
-//     return {
-//       type: "individual",
-//       creatorStake: stake.creatorStake,
-//       participantStake: stake.participantStake,
-//     };
-//   } else {
-//     throw new Error("Unrecognized stake type");
-//   }
-// }
+function mapToIndividualBetRequestResponse(
+  betRequest: IndividualBetRequest,
+  users: Map<string, UserType>,
+): IndividualBetRequestResponse {
+  return {
+    id: betRequest.id,
+    creatorId: betRequest.creatorId,
+    title: betRequest.title,
+    terms: betRequest.terms,
+    createdAt: betRequest.createdAt,
+    updatedAt: betRequest.updatedAt,
+    stakeType: "INDIVIDUAL",
+    participants: betRequest.participants.map((p) =>
+      mapIndividualParticipant(p, users.get(p.userId)),
+    ),
+  };
+}
+
+function mapToCommonBetResponse(
+  bet: CommonBet,
+  users: Map<string, UserType>,
+): CommonBetResponse {
+  return {
+    id: bet.id,
+    creatorId: bet.creatorId,
+    status: bet.status,
+    title: bet.title,
+    terms: bet.terms,
+    createdAt: bet.createdAt,
+    updatedAt: bet.updatedAt,
+    stakeType: "COMMON",
+    stake: bet.stake,
+    participants: bet.participants.map((p) =>
+      mapCommonParticipant(p, users.get(p.userId)),
+    ),
+    completedAt: bet.completedAt,
+    completedBy: bet.completedBy,
+    resolvedAt: bet.resolvedAt,
+    resolvedBy: bet.resolvedBy,
+    dueDate: bet.dueDate,
+    winnerId: bet.winnerId,
+  };
+}
+
+function mapToIndividualBetResponse(
+  bet: IndividualBet,
+  users: Map<string, UserType>,
+): IndividualBetResponse {
+  return {
+    id: bet.id,
+    creatorId: bet.creatorId,
+    status: bet.status,
+    title: bet.title,
+    terms: bet.terms,
+    createdAt: bet.createdAt,
+    updatedAt: bet.updatedAt,
+    stakeType: "INDIVIDUAL",
+    participants: bet.participants.map((p) =>
+      mapIndividualParticipant(p, users.get(p.userId)),
+    ),
+    completedAt: bet.completedAt,
+    completedBy: bet.completedBy,
+    resolvedAt: bet.resolvedAt,
+    resolvedBy: bet.resolvedBy,
+    dueDate: bet.dueDate,
+    winnerId: bet.winnerId,
+  };
+}
+
+function mapCommonParticipant(
+  betParticipant: BetParticipant,
+  user?: UserType,
+): CommonBetParticipantResponse {
+  if (!user)
+    throw new Error(`Unable to find user data for id=${betParticipant.userId}`);
+  return {
+    userId: betParticipant.userId,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    avatarUrl: user.avatarUrl || "",
+    vote: betParticipant.vote,
+    claim: betParticipant.claim,
+  };
+}
+
+function mapIndividualParticipant(
+  betParticipant: IndividualBetParticipantType,
+  user?: UserType,
+): IndividualBetParticipantResponse {
+  if (!user)
+    throw new Error(`Unable to find user data for id=${betParticipant.userId}`);
+  return {
+    userId: betParticipant.userId,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    avatarUrl: user.avatarUrl || "",
+    vote: betParticipant.vote,
+    claim: betParticipant.claim,
+    stake: betParticipant.stake,
+  };
+}
