@@ -104,7 +104,7 @@ class NextUserRepository implements IUserRepository {
           firstName: user.firstName,
           lastName: user.lastName,
           status: user.status,
-          avatarUrl: user.avatarUrl ?? null,
+          avatarUrl: user.avatarUrl,
           providerId: user.providerId,
         },
       });

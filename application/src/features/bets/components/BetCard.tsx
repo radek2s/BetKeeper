@@ -20,7 +20,7 @@ export function BetCard({ bet }: Props) {
               <img
                 key={participant.userId}
                 className="w-[32px] avatar"
-                src={participant.avatarUrl}
+                src={participant.avatarUrl || "/avatars/avatar_00.png"}
               />
             ))}
           </div>

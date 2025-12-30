@@ -37,7 +37,11 @@ export function WizzardFriend({ friend, terms, onBack, onNext }: Props) {
     <div className="mt-4">
       <p className="text-center text-xs">{terms.terms}</p>
       <div className="flex flex-col items-center my-2">
-        <img src={friend.avatarUrl} className="avatar w-[64px]" alt="Profile" />
+        <img
+          src={friend.avatarUrl || "/avatars/avatar_00.png"}
+          className="avatar w-[64px]"
+          alt="Profile"
+        />
 
         <div className="flex flex-col items-center mb-2">
           <h3 className="mt-1">

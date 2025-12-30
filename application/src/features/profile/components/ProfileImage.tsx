@@ -20,7 +20,7 @@ export function ProfileImage({ activeImage }: Props) {
   );
   const handleSave = async () => {
     try {
-      await updateAvatar(ACTIVE_USER_ID, selectedImage, sessionToken);
+      await updateAvatar(selectedImage, sessionToken);
     } catch (e) {
       console.error(e);
     }

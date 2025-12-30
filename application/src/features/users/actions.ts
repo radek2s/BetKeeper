@@ -94,7 +94,7 @@ export async function approveUserRequest(
   const requestingUser = await validateToken(token);
 
   try {
-    const user = await NextUserInvitationService.approveInvitationRequest(
+    const user = await NextUserInvitationService.approveUserRequest(
       requestId,
       requestingUser.id,
       firstName,
@@ -168,19 +168,18 @@ export async function createUserRequest(
 }
 
 export async function updateAvatar(
-  userId: string,
   avatarUrl: string,
   token: string | undefined,
 ) {
   const requestingUser = await validateToken(token);
 
   try {
-    const user = await userRepository.findById(userId);
+    const user = await userRepository.findById(requestingUser.id);
     if (!user) throw new Error("User was not found!");
     user.avatarUrl = avatarUrl;
     await userRepository.save(user);
     logger.info(
-      `[User][${userId}][Updated] - Updated avatar to ${avatarUrl} by ${requestingUser.id}`,
+      `[User][${requestingUser.id}][Updated] - Updated avatar to ${avatarUrl} by ${requestingUser.id}`,
     );
     revalidatePath(`/profile`);
   } catch (e) {

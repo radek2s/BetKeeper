@@ -46,7 +46,7 @@ export function WizzardCreator({
       <p className="text-center text-xs">{terms.terms}</p>
       <div className="flex flex-col items-center my-2">
         <img
-          src={creator.avatarUrl}
+          src={creator.avatarUrl || "/avatars/avatar_00.png"}
           className="avatar w-[64px]"
           alt="Profile"
         />
