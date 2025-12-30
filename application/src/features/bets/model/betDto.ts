@@ -58,6 +58,12 @@ export function isCommonBetRequestResponse(
   return betResponse.stakeType === "COMMON";
 }
 
+export function isIndividualBetParticipantResponse(
+  participant: BetParticipantResponse,
+): participant is IndividualBetParticipantResponse {
+  return Object.hasOwn(participant, "stake");
+}
+
 export type BetRequestResponse =
   | CommonBetRequestResponse
   | IndividualBetRequestResponse;

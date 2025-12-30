@@ -476,6 +476,13 @@ input[type="radio"]:checked::before {
   min-width: 64px;
 }
 
+.bet-request__avatars {
+  display: flex;
+  width: 86px;
+  min-width: 86px;
+}
+
+.bet-request__avatars .avatar,
 .bet-card__avatars .avatar {
   position: absolute;
   outline: 3px solid var(--container);
@@ -483,6 +490,10 @@ input[type="radio"]:checked::before {
 .bet-card__avatars .avatar:last-of-type {
   position: relative;
   left: 24px;
+}
+.bet-request__avatars .avatar:last-of-type {
+  position: relative;
+  left: 32px;
 }
 
 .bet-tab--icon {
@@ -504,6 +515,40 @@ input[type="radio"]:checked::before {
 }
 .bet-tab.active path {
   fill: var(--primary);
+}
+
+.bet-request-status.pending {
+  background-color: var(--secondary);
+}
+
+.bet-request-status.approved {
+  background-color: var(--primary);
+  color: var(--surface);
+}
+
+.bet-request-status.rejected {
+  background-color: var(--error);
+}
+
+.bet-request--split {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  justify-items: stretch;
+}
+
+.vote-approved path {
+  fill: var(--primary);
+}
+.vote-rejected path {
+  fill: var(--error);
+}
+
+.vertical-line {
+  display: block;
+  min-height: 24px;
+  height: auto;
+  border: 1px solid var(--container);
 }
 
 @media (prefers-color-scheme: dark) {

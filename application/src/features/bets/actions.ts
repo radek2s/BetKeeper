@@ -50,3 +50,22 @@ export async function getBets(
 
   return requests.map((request) => mapToResponse(request, userMap));
 }
+
+export async function getBet(betId: string) {
+  const bet = await NextBetService.getById(betId);
+  const repository = new NextUserRepository();
+
+  const usersIds = new Set(bet.participants.map((p) => p.userId))
+    .values()
+    .toArray();
+
+  const users = await Promise.all(
+    usersIds.map((userId) => userIdToUserType(userId, repository)),
+  );
+  const userMap = new Map<string, UserType>();
+  users.forEach((user) => {
+    userMap.set(user.id, user);
+  });
+
+  return mapToResponse(bet, userMap);
+}
