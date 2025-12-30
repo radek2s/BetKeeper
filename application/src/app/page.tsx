@@ -5,7 +5,12 @@
 import { getBets } from "@app/features/bets/actions";
 import { BetCard } from "@app/features/bets/components/BetCard";
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
-import type { BetRequestResponse } from "@app/features/bets/model/betDto";
+import { BetTabIcon } from "@app/features/bets/components/browser/BetTabIcon";
+import {
+  type BetRequestResponse,
+  type BetResponse,
+  isBetResponse,
+} from "@app/features/bets/model/betDto";
 import { getFriendList } from "@app/features/friends/actions";
 import { getUserDetails } from "@app/features/users/actions";
 import { authorizedUserToUserType } from "@app/features/users/model/userDto";
@@ -32,12 +37,14 @@ export default async function Index() {
     return (await Promise.all(userPromises)).map((u) => u.toObject());
   }
 
-  const requests = await getBets(user.id);
+  const { requests, pending, resolved, completed } = groupBets(
+    await getBets(user.id),
+  );
 
   return (
     <PageWrapper>
       <header className="flex w-full justify-between items-center my-4 px-4">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <Link href="/profile">
             <img
               className="avatar h-[48px]"
@@ -46,8 +53,8 @@ export default async function Index() {
             />
           </Link>
           <div>
-            <span className="text-gray">Hi, {user.name}!</span>
-            <h1 className="m-none main-title">Bets</h1>
+            <span className="text-gray">Hi, {user.firstName}!</span>
+            <h1 className="m-none main-title font-semibold">Bets</h1>
           </div>
         </div>
         <div className="flex gap-1">
@@ -58,21 +65,20 @@ export default async function Index() {
         </div>
       </header>
       <div>
+        <div className="flex justify-between my-4">
+          <BetTabIcon isActive icon="waving-hand" name="Requests" />
+          <BetTabIcon icon="handshake" name="Unresolved" />
+          <BetTabIcon icon="timeline" name="In progress" />
+          <BetTabIcon icon="fact-check" name="Finished" />
+        </div>
         <section>
-          <h2>Pending requests</h2>
           <div className="flex flex-col gap-3">
             {requests.map((request) => (
               <BetCard key={request.id} bet={request} />
             ))}
           </div>
         </section>
-        <section>
-          <h2>Unresolved</h2>
-        </section>
-        <section>
-          <h2>Uncompleted</h2>
-        </section>
-        <Button>Show all</Button>
+
         <BetRequestCreateBtn
           friends={friends}
           creator={authorizedUserToUserType(user)}
@@ -80,4 +86,38 @@ export default async function Index() {
       </div>
     </PageWrapper>
   );
+}
+
+function groupBets(bets: (BetRequestResponse | BetResponse)[]) {
+  const requests: BetRequestResponse[] = [];
+  const pending: BetResponse[] = [];
+  const resolved: BetResponse[] = [];
+  const completed: BetResponse[] = [];
+
+  bets.forEach((bet) => {
+    if (isBetResponse(bet)) {
+      switch (bet.status) {
+        case "pending": {
+          pending.push(bet);
+          break;
+        }
+        case "resolved": {
+          resolved.push(bet);
+          break;
+        }
+        case "completed": {
+          completed.push(bet);
+          break;
+        }
+      }
+    } else {
+      requests.push(bet);
+    }
+  });
+  return {
+    requests,
+    pending,
+    resolved,
+    completed,
+  };
 }

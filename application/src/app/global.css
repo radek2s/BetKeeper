@@ -485,6 +485,27 @@ input[type="radio"]:checked::before {
   left: 24px;
 }
 
+.bet-tab--icon {
+  padding: 15px;
+  box-sizing: content-box;
+  background-color: var(--container);
+  border-radius: 50%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.bet-tab {
+  cursor: pointer;
+}
+.bet-tab:hover .bet-tab--icon {
+  background-color: var(--container-hovered);
+}
+.bet-tab.active {
+  color: var(--primary);
+}
+.bet-tab.active path {
+  fill: var(--primary);
+}
+
 @media (prefers-color-scheme: dark) {
   .icon {
     fill: var(--base-text);
@@ -493,6 +514,7 @@ input[type="radio"]:checked::before {
   .btn,
   .btn-icon,
   .ip,
+  .bet-tab--icon,
   .select__triger {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }

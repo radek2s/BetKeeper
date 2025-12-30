@@ -2,6 +2,7 @@ import {
   AbstractBet,
   AbstractBetRequest,
   type BetParticipant,
+  type BetStatus,
   CommonBet,
   CommonBetRequest,
   IndividualBet,
@@ -62,7 +63,7 @@ export type BetRequestResponse =
   | IndividualBetRequestResponse;
 
 type BaseBetResponse = BaseBetRequestResponse & {
-  status: string;
+  status: BetStatus;
   resolvedBy?: string;
   resolvedAt?: Date;
   winnerId?: string;
@@ -83,6 +84,12 @@ export type IndividualBetResponse = BaseBetResponse & {
 };
 
 export type BetResponse = CommonBetResponse | IndividualBetResponse;
+
+export function isBetResponse(
+  bet: BetResponse | BetRequestResponse,
+): bet is BetResponse {
+  return Object.hasOwn(bet, "status");
+}
 
 export type BetSummary = Pick<
   BetRequestResponse,

@@ -10,9 +10,11 @@ import { CloseIcon } from "./close";
 import { DeleteIcon } from "./delete";
 import { ErrorIcon } from "./error";
 import { EventIcon } from "./event";
+import { FactCheckIcon } from "./fact-check";
 import { GroupIcon } from "./group";
 import { GroupAddIcon } from "./group-add";
 import { GroupsIcon } from "./groups";
+import { HandshakeIcon } from "./handshake";
 import { LogoutIcon } from "./logout";
 import { MailIcon } from "./mail";
 import { MoreIcon } from "./more";
@@ -23,6 +25,7 @@ import { PersonOffIcon } from "./person-off";
 import { QuestionMarkIcon } from "./question-mark";
 import { SecurityKeyIcon } from "./security-key";
 import { SendIcon } from "./send";
+import { TimelineIcon } from "./timeline";
 import { TimerIcon } from "./timer";
 import type { IconProps, IconType } from "./types";
 import { VerifiedIcon } from "./verified";
@@ -40,9 +43,11 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   delete: DeleteIcon,
   error: ErrorIcon,
   event: EventIcon,
+  "fact-check": FactCheckIcon,
   group: GroupIcon,
   "group-add": GroupAddIcon,
   groups: GroupsIcon,
+  handshake: HandshakeIcon,
   logout: LogoutIcon,
   mail: MailIcon,
   more: MoreIcon,
@@ -53,6 +58,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   "question-mark": QuestionMarkIcon,
   "security-key": SecurityKeyIcon,
   send: SendIcon,
+  timeline: TimelineIcon,
   timer: TimerIcon,
   verified: VerifiedIcon,
   "waving-hand": WavingHandIcon,
