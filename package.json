@@ -17,6 +17,8 @@
     "test:coverage": "vitest run --coverage --reporter junit --output-file ./test-report.xml",
     "test:coverage:report": "vitest run --coverage",
     "build": "npx nx run application:build",
+    "build:prod": "npm run prod:generate && npx nx run application:build",
+    "prod:generate": "npx prisma generate",
     "preview": "npx nx run application:start",
     "build:ci": "CI=false && tsc && vite build",
     "e2e": "nx run e2e-tests:e2e",
