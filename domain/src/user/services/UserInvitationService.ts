@@ -1,9 +1,8 @@
+import type { IEventDispatcher, UUID } from "@domain/shared";
+import { UserFriendList, type UserRequest } from "../entities";
 import { User } from "../entities/User";
-
-import { IEventDispatcher, UUID } from "@domain/shared";
-import { Email } from "../value-objects";
-import { UserFriendList, UserRequest } from "../entities";
-import { IFriendListRepository, IUserRepository } from "./UserService";
+import type { Email } from "../value-objects";
+import type { IFriendListRepository, IUserRepository } from "./UserService";
 
 /**
  * Invitation Request Repository Interface
@@ -26,6 +25,48 @@ export class InvitationService {
     private readonly invitationRequestRepository: IInvitationRequestRepository,
     private readonly eventDispatcher?: IEventDispatcher,
   ) {}
+
+  async approveUserRequest(
+    requestId: string,
+    approvedById: UUID,
+    inviteeFirstName: string,
+    inviteeLastName: string,
+  ): Promise<User> {
+    const invitationRequest =
+      await this.invitationRequestRepository.findById(requestId);
+    if (!invitationRequest) {
+      throw new Error("Invitation request not found");
+    }
+
+    const approver = await this.userRepository.findById(approvedById);
+    if (!approver) {
+      throw new Error("Approver not found");
+    }
+
+    invitationRequest.approve(approvedById);
+
+    const newUser = User.create(
+      invitationRequest.inviteeEmail,
+      inviteeFirstName,
+      inviteeLastName,
+    );
+    newUser.activate();
+
+    const newUserFriendList = UserFriendList.create(newUser.id);
+
+    // const requesterFriendList = await this.friendListRepository.findByUserId(
+    //   invitationRequest.requesterId,
+    // );
+    // if (!requesterFriendList) {
+    //   throw new Error("Requester friend list not found");
+    // }
+
+    await this.userRepository.save(newUser);
+    await this.friendListRepository.save(newUserFriendList);
+    await this.invitationRequestRepository.save(invitationRequest);
+
+    return newUser;
+  }
 
   /**
    * Approves an invitation request and creates a new user account

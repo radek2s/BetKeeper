@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2024",
+    "target": "esnext",
     "baseUrl": "./",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,32 +18,16 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@domain/*": [
-        "domain/src/*"
-      ],
-      "@bet-keeper/domain/test/*": [
-        "domain/tests/*"
-      ],
-      "@db/*": [
-        "application/generated/prisma"
-      ],
-      "@test/*": [
-        "./test/*"
-      ]
+      "@/*": ["./src/*"],
+      "@domain/*": ["domain/src/*"],
+      "@bet-keeper/domain/test/*": ["domain/tests/*"],
+      "@app/*": ["application/src/*"],
+      "@db/*": ["application/generated/prisma"],
+      "@test/*": ["./test/*"]
     },
     "moduleResolution": "node",
     "resolveJsonModule": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

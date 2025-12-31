@@ -2,12 +2,6 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "plugins": [
     {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
-    {
       "plugin": "@nx/next/plugin",
       "options": {
         "startTargetName": "start",
@@ -53,17 +47,18 @@
       }
     },
     {
-      "plugin": "@nx/playwright/plugin",
+      "plugin": "@nx/cypress/plugin",
       "options": {
-        "targetName": "e2e"
+        "targetName": "e2e",
+        "openTargetName": "open-cypress",
+        "ciTargetName": "e2e-ci"
       }
     }
   ],
   "generators": {
     "@nx/next": {
       "application": {
-        "style": "tailwind",
-        "linter": "eslint"
+        "style": "tailwind"
       }
     }
   },

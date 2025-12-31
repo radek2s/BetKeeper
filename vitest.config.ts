@@ -7,7 +7,12 @@ export default defineConfig({
     outputFile: "./tests-results.xml",
     coverage: {
       enabled: true,
-      include: ["domain/**/*", "application/**/*"],
+      include: [
+        "domain/src/**/*",
+        "application/src/**/*",
+        "application/specs/**/*",
+      ],
+      exclude: ["application/src/app/**", "**/*.mock.ts"],
       reporter: ["html", ["json", { file: "./coverage.json" }]],
       reportsDirectory: "coverage",
       provider: "v8",

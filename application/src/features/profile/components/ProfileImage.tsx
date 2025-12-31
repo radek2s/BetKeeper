@@ -1,0 +1,71 @@
+"use client";
+import { updateAvatar } from "@app/features/users/actions";
+import { Button } from "@app/ui/button/Button";
+import { useCorbado } from "@corbado/react";
+import { ACTIVE_USER_ID } from "application/src/constants";
+
+import { Dialog } from "radix-ui";
+import { useState } from "react";
+
+const AVATAR_MAX_ID = 7;
+
+interface Props {
+  activeImage: string;
+}
+export function ProfileImage({ activeImage }: Props) {
+  const { sessionToken } = useCorbado();
+  const [selectedImage, setSelectedImage] = useState<string>(activeImage);
+  const avatarIds = [...Array(AVATAR_MAX_ID).keys()].map(
+    (id) => `/avatars/avatar_0${id}.png`,
+  );
+  const handleSave = async () => {
+    try {
+      await updateAvatar(selectedImage, sessionToken);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  return (
+    <div>
+      <Dialog.Root>
+        <Dialog.Trigger asChild>
+          <img
+            src={activeImage}
+            className="avatar w-[128px] h-[128px] clickable"
+            alt="Profile"
+          />
+        </Dialog.Trigger>
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialog--overlay" />
+          <Dialog.Content className="dialog--content">
+            <Dialog.Title className="dialog--title">Choose image</Dialog.Title>
+            <div className="flex flex-wrap justify-center">
+              {avatarIds.map((avatar) => (
+                <button
+                  aria-controls="content"
+                  type="button"
+                  onClick={() => setSelectedImage(avatar)}
+                  key={avatar}
+                  name={avatar}
+                  className={`avatar-preview w-1/4 m-2 ${avatar === selectedImage ? "active" : ""}`}>
+                  <img src={avatar} alt={avatar} />
+                </button>
+              ))}
+            </div>
+
+            <div className="flex mt-6 justify-center gap-2">
+              <Dialog.Close asChild>
+                <Button>Cancel</Button>
+              </Dialog.Close>
+              <Dialog.Close asChild>
+                <Button variant="primary" onClick={handleSave}>
+                  Save
+                </Button>
+              </Dialog.Close>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </div>
+  );
+}

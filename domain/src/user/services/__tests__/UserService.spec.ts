@@ -1,14 +1,14 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import {
-  UserService,
-  IUserRepository,
-  IFriendListRepository,
-  IUserRequestRepository,
-} from "../UserService";
 import { InMemoryEventDispatcher } from "@domain/shared";
-import { Email } from "@domain/user/value-objects";
+import { FriendRequest, User, UserFriendList, UserStatus } from "@domain/user";
 import { UserCreatedEvent } from "@domain/user/events/UserCreatedEvent";
-import { User, UserFriendList, UserStatus } from "@domain/user";
+import { Email } from "@domain/user/value-objects";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  type IFriendListRepository,
+  type IUserRepository,
+  type IUserRequestRepository,
+  UserService,
+} from "../UserService";
 
 describe("UserService", () => {
   let userService: UserService;
@@ -28,6 +28,9 @@ describe("UserService", () => {
     mockFriendListRepository = {
       findByUserId: vi.fn(),
       save: vi.fn(),
+      deleteRequest: vi.fn(),
+      findRequestById: vi.fn(),
+      saveRequest: vi.fn(),
     };
 
     mockUserRequestRepository = {
@@ -171,6 +174,7 @@ describe("UserService", () => {
           "Receiver",
           "Testing",
           UserStatus.ACTIVE,
+          undefined,
           receiverId,
         ),
       );
@@ -184,8 +188,7 @@ describe("UserService", () => {
       await userService.approveFriendRequest(receiverId, friendRequest.id);
 
       expect(receiverFriendList.isFriend(senderId)).toBe(true);
-      expect(senderFriendList.isFriend(receiverId)).toBe(true);
-      expect(mockFriendListRepository.save).toHaveBeenCalledTimes(2);
+      expect(mockFriendListRepository.saveRequest).toHaveBeenCalledTimes(1);
     });
 
     it("should throw error when friend request not found", async () => {
@@ -209,15 +212,24 @@ describe("UserService", () => {
 
       const userFriendList = UserFriendList.create(userId);
       const friendFriendList = UserFriendList.create(friendId);
+      const targetUser = new User(
+        new Email("friend@email.com"),
+        "Friend",
+        "LastName",
+        UserStatus.ACTIVE,
+        undefined,
+        friendId,
+      );
+      userFriendList.sendFriendRequest(targetUser);
 
       // Add mutual friendship
       userFriendList.addFriend(friendId);
-      friendFriendList.addFriend(userId);
 
       vi.mocked(mockFriendListRepository.findByUserId)
         .mockResolvedValueOnce(userFriendList)
         .mockResolvedValueOnce(friendFriendList);
       vi.mocked(mockFriendListRepository.save).mockResolvedValue();
+      vi.mocked(mockFriendListRepository.deleteRequest).mockResolvedValue();
 
       await userService.removeFriend(userId, friendId);
 
@@ -231,6 +243,8 @@ describe("UserService", () => {
     it("should return true when user has friends", async () => {
       const userId = "user_123";
       const friendList = UserFriendList.create(userId);
+      const request = new FriendRequest("req-1", "friend_123", userId);
+      friendList.receiveFriendRequest(request);
       friendList.addFriend("friend_123");
 
       vi.mocked(mockFriendListRepository.findByUserId).mockResolvedValue(
@@ -272,6 +286,8 @@ describe("UserService", () => {
       const friendId = "friend_123";
 
       const friendList = UserFriendList.create(userId);
+      const request = new FriendRequest("req-1", friendId, userId);
+      friendList.receiveFriendRequest(request);
       friendList.addFriend(friendId);
 
       const friend = new User(

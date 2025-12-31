@@ -1,6 +1,6 @@
 datasource db {
     provider    = "sqlite"
-    url         = "file:./betKeeper.db"
+    url         = env("DB_PRISMA_URL")
 }
 
 generator client {
@@ -10,10 +10,13 @@ generator client {
 
 model UserTable {
     id          String @id @default(uuid())
+    providerId  String? @unique
     email       String @unique
     firstName   String
     lastName    String
     status      String
+    avatarUrl   String?
+    role        String?
 
     @@map("user")
 }
@@ -30,6 +33,8 @@ model UserRequestTable {
     @@map("user_request")
 }
 
+
+
 model FriendRequestTable {
     id              String @id @default(uuid())
     senderId        String 
@@ -44,29 +49,30 @@ model FriendRequestTable {
 model BetTable {
     id                  String @id @default(uuid())
     creatorId           String 
-    participantId       String 
+    status              String?
+    title               String 
     terms               String
-    status              String
+    stakeType           String
+    stake               String?
     createdAt           DateTime 
     updatedAt           DateTime 
-    dueDate             DateTime? 
     resolvedAt          DateTime? 
-    completedAt         DateTime? 
+    resolvedBy          String? 
     winnerId            String? 
-    evidence            String?
-    completionNotes     String?
+    dueDate             DateTime? 
+    completedAt         DateTime? 
+    completedBy         String? 
 
     @@map("bet")
 }
 
-model BetRequestTable {
-    id                  String @id @default(uuid())
-    creatorId           String 
-    participantId       String 
-    terms               String
-    status              String
-    createdAt           DateTime 
-    updatedAt           DateTime 
-
-    @@map("bet_request")
+model BetParticipantTable {
+    betId               String
+    userId              String 
+    vote                String 
+    claim               String
+    stake               String?
+    
+    @@id(name: "participantId", [betId, userId])
+    @@map("bet_participant")
 }

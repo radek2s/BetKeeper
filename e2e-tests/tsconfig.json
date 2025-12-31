@@ -4,11 +4,7 @@
     "allowJs": true,
     "outDir": "../dist/out-tsc",
     "module": "commonjs",
-    "types": ["node", "@playwright/test"]
+    "types": ["node"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.js",
-    "../playwright.config.ts"
-  ]
+  "include": ["**/*.ts", "**/*.js"]
 }

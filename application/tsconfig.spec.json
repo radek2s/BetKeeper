@@ -3,9 +3,9 @@
   "baseUrl": "../../",
   "compilerOptions": {
     "outDir": "../dist/out-tsc",
-    "module": "commonjs",
-    "moduleResolution": "node10",
-    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
     "types": ["jest", "node"]
   },
   "include": [

@@ -2,15 +2,15 @@
 import { BetService } from "../../src/bet/services/BetService";
 
 import type { EventDispatcherMock } from "./EventDispatcherMock";
-import type { InMemoryBetAggregateRepository } from "./InMemoryBetAggregateRepository";
-import type { InMemoryBetQueryService } from "./InMemoryBetQueryService";
+import type { InMemoryBetParticipantRepository } from "./InMemoryBetParticipantRepository";
+import type { InMemoryBetRepository } from "./InMemoryBetRepository";
 
 export class InMemoryBetService extends BetService {
   constructor(
-    betAggregateRepository: InMemoryBetAggregateRepository,
-    betQueryService: InMemoryBetQueryService,
+    betRepository: InMemoryBetRepository,
+    betParticipantRepository: InMemoryBetParticipantRepository,
     eventDispatcher: EventDispatcherMock,
   ) {
-    super(betAggregateRepository, betQueryService, eventDispatcher);
+    super(betRepository, betParticipantRepository, eventDispatcher);
   }
 }

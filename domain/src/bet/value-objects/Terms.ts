@@ -1,6 +1,6 @@
 /**
  * Terms Value Object
- * Represents the terms and conditions of a bet
+ * Represents the terms of a bet
  */
 export class Terms {
   private readonly _value: string;

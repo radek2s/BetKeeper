@@ -1,3 +1,3 @@
 export * from "./Bet";
-export * from "./BetAggregate";
+export * from "./BetParticipant";
 export * from "./BetRequest";

@@ -28,7 +28,7 @@ jobs:
 
       - name: Generate test report
         uses: dorny/test-reporter@v2
-        if: ${{ !cancelled() }}
+        if: always()
         with:
           name: Unit Test Results
           path: test-report.xml

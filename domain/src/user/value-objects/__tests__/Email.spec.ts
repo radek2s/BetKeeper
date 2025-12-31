@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { Email } from "../Email";
 
 describe("Email", () => {
@@ -44,7 +44,7 @@ describe("Email", () => {
       const longLocal = "a".repeat(250);
       const longEmail = `${longLocal}@example.com`;
       expect(() => new Email(longEmail)).toThrow(
-        "Email cannot exceed 254 characters",
+        "Email local part cannot exceed 64 characters",
       );
     });
 

@@ -1,0 +1,35 @@
+export type IconProps = {
+  className?: string;
+};
+
+export type IconType =
+  | "add"
+  | "arrow-left"
+  | "arrow-dropdown"
+  | "bug"
+  | "calendar"
+  | "check"
+  | "chevron-left"
+  | "close"
+  | "delete"
+  | "error"
+  | "event"
+  | "fact-check"
+  | "group"
+  | "group-add"
+  | "groups"
+  | "handshake"
+  | "logout"
+  | "mail"
+  | "more"
+  | "note"
+  | "notification"
+  | "person"
+  | "person-off"
+  | "question-mark"
+  | "security-key"
+  | "send"
+  | "timeline"
+  | "timer"
+  | "verified"
+  | "waving-hand";
