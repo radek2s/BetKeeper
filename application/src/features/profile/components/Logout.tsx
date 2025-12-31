@@ -15,7 +15,7 @@ function LogoutButton() {
   };
 
   return (
-    <button type="button" onClick={onLogout}>
+    <button type="button" onClick={onLogout} className="clickable">
       <li className="flex items-center gap-2">
         <Icon name="logout" /> Logout
       </li>

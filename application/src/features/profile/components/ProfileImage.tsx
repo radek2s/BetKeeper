@@ -29,7 +29,11 @@ export function ProfileImage({ activeImage }: Props) {
     <div>
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <img src={activeImage} className="avatar w-[128px]" alt="Profile" />
+          <img
+            src={activeImage}
+            className="avatar w-[128px] h-[128px] clickable"
+            alt="Profile"
+          />
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Overlay className="dialog--overlay" />

@@ -4,10 +4,11 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   id?: string;
   name: string;
   label?: string;
+  required?: boolean;
 }
 export const TextField = forwardRef(
   (
-    { className, id, name, label, ...props }: Props,
+    { className, id, name, label, required, ...props }: Props,
     ref: ForwardedRef<HTMLTextAreaElement>,
   ) => {
     return (
@@ -15,6 +16,7 @@ export const TextField = forwardRef(
         {label && (
           <label className="pb-1 text-sm" htmlFor={id ?? name}>
             {label}
+            {required ? <span className="text-error">*</span> : ""}
           </label>
         )}
         <textarea

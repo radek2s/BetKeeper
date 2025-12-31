@@ -50,7 +50,8 @@ export function WizzardParticipants({
 
   return (
     <div className="mt-4">
-      <div className="flex flex-col gap-2">
+      <h2 className="text-center">Select participants</h2>
+      <div className="flex flex-col gap-2 mt-2">
         <FormField
           label="Who you want to invite to bet?"
           name="title"

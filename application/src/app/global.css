@@ -136,6 +136,15 @@ body {
   color: var(--error);
 }
 
+.clickable {
+  cursor: pointer;
+}
+
+.avatar.clickable:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
 .main-title {
   line-height: 32px;
 }
@@ -442,13 +451,6 @@ input[type="radio"]:checked::before {
     opacity: 0.1;
     border-radius: inherit;
   }
-}
-
-.actions-wrapper .actions-wrapper__actions {
-  opacity: 0;
-}
-.actions-wrapper:hover .actions-wrapper__actions {
-  opacity: 1;
 }
 
 .user-item {

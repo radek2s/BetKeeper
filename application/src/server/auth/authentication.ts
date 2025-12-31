@@ -1,5 +1,6 @@
 "use server";
 import { Config, SDK } from "@corbado/node-sdk";
+import logger from "application/logger";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import NextUserRepository from "../repositories/NextUserRepository";
@@ -33,6 +34,7 @@ const sdk = new SDK(config);
 
 export async function getAuthenticatedUserFromCookie() {
   const reqCookies = await cookies();
+
   const sessionToken = reqCookies.get("cbo_session_token")?.value;
   if (!sessionToken) {
     return null;
@@ -43,6 +45,7 @@ export async function getAuthenticatedUserFromCookie() {
     if (!user) throw new UserNotProvidedError(result.userId);
     return user;
   } catch (e) {
+    if (e instanceof Error) logger.error(e.message);
     if (e instanceof AuthenticationError) throw e;
     return null;
   }

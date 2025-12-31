@@ -47,24 +47,26 @@ export function WizzardTerms({ terms, onCancel, onNext }: Props) {
     <div className="mt-4">
       <h3 className="text-center mb-2">Terms</h3>
       <div className="flex flex-col gap-2">
-        <FormField
-          value={title}
-          label="Short title"
-          name="title"
-          placeholder="Bet short title..."
-          onChange={(e) => setTitle(e.target.value)}
-        />
         <TextField
           value={description}
-          label="Description"
+          label="Define subject of the bet"
           name="description"
-          placeholder="Explanation what the bet stake is..."
+          placeholder="eg. On Sunday it will be raining..."
           rows={4}
           className="resizable-y"
+          required
           onChange={(e) => setDescription(e.target.value)}
         />
+        <FormField
+          value={title}
+          label="Bet summary"
+          name="title"
+          placeholder="eg. Bet about weather"
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
         <Select
-          label="Stake type"
+          label="Choose stake form"
           name="stakeType"
           value={stakeType}
           onChange={(v) => setStakeType(v)}
@@ -75,12 +77,13 @@ export function WizzardTerms({ terms, onCancel, onNext }: Props) {
         {stakeType === "COMMON" && (
           <TextField
             value={stake}
-            label="Stake"
+            label="Winner gains:"
             name="stake"
-            placeholder="When anybody win he..."
+            placeholder="eg. Receives free cup of coffee"
             rows={4}
             className="resizable-y"
             onChange={(e) => setStake(e.target.value)}
+            required
           />
         )}
       </div>

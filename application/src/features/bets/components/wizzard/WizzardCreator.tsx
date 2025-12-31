@@ -43,36 +43,30 @@ export function WizzardCreator({
 
   return (
     <div className="mt-4">
-      <p className="text-center text-xs">{terms.terms}</p>
+      <p className="my-2 text-center text-xs">{terms.terms}</p>
       <div className="flex flex-col items-center my-2">
         <img
           src={creator.avatarUrl || "/avatars/avatar_00.png"}
           className="avatar w-[64px]"
           alt="Profile"
         />
-
-        <div className="flex flex-col items-center mb-2">
-          <h3 className="mt-1">
-            {creator.firstName} {creator.lastName}
-          </h3>
-          <span className="text-gray text-sm">(You)</span>
-        </div>
+        <h2 className="text-center">Define your claims</h2>
       </div>
       <div className="flex flex-col gap-2">
         <FormField
           value={claim}
           onChange={(e) => setClaim(e.target.value)}
-          label="Claims"
+          label="What are your claims?"
           name="claim"
-          placeholder="What you claim..."
+          placeholder="eg.: It will be sunny"
         />
         {terms.stakeType === "INDIVIDUAL" && (
           <FormField
             value={stake}
             onChange={(e) => setStake(e.target.value)}
-            label="Stake"
+            label="What you want when you win?"
             name="stake"
-            placeholder="When you win..."
+            placeholder="eg.: I want a croissant..."
           />
         )}
       </div>

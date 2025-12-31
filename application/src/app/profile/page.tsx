@@ -21,7 +21,7 @@ export default async function ProfilePage() {
           activeImage={user.avatarUrl || "/avatars/avatar_00.png"}
         />
         <div className="flex flex-col items-center my-2">
-          <h2 className="text-xl m-none">{user.name}</h2>
+          <h2 className="text-xl m-none font-bold">{user.name}</h2>
           <span className="text-gray text-sm">{user.email.value}</span>
         </div>
       </div>
@@ -32,19 +32,20 @@ export default async function ProfilePage() {
               <Icon name="groups" /> Application users
             </li>
           </Link>
-          <li className="flex items-center gap-2 disabled">
-            <Icon name="note" /> Bet Ideas and notes
-          </li>
-          <li className="flex items-center gap-2 disabled">
-            <Icon name="mail" /> Notification settings
-          </li>
           <Link href={"/profile/passkey"}>
             <li className="flex items-center gap-2">
               <Icon name="security-key" /> Manage passkeys
             </li>
           </Link>
           <li className="flex items-center gap-2 disabled">
-            <Icon name="bug" /> Report problem
+            <Icon name="note" /> Bet Ideas and notes (Soon)
+          </li>
+          <li className="flex items-center gap-2 disabled">
+            <Icon name="mail" /> Notification settings (Soon)
+          </li>
+
+          <li className="flex items-center gap-2 disabled">
+            <Icon name="bug" /> Report problem (Soon)
           </li>
           <LogoutButton />
         </ul>

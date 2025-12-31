@@ -6,9 +6,9 @@ import {
   isBetResponse,
 } from "../../model/betDto";
 import { BetCard } from "../BetCard";
+import BetEmptyList from "./BetEmptyList";
 import { BetTabIcon } from "./BetTabIcon";
-
-type TabName = "requests" | "pending" | "resolved" | "completed";
+import type { TabName } from "./types";
 
 interface Props {
   bets: (BetRequestResponse | BetResponse)[];
@@ -79,9 +79,15 @@ function BetBrowser({ bets }: Props) {
       </div>
       <section key={activeTab}>
         <div className="flex flex-col gap-3">
-          {activeBets.map((request) => (
-            <BetCard key={request.id} bet={request} />
-          ))}
+          {activeBets.length === 0 ? (
+            <BetEmptyList tabName={activeTab} />
+          ) : (
+            <>
+              {activeBets.map((request) => (
+                <BetCard key={request.id} bet={request} />
+              ))}
+            </>
+          )}
         </div>
       </section>
     </div>

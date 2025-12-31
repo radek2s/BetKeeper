@@ -30,15 +30,19 @@ export function BetRequestCreateBtn({ creator, friends }: Props) {
     <Dialog.Root open={isOpen} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         <div className="btn-fab">
-          <Button variant="primary">
-            <span>Add bet</span>
+          <Button variant="primary" className="gap-2">
+            <span>Create new bet</span>
             <Icon name="add" />
           </Button>
         </div>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="dialog--overlay" />
-        <Dialog.Content className="dialog--content">
+        <Dialog.Content
+          className="dialog--content"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}>
           <Dialog.Title className="dialog--title">
             Create bet request
           </Dialog.Title>

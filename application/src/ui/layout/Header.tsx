@@ -14,7 +14,7 @@ export function PageHeader({ title, returnUrl, children }: Props) {
         <Link href={returnUrl}>
           <IconButton icon="chevron-left" />
         </Link>
-        <h1>{title}</h1>
+        <h1 className="font-bold">{title}</h1>
       </div>
       {children}
     </header>

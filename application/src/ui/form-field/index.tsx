@@ -4,10 +4,11 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   id?: string;
   name: string;
   label?: string;
+  required?: boolean;
 }
 export const FormField = forwardRef(
   (
-    { className, id, name, label, ...props }: Props,
+    { className, id, name, label, required, ...props }: Props,
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
@@ -15,6 +16,7 @@ export const FormField = forwardRef(
         {label && (
           <label className="pb-1 text-sm" htmlFor={id ?? name}>
             {label}
+            {required ? <span className="text-error">*</span> : ""}
           </label>
         )}
         <input
