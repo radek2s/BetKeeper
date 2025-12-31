@@ -1,6 +1,5 @@
-import { DomainEvent } from "./DomainEvent";
-import { Email } from "../value-objects/Email";
-import { UUID } from "@domain/shared";
+import { DomainEvent, type UUID } from "@domain/shared";
+import type { Email } from "../value-objects/Email";
 
 /**
  * Friend Request Sent Domain Event

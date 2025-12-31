@@ -1,7 +1,7 @@
-import { AggregateRoot, Entity, UUID } from "@domain/shared";
-import { FriendRequest } from "./FriendRequest";
-import { User } from "./User";
+import { type AggregateRoot, Entity, type UUID } from "@domain/shared";
 import { FriendRemovedEvent } from "../events/FriendRequestEvents";
+import { FriendRequest } from "./FriendRequest";
+import type { User } from "./User";
 
 /**
  * Friend List Aggregate Root
@@ -115,13 +115,20 @@ export class UserFriendList extends Entity {
     request.cancel();
   }
 
-  addFriend(friendId: UUID): void {
+  addFriend(friendId: UUID, requestId?: UUID): void {
     if (friendId === this._userId) {
       throw new Error("Cannot add yourself as a friend");
     }
 
     if (this.isFriend(friendId)) {
       return;
+    }
+
+    if (requestId) {
+      const request = this._sentFriendRequests.get(requestId);
+      if (!request?.isApproved()) {
+        request?.approve();
+      }
     }
 
     this._friends.set(friendId, friendId);
@@ -199,5 +206,15 @@ export class UserFriendList extends Entity {
     });
 
     return friendList;
+  }
+
+  override toObject() {
+    return {
+      userId: this.userId,
+      friends: this.friends,
+      sentFriendRequests: this.sentFriendRequests,
+      receivedFriendRequests: this.receivedFriendRequests,
+      pendingReceivedRequests: this.pendingReceivedRequests,
+    };
   }
 }

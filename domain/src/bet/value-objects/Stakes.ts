@@ -1,4 +1,4 @@
-import { UUID } from "@domain/shared";
+import type { UUID } from "@domain/shared";
 
 /**
  * Stake Type Enumeration
@@ -18,6 +18,7 @@ export interface IStake {
   readonly description: string;
   equals(other: IStake): boolean;
   toString(): string;
+  toObject(): object;
 }
 
 /**
@@ -56,6 +57,13 @@ export class CommonStake implements IStake {
 
   toString(): string {
     return `Common Stake: ${this._description}`;
+  }
+
+  toObject() {
+    return {
+      type: this.type,
+      description: this.description,
+    };
   }
 }
 
@@ -118,6 +126,14 @@ export class IndividualStakes implements IStake {
 
   toString(): string {
     return `Individual Stakes - ${this.description}`;
+  }
+
+  toObject() {
+    return {
+      type: this.type,
+      creatorStake: this.creatorStake,
+      participantStake: this.participantStake,
+    };
   }
 }
 

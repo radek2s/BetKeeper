@@ -2,4 +2,4 @@ export * from "./DomainEvent";
 export * from "./DomainService";
 export * from "./Entity";
 export * from "./EventDispatcher";
-export { type UUID, generateId } from "./Uuid";
+export { generateId, type UUID } from "./Uuid";

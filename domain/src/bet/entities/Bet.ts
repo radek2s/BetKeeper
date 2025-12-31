@@ -38,6 +38,7 @@ export class Bet extends Entity {
     terms: Terms,
     stakes?: IStake,
     id?: UUID,
+    createdAt?: Date,
   ) {
     super();
     this.id = id || generateId();
@@ -47,7 +48,7 @@ export class Bet extends Entity {
     this.terms = terms;
     this.stakes = stakes;
     this.status = BetStatus.PENDING;
-    this.createdAt = new Date();
+    this.createdAt = createdAt || new Date();
     this.updatedAt = new Date();
 
     if (!id) {
@@ -269,6 +270,43 @@ export class Bet extends Entity {
     return new Bet(betRequestId, creatorId, participantId, terms, stakes);
   }
 
+  static reconstitute(
+    id: UUID,
+    betRequestId: UUID,
+    creatorId: UUID,
+    participantId: UUID,
+    terms: Terms,
+    stakes: IStake | undefined,
+    status: BetStatus,
+    createdAt: Date,
+    updatedAt: Date,
+    dueDate: Date | undefined,
+    resolvedAt: Date | undefined,
+    completedAt: Date | undefined,
+    winnerId: UUID | undefined,
+    evidence: string | undefined,
+    completionNotes: string | undefined,
+  ) {
+    const bet = new Bet(
+      betRequestId,
+      creatorId,
+      participantId,
+      terms,
+      stakes,
+      id,
+      createdAt,
+    );
+    bet._dueDate = dueDate;
+    bet.status = status;
+    bet.updatedAt = updatedAt;
+    bet.resolvedAt = resolvedAt;
+    bet.completedAt = completedAt;
+    bet.winnerId = winnerId;
+    bet.evidence = evidence;
+    bet.completionNotes = completionNotes;
+    return bet;
+  }
+
   // Entity implementation
   override equals(other: Entity): boolean {
     if (!(other instanceof Bet)) {
@@ -279,5 +317,24 @@ export class Bet extends Entity {
 
   override toString(): string {
     return `Bet(${this.id}, ${this.status}, Creator: ${this.creatorId}, Participant: ${this.participantId})`;
+  }
+
+  override toObject() {
+    return {
+      id: this.id,
+      betRequestId: this.betRequestId,
+      creatorId: this.creatorId,
+      participantId: this.participantId,
+      terms: this.terms,
+      stakes: this.stakes?.toObject(),
+      status: this.status,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      dueDate: this.dueDate,
+      resolvedAt: this.resolvedAt,
+      winnerId: this.winnerId,
+      evidence: this.evidence,
+      completionNotes: this.completionNotes,
+    };
   }
 }

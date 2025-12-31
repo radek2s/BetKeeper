@@ -1,5 +1,6 @@
 {
   "extends": "./tsconfig.json",
+  "baseUrl": "../../",
   "compilerOptions": {
     "outDir": "../dist/out-tsc",
     "module": "commonjs",
@@ -16,7 +17,6 @@
     "src/**/*.test.js",
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
-    "src/**/*.spec.jsx",
-    "src/**/*.d.ts"
+    "src/**/*.spec.jsx"
   ]
 }

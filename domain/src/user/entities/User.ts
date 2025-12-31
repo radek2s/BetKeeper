@@ -1,8 +1,8 @@
-import { Entity, generateId, UUID } from "@domain/shared";
-import { Email } from "../value-objects";
-import { UserStatus, UserStatusGuards } from "../types/RequestStatus";
+import { Entity, generateId, type UUID } from "@domain/shared";
 import { UserCreatedEvent } from "../events/UserCreatedEvent";
 import { UserStatusChangedEvent } from "../events/UserStatusChangedEvent";
+import { UserStatus, UserStatusGuards } from "../types/RequestStatus";
+import type { Email } from "../value-objects";
 
 /**
  * User Entity
@@ -51,6 +51,14 @@ export class User extends Entity {
 
   get name(): string {
     return `${this._firstName} ${this._lastName}`;
+  }
+
+  get firstName(): string {
+    return this._firstName;
+  }
+
+  get lastName(): string {
+    return this._lastName;
   }
 
   get status(): UserStatus {
@@ -161,4 +169,16 @@ export class User extends Entity {
   override toString(): string {
     return `User(${this._id}, ${this._email.value}, ${this._firstName} ${this._lastName})`;
   }
+
+  override toObject() {
+    return {
+      id: this._id,
+      email: this._email,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      status: this.status,
+    };
+  }
 }
+
+export type UserType = ReturnType<User["toObject"]>;

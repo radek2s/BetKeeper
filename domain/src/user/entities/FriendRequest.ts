@@ -1,12 +1,12 @@
-import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
-import {
-  FriendRequestSentEvent,
-  FriendRequestApprovedEvent,
-  FriendRequestRejectedEvent,
-} from "../events/FriendRequestEvents";
 import { Entity } from "../../shared/Entity";
 import type { IEventDispatcher } from "../../shared/EventDispatcher";
 import { generateId, type UUID } from "../../shared/Uuid";
+import {
+  FriendRequestApprovedEvent,
+  FriendRequestRejectedEvent,
+  FriendRequestSentEvent,
+} from "../events/FriendRequestEvents";
+import { RequestStatus, RequestStatusGuards } from "../types/RequestStatus";
 
 /**
  * Friend Request Entity
@@ -205,4 +205,17 @@ export class FriendRequest extends Entity {
   override toString(): string {
     return `FriendRequest(${this._id}, ${this._senderId} -> ${this._receiverId}, ${this._status})`;
   }
+
+  override toObject() {
+    return {
+      id: this._id,
+      senderId: this._senderId,
+      receiverId: this.receiverId,
+      status: this.status,
+      createdAt: this.createdAt,
+      expiresAt: this.expiresAt,
+    };
+  }
 }
+
+export type FriendRequestType = ReturnType<FriendRequest["toObject"]>;

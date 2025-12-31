@@ -4,7 +4,7 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "src",
   "tags": ["score:application", "type:nextjs"],
-  
+
   "targets": {
     "build": {
       "executor": "@nx/next:build",
@@ -12,13 +12,30 @@
         "outputPath": "dist/application"
       }
     },
-    "serve":{
+    "serve": {
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "application:build"
       }
-
+    },
+    "test:unit": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "{projectRoot}/vitest.config.ts"
+      }
+    },
+    "test:integration": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "{projectRoot}/vitest.config.integaration.ts"
+      },
+      "dependsOn": ["prisma-reset"]
+    },
+    "prisma-reset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx prisma migrate reset --force --schema ./schema_sqlite.prisma"
+      }
     }
   }
-
 }

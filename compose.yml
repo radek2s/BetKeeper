@@ -1,0 +1,11 @@
+name: bet-keeper
+services:
+  database:
+    image: postgres:18
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: betkeeper
+    volumes:
+      - ${PROJECT_DIR}/.dev/database/data:/var/lib/postgresql/18/docker
+      - ${PROJECT_DIR}/.dev/database/init:/docker-entrypoint-initdb.d

@@ -1,5 +1,4 @@
-import type { DomainEvent } from "../user/events/DomainEvent";
-import type { UUID } from ".";
+import type { DomainEvent, UUID } from ".";
 
 /**
  * Abstract Entity Base Class
@@ -44,6 +43,8 @@ export abstract class Entity {
   abstract equals(other: Entity): boolean;
 
   abstract toString(): string;
+
+  abstract toObject(): object;
 }
 
 /**

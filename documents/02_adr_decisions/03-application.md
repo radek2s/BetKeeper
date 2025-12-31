@@ -35,3 +35,4 @@ This project will be realized with **Next.js** because this will be enough to ac
 
 [Back to top](./readme.md)  
 [Previous](./02-authentication.md)  
+[Next](./04-cdn-service.md)

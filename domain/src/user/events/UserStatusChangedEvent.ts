@@ -1,6 +1,5 @@
-import { UUID } from "@domain/shared";
-import { UserStatus } from "../types/RequestStatus";
-import { DomainEvent } from "./DomainEvent";
+import { DomainEvent, type UUID } from "@domain/shared";
+import type { UserStatus } from "../types/RequestStatus";
 
 /**
  * User Status Changed Domain Event
