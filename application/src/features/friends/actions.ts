@@ -1,4 +1,5 @@
 "use server";
+import { UserNotExistsError } from "@app/lib/user/UserErrors";
 import { validateToken } from "@app/server/auth/authentication";
 import { NextFriendListRepository } from "@app/server/repositories/NextFriendListRepository";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
@@ -7,7 +8,6 @@ import { NextUserService } from "@app/server/services/NextUserService";
 import type { UUID } from "@domain/shared";
 import { Email } from "@domain/user";
 import { revalidatePath } from "next/cache";
-import { createUserRequest } from "../users/actions";
 import {
   type FriendInvitation,
   friendRequestToInvitationDto,
@@ -21,10 +21,11 @@ export async function sendFriendRequest(
   const requestingUser = await validateToken(token);
   const friendEmail = new Email(email);
   const userExists = await NextUserService.userExists(friendEmail);
+
   if (userExists) {
     await NextUserService.sendFriendRequest(requestingUser.id, friendEmail);
   } else {
-    await createUserRequest(email, token, false);
+    throw new UserNotExistsError(email);
   }
   revalidatePath(`/friends`);
 }

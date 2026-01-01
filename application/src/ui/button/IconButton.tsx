@@ -5,11 +5,13 @@ type IconButtonProps = {
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
   icon: IconType;
+  isLoading?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 export function IconButton({
   icon,
   variant,
   className,
+  isLoading,
   ...props
 }: IconButtonProps) {
   return (
@@ -17,8 +19,9 @@ export function IconButton({
       className={`btn-icon ${variant} ${className}`}
       type="button"
       aria-label={icon}
+      disabled={isLoading || props.disabled}
       {...props}>
-      <Icon name={icon} />
+      {isLoading ? <div className="loader-icon" /> : <Icon name={icon} />}
     </button>
   );
 }
