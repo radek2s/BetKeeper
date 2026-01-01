@@ -72,6 +72,39 @@ export async function getBet(betId: string) {
   return mapToResponse(bet, userMap);
 }
 
+export async function updatedBetRequestTerms(
+  betRequestId: string,
+  newTerms: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
+  await NextBetService.updateTerms(betRequestId, newTerms, requestingUser.id);
+  revalidatePath(`/details/${betRequestId}`);
+}
+
+export async function updatedBetRequestClaim(
+  betRequestId: string,
+  newClaims: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
+  await NextBetService.updateClaims(betRequestId, newClaims, requestingUser.id);
+  revalidatePath(`/details/${betRequestId}`);
+}
+
+export async function updatedBetRequestStake(
+  betRequestId: string,
+  newStakes: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
+  await NextBetService.updateStakes(betRequestId, newStakes, requestingUser.id);
+  revalidatePath(`/details/${betRequestId}`);
+}
+
 export async function approveBet(
   betRequestId: string,
   token: string | undefined,

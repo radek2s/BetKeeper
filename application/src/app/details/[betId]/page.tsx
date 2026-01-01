@@ -43,7 +43,10 @@ export default async function BetDetailsPage({ params }: PageProps) {
       <PageWrapper>
         <PageHeader title="Details" returnUrl="/" />
         <Panel>
-          <BetRequestDetails betRequest={bet} />
+          <BetRequestDetails
+            betRequest={bet}
+            activeUser={authorizedUserToUserType(user)}
+          />
         </Panel>
       </PageWrapper>
     );

@@ -1,20 +1,56 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 /** biome-ignore-all lint/a11y/useAltText: <explanation> */
+
+import { IconButton } from "@app/ui/button/IconButton";
 import { Icon } from "@app/ui/icon";
+import { Input } from "@app/ui/input/Input";
+import { useCorbado } from "@corbado/react";
 import type { VoteType } from "@domain/bet";
+import type { UserType } from "@domain/user/entities";
+import { useState } from "react";
+import { updatedBetRequestClaim, updatedBetRequestStake } from "../../actions";
 import {
   type BetParticipantResponse,
   isIndividualBetParticipantResponse,
 } from "../../model/betDto";
 
 interface ParticipantDetailsProps {
+  betRequestId?: string;
   participant: BetParticipantResponse;
+  currentUser?: UserType;
   hideVotes?: boolean;
 }
 function ParticipantDetails({
+  betRequestId,
   participant,
+  currentUser,
   hideVotes,
 }: ParticipantDetailsProps) {
+  const { sessionToken } = useCorbado();
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [claim, setClaim] = useState<string>(participant.claim);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const isEditable = currentUser?.id === participant.userId;
+
+  const handleClose = () => {
+    setClaim(participant.claim);
+    setEditMode(false);
+  };
+
+  const handleUpdate = async () => {
+    if (!betRequestId) return;
+    setIsLoading(true);
+    try {
+      await updatedBetRequestClaim(betRequestId, claim, sessionToken);
+      handleClose();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center w-full mx-1">
       <div className="my-2 flex flex-col items-center">
@@ -25,12 +61,45 @@ function ParticipantDetails({
       </div>
       <div className="my-2">
         <p className="text-xs text-gray">claims that:</p>
-        <p className="text-center text-sm">{participant.claim}</p>
+        {isEditable ? (
+          editMode ? (
+            <div className="flex flex-col gap-1">
+              <Input value={claim} onChange={(e) => setClaim(e.target.value)} />
+              <div className="flex justify-center gap-2">
+                <IconButton icon="close" onClick={handleClose} />
+                <IconButton
+                  icon="send"
+                  variant="primary"
+                  onClick={handleUpdate}
+                  isLoading={isLoading}
+                />
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="text-center text-sm"
+              onClick={() => setEditMode(true)}>
+              {participant.claim}
+            </button>
+          )
+        ) : (
+          <p className="text-center text-sm">{participant.claim}</p>
+        )}
       </div>
       {isIndividualBetParticipantResponse(participant) && (
-        <ParticipantStake stake={participant.stake} />
+        <ParticipantStake
+          isEditable={isEditable}
+          betRequestId={betRequestId}
+          stake={participant.stake}
+        />
       )}
-      {!hideVotes && <ParticipantVote vote={participant.vote} />}
+      {!hideVotes && (
+        <div>
+          <p className="text-xs text-gray">vote</p>
+          <ParticipantVote vote={participant.vote} />
+        </div>
+      )}
     </div>
   );
 }
@@ -50,13 +119,68 @@ function ParticipantVote({ vote }: ParticipantVoteProps) {
 }
 
 interface ParticipantStakeProps {
+  betRequestId?: string;
+  isEditable: boolean;
   stake: string;
 }
-function ParticipantStake({ stake }: ParticipantStakeProps) {
+function ParticipantStake({
+  betRequestId,
+  isEditable,
+  stake,
+}: ParticipantStakeProps) {
+  const { sessionToken } = useCorbado();
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [newStake, setNewStake] = useState<string>(stake);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setNewStake(stake);
+    setEditMode(false);
+  };
+
+  const handleUpdate = async () => {
+    if (!betRequestId) return;
+    setIsLoading(true);
+    try {
+      await updatedBetRequestStake(betRequestId, newStake, sessionToken);
+      handleClose();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="flex flex-col items-center my-2">
       <p className="text-xs text-gray">when win:</p>
-      <p className="text-sm">{stake}</p>
+      {isEditable ? (
+        editMode ? (
+          <div className="flex flex-col gap-1">
+            <Input
+              value={newStake}
+              onChange={(e) => setNewStake(e.target.value)}
+            />
+            <div className="flex justify-center gap-2">
+              <IconButton icon="close" onClick={handleClose} />
+              <IconButton
+                icon="send"
+                variant="primary"
+                onClick={handleUpdate}
+                isLoading={isLoading}
+              />
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="text-center text-sm"
+            onClick={() => setEditMode(true)}>
+            {stake}
+          </button>
+        )
+      ) : (
+        <p className="text-sm">{stake}</p>
+      )}
     </div>
   );
 }
