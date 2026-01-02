@@ -70,11 +70,12 @@ describe("Friend Actions Tests", () => {
       (validateToken as Mock).mockResolvedValue(
         new AuthorizedUser(new Email("user@mock.pl"), "User", "Mock"),
       );
-      const createFn = createUserRequest as Mock;
+
       vi.spyOn(NextUserService, "userExists").mockResolvedValue(false);
 
-      await sendFriendRequest("test@mock.pl", "token");
-      await expect(createFn).toBeCalledTimes(1);
+      await expect(async () => {
+        await sendFriendRequest("test@mock.pl", "token");
+      }).rejects.toThrow("User with test@mock.pl does not exists in system.");
     });
   });
 
