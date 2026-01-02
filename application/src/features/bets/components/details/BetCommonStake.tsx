@@ -55,7 +55,7 @@ function BetCommonStake({ betRequestId, stake }: CommonStakesProps) {
         ) : (
           <button
             type="button"
-            className="my-3"
+            className="my-3 clickable hoverable px-2 py-1 rounded-lg"
             onClick={() => setEditMode(true)}>
             {stake}
           </button>

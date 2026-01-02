@@ -78,13 +78,13 @@ function ParticipantDetails({
           ) : (
             <button
               type="button"
-              className="text-center text-sm"
+              className="text-center text-sm clickable hoverable px-2 py-1 rounded-lg"
               onClick={() => setEditMode(true)}>
               {participant.claim}
             </button>
           )
         ) : (
-          <p className="text-center text-sm">{participant.claim}</p>
+          <p className="text-center text-sm py-1">{participant.claim}</p>
         )}
       </div>
       {isIndividualBetParticipantResponse(participant) && (
@@ -173,13 +173,13 @@ function ParticipantStake({
         ) : (
           <button
             type="button"
-            className="text-center text-sm"
+            className="text-center text-sm clickable hoverable px-2 py-1 rounded-lg"
             onClick={() => setEditMode(true)}>
             {stake}
           </button>
         )
       ) : (
-        <p className="text-sm">{stake}</p>
+        <p className="text-sm py-1">{stake}</p>
       )}
     </div>
   );

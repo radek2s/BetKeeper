@@ -133,7 +133,7 @@ function BetTerms({ betRequest }: BetTermsProps) {
       ) : (
         <button
           type="button"
-          className="my-3 clickable"
+          className="my-3 clickable hoverable px-2 py-1 rounded-lg"
           onClick={() => setEditMode(true)}>
           {betRequest.terms}
         </button>

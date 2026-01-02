@@ -139,6 +139,9 @@ body {
 .clickable {
   cursor: pointer;
 }
+.hoverable:hover {
+  background-color: var(--container-hovered);
+}
 
 .avatar.clickable:hover {
   transform: scale(1.02);
@@ -398,6 +401,25 @@ body {
 .btn-icon.ghost:hover .icon {
   fill: var(--primary);
 }
+
+.btn-icon--badge-wrapper {
+  position: relative;
+}
+.btn-icon--badge {
+  background-color: var(--primary);
+  border-radius: 99px;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  line-height: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  font-weight: bold;
+  left: -6;
+  top: -6;
+}
 input[type="radio"] {
   appearance: none;
   background-color: var(--container);
@@ -646,6 +668,7 @@ input[type="radio"]:checked::before {
   .select__triger {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+  .btn-icon--badge,
   .btn.primary {
     color: var(--surface);
 

@@ -187,6 +187,27 @@ export async function updateAvatar(
   }
 }
 
+export async function updateUserName(
+  firstName: string,
+  lastName: string,
+  token: string | undefined,
+) {
+  const requestingUser = await validateToken(token);
+
+  try {
+    const user = await userRepository.findById(requestingUser.id);
+    if (!user) throw new Error("User was not found!");
+    user.updateName(firstName, lastName);
+    await userRepository.save(user);
+    logger.info(
+      `[User][${requestingUser.id}][Updated] - Updated name to ${user.name} by ${requestingUser.id}`,
+    );
+    revalidatePath(`/profile`);
+  } catch (e) {
+    logger.error(e);
+  }
+}
+
 export async function toggleUserStatus(
   userId: string,
   token: string | undefined,
