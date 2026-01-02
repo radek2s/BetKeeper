@@ -6,6 +6,9 @@ import { FriendInvite } from "./FriendInvite";
 vi.mock("@app/features/friends/actions", () => ({
   sendFriendRequest: vi.fn(),
 }));
+vi.mock("@app/features/users/actions", () => ({
+  createUserRequest: vi.fn(),
+}));
 
 describe("Friend Invite Form Tests", () => {
   afterEach(() => {
