@@ -139,6 +139,9 @@ body {
 .clickable {
   cursor: pointer;
 }
+.hoverable:hover {
+  background-color: var(--container-hovered);
+}
 
 .avatar.clickable:hover {
   transform: scale(1.02);
@@ -398,6 +401,25 @@ body {
 .btn-icon.ghost:hover .icon {
   fill: var(--primary);
 }
+
+.btn-icon--badge-wrapper {
+  position: relative;
+}
+.btn-icon--badge {
+  background-color: var(--primary);
+  border-radius: 99px;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  line-height: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  font-weight: bold;
+  left: -6;
+  top: -6;
+}
 input[type="radio"] {
   appearance: none;
   background-color: var(--container);
@@ -582,6 +604,58 @@ input[type="radio"]:checked::before {
   border: 1px solid var(--container);
 }
 
+/* HTML: <div class="loader"></div> */
+.btn--loader {
+  width: 15px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: l5 1s infinite linear alternate;
+}
+@keyframes l5 {
+  0% {
+    box-shadow:
+      20px 0 #000,
+      -20px 0 #0002;
+    background: #000;
+  }
+  33% {
+    box-shadow:
+      20px 0 #000,
+      -20px 0 #0002;
+    background: #0002;
+  }
+  66% {
+    box-shadow:
+      20px 0 #0002,
+      -20px 0 #000;
+    background: #0002;
+  }
+  100% {
+    box-shadow:
+      20px 0 #0002,
+      -20px 0 #000;
+    background: #000;
+  }
+}
+
+/* HTML: <div class="loader"></div> */
+.loader-icon {
+  width: 24px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(farthest-side, var(--primary) 94%, #0000) top / 4px 4px
+    no-repeat,
+    conic-gradient(#0000 30%, var(--primary));
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 4px), #000 0);
+  animation: l13 1s infinite linear;
+}
+@keyframes l13 {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .icon {
     fill: var(--base-text);
@@ -594,6 +668,7 @@ input[type="radio"]:checked::before {
   .select__triger {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+  .btn-icon--badge,
   .btn.primary {
     color: var(--surface);
 

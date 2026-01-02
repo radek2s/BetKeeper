@@ -22,6 +22,8 @@ export default async function Index() {
 
   const friendList = await getFriendList(user.id);
 
+  const pending = friendList.pendingReceivedRequests.length;
+
   const friends = await getUsers([...friendList.friends]);
 
   async function getUsers(userIds: string[]) {
@@ -52,9 +54,9 @@ export default async function Index() {
           </div>
         </div>
         <div className="flex gap-1">
-          <IconButton icon="notification" />
+          {/* <IconButton icon="notification" /> */}
           <Link href="/friends">
-            <IconButton icon="group" />
+            <IconButton icon="group" badge={pending} />
           </Link>
         </div>
       </header>

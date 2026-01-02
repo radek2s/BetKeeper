@@ -26,7 +26,7 @@ export default async function BetDetailsPage({ params }: PageProps) {
   if (isBetResponse(bet)) {
     return (
       <PageWrapper>
-        <PageHeader title="Details" returnUrl="/" />
+        <PageHeader title={bet.title} returnUrl="/" />
         <Panel>
           {bet.status === "pending" && <PendingBetDetails bet={bet} />}
           {(bet.status === "resolved" || bet.status === "completed") && (
@@ -41,9 +41,12 @@ export default async function BetDetailsPage({ params }: PageProps) {
   } else {
     return (
       <PageWrapper>
-        <PageHeader title="Details" returnUrl="/" />
+        <PageHeader title={bet.title} returnUrl="/" />
         <Panel>
-          <BetRequestDetails betRequest={bet} />
+          <BetRequestDetails
+            betRequest={bet}
+            activeUser={authorizedUserToUserType(user)}
+          />
         </Panel>
       </PageWrapper>
     );

@@ -4,6 +4,7 @@ import { toRelativeTime } from "@app/lib/utils/timeUtils";
 import { IconButton } from "@app/ui/button/IconButton";
 import { Panel } from "@app/ui/layout/Panel";
 import { useCorbado } from "@corbado/react";
+import { useState } from "react";
 import { cancelRequest } from "../actions";
 import type { FriendInvitation } from "../model/friendsDto";
 
@@ -12,12 +13,16 @@ interface Props {
 }
 export function FriendRequestsSent({ invitations }: Props) {
   const { sessionToken } = useCorbado();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleCancel = async (requestId: string) => {
+    setIsLoading(true);
     try {
       cancelRequest(requestId, sessionToken);
     } catch (e) {
       console.error(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -64,6 +69,7 @@ export function FriendRequestsSent({ invitations }: Props) {
                   icon="close"
                   variant="ghost"
                   onClick={() => handleCancel(invitation.id)}
+                  isLoading={isLoading}
                 />
               )}
             </div>
