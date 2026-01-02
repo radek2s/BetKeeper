@@ -8,10 +8,17 @@ import type { TermsResult } from "./types";
 interface Props {
   friend?: UserType;
   terms?: TermsResult;
+  isLoading?: boolean;
   onBack: () => void;
   onNext: (creator: BetParticipantRequest) => void;
 }
-export function WizzardFriend({ friend, terms, onBack, onNext }: Props) {
+export function WizzardFriend({
+  friend,
+  terms,
+  isLoading,
+  onBack,
+  onNext,
+}: Props) {
   const [claim, setClaim] = useState<string>("");
   const [stake, setStake] = useState<string>("");
 
@@ -73,7 +80,8 @@ export function WizzardFriend({ friend, terms, onBack, onNext }: Props) {
           disabled={!isValid}
           className="w-full"
           variant="primary"
-          onClick={handleNext}>
+          onClick={handleNext}
+          isLoading={isLoading}>
           Create
         </Button>
       </div>

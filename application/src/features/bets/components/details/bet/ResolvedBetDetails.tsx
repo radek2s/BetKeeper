@@ -11,7 +11,7 @@ import { Button } from "@app/ui/button/Button";
 import { ConfirmationDialog } from "@app/ui/confirm-dialog";
 import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
-import BetCommonStake from "../BetCommonStake";
+import { useState } from "react";
 import BetCreationDate from "../BetCreationDate";
 import ParticipantsAvatars from "../ParticipantAvatars";
 import { BetStatusComponent } from "./BetStatusComponent";
@@ -123,23 +123,36 @@ interface CompleteBtnProps {
 }
 function CompleteBtn({ betId }: CompleteBtnProps) {
   const { sessionToken } = useCorbado();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleComplete = async () => {
+  const handleComplete = async (result: boolean) => {
+    if (!result) return;
+    setIsLoading(true);
     try {
       completeBet(betId, sessionToken);
     } catch (e) {
       console.error(e);
     }
+    setIsLoading(false);
   };
 
   return (
-    <ConfirmationDialog
-      content={""}
-      title="Complete Bet"
-      onClose={handleComplete}
-      variant="primary"
-      accept="Complete">
-      <Button variant="primary">Complete</Button>
-    </ConfirmationDialog>
+    <div className="flex flex-col items-center">
+      <h2 className="font-bold">When winner recieved stake</h2>
+      <p className="text-xs text-gray">
+        Mark bet as completed when winner confirms that recieved his stake
+      </p>
+      <ConfirmationDialog
+        content={""}
+        title="Complete Bet"
+        onClose={handleComplete}
+        variant="primary"
+        accept="Complete"
+        isLoading={isLoading}>
+        <Button variant="primary" className="my-2" isLoading={isLoading}>
+          Complete
+        </Button>
+      </ConfirmationDialog>
+    </div>
   );
 }

@@ -10,6 +10,7 @@ interface Props extends PropsWithChildren {
   cancel?: ReactNode;
   accept?: ReactNode;
   variant?: "error" | "warn" | "primary";
+  isLoading?: boolean;
   onClose: (accepted: boolean) => void;
 }
 export function ConfirmationDialog({
@@ -19,6 +20,7 @@ export function ConfirmationDialog({
   variant,
   cancel,
   onClose,
+  isLoading,
   children,
 }: Props) {
   return (
@@ -42,7 +44,8 @@ export function ConfirmationDialog({
               <Dialog.Close asChild>
                 <Button
                   variant={variant ?? "primary"}
-                  onClick={() => onClose(true)}>
+                  onClick={() => onClose(true)}
+                  isLoading={isLoading}>
                   {accept ?? "Accept"}
                 </Button>
               </Dialog.Close>

@@ -29,6 +29,7 @@ export function BetRequestWizzard({
   const [terms, setTerms] = useState<TermsResult>();
   const [friend, setFriend] = useState<UserType>();
   const [creatorRequest, setCreatorRequest] = useState<BetParticipantRequest>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleCancel = () => {
     onCancel();
@@ -49,10 +50,11 @@ export function BetRequestWizzard({
     setStep((s) => s + 1);
   };
 
-  const handleSend = (friendRequest: BetParticipantRequest) => {
+  const handleSend = async (friendRequest: BetParticipantRequest) => {
     if (!terms) return;
     if (!friend) return;
     if (!creatorRequest) return;
+    setIsLoading(true);
 
     const request: BetRequestCreate = {
       title: terms.title,
@@ -63,7 +65,8 @@ export function BetRequestWizzard({
       participants: [creatorRequest, friendRequest],
     };
 
-    onSend(request);
+    await onSend(request);
+    setIsLoading(false);
   };
 
   const getComponent = (step: number) => {
@@ -98,6 +101,7 @@ export function BetRequestWizzard({
             terms={terms}
             onBack={handleBack}
             onNext={handleSend}
+            isLoading={isLoading}
           />
         );
     }

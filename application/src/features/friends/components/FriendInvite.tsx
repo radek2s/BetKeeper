@@ -31,16 +31,16 @@ export function FriendInvite() {
     setEmail(email);
 
     try {
-      await sendFriendRequest(email, sessionToken);
+      const responseType = await sendFriendRequest(email, sessionToken);
+      if (responseType === "create") {
+        setLoadingInvite(false);
+        setConfirmDialog(true);
+        return;
+      }
       setLoadingInvite(false);
       setOpen(false);
     } catch (e) {
-      setLoadingInvite(false);
       if (e instanceof Error) {
-        if (e.name === "UserNotExists") {
-          setConfirmDialog(true);
-          return;
-        }
         setError(e.message);
       }
       console.error("Failed to send friend request", e);

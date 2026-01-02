@@ -216,6 +216,7 @@ body {
   background-color: #00000085;
   position: fixed;
   inset: 0;
+  z-index: 50;
   backdrop-filter: blur(10px);
 }
 .dialog--content {
@@ -233,7 +234,7 @@ body {
     hsla(60, 0%, 35%, 0.4);
   background-clip: padding-box;
   border-radius: 16px;
-  z-index: 10;
+  z-index: 100;
 }
 
 .dialog--title {
@@ -588,7 +589,7 @@ input[type="radio"]:checked::before {
 }
 .avatar-laurel .laurel {
   position: relative;
-  z-index: 10;
+  z-index: 1;
 }
 .avatar-laurel .avatar {
   position: absolute;

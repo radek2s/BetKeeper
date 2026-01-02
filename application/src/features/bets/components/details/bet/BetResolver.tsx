@@ -8,14 +8,17 @@ import { useState } from "react";
 
 interface Props {
   participants: BetParticipantResponse[];
-  onSelect: (winnerId: string) => void;
+  onSelect: (winnerId: string) => Promise<void>;
 }
 export function BetResolver({ participants, onSelect }: Props) {
   const [winnerId, setWinnerId] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleSelect = () => {
+  const handleSelect = async () => {
+    setIsLoading(true);
     if (!winnerId) return;
-    onSelect(winnerId);
+    await onSelect(winnerId);
+    setIsLoading(false);
   };
 
   return (
@@ -30,7 +33,11 @@ export function BetResolver({ participants, onSelect }: Props) {
           />
         ))}
       </div>
-      <Button variant="primary" disabled={!winnerId} onClick={handleSelect}>
+      <Button
+        variant="primary"
+        disabled={!winnerId}
+        onClick={handleSelect}
+        isLoading={isLoading}>
         Accept
       </Button>
     </div>

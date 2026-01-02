@@ -73,9 +73,8 @@ describe("Friend Actions Tests", () => {
 
       vi.spyOn(NextUserService, "userExists").mockResolvedValue(false);
 
-      await expect(async () => {
-        await sendFriendRequest("test@mock.pl", "token");
-      }).rejects.toThrow("User with test@mock.pl does not exists in system.");
+      const response = await sendFriendRequest("test@mock.pl", "token");
+      expect(response).toBe("create");
     });
   });
 

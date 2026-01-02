@@ -1,6 +1,8 @@
 import type NextUserRepository from "@app/server/repositories/NextUserRepository";
 import type { FriendRequest, UserRequest } from "@domain/user";
 
+export type FriendInviteResponseType = "invite" | "create";
+
 export type FriendInvitation = {
   id: string;
   createdAt: Date;

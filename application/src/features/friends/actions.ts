@@ -10,6 +10,7 @@ import { Email } from "@domain/user";
 import { revalidatePath } from "next/cache";
 import {
   type FriendInvitation,
+  type FriendInviteResponseType,
   friendRequestToInvitationDto,
   userRequestToInvitationDto,
 } from "./model/friendsDto";
@@ -17,17 +18,19 @@ import {
 export async function sendFriendRequest(
   email: string,
   token: string | undefined,
-) {
+): Promise<FriendInviteResponseType> {
   const requestingUser = await validateToken(token);
   const friendEmail = new Email(email);
   const userExists = await NextUserService.userExists(friendEmail);
 
   if (userExists) {
     await NextUserService.sendFriendRequest(requestingUser.id, friendEmail);
+    revalidatePath(`/friends`);
+    return "invite";
   } else {
-    throw new UserNotExistsError(email);
+    return "create";
+    // throw new UserNotExistsError(email);
   }
-  revalidatePath(`/friends`);
 }
 
 export async function getSentInvitations(

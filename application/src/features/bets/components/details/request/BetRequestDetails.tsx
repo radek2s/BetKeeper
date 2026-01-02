@@ -14,6 +14,7 @@ import type {
 } from "@app/features/bets/model/betDto";
 import { Button } from "@app/ui/button/Button";
 import { IconButton } from "@app/ui/button/IconButton";
+import { Icon } from "@app/ui/icon";
 import { Input } from "@app/ui/input/Input";
 import { useCorbado } from "@corbado/react";
 import type { VoteType } from "@domain/bet";
@@ -254,22 +255,38 @@ interface StartBetButtonProps {
 }
 function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
   const { sessionToken } = useCorbado();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const approved = participants.every(({ vote }) => vote === "approved");
 
   const handleStart = async () => {
+    setIsLoading(true);
     try {
       await startBet(betRequestId, sessionToken);
     } catch (e) {
       console.error(e);
     }
+    setIsLoading(false);
   };
 
   if (approved)
     return (
-      <Button className="w-full" variant="primary" onClick={handleStart}>
-        Start
-      </Button>
+      <div className="flex flex-col items-center">
+        <hr className="vertical-line" />
+        <h2 className="font-bold">All participants approved!</h2>
+        <p className="text-xs text-gray">
+          Make a deal and convert request to immutable bet.
+        </p>
+
+        <Button
+          className="w-full font-bold my-2"
+          variant="primary"
+          onClick={handleStart}
+          isLoading={isLoading}>
+          <Icon name="handshake" />
+          Make deal
+        </Button>
+      </div>
     );
   return null;
 }

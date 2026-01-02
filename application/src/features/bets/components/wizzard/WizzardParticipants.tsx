@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: <explanation> */
 import { Button } from "@app/ui/button/Button";
+import { IconButton } from "@app/ui/button/IconButton";
 import FormField from "@app/ui/form-field";
 import type { UserType } from "@domain/user/entities";
 import { useMemo, useState } from "react";
@@ -48,26 +49,47 @@ export function WizzardParticipants({
     onNext(_selectedFriend);
   };
 
+  const showSearch = filteredUsers.length > 5;
+
   return (
     <div className="mt-4">
       <h2 className="text-center">Select participants</h2>
+      {_selectedFriend ? (
+        <div className="my-2">
+          <span className="text-xs">Selected:</span>
+          <UserItem user={_selectedFriend}>
+            <IconButton
+              icon="close"
+              variant="ghost"
+              onClick={() => setSelectedFriend(null)}
+            />
+          </UserItem>
+        </div>
+      ) : (
+        <div className="text-center text-gray panel my-2">
+          Nobody selected...
+        </div>
+      )}
+      <hr />
       <div className="flex flex-col gap-2 mt-2">
-        <FormField
-          label="Who you want to invite to bet?"
-          name="title"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search friend..."
-        />
-        {_selectedFriend && (
-          <>
-            <span className="text-xs">Selected:</span>
-            <UserItem user={_selectedFriend}>
-              <input type="radio" value={_selectedFriend.id} checked={true} />
-            </UserItem>
-            <hr />
-          </>
+        {showSearch && (
+          <FormField
+            label="Who you want to invite to bet?"
+            name="title"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search friend..."
+          />
         )}
+
+        <h4 className="font-bold">Your friends:</h4>
+
+        {filteredUsers.length === 0 && (
+          <div className="text-gray text-sm">
+            You do not have spare friends to invite.
+          </div>
+        )}
+
         {filteredUsers.map((friend) => (
           <button
             key={friend.id}

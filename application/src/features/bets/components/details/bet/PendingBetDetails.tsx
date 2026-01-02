@@ -29,7 +29,6 @@ export function PendingBetDetails({ bet }: Props) {
       </header>
 
       <div className="flex flex-col items-center max-w-[600px] md:min-w-[500px] text-center">
-        <span className="text-2xl font-bold my-2">{bet.title}</span>
         <h2 className="font-bold">Terms</h2>
         <p className="text-xs text-gray">bet defined</p>
         <p className="my-3">{bet.terms}</p>
@@ -43,7 +42,14 @@ export function PendingBetDetails({ bet }: Props) {
           <hr className="vertical-line" />
           <ParticipantDetails participant={bet.participants[1]} hideVotes />
         </div>
-        <ResolveBtn betId={bet.id} participants={bet.participants} />
+        <div className="flex flex-col items-center">
+          <h2 className="font-bold">When terms can be resolved</h2>
+          <p className="text-xs text-gray">
+            Mark as resolved to determine winner of this bet
+          </p>
+
+          <ResolveBtn betId={bet.id} participants={bet.participants} />
+        </div>
       </div>
     </div>
   );
@@ -69,7 +75,9 @@ function ResolveBtn({ betId, participants }: ResolveProps) {
   return (
     <Dialog.Root open={isOpen} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <Button variant="primary">Resolve</Button>
+        <Button variant="primary" className="my-2">
+          Resolve
+        </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="dialog--overlay" />

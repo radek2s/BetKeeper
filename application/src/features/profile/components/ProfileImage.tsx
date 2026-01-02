@@ -2,7 +2,6 @@
 import { updateAvatar } from "@app/features/users/actions";
 import { Button } from "@app/ui/button/Button";
 import { useCorbado } from "@corbado/react";
-import { ACTIVE_USER_ID } from "application/src/constants";
 
 import { Dialog } from "radix-ui";
 import { useState } from "react";
@@ -15,15 +14,18 @@ interface Props {
 export function ProfileImage({ activeImage }: Props) {
   const { sessionToken } = useCorbado();
   const [selectedImage, setSelectedImage] = useState<string>(activeImage);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const avatarIds = [...Array(AVATAR_MAX_ID).keys()].map(
     (id) => `/avatars/avatar_0${id}.png`,
   );
   const handleSave = async () => {
+    setIsLoading(true);
     try {
       await updateAvatar(selectedImage, sessionToken);
     } catch (e) {
       console.error(e);
     }
+    setIsLoading(false);
   };
   return (
     <div>
@@ -58,7 +60,10 @@ export function ProfileImage({ activeImage }: Props) {
                 <Button>Cancel</Button>
               </Dialog.Close>
               <Dialog.Close asChild>
-                <Button variant="primary" onClick={handleSave}>
+                <Button
+                  variant="primary"
+                  onClick={handleSave}
+                  isLoading={isLoading}>
                   Save
                 </Button>
               </Dialog.Close>
