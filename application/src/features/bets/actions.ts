@@ -152,3 +152,22 @@ export async function completeBet(betId: string, token: string | undefined) {
   await NextBetService.complete(betId, user.id);
   revalidatePath(`/details/${betId}`);
 }
+
+export async function deleteBetRequest(
+  betRequestId: string,
+  token: string | undefined,
+) {
+  const user = await validateToken(token);
+
+  await NextBetService.deleteBetRequest(
+    betRequestId,
+    user.id,
+    user.role === "ADMINISTRATOR",
+  );
+}
+
+export async function deleteBet(betId: string, token: string | undefined) {
+  const user = await validateToken(token);
+
+  await NextBetService.deleteBet(betId, user.id, user.role === "ADMINISTRATOR");
+}

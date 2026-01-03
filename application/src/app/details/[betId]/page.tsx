@@ -1,6 +1,10 @@
 "use server";
 
 import { getBet } from "@app/features/bets/actions";
+import {
+  BetDeleteBtn,
+  BetRequestDeleteBtn,
+} from "@app/features/bets/components/BetDeleteBtn";
 
 import { PendingBetDetails } from "@app/features/bets/components/details/bet/PendingBetDetails";
 import { ResolvedBetDetails } from "@app/features/bets/components/details/bet/ResolvedBetDetails";
@@ -26,7 +30,13 @@ export default async function BetDetailsPage({ params }: PageProps) {
   if (isBetResponse(bet)) {
     return (
       <PageWrapper>
-        <PageHeader title={bet.title} returnUrl="/" />
+        <PageHeader title={bet.title} returnUrl="/">
+          <BetDeleteBtn
+            betId={bet.id}
+            activeUser={authorizedUserToUserType(user)}
+            creatorId={bet.creatorId}
+          />
+        </PageHeader>
         <Panel>
           {bet.status === "pending" && <PendingBetDetails bet={bet} />}
           {(bet.status === "resolved" || bet.status === "completed") && (
@@ -41,7 +51,13 @@ export default async function BetDetailsPage({ params }: PageProps) {
   } else {
     return (
       <PageWrapper>
-        <PageHeader title={bet.title} returnUrl="/" />
+        <PageHeader title={bet.title} returnUrl="/">
+          <BetRequestDeleteBtn
+            betId={bet.id}
+            activeUser={authorizedUserToUserType(user)}
+            creatorId={bet.creatorId}
+          />
+        </PageHeader>
         <Panel>
           <BetRequestDetails
             betRequest={bet}
