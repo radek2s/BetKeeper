@@ -9,6 +9,7 @@ import { PendingBetDetails } from "@app/features/bets/components/details/bet/Pen
 import { ResolvedBetDetails } from "@app/features/bets/components/details/bet/ResolvedBetDetails";
 import { BetRequestDetails } from "@app/features/bets/components/details/request/BetRequestDetails";
 import { isBetResponse } from "@app/features/bets/model/betDto";
+import { useUserContext } from "@app/lib/user/UserProvider";
 import PageHeader from "@app/ui/layout/Header";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
 import { Panel } from "@app/ui/layout/Panel";
@@ -16,9 +17,9 @@ import type { UserType } from "@domain/user/entities";
 
 interface Props {
   betId: string;
-  activeUser: UserType;
 }
-function BetDetails({ betId, activeUser }: Props) {
+function BetDetails({ betId }: Props) {
+  const activeUser = useUserContext();
   return (
     <SingleBetLoader betId={betId}>
       {(bet) => {
