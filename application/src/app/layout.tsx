@@ -1,5 +1,6 @@
 import Head from "next/head";
 import "./global.css";
+import { Providers } from "@app/Providers";
 import AuthProvider from "./AuthProvider";
 
 export const metadata = {
@@ -24,7 +25,9 @@ export default function RootLayout({
 
       <html lang="en">
         <body>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Providers>{children}</Providers>
+          </AuthProvider>
         </body>
       </html>
     </>

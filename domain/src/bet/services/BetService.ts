@@ -367,6 +367,15 @@ export class BetService extends DomainService {
 
     await this.betRepository.delete(betRequestId);
 
+    const participants = betRequest.participants.map(({ userId }) => userId);
+    const promises = participants.map((userId) =>
+      this.betParticipantRepository.deleteByUserIdAndBetId(
+        userId,
+        betRequestId,
+      ),
+    );
+    await Promise.all(promises);
+
     await this.dispatchDomainEvents(betRequest);
   }
 

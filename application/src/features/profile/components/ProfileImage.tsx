@@ -6,7 +6,7 @@ import { useCorbado } from "@corbado/react";
 import { Dialog } from "radix-ui";
 import { useState } from "react";
 
-const AVATAR_MAX_ID = 7;
+const AVATAR_MAX_ID = 8;
 
 interface Props {
   activeImage: string;

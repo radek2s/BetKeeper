@@ -2,6 +2,7 @@
 /** biome-ignore-all lint/a11y/useAltText: <explanation> */
 "use client";
 import { completeBet } from "@app/features/bets/actions";
+import { useBetInvalidate } from "@app/features/bets/api/betQuery";
 import {
   type BetParticipantResponse,
   type BetResponse,
@@ -55,7 +56,7 @@ export function ResolvedBetDetails({ bet, activeUser }: Props) {
         <ParticipantsAvatars participants={bet.participants}>
           <BetStatusComponent status={bet.status} />
         </ParticipantsAvatars>
-        <BetCreationDate date={bet.createdAt} />
+        <BetCreationDate date={new Date(bet.createdAt)} />
       </header>
 
       <div className="flex flex-col items-center max-w-[600px] md:min-w-[500px] text-center">
@@ -94,7 +95,7 @@ export function ResolvedBetDetails({ bet, activeUser }: Props) {
 interface WinnerComponentProps {
   winner: BetParticipantResponse;
   activeUser: UserType;
-  resolvedAt?: Date;
+  resolvedAt?: string;
 }
 function WinnerComponent({
   winner,
@@ -105,6 +106,7 @@ function WinnerComponent({
   const winnerName = isActiveUserWinner
     ? "You won"
     : `${winner.firstName} ${winner.lastName} won`;
+  const resolved = resolvedAt ? new Date(resolvedAt) : undefined;
   return (
     <div className="flex flex-col items-center">
       <div className="avatar-laurel">
@@ -113,7 +115,7 @@ function WinnerComponent({
       </div>
       <span className="font-bold text-primary-500">{winnerName}</span>
       <span>{winner.claim}</span>
-      <span className="text-xs text-gray">{resolvedAt?.toLocaleString()}</span>
+      <span className="text-xs text-gray">{resolved?.toLocaleString()}</span>
     </div>
   );
 }
@@ -124,12 +126,14 @@ interface CompleteBtnProps {
 function CompleteBtn({ betId }: CompleteBtnProps) {
   const { sessionToken } = useCorbado();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { invalidate } = useBetInvalidate(betId);
 
   const handleComplete = async (result: boolean) => {
     if (!result) return;
     setIsLoading(true);
     try {
-      completeBet(betId, sessionToken);
+      await completeBet(betId, sessionToken);
+      invalidate();
     } catch (e) {
       console.error(e);
     }

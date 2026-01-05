@@ -7,10 +7,7 @@ import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
 import { useState } from "react";
 import { approveFriendRequest, rejectFriendRequest } from "../actions";
-
-type FriendRequestUser = UserType & {
-  requestId: string;
-};
+import type { FriendRequestUser } from "../model/friendsDto";
 
 interface Props {
   users: FriendRequestUser[];

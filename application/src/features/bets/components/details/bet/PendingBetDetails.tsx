@@ -1,5 +1,6 @@
 "use client";
 import { resolveBet } from "@app/features/bets/actions";
+import { useBetInvalidate } from "@app/features/bets/api/betQuery";
 import type {
   BetParticipantResponse,
   BetResponse,
@@ -25,7 +26,7 @@ export function PendingBetDetails({ bet }: Props) {
         <ParticipantsAvatars participants={bet.participants}>
           <BetStatusComponent status={bet.status} />
         </ParticipantsAvatars>
-        <BetCreationDate date={bet.createdAt} />
+        <BetCreationDate date={new Date(bet.createdAt)} />
       </header>
 
       <div className="flex flex-col items-center max-w-[600px] md:min-w-[500px] text-center">
@@ -62,10 +63,12 @@ interface ResolveProps {
 function ResolveBtn({ betId, participants }: ResolveProps) {
   const { sessionToken } = useCorbado();
   const [isOpen, setOpen] = useState<boolean>(false);
+  const { invalidate } = useBetInvalidate(betId);
 
   const handleSelect = async (winnerId: string) => {
     try {
-      resolveBet(betId, winnerId, sessionToken);
+      await resolveBet(betId, winnerId, sessionToken);
+      invalidate();
       setOpen(false);
     } catch (e) {
       console.error(e);

@@ -37,8 +37,8 @@ type BaseBetRequestResponse = {
   creatorId: string;
   title: string;
   terms: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CommonBetRequestResponse = BaseBetRequestResponse & {
@@ -71,11 +71,11 @@ export type BetRequestResponse =
 type BaseBetResponse = BaseBetRequestResponse & {
   status: BetStatus;
   resolvedBy?: string;
-  resolvedAt?: Date;
+  resolvedAt?: string;
   winnerId?: string;
-  completedAt?: Date;
+  completedAt?: string;
   completedBy?: string;
-  dueDate?: Date;
+  dueDate?: string;
 };
 
 export type CommonBetResponse = BaseBetResponse & {
@@ -143,8 +143,8 @@ function mapToCommonBetRequestResponse(
     creatorId: betRequest.creatorId,
     title: betRequest.title,
     terms: betRequest.terms,
-    createdAt: betRequest.createdAt,
-    updatedAt: betRequest.updatedAt,
+    createdAt: betRequest.createdAt.toISOString(),
+    updatedAt: betRequest.updatedAt.toISOString(),
     stakeType: "COMMON",
     stake: betRequest.stake,
     participants: betRequest.participants.map((p) =>
@@ -162,8 +162,8 @@ function mapToIndividualBetRequestResponse(
     creatorId: betRequest.creatorId,
     title: betRequest.title,
     terms: betRequest.terms,
-    createdAt: betRequest.createdAt,
-    updatedAt: betRequest.updatedAt,
+    createdAt: betRequest.createdAt.toISOString(),
+    updatedAt: betRequest.updatedAt.toISOString(),
     stakeType: "INDIVIDUAL",
     participants: betRequest.participants.map((p) =>
       mapIndividualParticipant(p, users.get(p.userId)),
@@ -181,18 +181,18 @@ function mapToCommonBetResponse(
     status: bet.status,
     title: bet.title,
     terms: bet.terms,
-    createdAt: bet.createdAt,
-    updatedAt: bet.updatedAt,
+    createdAt: bet.createdAt.toISOString(),
+    updatedAt: bet.updatedAt.toISOString(),
     stakeType: "COMMON",
     stake: bet.stake,
     participants: bet.participants.map((p) =>
       mapCommonParticipant(p, users.get(p.userId)),
     ),
-    completedAt: bet.completedAt,
+    completedAt: bet.completedAt?.toISOString(),
     completedBy: bet.completedBy,
-    resolvedAt: bet.resolvedAt,
+    resolvedAt: bet.resolvedAt?.toISOString(),
     resolvedBy: bet.resolvedBy,
-    dueDate: bet.dueDate,
+    dueDate: bet.dueDate?.toISOString(),
     winnerId: bet.winnerId,
   };
 }
@@ -207,17 +207,17 @@ function mapToIndividualBetResponse(
     status: bet.status,
     title: bet.title,
     terms: bet.terms,
-    createdAt: bet.createdAt,
-    updatedAt: bet.updatedAt,
+    createdAt: bet.createdAt.toISOString(),
+    updatedAt: bet.updatedAt.toISOString(),
     stakeType: "INDIVIDUAL",
     participants: bet.participants.map((p) =>
       mapIndividualParticipant(p, users.get(p.userId)),
     ),
-    completedAt: bet.completedAt,
+    completedAt: bet.completedAt?.toISOString(),
     completedBy: bet.completedBy,
-    resolvedAt: bet.resolvedAt,
+    resolvedAt: bet.resolvedAt?.toISOString(),
     resolvedBy: bet.resolvedBy,
-    dueDate: bet.dueDate,
+    dueDate: bet.dueDate?.toISOString(),
     winnerId: bet.winnerId,
   };
 }

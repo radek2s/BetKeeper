@@ -27,7 +27,7 @@ export function FriendRequestsSent({ invitations }: Props) {
   };
 
   const relativeTime = (invitation: FriendInvitation) => {
-    const [value, unit] = toRelativeTime(invitation.createdAt);
+    const [value, unit] = toRelativeTime(new Date(invitation.createdAt));
     if (unit === "seconds") return "now";
     return `${value} ${unit} ago`;
   };

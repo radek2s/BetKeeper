@@ -1,12 +1,10 @@
-"use server";
 import { Button } from "@app/ui/button/Button";
-import Image from "next/image";
 import Link from "next/link";
 
 export async function MissingFriends() {
   return (
     <div className="flex flex-col items-center text-center my-4">
-      <Image
+      <img
         width={300}
         height={100}
         src={"/quiet-street.svg"}
