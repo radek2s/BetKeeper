@@ -3,7 +3,6 @@ import type { UserType } from "@domain/user/entities";
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import { FriendList } from "./FriendList";
-import { FriendRequestReceived } from "./FriendRequestReceived";
 
 vi.mock("@app/features/friends/actions", () => ({
   approveFriendRequest: vi.fn(),
@@ -12,7 +11,7 @@ vi.mock("@app/features/friends/actions", () => ({
 
 describe("Friend List Test", () => {
   it("Should render info when empty", () => {
-    render(<FriendList users={[]} friendIds={[]} />);
+    render(<FriendList friends={[]} />);
     expect(
       screen.getByText(
         "You do not have any friend yet. Try to invite somebody!",
@@ -32,7 +31,7 @@ describe("Friend List Test", () => {
         role: undefined,
       },
     ];
-    render(<FriendList users={users} friendIds={["usr-1"]} />);
+    render(<FriendList friends={users} />);
     expect(screen.getByText("User Friend")).toBeDefined();
     expect(screen.getByText("user@mail.com")).toBeDefined();
   });

@@ -28,7 +28,7 @@ export function BetCard({ bet }: Props) {
         </header>
         <div className="text-sm">{bet.terms}</div>
         <footer className="text-xs text-right text-gray">
-          Created {toRelativeTime(bet.createdAt).join(" ")} ago
+          Created {toRelativeTime(new Date(bet.createdAt)).join(" ")} ago
         </footer>
       </Link>
     </Panel>

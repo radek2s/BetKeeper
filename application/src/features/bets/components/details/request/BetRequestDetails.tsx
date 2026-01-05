@@ -8,6 +8,7 @@ import {
   startBet,
   updatedBetRequestTerms,
 } from "@app/features/bets/actions";
+import { useBetInvalidate } from "@app/features/bets/api/betQuery";
 import type {
   BetParticipantResponse,
   BetRequestResponse,
@@ -40,7 +41,7 @@ export function BetRequestDetails({ betRequest, activeUser }: Props) {
         <ParticipantsAvatars participants={betRequest.participants}>
           <RequestStatus participants={betRequest.participants} />
         </ParticipantsAvatars>
-        <BetCreationDate date={betRequest.createdAt} />
+        <BetCreationDate date={new Date(betRequest.createdAt)} />
       </header>
 
       <div className="flex flex-col items-center max-w-[600px] text-center">
@@ -95,6 +96,7 @@ function BetTerms({ betRequest }: BetTermsProps) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [terms, setTerms] = useState<string>(betRequest.terms);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { invalidate } = useBetInvalidate(betRequest.id);
 
   const handleClose = () => {
     setTerms(betRequest.terms);
@@ -105,6 +107,7 @@ function BetTerms({ betRequest }: BetTermsProps) {
     setIsLoading(true);
     try {
       await updatedBetRequestTerms(betRequest.id, terms, sessionToken);
+      invalidate();
       handleClose();
     } catch (e) {
       console.error(e);
@@ -175,11 +178,13 @@ interface BetIdProps {
 function VoteActions({ activeUserVote, betRequestId }: BetIdProps) {
   const { sessionToken } = useCorbado();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { invalidate } = useBetInvalidate(betRequestId);
 
   const handleApprove = async () => {
     setIsLoading(true);
     try {
       await approveBet(betRequestId, sessionToken);
+      invalidate();
     } catch (e) {
       console.error(e);
     }
@@ -190,6 +195,7 @@ function VoteActions({ activeUserVote, betRequestId }: BetIdProps) {
     setIsLoading(true);
     try {
       await rejectBet(betRequestId, sessionToken);
+      invalidate();
     } catch (e) {
       console.error(e);
     }
@@ -256,6 +262,7 @@ interface StartBetButtonProps {
 function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
   const { sessionToken } = useCorbado();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { invalidate } = useBetInvalidate(betRequestId);
 
   const approved = participants.every(({ vote }) => vote === "approved");
 
@@ -263,6 +270,7 @@ function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
     setIsLoading(true);
     try {
       await startBet(betRequestId, sessionToken);
+      invalidate();
     } catch (e) {
       console.error(e);
     }

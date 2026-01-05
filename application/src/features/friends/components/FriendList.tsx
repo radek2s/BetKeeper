@@ -9,12 +9,10 @@ import type { UserType } from "@domain/user/entities";
 import { removeFriend } from "../actions";
 
 interface Props {
-  friendIds: string[];
-  users: UserType[];
+  friends: UserType[];
 }
-export function FriendList({ users, friendIds }: Props) {
+export function FriendList({ friends }: Props) {
   const { sessionToken } = useCorbado();
-  const friends = users.filter(({ id }) => friendIds.includes(id));
 
   const handleRemove = async (accepted: boolean, friendId: string) => {
     if (!accepted) return;
