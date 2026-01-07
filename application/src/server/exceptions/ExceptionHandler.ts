@@ -1,0 +1,35 @@
+import logger from "application/logger";
+import { AuthenticationError } from "./AuthenticationError";
+import type { ExceptionResponseBody } from "./exception.interface";
+
+export type ExceptionHandlerI = (
+  e: Error,
+) => { body: ExceptionResponseBody; status: number } | null;
+
+export function ExceptionHandler(e: unknown, handler?: ExceptionHandlerI) {
+  if (e instanceof Error) {
+    logger.error(e.message);
+
+    try {
+      if (handler) {
+        const response = handler(e);
+        if (response)
+          return Response.json(response.body, { status: response.status });
+      }
+    } catch {}
+    if (e instanceof AuthenticationError) {
+      return AuthExceptionHandler(e);
+    }
+    const body: ExceptionResponseBody = { error: "Internal server error" };
+    return Response.json(body, { status: 500 });
+  }
+  throw e;
+}
+
+export function AuthExceptionHandler(e: AuthenticationError) {
+  const body: ExceptionResponseBody = {
+    error: "Authentication Error",
+    message: e.message,
+  };
+  return Response.json(body, { status: 403 });
+}

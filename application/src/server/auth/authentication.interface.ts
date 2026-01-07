@@ -1,5 +1,5 @@
-import type { User } from "@domain/user";
+import type { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
 
 export interface AuthenticationProvider {
-  getUser(request?: Request): Promise<User>;
+  getUser(request?: Request): Promise<AuthorizedUser>;
 }

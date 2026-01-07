@@ -1,8 +1,8 @@
+import type { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
 import { AuthenticationError } from "@app/server/exceptions/AuthenticationError";
 import { ConfigurationError } from "@app/server/exceptions/ConfigurationError";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import { Config, SDK } from "@corbado/node-sdk";
-import type { User } from "@domain/user";
 import logger from "application/logger";
 import { cookies } from "next/headers";
 import type { AuthenticationProvider } from "../authentication.interface";
@@ -49,7 +49,7 @@ export class CorbadoAuthProvider implements AuthenticationProvider {
     return CorbadoAuthProvider.#instance;
   }
 
-  async getUser(): Promise<User> {
+  async getUser(): Promise<AuthorizedUser> {
     try {
       const requestCookies = await cookies();
       const sessionToken = requestCookies.get("cbo_session_token")?.value;

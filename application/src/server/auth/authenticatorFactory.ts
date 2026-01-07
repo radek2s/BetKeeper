@@ -8,7 +8,6 @@ export const AUTH_MODE: AuthModeType = (process.env.NEXT_PUBLIC_AUTH_MODE ??
   "CORBADO") as AuthModeType;
 
 export function getAuth(): AuthenticationProvider {
-  console.log(AUTH_MODE);
   switch (AUTH_MODE) {
     case "CORBADO":
       return CorbadoAuthProvider.provider;

@@ -1,8 +1,8 @@
+import type { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
+import { AuthenticationError } from "@app/server/exceptions/AuthenticationError";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
-import type { User } from "@domain/user";
 import logger from "application/logger";
 import type { AuthenticationProvider } from "../authentication.interface";
-import { AuthenticationError } from "../dto";
 
 /**
  * Manualt Authentication Provider
@@ -24,7 +24,7 @@ export class ManualAuthProvider implements AuthenticationProvider {
     return ManualAuthProvider.#instance;
   }
 
-  async getUser(request?: Request): Promise<User> {
+  async getUser(request?: Request): Promise<AuthorizedUser> {
     try {
       const userId = request?.headers.get(ManualAuthProvider.header);
       if (!userId)

@@ -1,3 +1,9 @@
+/**
+ * Manual Session Manager
+ *
+ * Container to keep and track active user session for
+ * manaual application management. Especially for Tests
+ */
 export class ManualSession {
   static #instance: ManualSession;
   private _userId: string;

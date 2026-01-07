@@ -2,6 +2,7 @@ import {
   getAuthenticatedUserFromCookie,
   validateToken,
 } from "@app/server/auth/authentication";
+import { getAuth } from "@app/server/auth/authenticatorFactory";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import logger from "application/logger";
 
@@ -17,24 +18,15 @@ export async function PUT(req: Request) {
       });
     }
 
-    const requestingUser = await getAuthenticatedUserFromCookie();
-    if (!requestingUser) throw new Error("Not logged");
+    const user = await getAuth().getUser(req);
 
     const userRepository = new NextUserRepository();
-    const user = await userRepository.findById(requestingUser.id);
-
-    if (!user) {
-      return new Response(JSON.stringify({ error: "User not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
 
     user.avatarUrl = avatarUrl;
     await userRepository.save(user);
 
     logger.info(
-      `[User][${requestingUser.id}][Updated] - Updated avatar to ${avatarUrl} by ${requestingUser.id}`,
+      `[User][${user.id}][Updated] - Updated avatar to ${avatarUrl} by ${user.id}`,
     );
 
     return new Response(JSON.stringify({ success: true, avatarUrl }), {

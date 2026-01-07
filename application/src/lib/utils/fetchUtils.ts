@@ -8,7 +8,7 @@ export const AUTH_MODE = process.env.NEXT_PUBLIC_AUTH_MODE ?? "CORBADO";
 export function sendRequest(url: string, method: RequestMethod, payload?: any) {
   return fetch(url, {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: getHeaders(),
     body: payload ? JSON.stringify(payload) : undefined,
   });
 }

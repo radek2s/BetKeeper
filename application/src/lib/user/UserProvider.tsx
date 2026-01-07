@@ -20,6 +20,5 @@ export function UserProvider({ children }: PropsWithChildren) {
   if (isLoading) return <div>Loading </div>;
   if (error) return <div>{error.message}</div>;
   if (!data) return <div>User not loaded</div>;
-  console.log(data);
   return <UserContext.Provider value={data}>{children}</UserContext.Provider>;
 }
