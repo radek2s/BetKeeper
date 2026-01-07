@@ -7,6 +7,7 @@ import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
 import { useState } from "react";
 import { approveFriendRequest, rejectFriendRequest } from "../actions";
+import { useFriendRequestUpdateMutation } from "../api/friendQuery";
 import type { FriendRequestUser } from "../model/friendsDto";
 
 interface Props {
@@ -15,13 +16,14 @@ interface Props {
 export function FriendRequestReceived({ users }: Props) {
   const { sessionToken } = useCorbado();
   const friends = users;
+  const { mutateAsync } = useFriendRequestUpdateMutation();
   const [approvePending, setAppprovePending] = useState<boolean>(false);
   const [rejectPending, setRejectPending] = useState<boolean>(false);
 
   const handleApprove = async (requestId: string) => {
     setAppprovePending(true);
     try {
-      approveFriendRequest(requestId, sessionToken);
+      await mutateAsync({ requestId, action: "accept" });
     } catch (e) {
       console.error(e);
     } finally {
@@ -32,7 +34,7 @@ export function FriendRequestReceived({ users }: Props) {
   const handleReject = async (requestId: string) => {
     setRejectPending(true);
     try {
-      rejectFriendRequest(requestId, sessionToken);
+      await mutateAsync({ requestId, action: "reject" });
     } catch (e) {
       console.error(e);
     } finally {

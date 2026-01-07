@@ -1,5 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchFriends, inviteFriend } from "./friendApi";
+import {
+  cancelFriendRequest,
+  type FriendRequestUpdateAction,
+  fetchFriends,
+  inviteFriend,
+  removeFriend,
+  updateFriendRequest,
+} from "./friendApi";
 
 const queryKeys = {
   friends: "friends",
@@ -7,6 +14,9 @@ const queryKeys = {
 
 const mutationKeys = {
   invite: "invitieFriend",
+  remove: "removeFriend",
+  requestUpdate: "friendRequestUpdate",
+  requestCancel: "friendRequestCancel",
 } as const;
 
 export function useFriends() {
@@ -25,6 +35,44 @@ export function useFriendInviteMutation() {
       if (data === "invite") {
         client.invalidateQueries({ queryKey: [queryKeys.friends] });
       }
+    },
+  });
+}
+
+export function useFriendRemoveMutation() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationKey: [mutationKeys.remove],
+    mutationFn: removeFriend,
+    onSuccess() {
+      client.invalidateQueries({ queryKey: [queryKeys.friends] });
+    },
+  });
+}
+
+export interface UpdateFriendRequestMutationType {
+  requestId: string;
+  action: FriendRequestUpdateAction;
+}
+export function useFriendRequestUpdateMutation() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationKey: [mutationKeys.requestUpdate],
+    mutationFn: ({ requestId, action }: UpdateFriendRequestMutationType) =>
+      updateFriendRequest(requestId, action),
+    onSuccess() {
+      client.invalidateQueries({ queryKey: [queryKeys.friends] });
+    },
+  });
+}
+
+export function useFriendRequestCancelMutation() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationKey: [mutationKeys.requestCancel],
+    mutationFn: cancelFriendRequest,
+    onSuccess() {
+      client.invalidateQueries({ queryKey: [queryKeys.friends] });
     },
   });
 }

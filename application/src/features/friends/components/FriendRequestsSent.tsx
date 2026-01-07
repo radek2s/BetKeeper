@@ -6,6 +6,7 @@ import { Panel } from "@app/ui/layout/Panel";
 import { useCorbado } from "@corbado/react";
 import { useState } from "react";
 import { cancelRequest } from "../actions";
+import { useFriendRequestCancelMutation } from "../api/friendQuery";
 import type { FriendInvitation } from "../model/friendsDto";
 
 interface Props {
@@ -13,16 +14,14 @@ interface Props {
 }
 export function FriendRequestsSent({ invitations }: Props) {
   const { sessionToken } = useCorbado();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { mutateAsync, isPending } = useFriendRequestCancelMutation();
 
   const handleCancel = async (requestId: string) => {
-    setIsLoading(true);
     try {
-      cancelRequest(requestId, sessionToken);
+      await mutateAsync(requestId);
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -69,7 +68,7 @@ export function FriendRequestsSent({ invitations }: Props) {
                   icon="close"
                   variant="ghost"
                   onClick={() => handleCancel(invitation.id)}
-                  isLoading={isLoading}
+                  isLoading={isPending}
                 />
               )}
             </div>
