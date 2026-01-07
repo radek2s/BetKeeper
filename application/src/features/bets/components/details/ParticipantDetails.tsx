@@ -4,11 +4,13 @@
 import { IconButton } from "@app/ui/button/IconButton";
 import { Icon } from "@app/ui/icon";
 import { Input } from "@app/ui/input/Input";
-import { useCorbado } from "@corbado/react";
 import type { VoteType } from "@domain/bet";
 import type { UserType } from "@domain/user/entities";
 import { useState } from "react";
-import { updatedBetRequestClaim, updatedBetRequestStake } from "../../actions";
+import {
+  useBetRequestClaimsMutation,
+  useBetRequestStakesMutation,
+} from "../../api/betQuery";
 import {
   type BetParticipantResponse,
   isIndividualBetParticipantResponse,
@@ -26,10 +28,12 @@ function ParticipantDetails({
   currentUser,
   hideVotes,
 }: ParticipantDetailsProps) {
-  const { sessionToken } = useCorbado();
   const [editMode, setEditMode] = useState<boolean>(false);
   const [claim, setClaim] = useState<string>(participant.claim);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { mutateAsync, isPending } = useBetRequestClaimsMutation(
+    betRequestId ?? "",
+  );
 
   const isEditable = currentUser?.id === participant.userId;
 
@@ -40,14 +44,11 @@ function ParticipantDetails({
 
   const handleUpdate = async () => {
     if (!betRequestId) return;
-    setIsLoading(true);
     try {
-      await updatedBetRequestClaim(betRequestId, claim, sessionToken);
+      await mutateAsync(claim);
       handleClose();
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -71,7 +72,7 @@ function ParticipantDetails({
                   icon="send"
                   variant="primary"
                   onClick={handleUpdate}
-                  isLoading={isLoading}
+                  isLoading={isPending}
                 />
               </div>
             </div>
@@ -128,10 +129,11 @@ function ParticipantStake({
   isEditable,
   stake,
 }: ParticipantStakeProps) {
-  const { sessionToken } = useCorbado();
   const [editMode, setEditMode] = useState<boolean>(false);
   const [newStake, setNewStake] = useState<string>(stake);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { mutateAsync, isPending } = useBetRequestStakesMutation(
+    betRequestId ?? "",
+  );
 
   const handleClose = () => {
     setNewStake(stake);
@@ -140,14 +142,11 @@ function ParticipantStake({
 
   const handleUpdate = async () => {
     if (!betRequestId) return;
-    setIsLoading(true);
     try {
-      await updatedBetRequestStake(betRequestId, newStake, sessionToken);
+      await mutateAsync(newStake);
       handleClose();
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
   return (
@@ -166,7 +165,7 @@ function ParticipantStake({
                 icon="send"
                 variant="primary"
                 onClick={handleUpdate}
-                isLoading={isLoading}
+                isLoading={isPending}
               />
             </div>
           </div>

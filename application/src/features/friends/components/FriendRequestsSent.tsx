@@ -5,25 +5,24 @@ import { IconButton } from "@app/ui/button/IconButton";
 import { Panel } from "@app/ui/layout/Panel";
 import { useCorbado } from "@corbado/react";
 import { useState } from "react";
-import { cancelRequest } from "../actions";
+import { useFriendRequestCancelMutation } from "../api/friendQuery";
 import type { FriendInvitation } from "../model/friendsDto";
 
 interface Props {
   invitations: FriendInvitation[];
 }
 export function FriendRequestsSent({ invitations }: Props) {
-  const { sessionToken } = useCorbado();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { mutateAsync, isPending } = useFriendRequestCancelMutation();
+  const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
 
   const handleCancel = async (requestId: string) => {
-    setIsLoading(true);
     try {
-      cancelRequest(requestId, sessionToken);
+      setActiveRequestId(requestId);
+      await mutateAsync(requestId);
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
+    setActiveRequestId(null);
   };
 
   const relativeTime = (invitation: FriendInvitation) => {
@@ -69,7 +68,7 @@ export function FriendRequestsSent({ invitations }: Props) {
                   icon="close"
                   variant="ghost"
                   onClick={() => handleCancel(invitation.id)}
-                  isLoading={isLoading}
+                  isLoading={isPending && invitation.id === activeRequestId}
                 />
               )}
             </div>

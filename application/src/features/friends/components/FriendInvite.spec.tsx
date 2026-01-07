@@ -9,6 +9,12 @@ vi.mock("@app/features/friends/actions", () => ({
 vi.mock("@app/features/users/actions", () => ({
   createUserRequest: vi.fn(),
 }));
+vi.mock("@app/features/friends/api/friendQuery", () => ({
+  useFriendInviteMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+}));
+vi.mock("@app/features/users/api/userQuery", () => ({
+  useUserCreateMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+}));
 
 describe("Friend Invite Form Tests", () => {
   afterEach(() => {
@@ -34,11 +40,15 @@ describe("Friend Invite Form Tests", () => {
       const button = screen.getByRole("button", { name: "Invite" });
       await fireEvent.click(button);
     });
-    ``;
+
     it("Should return error message", async () => {
-      (sendFriendRequest as Mock).mockRejectedValue(
+      const { useFriendInviteMutation } = await import(
+        "@app/features/friends/api/friendQuery"
+      );
+      (useFriendInviteMutation().mutateAsync as Mock).mockRejectedValue(
         new Error("Invalid email format"),
       );
+
       const input = screen.getByLabelText("Friend email");
       fireEvent.change(input, { target: { value: "test" } });
 
@@ -51,7 +61,13 @@ describe("Friend Invite Form Tests", () => {
     });
 
     it("Should close dialog when ok", async () => {
-      (sendFriendRequest as Mock).mockResolvedValue({});
+      const { useFriendInviteMutation } = await import(
+        "@app/features/friends/api/friendQuery"
+      );
+      (useFriendInviteMutation().mutateAsync as Mock).mockResolvedValue(
+        "invite",
+      );
+
       const input = screen.getByLabelText("Friend email");
       fireEvent.change(input, { target: { value: "test@test.pl" } });
 

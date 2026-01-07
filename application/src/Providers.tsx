@@ -1,8 +1,9 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
-import { UserProvider } from "./lib/user/UserProvider";
+import { UserProvider } from "./features/users/UserProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,6 +15,11 @@ const queryClient = new QueryClient({
 });
 
 export function Providers({ children }: PropsWithChildren) {
+  const path = usePathname();
+  const isLogin = path.startsWith("/login");
+
+  if (isLogin) return <>{children}</>;
+
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>{children}</UserProvider>

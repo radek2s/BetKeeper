@@ -1,10 +1,10 @@
 import { Entity, generateId, type UUID } from "@domain/shared";
+import { DomainError } from "@domain/shared/DomainError";
 import {
   BetRequestActionEvent,
   BetRequestCreatedEvent,
   BetRequestUpdatedEvent,
 } from "../events/BetRequestEvents";
-
 import type {
   BetParticipant,
   IndividualBetParticipantType,
@@ -130,7 +130,7 @@ export abstract class AbstractBetRequest extends Entity {
 
   approve(participantId: UUID) {
     if (!this.isParticipant(participantId)) {
-      throw new Error("Only bet participant can approve bet request!");
+      throw new DomainError("Only bet participant can approve bet request!");
     }
     this.participants = this.participants.map((participant) => {
       if (participant.userId === participantId) {
@@ -149,7 +149,7 @@ export abstract class AbstractBetRequest extends Entity {
 
   reject(participantId: UUID) {
     if (!this.isParticipant(participantId)) {
-      throw new Error("Only bet participant can reject bet request!");
+      throw new DomainError("Only bet participant can reject bet request!");
     }
     this.participants = this.participants.map((participant) => {
       if (participant.userId === participantId) {
@@ -188,8 +188,8 @@ export abstract class AbstractBetRequest extends Entity {
   private isValidCreator(creatorId: UUID, participants: BetParticipant[]) {
     const creator = participants.some(({ userId }) => userId === creatorId);
     if (!creator)
-      throw new Error(
-        "Invalid creatorId! Creator must be participant of bet request!",
+      throw new DomainError(
+        `Invalid creatorId=${creatorId}! Creator must be participant of bet request!`,
       );
   }
 

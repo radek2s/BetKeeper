@@ -32,6 +32,9 @@ if (!backendApi) {
 const config = new Config(projectId, apiSecret, frontendApi, backendApi);
 const sdk = new SDK(config);
 
+/**
+ * @deprecated
+ */
 export async function getAuthenticatedUserFromCookie() {
   const reqCookies = await cookies();
 
@@ -51,6 +54,9 @@ export async function getAuthenticatedUserFromCookie() {
   }
 }
 
+/**
+ * @deprecated
+ */
 export async function getAuthenticatedUserFromAuthorizationHeader(
   req: NextRequest,
 ) {
@@ -65,6 +71,9 @@ export async function getAuthenticatedUserFromAuthorizationHeader(
   }
 }
 
+/**
+ * @deprecated
+ */
 export async function validateToken(token?: string) {
   if (isTestMode) return await getTestUser();
   if (!token) throw new AuthenticationError("Access Token is missing!");
@@ -74,10 +83,16 @@ export async function validateToken(token?: string) {
   return user;
 }
 
+/**
+ * @deprecated
+ */
 export async function getAuthHeader() {
   return Buffer.from(`${projectId}:${apiSecret}`).toString("base64");
 }
 
+/**
+ * @deprecated
+ */
 export async function getBackendApi() {
   return backendApi;
 }

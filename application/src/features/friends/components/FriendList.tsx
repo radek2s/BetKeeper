@@ -4,23 +4,26 @@ import { UserListItem } from "@app/features/users/components/UserListItem";
 import { IconButton } from "@app/ui/button/IconButton";
 import { ConfirmationDialog } from "@app/ui/confirm-dialog";
 import { Panel } from "@app/ui/layout/Panel";
-import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
-import { removeFriend } from "../actions";
+import { useState } from "react";
+import { useFriendRemoveMutation } from "../api/friendQuery";
 
 interface Props {
   friends: UserType[];
 }
 export function FriendList({ friends }: Props) {
-  const { sessionToken } = useCorbado();
+  const { mutateAsync, isPending } = useFriendRemoveMutation();
+  const [activeFriendId, setActiveFriendId] = useState<string | null>(null);
 
   const handleRemove = async (accepted: boolean, friendId: string) => {
     if (!accepted) return;
     try {
-      await removeFriend(friendId, sessionToken);
+      setActiveFriendId(friendId);
+      await mutateAsync(friendId);
     } catch (e) {
       console.error(e);
     }
+    setActiveFriendId(null);
   };
 
   return (
@@ -50,7 +53,11 @@ export function FriendList({ friends }: Props) {
               onClose={(accepted) => handleRemove(accepted, friend.id)}
               variant="error"
               accept="Remove">
-              <IconButton icon="close" variant="ghost" />
+              <IconButton
+                icon="close"
+                variant="ghost"
+                isLoading={isPending && friend.id === activeFriendId}
+              />
             </ConfirmationDialog>
           </UserListItem>
         ))}

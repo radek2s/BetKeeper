@@ -1,6 +1,6 @@
 import { Entity, type UUID } from "@domain/shared";
+import { DomainError } from "@domain/shared/DomainError";
 import { BetActionEvent, BetCreatedEvent } from "../events/BetEvents";
-
 import type {
   BetParticipant,
   IndividualBetParticipantType,
@@ -62,12 +62,12 @@ export abstract class AbstractBet extends Entity {
   constructor(betRequest: AbstractBetRequest) {
     super();
     if (!betRequest.isApproved())
-      throw new Error(
+      throw new DomainError(
         `Bet Request is not approved by all participants! Can't create bet`,
       );
 
     if (!betRequest.hasEnoughParticipants()) {
-      throw new Error(
+      throw new DomainError(
         `Bet Request does not have enough participants to create bet`,
       );
     }
@@ -119,7 +119,7 @@ export abstract class AbstractBet extends Entity {
 
   set dueDate(date: Date | undefined) {
     if (this.status !== "resolved")
-      throw new Error(
+      throw new DomainError(
         "Due date can be modified only when bet is pending completion.",
       );
     if (date) this.isDueDateValid(date);
@@ -146,12 +146,12 @@ export abstract class AbstractBet extends Entity {
 
   resolve(resolvedByParticipantId: UUID, winnerId: UUID, dueDate?: Date) {
     if (this.status !== "pending")
-      throw new Error("Cannot resolve: bet is not in pending state");
+      throw new DomainError("Cannot resolve: bet is not in pending state");
     if (!this.isParticipant(resolvedByParticipantId)) {
-      throw new Error("Only bet participant can resolve bet!");
+      throw new DomainError("Only bet participant can resolve bet!");
     }
     if (!this.isParticipant(winnerId)) {
-      throw new Error("Provided winnerId is not bet participant!");
+      throw new DomainError("Provided winnerId is not bet participant!");
     }
     if (dueDate) this.isDueDateValid(dueDate);
 
@@ -169,9 +169,9 @@ export abstract class AbstractBet extends Entity {
 
   complete(completedByParticipantId: UUID) {
     if (this.status !== "resolved")
-      throw new Error("Cannot complete: bet is not in resolved state");
+      throw new DomainError("Cannot complete: bet is not in resolved state");
     if (!this.isParticipant(completedByParticipantId)) {
-      throw new Error("Only bet participant can complete bet!");
+      throw new DomainError("Only bet participant can complete bet!");
     }
     const now = new Date();
     this._status = "completed";
@@ -185,7 +185,7 @@ export abstract class AbstractBet extends Entity {
 
   delete(deletedById: UUID) {
     if (this.status === "deleted")
-      throw new Error("Cannot delete: bet is already deleted!");
+      throw new DomainError("Cannot delete: bet is already deleted!");
     this._status = "deleted";
     this._updatedAt = new Date();
     this.addDomainEvent(new BetActionEvent(this.id, "delete", deletedById));

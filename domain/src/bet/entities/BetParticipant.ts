@@ -1,4 +1,4 @@
-import { Entity, type UUID } from "@domain/shared";
+import type { UUID } from "@domain/shared";
 
 export type VoteType = "unknown" | "approved" | "rejected";
 

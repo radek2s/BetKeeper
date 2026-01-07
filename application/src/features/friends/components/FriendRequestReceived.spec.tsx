@@ -7,6 +7,11 @@ vi.mock("@app/features/friends/actions", () => ({
   approveFriendRequest: vi.fn(),
   rejectFriendRequest: vi.fn(),
 }));
+vi.mock("@app/features/friends/api/friendQuery", () => ({
+  useFriendRequestUpdateMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
+}));
 
 describe("Friend Request Received Test", () => {
   it("Should render info when empty", () => {

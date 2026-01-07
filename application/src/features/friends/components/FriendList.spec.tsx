@@ -8,6 +8,9 @@ vi.mock("@app/features/friends/actions", () => ({
   approveFriendRequest: vi.fn(),
   rejectFriendRequest: vi.fn(),
 }));
+vi.mock("@app/features/friends/api/friendQuery", () => ({
+  useFriendRemoveMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+}));
 
 describe("Friend List Test", () => {
   it("Should render info when empty", () => {

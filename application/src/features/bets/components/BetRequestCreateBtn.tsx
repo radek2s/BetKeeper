@@ -1,12 +1,13 @@
 "use client";
-import type { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
+
 import { Button } from "@app/ui/button/Button";
 import { Icon } from "@app/ui/icon";
-import { useCorbado } from "@corbado/react";
+
 import type { UserType } from "@domain/user/entities";
 import { Dialog } from "radix-ui";
 import { useState } from "react";
-import { createBetRequest } from "../actions";
+
+import { useBetRequestCreateMutation } from "../api/betQuery";
 import { BetRequestWizzard } from "./wizzard/BetRequestWizzard";
 import type { BetRequestCreate } from "./wizzard/types";
 
@@ -15,12 +16,13 @@ interface Props {
   friends: UserType[];
 }
 export function BetRequestCreateBtn({ creator, friends }: Props) {
-  const { sessionToken } = useCorbado();
   const [isOpen, setOpen] = useState<boolean>(false);
+  const { mutateAsync } = useBetRequestCreateMutation();
 
   const handleSend = async (request: BetRequestCreate) => {
     try {
-      await createBetRequest(request, sessionToken);
+      await mutateAsync(request);
+      // await createBetRequest(request, sessionToken);
       setOpen(false);
     } catch {
       console.error("Failed to create bet request");

@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export class AuthenticationError extends Error {}
 
 export class UserNotProvidedError extends AuthenticationError {

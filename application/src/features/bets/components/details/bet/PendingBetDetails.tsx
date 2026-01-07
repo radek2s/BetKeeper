@@ -1,12 +1,10 @@
 "use client";
-import { resolveBet } from "@app/features/bets/actions";
-import { useBetInvalidate } from "@app/features/bets/api/betQuery";
+import { useBetResolveMutation } from "@app/features/bets/api/betQuery";
 import type {
   BetParticipantResponse,
   BetResponse,
 } from "@app/features/bets/model/betDto";
 import { Button } from "@app/ui/button/Button";
-import { useCorbado } from "@corbado/react";
 import { Dialog } from "radix-ui";
 import { useState } from "react";
 import BetCommonStake from "../BetCommonStake";
@@ -61,14 +59,12 @@ interface ResolveProps {
   participants: BetParticipantResponse[];
 }
 function ResolveBtn({ betId, participants }: ResolveProps) {
-  const { sessionToken } = useCorbado();
   const [isOpen, setOpen] = useState<boolean>(false);
-  const { invalidate } = useBetInvalidate(betId);
+  const { mutateAsync, isPending } = useBetResolveMutation(betId);
 
   const handleSelect = async (winnerId: string) => {
     try {
-      await resolveBet(betId, winnerId, sessionToken);
-      invalidate();
+      await mutateAsync(winnerId);
       setOpen(false);
     } catch (e) {
       console.error(e);
@@ -78,7 +74,7 @@ function ResolveBtn({ betId, participants }: ResolveProps) {
   return (
     <Dialog.Root open={isOpen} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <Button variant="primary" className="my-2">
+        <Button variant="primary" className="my-2" isLoading={isPending}>
           Resolve
         </Button>
       </Dialog.Trigger>

@@ -1,19 +1,20 @@
 import { IconButton } from "@app/ui/button/IconButton";
 import { Input } from "@app/ui/input/Input";
-import { useCorbado } from "@corbado/react";
 import { useState } from "react";
-import { updatedBetRequestStake } from "../../actions";
+import { useBetRequestStakesMutation } from "../../api/betQuery";
 
 interface CommonStakesProps {
   betRequestId?: string;
   stake: string;
 }
 function BetCommonStake({ betRequestId, stake }: CommonStakesProps) {
-  const { sessionToken } = useCorbado();
   const isEditable = !!betRequestId;
   const [editMode, setEditMode] = useState<boolean>(false);
   const [newStake, setNewStake] = useState<string>(stake);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { mutateAsync, isPending } = useBetRequestStakesMutation(
+    betRequestId ?? "",
+  );
 
   const handleClose = () => {
     setNewStake(stake);
@@ -22,14 +23,11 @@ function BetCommonStake({ betRequestId, stake }: CommonStakesProps) {
 
   const handleUpdate = async () => {
     if (!betRequestId) return;
-    setIsLoading(true);
     try {
-      await updatedBetRequestStake(betRequestId, newStake, sessionToken);
+      await mutateAsync(newStake);
       handleClose();
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -49,7 +47,7 @@ function BetCommonStake({ betRequestId, stake }: CommonStakesProps) {
               icon="send"
               variant="primary"
               onClick={handleUpdate}
-              isLoading={isLoading}
+              isLoading={isPending}
             />
           </div>
         ) : (

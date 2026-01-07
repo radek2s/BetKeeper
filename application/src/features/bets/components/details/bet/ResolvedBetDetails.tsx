@@ -2,7 +2,10 @@
 /** biome-ignore-all lint/a11y/useAltText: <explanation> */
 "use client";
 import { completeBet } from "@app/features/bets/actions";
-import { useBetInvalidate } from "@app/features/bets/api/betQuery";
+import {
+  useBetCompleteMutation,
+  useBetInvalidate,
+} from "@app/features/bets/api/betQuery";
 import {
   type BetParticipantResponse,
   type BetResponse,
@@ -124,20 +127,16 @@ interface CompleteBtnProps {
   betId: string;
 }
 function CompleteBtn({ betId }: CompleteBtnProps) {
-  const { sessionToken } = useCorbado();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { invalidate } = useBetInvalidate(betId);
+  const { mutateAsync, isPending } = useBetCompleteMutation(betId);
 
   const handleComplete = async (result: boolean) => {
     if (!result) return;
-    setIsLoading(true);
+
     try {
-      await completeBet(betId, sessionToken);
-      invalidate();
+      await mutateAsync();
     } catch (e) {
       console.error(e);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -152,8 +151,8 @@ function CompleteBtn({ betId }: CompleteBtnProps) {
         onClose={handleComplete}
         variant="primary"
         accept="Complete"
-        isLoading={isLoading}>
-        <Button variant="primary" className="my-2" isLoading={isLoading}>
+        isLoading={isPending}>
+        <Button variant="primary" className="my-2" isLoading={isPending}>
           Complete
         </Button>
       </ConfirmationDialog>

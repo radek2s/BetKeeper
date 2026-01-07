@@ -1,6 +1,5 @@
 "use server";
-import { UserNotExistsError } from "@app/lib/user/UserErrors";
-import { validateToken } from "@app/server/auth/authentication";
+
 import { NextFriendListRepository } from "@app/server/repositories/NextFriendListRepository";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequestRepository";
@@ -15,16 +14,18 @@ import {
   userRequestToInvitationDto,
 } from "./model/friendsDto";
 
+/**
+ * @deprecated
+ */
 export async function sendFriendRequest(
   email: string,
   token: string | undefined,
 ): Promise<FriendInviteResponseType> {
-  const requestingUser = await validateToken(token);
   const friendEmail = new Email(email);
   const userExists = await NextUserService.userExists(friendEmail);
 
   if (userExists) {
-    await NextUserService.sendFriendRequest(requestingUser.id, friendEmail);
+    await NextUserService.sendFriendRequest("user-01", friendEmail);
     revalidatePath(`/friends`);
     return "invite";
   } else {
@@ -33,6 +34,9 @@ export async function sendFriendRequest(
   }
 }
 
+/**
+ * @deprecated
+ */
 export async function getSentInvitations(
   userId: UUID,
 ): Promise<FriendInvitation[]> {
@@ -53,45 +57,4 @@ export async function getSentInvitations(
   );
 
   return [...invitations, ...nonUserInvitations];
-}
-
-export async function getFriendList(userId: string) {
-  const friendList = await new NextFriendListRepository().findByUserId(userId);
-
-  if (!friendList) throw new Error("Friend List not found!");
-  return friendList;
-}
-
-export async function approveFriendRequest(
-  requestId: UUID,
-  token: string | undefined,
-) {
-  const user = await validateToken(token);
-  await NextUserService.approveFriendRequest(user.id, requestId);
-  revalidatePath("/friends");
-}
-
-export async function rejectFriendRequest(
-  requestId: UUID,
-  token: string | undefined,
-) {
-  const user = await validateToken(token);
-  await NextUserService.rejectFriendRequest(user.id, requestId);
-  revalidatePath("/friends");
-}
-
-export async function cancelRequest(
-  requestId: UUID,
-  token: string | undefined,
-) {
-  const user = await validateToken(token);
-  await NextUserService.cancelFriendRequest(requestId);
-  revalidatePath("/friends");
-}
-
-export async function removeFriend(friendId: UUID, token: string | undefined) {
-  const user = await validateToken(token);
-  await NextUserService.removeFriend(user.id, friendId);
-
-  revalidatePath("/friends");
 }

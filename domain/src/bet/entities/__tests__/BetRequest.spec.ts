@@ -51,7 +51,7 @@ describe("Bet Request Context", () => {
           [creator, friend],
         );
       }).toThrow(
-        "Invalid creatorId! Creator must be participant of bet request!",
+        "Invalid creatorId=user! Creator must be participant of bet request!",
       );
     });
 
