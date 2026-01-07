@@ -3,7 +3,6 @@
 import { UserListItem } from "@app/features/users/components/UserListItem";
 import { IconButton } from "@app/ui/button/IconButton";
 import { Panel } from "@app/ui/layout/Panel";
-import { useCorbado } from "@corbado/react";
 import { useState } from "react";
 import { useFriendRequestUpdateMutation } from "../api/friendQuery";
 import type { FriendRequestUser } from "../model/friendsDto";
@@ -12,7 +11,6 @@ interface Props {
   users: FriendRequestUser[];
 }
 export function FriendRequestReceived({ users }: Props) {
-  const { sessionToken } = useCorbado();
   const friends = users;
   const { mutateAsync } = useFriendRequestUpdateMutation();
   const [approvePending, setAppprovePending] = useState<boolean>(false);
