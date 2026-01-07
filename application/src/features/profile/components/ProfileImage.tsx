@@ -1,5 +1,6 @@
 "use client";
-import { useProfileImageMutation } from "@app/lib/user/api/userQuery";
+
+import { useProfileImageMutation } from "@app/features/users/api/userQuery";
 import { Button } from "@app/ui/button/Button";
 
 import { Dialog } from "radix-ui";

@@ -3,7 +3,7 @@ import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import { NextUserService } from "@app/server/services/NextUserService";
 import logger from "application/logger";
 
-export async function DELTE(
+export async function DELETE(
   req: Request,
   { params }: { params: { friendId: string } },
 ) {
@@ -13,6 +13,7 @@ export async function DELTE(
 
     await NextUserService.removeFriend(user.id, friendId);
     logger.info(`[Friend] - Friend ${friendId} has been removed by ${user.id}`);
+    return Response.json(null);
   } catch (e) {
     return ExceptionHandler(e);
   }

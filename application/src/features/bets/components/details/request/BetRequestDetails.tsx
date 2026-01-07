@@ -3,12 +3,11 @@
 "use client";
 
 import {
-  approveBet,
-  rejectBet,
-  startBet,
-  updatedBetRequestTerms,
-} from "@app/features/bets/actions";
-import { useBetInvalidate } from "@app/features/bets/api/betQuery";
+  useBetRequestApproveMutation,
+  useBetRequestRejectMutation,
+  useBetRequestTermsMutation,
+  useBetStartMutation,
+} from "@app/features/bets/api/betQuery";
 import type {
   BetParticipantResponse,
   BetRequestResponse,
@@ -17,7 +16,6 @@ import { Button } from "@app/ui/button/Button";
 import { IconButton } from "@app/ui/button/IconButton";
 import { Icon } from "@app/ui/icon";
 import { Input } from "@app/ui/input/Input";
-import { useCorbado } from "@corbado/react";
 import type { VoteType } from "@domain/bet";
 import type { UserType } from "@domain/user/entities";
 import clsx from "clsx";
@@ -92,11 +90,10 @@ interface BetTermsProps {
   betRequest: BetRequestResponse;
 }
 function BetTerms({ betRequest }: BetTermsProps) {
-  const { sessionToken } = useCorbado();
   const [editMode, setEditMode] = useState<boolean>(false);
   const [terms, setTerms] = useState<string>(betRequest.terms);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { invalidate } = useBetInvalidate(betRequest.id);
+
+  const { mutateAsync, isPending } = useBetRequestTermsMutation(betRequest.id);
 
   const handleClose = () => {
     setTerms(betRequest.terms);
@@ -104,15 +101,11 @@ function BetTerms({ betRequest }: BetTermsProps) {
   };
 
   const handleUpdate = async () => {
-    setIsLoading(true);
     try {
-      await updatedBetRequestTerms(betRequest.id, terms, sessionToken);
-      invalidate();
+      await mutateAsync(terms);
       handleClose();
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
   return (
@@ -131,7 +124,7 @@ function BetTerms({ betRequest }: BetTermsProps) {
             icon="send"
             variant="primary"
             onClick={handleUpdate}
-            isLoading={isLoading}
+            isLoading={isPending}
           />
         </div>
       ) : (
@@ -176,30 +169,27 @@ interface BetIdProps {
   betRequestId: string;
 }
 function VoteActions({ activeUserVote, betRequestId }: BetIdProps) {
-  const { sessionToken } = useCorbado();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { invalidate } = useBetInvalidate(betRequestId);
+  const { mutateAsync: approve, isPending: isApprovePending } =
+    useBetRequestApproveMutation(betRequestId);
+  const { mutateAsync: reject, isPending: isRejectPending } =
+    useBetRequestRejectMutation(betRequestId);
+
+  const isLoading = isApprovePending || isRejectPending;
 
   const handleApprove = async () => {
-    setIsLoading(true);
     try {
-      await approveBet(betRequestId, sessionToken);
-      invalidate();
+      await approve();
     } catch (e) {
       console.error(e);
     }
-    setIsLoading(false);
   };
 
   const handleReject = async () => {
-    setIsLoading(true);
     try {
-      await rejectBet(betRequestId, sessionToken);
-      invalidate();
+      await reject();
     } catch (e) {
       console.error(e);
     }
-    setIsLoading(false);
   };
 
   if (activeUserVote === "approved")
@@ -260,21 +250,16 @@ interface StartBetButtonProps {
   participants: BetParticipantResponse[];
 }
 function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
-  const { sessionToken } = useCorbado();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { invalidate } = useBetInvalidate(betRequestId);
+  const { mutateAsync, isPending } = useBetStartMutation(betRequestId);
 
   const approved = participants.every(({ vote }) => vote === "approved");
 
   const handleStart = async () => {
-    setIsLoading(true);
     try {
-      await startBet(betRequestId, sessionToken);
-      invalidate();
+      await mutateAsync();
     } catch (e) {
       console.error(e);
     }
-    setIsLoading(false);
   };
 
   if (approved)
@@ -290,7 +275,7 @@ function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
           className="w-full font-bold my-2"
           variant="primary"
           onClick={handleStart}
-          isLoading={isLoading}>
+          isLoading={isPending}>
           <Icon name="handshake" />
           Make deal
         </Button>

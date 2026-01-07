@@ -1,18 +1,15 @@
 "use client";
-import { createUserRequest } from "@app/features/users/actions";
-import { useUserCreateMutation } from "@app/lib/user/api/userQuery";
+
+import { useUserCreateMutation } from "@app/features/users/api/userQuery";
 import { Button } from "@app/ui/button/Button";
 import FormField from "@app/ui/form-field";
 import { Icon } from "@app/ui/icon";
-import { useCorbado } from "@corbado/react";
 import { Dialog } from "radix-ui";
 import { useRef, useState } from "react";
-import { sendFriendRequest } from "../actions";
 import { useFriendInviteMutation } from "../api/friendQuery";
 import { UserCreateConfirmDialog } from "./UserCreateConfirmDialog";
 
 export function FriendInvite() {
-  const { sessionToken } = useCorbado();
   const [isOpen, setOpen] = useState<boolean>(false);
   const [email, setEmail] = useState<string>();
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);

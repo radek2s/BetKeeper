@@ -1,5 +1,6 @@
 "use client";
-import { useProfileNameMutation } from "@app/lib/user/api/userQuery";
+
+import { useProfileNameMutation } from "@app/features/users/api/userQuery";
 import { Button } from "@app/ui/button/Button";
 import { Icon } from "@app/ui/icon";
 import { Input } from "@app/ui/input/Input";

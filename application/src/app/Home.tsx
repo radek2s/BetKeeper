@@ -5,7 +5,8 @@ import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCre
 import BetBrowser from "@app/features/bets/components/browser";
 import { MissingFriends } from "@app/features/bets/components/MissingFriends";
 import { FriendLoader } from "@app/features/friends/components/FriendLoader";
-import { useUserContext } from "@app/lib/user/UserProvider";
+import { useUserContext } from "@app/features/users/UserProvider";
+
 import { IconButton } from "@app/ui/button/IconButton";
 import Link from "next/link";
 

@@ -43,7 +43,7 @@ export async function PUT(
 /**
  * Cancel sending FriendRequest
  */
-export async function DELTE(
+export async function DELETE(
   req: Request,
   { params }: { params: { requestId: string } },
 ) {
@@ -54,6 +54,7 @@ export async function DELTE(
     logger.info(
       `[FriendRequest][${requestId}][Deleted] - Deleted by ${user.id}`,
     );
+    return Response.json(null);
   } catch (e) {
     return ExceptionHandler(e);
   }

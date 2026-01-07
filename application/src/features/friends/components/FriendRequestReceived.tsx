@@ -4,9 +4,7 @@ import { UserListItem } from "@app/features/users/components/UserListItem";
 import { IconButton } from "@app/ui/button/IconButton";
 import { Panel } from "@app/ui/layout/Panel";
 import { useCorbado } from "@corbado/react";
-import type { UserType } from "@domain/user/entities";
 import { useState } from "react";
-import { approveFriendRequest, rejectFriendRequest } from "../actions";
 import { useFriendRequestUpdateMutation } from "../api/friendQuery";
 import type { FriendRequestUser } from "../model/friendsDto";
 

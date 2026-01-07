@@ -3,7 +3,8 @@
 import LogoutButton from "@app/features/profile/components/Logout";
 import { ProfileImage } from "@app/features/profile/components/ProfileImage";
 import { UserNameEditor } from "@app/features/profile/components/UserNameEditor";
-import { useUserContext } from "@app/lib/user/UserProvider";
+import { useUserContext } from "@app/features/users/UserProvider";
+
 import { Icon } from "@app/ui/icon";
 import PageHeader from "@app/ui/layout/Header";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
