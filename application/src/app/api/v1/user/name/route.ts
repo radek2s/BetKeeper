@@ -1,4 +1,6 @@
+import { OkResponse } from "@app/lib/utils/fetchUtils";
 import { getAuth } from "@app/server/auth/authenticatorFactory";
+import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import logger from "application/logger";
 
@@ -27,15 +29,8 @@ export async function PUT(req: Request) {
       `[User][${user.id}][Updated] - Updated name to ${user.name} by ${user.id}`,
     );
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return OkResponse(user.toObject());
   } catch (e) {
-    logger.error(e);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return ExceptionHandler(e);
   }
 }

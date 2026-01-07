@@ -1,11 +1,9 @@
 "use client";
 import { IconButton } from "@app/ui/button/IconButton";
 import { ConfirmationDialog } from "@app/ui/confirm-dialog";
-import { useCorbado } from "@corbado/react";
 import type { UserType } from "@domain/user/entities";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { deleteBet, deleteBetRequest } from "../actions";
+import { useBetDeleteMutation } from "../api/betQuery";
 
 interface Props {
   betId: string;
@@ -13,19 +11,19 @@ interface Props {
   creatorId: string;
 }
 export function BetRequestDeleteBtn({ betId, activeUser, creatorId }: Props) {
-  const { sessionToken } = useCorbado();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { mutateAsync, isPending } = useBetDeleteMutation(betId);
 
   const handleDelete = async (results: boolean) => {
     if (!results) return;
-    setIsLoading(true);
+
     try {
-      await deleteBetRequest(betId, sessionToken);
+      await mutateAsync();
     } catch (e) {
       console.error(e);
     }
-    setIsLoading(false);
+
     router.push("/");
   };
 
@@ -40,8 +38,8 @@ export function BetRequestDeleteBtn({ betId, activeUser, creatorId }: Props) {
         variant="error"
         onClose={handleDelete}
         accept="Delete"
-        isLoading={isLoading}>
-        <IconButton icon="delete" isLoading={isLoading} />
+        isLoading={isPending}>
+        <IconButton icon="delete" isLoading={isPending} />
       </ConfirmationDialog>
     );
   }
@@ -49,19 +47,17 @@ export function BetRequestDeleteBtn({ betId, activeUser, creatorId }: Props) {
   return null;
 }
 export function BetDeleteBtn({ betId, activeUser, creatorId }: Props) {
-  const { sessionToken } = useCorbado();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { mutateAsync, isPending } = useBetDeleteMutation(betId);
 
   const handleDelete = async (results: boolean) => {
     if (!results) return;
-    setIsLoading(true);
     try {
-      await deleteBet(betId, sessionToken);
+      await mutateAsync();
     } catch (e) {
       console.error(e);
     }
-    setIsLoading(false);
+
     router.push("/");
   };
 
@@ -76,8 +72,8 @@ export function BetDeleteBtn({ betId, activeUser, creatorId }: Props) {
         variant="error"
         onClose={handleDelete}
         accept="Delete"
-        isLoading={isLoading}>
-        <IconButton icon="delete" isLoading={isLoading} />
+        isLoading={isPending}>
+        <IconButton icon="delete" isLoading={isPending} />
       </ConfirmationDialog>
     );
   }

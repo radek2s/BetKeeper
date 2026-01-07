@@ -1,16 +1,18 @@
 import { getSentInvitations } from "@app/features/friends/actions";
 import type { FriendsResponse } from "@app/features/friends/model/friendsDto";
 import { getUserDetails } from "@app/features/users/actions";
-import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
+import { OkResponse } from "@app/lib/utils/fetchUtils";
+import { getAuth } from "@app/server/auth/authenticatorFactory";
+import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
+import type { ExceptionResponseBody } from "@app/server/exceptions/exception.interface";
 import { NextFriendListRepository } from "@app/server/repositories/NextFriendListRepository";
-import type { FriendRequest } from "@domain/user";
+import { NextUserService } from "@app/server/services/NextUserService";
+import { Email, type FriendRequest } from "@domain/user";
 import type { UserType } from "@domain/user/entities";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const user = await getAuthenticatedUserFromCookie();
-    if (!user) throw new Error("Unauthorized");
-
+    const user = await getAuth().getUser(req);
     const friendList = await new NextFriendListRepository().findByUserId(
       user.id,
     );
@@ -52,7 +54,32 @@ export async function GET() {
 
     return Response.json(response);
   } catch (e) {
-    console.error(e);
-    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+    return ExceptionHandler(e);
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const user = await getAuth().getUser(req);
+    const { email } = await req.json();
+    if (!email) {
+      const response: ExceptionResponseBody = {
+        error: "Invalid Form Data",
+        message: "Send payload with email property",
+      };
+      return Response.json(response, { status: 400 });
+    }
+
+    const friendEmail = new Email(email);
+    const userExists = await NextUserService.userExists(friendEmail);
+
+    if (userExists) {
+      await NextUserService.sendFriendRequest(user.id, friendEmail);
+      return OkResponse({ result: "invite" });
+    } else {
+      return OkResponse({ result: "create" });
+    }
+  } catch (e) {
+    return ExceptionHandler(e);
   }
 }

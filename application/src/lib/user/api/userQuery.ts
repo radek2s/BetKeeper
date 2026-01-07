@@ -1,12 +1,18 @@
 import type { UserType } from "@domain/user/entities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchUser, updateUserName, updateUserProfileImage } from "./userApi";
+import {
+  createUserRequest,
+  fetchUser,
+  updateUserName,
+  updateUserProfileImage,
+} from "./userApi";
 
 const queryKeys = {
   activeUser: "activeUser",
 } as const;
 
 const mutationKeys = {
+  createUserRequest: "createUserRequest",
   updateProfileImage: "updateProfileImage",
 } as const;
 
@@ -14,6 +20,17 @@ export function useUser() {
   return useQuery({
     queryKey: [queryKeys.activeUser],
     queryFn: fetchUser,
+  });
+}
+
+export function useUserCreateMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: [mutationKeys.createUserRequest],
+    mutationFn: createUserRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+    },
   });
 }
 
@@ -43,7 +60,6 @@ export function useProfileNameMutation() {
     mutationFn: ({ firstName, lastName }: NameMutationType) =>
       updateUserName(firstName, lastName),
     onSuccess: (_, { firstName, lastName }) => {
-      console.log({ firstName, lastName });
       queryClient.setQueryData([queryKeys.activeUser], (old: UserType) => ({
         ...old,
         firstName,

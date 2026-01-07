@@ -1,3 +1,4 @@
+import { DomainError } from "@domain/shared/DomainError";
 import type { UUID } from "../../shared";
 import { DomainService } from "../../shared/DomainService";
 import type { IEventDispatcher } from "../../shared/EventDispatcher";
@@ -93,11 +94,13 @@ export class BetService extends DomainService {
 
     //Persist
     await this.betRepository.save(bet);
-    betParticipants.forEach(async (participant) => {
-      await this.betParticipantRepository.save(
-        participantToRecord(participant, bet.id),
-      );
-    });
+    await Promise.all(
+      betParticipants.map(async (participant) => {
+        await this.betParticipantRepository.save(
+          participantToRecord(participant, bet.id),
+        );
+      }),
+    );
 
     return request;
   }
@@ -123,11 +126,13 @@ export class BetService extends DomainService {
 
     //Persist
     await this.betRepository.save(bet);
-    betParticipants.forEach(async (participant) => {
-      await this.betParticipantRepository.save(
-        participantToRecord(participant, bet.id),
-      );
-    });
+    await Promise.all(
+      betParticipants.map(async (participant) => {
+        await this.betParticipantRepository.save(
+          participantToRecord(participant, bet.id),
+        );
+      }),
+    );
 
     return request;
   }
@@ -333,7 +338,7 @@ export class BetService extends DomainService {
   ): Promise<void> {
     const bet = await this.getBetById(betId);
     if (!isAdmin && bet.creatorId !== deletedById)
-      throw new Error("Only creator can delete bet");
+      throw new DomainError("Only creator can delete bet");
     bet.delete(deletedById);
 
     const { participants, ...betRecord } = bet.toObject();
@@ -348,7 +353,7 @@ export class BetService extends DomainService {
     isAdmin: boolean = false,
   ): Promise<void> {
     const bet = await this.getBetById(betId);
-    if (!isAdmin) throw new Error("Only admin can delete bet completly");
+    if (!isAdmin) throw new DomainError("Only admin can delete bet completly");
     bet.delete(deletedById);
 
     await this.betRepository.delete(betId);
@@ -363,7 +368,7 @@ export class BetService extends DomainService {
   ): Promise<void> {
     const betRequest = await this.getBetRequestById(betRequestId);
     if (!isAdmin && betRequest.creatorId !== deletedById)
-      throw new Error("Only creator can delete bet");
+      throw new DomainError("Only creator can delete bet");
 
     await this.betRepository.delete(betRequestId);
 
@@ -388,7 +393,7 @@ export class BetService extends DomainService {
         return await this.getBetRequestById(id);
       } catch (e) {
         console.error(e);
-        throw new Error(`Unable to find bet or betRequest with id=${id}`);
+        throw new DomainError(`Unable to find bet or betRequest with id=${id}`);
       }
     }
   }
@@ -396,14 +401,14 @@ export class BetService extends DomainService {
   async getBetRequestById(betRequestId: UUID): Promise<AbstractBetRequest> {
     const betRecord = await this.betRepository.findById(betRequestId);
     if (!betRecord)
-      throw new Error(`Bet request not found with ID: ${betRequestId}`);
+      throw new DomainError(`Bet request not found with ID: ${betRequestId}`);
 
     return this.getBetRequestFromRecord(betRecord);
   }
 
   async getBetById(betId: UUID): Promise<AbstractBet> {
     const betRecord = await this.betRepository.findById(betId);
-    if (!betRecord) throw new Error(`Bet not found with ID: ${betId}`);
+    if (!betRecord) throw new DomainError(`Bet not found with ID: ${betId}`);
 
     return this.getBetFromRecord(betRecord);
   }
@@ -454,7 +459,7 @@ function participantRequestToIndividual(
 ): IndividualBetParticipantType[] {
   return participants.map((participant) => {
     if (!participant.stake)
-      throw new Error("Participant must have defined stakes");
+      throw new DomainError("Participant must have defined stakes");
     if (participant.userId === creatorId) {
       return {
         userId: participant.userId,

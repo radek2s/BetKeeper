@@ -25,6 +25,14 @@ export function getRequest(url: string) {
   return fetch(url, { method: "GET", headers: getHeaders() });
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: This can be object, single string or antthing
+export function OkResponse(response: any, status: number = 200) {
+  return new Response(JSON.stringify(response), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 function getHeaders(): HeadersInit {
   if (AUTH_MODE !== "MANUAL") {
     return { "Content-Type": "application/json" };

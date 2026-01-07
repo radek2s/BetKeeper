@@ -1,3 +1,4 @@
+import { DomainError } from "@domain/shared/DomainError";
 import logger from "application/logger";
 import { AuthenticationError } from "./AuthenticationError";
 import type { ExceptionResponseBody } from "./exception.interface";
@@ -20,6 +21,9 @@ export function ExceptionHandler(e: unknown, handler?: ExceptionHandlerI) {
     if (e instanceof AuthenticationError) {
       return AuthExceptionHandler(e);
     }
+    if (e instanceof DomainError) {
+      return DomainExceptionHanlder(e);
+    }
     const body: ExceptionResponseBody = { error: "Internal server error" };
     return Response.json(body, { status: 500 });
   }
@@ -32,4 +36,12 @@ export function AuthExceptionHandler(e: AuthenticationError) {
     message: e.message,
   };
   return Response.json(body, { status: 403 });
+}
+
+export function DomainExceptionHanlder(e: DomainError) {
+  const body: ExceptionResponseBody = {
+    error: "Business rules error",
+    message: e.message,
+  };
+  return Response.json(body, { status: 400 });
 }

@@ -8,6 +8,14 @@ export async function fetchUser(): Promise<UserType> {
   return res.json();
 }
 
+export async function createUserRequest(email: string): Promise<void> {
+  const url = "/api/v1/user";
+  const response = await sendRequest(url, "POST", { email });
+
+  if (!response.ok) throw new Error("Failed to create user request");
+  return response.json();
+}
+
 export async function updateUserProfileImage(avatarUrl: string): Promise<void> {
   const url = "/api/v1/user/image";
   const response = await sendRequest(url, "PUT", { avatarUrl });

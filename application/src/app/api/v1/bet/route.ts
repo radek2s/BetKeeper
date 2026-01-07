@@ -1,17 +1,16 @@
 import { mapToResponse } from "@app/features/bets/model/betDto";
 import { userIdToUserType } from "@app/features/users/model/userDto";
-import {
-  getAuthenticatedUserFromCookie,
-  validateToken,
-} from "@app/server/auth/authentication";
+import { OkResponse } from "@app/lib/utils/fetchUtils";
+import { getAuth } from "@app/server/auth/authenticatorFactory";
+import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import NextBetService from "@app/server/services/NextBetService";
 import type { UserType } from "@domain/user/entities";
+import logger from "application/logger";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const user = await getAuthenticatedUserFromCookie();
-    if (!user) throw new Error("Unauthorized");
+    const user = await getAuth().getUser(req);
     const requests = await NextBetService.getAllByParticipantId(user?.id);
     const repository = new NextUserRepository();
 
@@ -31,6 +30,27 @@ export async function GET() {
     const reponse = requests.map((request) => mapToResponse(request, userMap));
     return Response.json(reponse);
   } catch (e) {
-    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+    return ExceptionHandler(e);
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const user = await getAuth().getUser(req);
+    const betRequest = await NextBetService.create(
+      body.title,
+      body.terms,
+      body.creatorId,
+      body.participants,
+      body.stake,
+    );
+    await NextBetService.approve(betRequest.id, user.id);
+    logger.info(
+      `[BetRequest][${betRequest.id}][Created] - Created by ${user.id}`,
+    );
+    return OkResponse(betRequest.toObject(), 201);
+  } catch (e) {
+    return ExceptionHandler(e);
   }
 }
