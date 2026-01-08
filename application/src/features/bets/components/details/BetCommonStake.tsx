@@ -12,7 +12,7 @@ function BetCommonStake({ betRequestId, stake }: CommonStakesProps) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [newStake, setNewStake] = useState<string>(stake);
 
-  const { mutateAsync, isPending } = useBetRequestStakesMutation(
+  const { mutateAsync, isPending, isError } = useBetRequestStakesMutation(
     betRequestId ?? "",
   );
 
@@ -37,18 +37,25 @@ function BetCommonStake({ betRequestId, stake }: CommonStakesProps) {
       <p className="text-xs text-gray">when anyone win he:</p>
       {isEditable ? (
         editMode ? (
-          <div className="flex gap-1">
-            <Input
-              value={newStake}
-              onChange={(e) => setNewStake(e.target.value)}
-            />
-            <IconButton icon="close" onClick={handleClose} />
-            <IconButton
-              icon="send"
-              variant="primary"
-              onClick={handleUpdate}
-              isLoading={isPending}
-            />
+          <div className="flex flex-col items-center">
+            <div className="flex gap-1">
+              <Input
+                value={newStake}
+                onChange={(e) => setNewStake(e.target.value)}
+              />
+              <IconButton icon="close" onClick={handleClose} />
+              <IconButton
+                icon="send"
+                variant="primary"
+                onClick={handleUpdate}
+                isLoading={isPending}
+              />
+            </div>
+            {isError && (
+              <p className="text-error">
+                Failed to update stakes. Try again later
+              </p>
+            )}
           </div>
         ) : (
           <button

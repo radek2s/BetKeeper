@@ -93,7 +93,9 @@ function BetTerms({ betRequest }: BetTermsProps) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [terms, setTerms] = useState<string>(betRequest.terms);
 
-  const { mutateAsync, isPending } = useBetRequestTermsMutation(betRequest.id);
+  const { mutateAsync, isPending, isError } = useBetRequestTermsMutation(
+    betRequest.id,
+  );
 
   const handleClose = () => {
     setTerms(betRequest.terms);
@@ -113,19 +115,26 @@ function BetTerms({ betRequest }: BetTermsProps) {
       <h2 className="font-bold">Terms</h2>
       <p className="text-xs text-gray">bet defined</p>
       {editMode ? (
-        <div className="flex gap-1 items-center my-2">
-          <Input
-            className="w-full"
-            value={terms}
-            onChange={(e) => setTerms(e.target.value)}
-          />
-          <IconButton icon="close" onClick={handleClose} />
-          <IconButton
-            icon="send"
-            variant="primary"
-            onClick={handleUpdate}
-            isLoading={isPending}
-          />
+        <div className="flex flex-col">
+          <div className="flex gap-1 items-center my-2">
+            <Input
+              className="w-full"
+              value={terms}
+              onChange={(e) => setTerms(e.target.value)}
+            />
+            <IconButton icon="close" onClick={handleClose} />
+            <IconButton
+              icon="send"
+              variant="primary"
+              onClick={handleUpdate}
+              isLoading={isPending}
+            />
+          </div>
+          {isError && (
+            <p className="text-error">
+              Failed to update terms. Try again later
+            </p>
+          )}
         </div>
       ) : (
         <button
@@ -169,10 +178,16 @@ interface BetIdProps {
   betRequestId: string;
 }
 function VoteActions({ activeUserVote, betRequestId }: BetIdProps) {
-  const { mutateAsync: approve, isPending: isApprovePending } =
-    useBetRequestApproveMutation(betRequestId);
-  const { mutateAsync: reject, isPending: isRejectPending } =
-    useBetRequestRejectMutation(betRequestId);
+  const {
+    mutateAsync: approve,
+    isPending: isApprovePending,
+    isError: isApproveError,
+  } = useBetRequestApproveMutation(betRequestId);
+  const {
+    mutateAsync: reject,
+    isPending: isRejectPending,
+    isError: isRejectError,
+  } = useBetRequestRejectMutation(betRequestId);
 
   const isLoading = isApprovePending || isRejectPending;
 
@@ -203,6 +218,9 @@ function VoteActions({ activeUserVote, betRequestId }: BetIdProps) {
         <Button onClick={handleReject} className="mt-1" isLoading={isLoading}>
           Reject
         </Button>
+        {isRejectError && (
+          <p className="text-error">Failed to reject, try again.</p>
+        )}
       </div>
     );
 
@@ -217,6 +235,9 @@ function VoteActions({ activeUserVote, betRequestId }: BetIdProps) {
         <Button onClick={handleApprove} className="mt-1" isLoading={isLoading}>
           Approve
         </Button>
+        {isApproveError && (
+          <p className="text-error">Failed to approve, try again.</p>
+        )}
       </div>
     );
 
@@ -241,6 +262,9 @@ function VoteActions({ activeUserVote, betRequestId }: BetIdProps) {
           </>
         )}
       </div>
+      {(isApproveError || isRejectError) && (
+        <p className="text-error">Failed to send your vote, try again.</p>
+      )}
     </div>
   );
 }
@@ -250,7 +274,7 @@ interface StartBetButtonProps {
   participants: BetParticipantResponse[];
 }
 function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
-  const { mutateAsync, isPending } = useBetStartMutation(betRequestId);
+  const { mutateAsync, isPending, isError } = useBetStartMutation(betRequestId);
 
   const approved = participants.every(({ vote }) => vote === "approved");
 
@@ -279,6 +303,11 @@ function StartBetButton({ betRequestId, participants }: StartBetButtonProps) {
           <Icon name="handshake" />
           Make deal
         </Button>
+        {isError && (
+          <p className="text-error">
+            Something went wrong. Try refresh page and try again.
+          </p>
+        )}
       </div>
     );
   return null;

@@ -31,7 +31,7 @@ function ParticipantDetails({
   const [editMode, setEditMode] = useState<boolean>(false);
   const [claim, setClaim] = useState<string>(participant.claim);
 
-  const { mutateAsync, isPending } = useBetRequestClaimsMutation(
+  const { mutateAsync, isPending, isError } = useBetRequestClaimsMutation(
     betRequestId ?? "",
   );
 
@@ -66,6 +66,7 @@ function ParticipantDetails({
           editMode ? (
             <div className="flex flex-col gap-1">
               <Input value={claim} onChange={(e) => setClaim(e.target.value)} />
+              {isError && <p className="text-error">Failed to update claims</p>}
               <div className="flex justify-center gap-2">
                 <IconButton icon="close" onClick={handleClose} />
                 <IconButton

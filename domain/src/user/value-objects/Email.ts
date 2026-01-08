@@ -1,3 +1,5 @@
+import { DomainError } from "@domain/shared/DomainError";
+
 /**
  * Email Value Object
  * Represents a valid email address that serves as username in the system
@@ -9,21 +11,21 @@ export class Email {
 
   constructor(value: string) {
     if (!value || value.trim().length === 0) {
-      throw new Error("Email cannot be empty");
+      throw new DomainError("Email cannot be empty");
     }
 
     const trimmedValue = value.trim().toLowerCase();
 
     if (!Email.EMAIL_REGEX.test(trimmedValue)) {
-      throw new Error("Invalid email format");
+      throw new DomainError("Invalid email format");
     }
 
     const [localPart, domainPart] = trimmedValue.split("@");
     if (localPart.length > 64) {
-      throw new Error("Email local part cannot exceed 64 characters");
+      throw new DomainError("Email local part cannot exceed 64 characters");
     }
     if (domainPart.length > 190) {
-      throw new Error("Email domain part cannot exceed 190 characters");
+      throw new DomainError("Email domain part cannot exceed 190 characters");
     }
 
     this._value = trimmedValue;

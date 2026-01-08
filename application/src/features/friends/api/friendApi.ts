@@ -13,7 +13,13 @@ export async function inviteFriend(
 ): Promise<"invite" | "create"> {
   const url = "/api/v1/friend";
   const res = await sendRequest(url, "POST", { email });
-  if (!res.ok) throw new Error("Failed to invite friend");
+
+  if (!res.ok) {
+    const { error, message } = await res.json();
+    if (error === "Business rules error") throw new Error(message);
+
+    throw new Error("Failed to invite friend");
+  }
 
   return (await res.json()).result;
 }

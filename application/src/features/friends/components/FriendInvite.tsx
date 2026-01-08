@@ -15,8 +15,12 @@ export function FriendInvite() {
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
   const [loadingInvite, setLoadingInvite] = useState<boolean>(false);
   const [loadingRequest, setLoadingRequest] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const { mutateAsync: inviteMutation } = useFriendInviteMutation();
+
+  const {
+    mutateAsync: inviteMutation,
+    error,
+    isPending,
+  } = useFriendInviteMutation();
   const { mutateAsync: userInviteMutation } = useUserCreateMutation();
 
   const friendEmailRef = useRef<HTMLInputElement>(null);
@@ -25,7 +29,6 @@ export function FriendInvite() {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     setLoadingInvite(true);
-    setError(null);
     e.preventDefault();
     const email = friendEmailRef.current?.value.trim();
     if (!email) return;
@@ -41,9 +44,6 @@ export function FriendInvite() {
       setLoadingInvite(false);
       setOpen(false);
     } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      }
       console.error("Failed to send friend request", e);
     }
   };
@@ -85,7 +85,7 @@ export function FriendInvite() {
             />
             {error && (
               <span role="alert" className="text-error">
-                {error}
+                {error.message}
               </span>
             )}
             <UserCreateConfirmDialog
@@ -101,7 +101,7 @@ export function FriendInvite() {
               <Button
                 variant="primary"
                 onClick={handleInvitation}
-                isLoading={loadingInvite}>
+                isLoading={isPending}>
                 Invite
               </Button>
             </div>
