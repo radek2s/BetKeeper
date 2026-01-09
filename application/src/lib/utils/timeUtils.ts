@@ -3,8 +3,7 @@ export function toRelativeTime(date: Date) {
   const nowTime = Date.now();
 
   const diff = nowTime - dateTime;
-  if (diff < 0)
-    throw new Error("Invalid time! Can't calculate relative value to future");
+  if (diff < 0) return [0, "seconds"];
 
   return getTimeUnit(diff);
 
