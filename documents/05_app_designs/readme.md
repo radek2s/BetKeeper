@@ -9,6 +9,9 @@ In this folder there are design graphics that helps to visualize BetKeeper Inter
 
 ![image](./dark/01%20-%20Create%20Bet.jpg)
 
+Bet creation wizzard:
+![image](./dark/01-01%20-%20Create%20Bet%20Flow.jpg)
+
 
 ### Bet request details page
 
