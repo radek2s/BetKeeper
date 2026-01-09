@@ -1,4 +1,5 @@
 import type { DomainEvent } from "@domain/shared";
+import logger from "application/logger";
 
 export class EventStream {
   private clients = new Map<string, ReadableStreamDefaultController>();
@@ -15,12 +16,14 @@ export class EventStream {
   }
 
   subscribe(watcherId: string) {
+    logger.info(`New watcher: ${watcherId}`);
     const stream = new ReadableStream({
       start: (controller: ReadableStreamDefaultController) => {
         this.clients.set(watcherId, controller);
         try {
           //@ts-expect-error
           controller.signal?.addEventListener("abort", () => {
+            logger.info(`Stream for watcher ${watcherId} has been aborted.`);
             this.clients.delete(watcherId);
           });
         } catch {}
@@ -33,12 +36,17 @@ export class EventStream {
   broadcast(event: DomainEvent, watchers: string[]) {
     const encoder = new TextEncoder();
     const data = JSON.stringify(event);
+    logger.info(`Active subscribers: ${this.clients.size}`);
+    logger.info(`Broadcasting to watchers: ${watchers.join(", ")}`);
 
     watchers.forEach((watcherId) => {
       const controller = this.clients.get(watcherId);
       try {
+        logger.info(`Sending data to controller: ${watcherId}`);
         controller?.enqueue(encoder.encode(`data: ${data}\n\n`));
-      } catch {
+      } catch (e) {
+        logger.error(e);
+
         this.clients.delete(watcherId);
       }
     });
