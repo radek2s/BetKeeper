@@ -15,3 +15,11 @@ export abstract class DomainEvent {
 
   abstract toLog(): string;
 }
+
+export interface EventWithWatchers {
+  readonly watchers: string[];
+}
+
+export function isWithWatchers(event: object): event is EventWithWatchers {
+  return Object.hasOwn(event, "watchers");
+}

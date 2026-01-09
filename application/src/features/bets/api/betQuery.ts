@@ -15,7 +15,7 @@ import {
   updateTerms,
 } from "./betApi";
 
-const queryKeys = {
+export const queryKeys = {
   bets: "bets",
   bet: "bet",
 } as const;

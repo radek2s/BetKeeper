@@ -20,6 +20,9 @@ export class FriendRequestSentEvent extends DomainEvent {
   getAggregateId(): string {
     return this.senderId;
   }
+  override toLog(): string {
+    return `FriendRequest[${this.requestId}]::Sent by ${this.senderId}`;
+  }
 }
 
 /**
@@ -40,6 +43,10 @@ export class FriendRequestApprovedEvent extends DomainEvent {
 
   getAggregateId(): string {
     return this.receiverId;
+  }
+
+  override toLog(): string {
+    return `FriendRequest[${this.requestId}]::Approved`;
   }
 }
 
@@ -62,6 +69,10 @@ export class FriendRequestRejectedEvent extends DomainEvent {
   getAggregateId(): string {
     return this.receiverId;
   }
+
+  override toLog(): string {
+    return `FriendRequest[${this.requestId}]::Rejected`;
+  }
 }
 
 /**
@@ -80,6 +91,10 @@ export class FriendRemovedEvent extends DomainEvent {
 
   getAggregateId(): string {
     return this.userId;
+  }
+
+  override toLog(): string {
+    return `Friend[${this.removedFriendId}]::Removed by ${this.userId}`;
   }
 }
 
@@ -101,6 +116,10 @@ export class InvitationRequestSentEvent extends DomainEvent {
 
   getAggregateId(): string {
     return this.requesterId;
+  }
+
+  override toLog(): string {
+    return `FriendRequest[${this.requestId}]::Created by ${this.requesterId}`;
   }
 }
 
@@ -129,5 +148,9 @@ export class InvitationRequestApprovedEvent extends DomainEvent {
 
   getAggregateId(): string {
     return this.requesterId;
+  }
+
+  override toLog(): string {
+    return `FriendRequest[${this.requestId}]::Approved by ${this.approvedById}`;
   }
 }

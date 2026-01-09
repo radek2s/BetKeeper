@@ -82,7 +82,14 @@ export abstract class AbstractBet extends Entity {
     this._status = "pending";
     this._updatedAt = new Date();
 
-    this.addDomainEvent(new BetCreatedEvent(this.id, this.creatorId));
+    this.addDomainEvent(
+      new BetCreatedEvent(
+        this.id,
+        this.creatorId,
+        this.title,
+        this.getParticipantIds(),
+      ),
+    );
   }
 
   get status(): BetStatus {
@@ -163,7 +170,13 @@ export abstract class AbstractBet extends Entity {
     this._winnerId = winnerId;
     this.dueDate = dueDate;
     this.addDomainEvent(
-      new BetActionEvent(this.id, "resolve", resolvedByParticipantId),
+      new BetActionEvent(
+        this.id,
+        "resolve",
+        resolvedByParticipantId,
+        this.title,
+        this.getParticipantIds(),
+      ),
     );
   }
 
@@ -179,7 +192,13 @@ export abstract class AbstractBet extends Entity {
     this._completedBy = completedByParticipantId;
     this._updatedAt = now;
     this.addDomainEvent(
-      new BetActionEvent(this.id, "complete", completedByParticipantId),
+      new BetActionEvent(
+        this.id,
+        "complete",
+        completedByParticipantId,
+        this.title,
+        this.getParticipantIds(),
+      ),
     );
   }
 
@@ -188,7 +207,15 @@ export abstract class AbstractBet extends Entity {
       throw new DomainError("Cannot delete: bet is already deleted!");
     this._status = "deleted";
     this._updatedAt = new Date();
-    this.addDomainEvent(new BetActionEvent(this.id, "delete", deletedById));
+    this.addDomainEvent(
+      new BetActionEvent(
+        this.id,
+        "delete",
+        deletedById,
+        this.title,
+        this.getParticipantIds(),
+      ),
+    );
   }
 
   protected isParticipant(participantId: UUID) {
@@ -198,6 +225,10 @@ export abstract class AbstractBet extends Entity {
   private isDueDateValid(dueDate: Date) {
     const now = new Date();
     if (dueDate <= now) throw new Error("Due date must be in the future");
+  }
+
+  protected getParticipantIds(): string[] {
+    return this.participants.map((participant) => participant.userId);
   }
 
   abstract override toObject(): BetType;
