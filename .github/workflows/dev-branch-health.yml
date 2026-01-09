@@ -28,11 +28,6 @@ jobs:
       - name: Run all unit tests with coverage
         run: npm run test:coverage
 
-      - name: Build all projects
-        run: |
-          npx nx build domain
-          npx nx build application
-
       - name: Generate comprehensive test report
         uses: dorny/test-reporter@v2
         if: ${{ !cancelled() }}
@@ -51,5 +46,13 @@ jobs:
           fail_ci_if_error: false
           verbose: true
           flags: development-health
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: test-report.xml
+          report_type: test_results
 
   
