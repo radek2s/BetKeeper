@@ -26,7 +26,11 @@ export class EventStream {
             logger.info(`Stream for watcher ${watcherId} has been aborted.`);
             this.clients.delete(watcherId);
           });
-        } catch {}
+        } catch (e) {
+          if (e instanceof Error) {
+            logger.info(`Subscribe: ${e.message}`);
+          }
+        }
       },
     });
 
@@ -42,10 +46,12 @@ export class EventStream {
     watchers.forEach((watcherId) => {
       const controller = this.clients.get(watcherId);
       try {
-        logger.info(`Sending data to controller: ${watcherId}`);
+        logger.info(`Sending data to controller: ${watcherId} C:${controller}`);
         controller?.enqueue(encoder.encode(`data: ${data}\n\n`));
       } catch (e) {
-        logger.error(e);
+        if (e instanceof Error) {
+          logger.info(`Broadcast: ${e.message}`);
+        }
 
         this.clients.delete(watcherId);
       }
