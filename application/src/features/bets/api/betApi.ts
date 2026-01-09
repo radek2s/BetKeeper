@@ -57,7 +57,7 @@ export async function updateStakes(
   betId: string,
   stakes: string,
 ): Promise<void> {
-  const url = `/api/v1/bet/${betId}/terms`;
+  const url = `/api/v1/bet/${betId}/stakes`;
   const res = await sendRequest(url, "PUT", { stakes });
   if (!res.ok) throw new Error("Failed to update betRequest stakes");
 }

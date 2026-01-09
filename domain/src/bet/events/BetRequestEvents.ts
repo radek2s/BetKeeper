@@ -1,13 +1,22 @@
-import { DomainEvent, type UUID } from "@domain/shared";
+import { DomainEvent, type EventWithWatchers, type UUID } from "@domain/shared";
 import type { AbstractBetRequest, StakeType } from "../entities";
 import type { BetParticipant } from "../entities/BetParticipant";
 
-export class BetRequestEvent extends DomainEvent {
+export class BetRequestEvent extends DomainEvent implements EventWithWatchers {
   readonly betId: UUID;
+  readonly title: string;
+  readonly watchers: string[];
 
-  constructor(betId: UUID, eventType: string) {
+  constructor(
+    betId: UUID,
+    eventType: string,
+    title: string,
+    participants: string[],
+  ) {
     super(eventType);
     this.betId = betId;
+    this.title = title;
+    this.watchers = participants;
   }
 
   getAggregateId(): string {
@@ -25,7 +34,6 @@ export class BetRequestEvent extends DomainEvent {
  */
 export class BetRequestCreatedEvent extends BetRequestEvent {
   readonly creatorId: UUID;
-  readonly title: string;
   readonly terms: string;
   readonly participants: BetParticipant[];
   readonly createdAt: Date;
@@ -40,9 +48,13 @@ export class BetRequestCreatedEvent extends BetRequestEvent {
     createdAt: Date,
     stakeType: StakeType,
   ) {
-    super(betId, "BetRequestCreated");
+    super(
+      betId,
+      "BetRequestCreated",
+      title,
+      participants.map((participant) => participant.userId),
+    );
     this.creatorId = creatorId;
-    this.title = title;
     this.terms = terms;
     this.participants = participants;
     this.createdAt = createdAt;
@@ -88,8 +100,10 @@ export class BetRequestUpdatedEvent extends BetRequestEvent {
     oldValue: string,
     newValue: string,
     changedBy: UUID,
+    title: string,
+    participants: string[],
   ) {
-    super(betId, "BetRequestUpdated");
+    super(betId, "BetRequestUpdated", title, participants);
     this.property = property;
     this.oldValue = oldValue;
     this.newValue = newValue;
@@ -107,8 +121,14 @@ export class BetRequestActionEvent extends BetRequestEvent {
   readonly action: ActionEventType;
   readonly executedBy: string;
 
-  constructor(betId: UUID, action: ActionEventType, executedBy: UUID) {
-    super(betId, "BetRequestActionExecuted");
+  constructor(
+    betId: UUID,
+    action: ActionEventType,
+    executedBy: UUID,
+    title: string,
+    participants: string[],
+  ) {
+    super(betId, "BetRequestActionExecuted", title, participants);
     this.action = action;
     this.executedBy = executedBy;
   }

@@ -1,4 +1,5 @@
 import { type AggregateRoot, Entity, type UUID } from "@domain/shared";
+import { DomainError } from "@domain/shared/DomainError";
 import { FriendRemovedEvent } from "../events/FriendRequestEvents";
 import { FriendRequest } from "./FriendRequest";
 import type { User } from "./User";
@@ -53,19 +54,19 @@ export class UserFriendList extends Entity {
 
   sendFriendRequest(targetUser: User): FriendRequest {
     if (!targetUser.canReceiveFriendRequests()) {
-      throw new Error("Target user cannot receive friend requests");
+      throw new DomainError("Target user cannot receive friend requests");
     }
 
     if (this.isFriend(targetUser.id)) {
-      throw new Error("User is already a friend");
+      throw new DomainError("User is already a friend");
     }
 
     if (this.hasPendingFriendRequestTo(targetUser.id)) {
-      throw new Error("Friend request already sent to this user");
+      throw new DomainError("Friend request already sent to this user");
     }
 
     if (this.hasPendingFriendRequestFrom(targetUser.id)) {
-      throw new Error("User has already sent you a friend request");
+      throw new DomainError("User has already sent you a friend request");
     }
 
     const friendRequest = FriendRequest.create(this._userId, targetUser.id);

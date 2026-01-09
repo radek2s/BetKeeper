@@ -1,11 +1,20 @@
-import { DomainEvent, type UUID } from "@domain/shared";
+import { DomainEvent, type EventWithWatchers, type UUID } from "@domain/shared";
 
-export class BetEvent extends DomainEvent {
+export class BetEvent extends DomainEvent implements EventWithWatchers {
   readonly betId: UUID;
+  readonly title: string;
+  readonly watchers: string[];
 
-  constructor(betId: UUID, eventType: string) {
+  constructor(
+    betId: UUID,
+    eventType: string,
+    title: string,
+    participants: string[],
+  ) {
     super(eventType);
     this.betId = betId;
+    this.title = title;
+    this.watchers = participants;
   }
 
   getAggregateId(): string {
@@ -23,8 +32,13 @@ export class BetEvent extends DomainEvent {
  */
 export class BetCreatedEvent extends BetEvent {
   readonly creatorId: UUID;
-  constructor(betId: UUID, creatorId: UUID) {
-    super(betId, "BetCreated");
+  constructor(
+    betId: UUID,
+    creatorId: UUID,
+    title: string,
+    participants: string[],
+  ) {
+    super(betId, "BetCreated", title, participants);
     this.creatorId = creatorId;
   }
 
@@ -39,8 +53,14 @@ export class BetActionEvent extends BetEvent {
   readonly action: BetActionEventType;
   readonly executedBy: string;
 
-  constructor(betId: UUID, action: BetActionEventType, executedBy: UUID) {
-    super(betId, "BetRequestActionExecuted");
+  constructor(
+    betId: UUID,
+    action: BetActionEventType,
+    executedBy: UUID,
+    title: string,
+    participants: string[],
+  ) {
+    super(betId, "BetRequestActionExecuted", title, participants);
     this.action = action;
     this.executedBy = executedBy;
   }

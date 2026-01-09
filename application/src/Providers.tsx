@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import type { PropsWithChildren } from "react";
+import { NotificationProvider } from "./features/notification/NotificationProvider";
 import { UserProvider } from "./features/users/UserProvider";
 
 const queryClient = new QueryClient({
@@ -22,7 +23,9 @@ export function Providers({ children }: PropsWithChildren) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>{children}</UserProvider>
+      <UserProvider>
+        <NotificationProvider>{children}</NotificationProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 }

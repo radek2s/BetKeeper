@@ -20,4 +20,8 @@ export class UserStatusChangedEvent extends DomainEvent {
   getAggregateId(): string {
     return this.userId;
   }
+
+  override toLog(): string {
+    return `User[${this.userId}]::Staus changed to ${this.newStatus}`;
+  }
 }

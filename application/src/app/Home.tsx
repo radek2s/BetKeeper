@@ -5,6 +5,7 @@ import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCre
 import BetBrowser from "@app/features/bets/components/browser";
 import { MissingFriends } from "@app/features/bets/components/MissingFriends";
 import { FriendLoader } from "@app/features/friends/components/FriendLoader";
+import { NotificationBtn } from "@app/features/notification/NotificationBtn";
 import { useUserContext } from "@app/features/users/UserProvider";
 
 import { IconButton } from "@app/ui/button/IconButton";
@@ -31,7 +32,7 @@ export function Home() {
               </div>
             </div>
             <div className="flex gap-1">
-              {/* <IconButton icon="notification" /> */}
+              <NotificationBtn />
               <Link href="/friends">
                 <IconButton
                   icon="group"

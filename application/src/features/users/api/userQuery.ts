@@ -20,6 +20,7 @@ export function useUser() {
   return useQuery({
     queryKey: [queryKeys.activeUser],
     queryFn: fetchUser,
+    retry: false,
   });
 }
 

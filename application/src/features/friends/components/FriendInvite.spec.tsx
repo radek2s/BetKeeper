@@ -10,7 +10,11 @@ vi.mock("@app/features/users/actions", () => ({
   createUserRequest: vi.fn(),
 }));
 vi.mock("@app/features/friends/api/friendQuery", () => ({
-  useFriendInviteMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+  useFriendInviteMutation: vi.fn().mockReturnValue({
+    mutateAsync: vi.fn(),
+    error: vi.fn().mockReturnValue(null),
+    isPending: false,
+  }),
 }));
 vi.mock("@app/features/users/api/userQuery", () => ({
   useUserCreateMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
@@ -56,6 +60,10 @@ describe("Friend Invite Form Tests", () => {
       await act(async () => {
         await fireEvent.click(acceptBtn);
       });
+
+      (useFriendInviteMutation().error as unknown as Mock).mockReturnValue(
+        new Error("Invalid email format"),
+      );
 
       expect(screen.getByRole("alert")).toBeDefined();
     });

@@ -76,7 +76,15 @@ export abstract class AbstractBetRequest extends Entity {
     this._updatedAt = new Date();
     this.resetVotes(updatingId);
     this.addDomainEvent(
-      new BetRequestUpdatedEvent(this.id, "title", oldValue, value, updatingId),
+      new BetRequestUpdatedEvent(
+        this.id,
+        "title",
+        oldValue,
+        value,
+        updatingId,
+        this._title,
+        this.getParticipantIds(),
+      ),
     );
   }
 
@@ -90,7 +98,15 @@ export abstract class AbstractBetRequest extends Entity {
     this._updatedAt = new Date();
     this.resetVotes(updatingId);
     this.addDomainEvent(
-      new BetRequestUpdatedEvent(this.id, "terms", oldValue, value, updatingId),
+      new BetRequestUpdatedEvent(
+        this.id,
+        "terms",
+        oldValue,
+        value,
+        updatingId,
+        this._title,
+        this.getParticipantIds(),
+      ),
     );
   }
 
@@ -117,6 +133,8 @@ export abstract class AbstractBetRequest extends Entity {
           oldValue,
           value,
           participantId,
+          this._title,
+          this.getParticipantIds(),
         ),
       );
     }
@@ -143,7 +161,13 @@ export abstract class AbstractBetRequest extends Entity {
     });
     this._updatedAt = new Date();
     this.addDomainEvent(
-      new BetRequestActionEvent(this.id, "approve", participantId),
+      new BetRequestActionEvent(
+        this.id,
+        "approve",
+        participantId,
+        this._title,
+        this.getParticipantIds(),
+      ),
     );
   }
 
@@ -162,7 +186,13 @@ export abstract class AbstractBetRequest extends Entity {
     });
     this._updatedAt = new Date();
     this.addDomainEvent(
-      new BetRequestActionEvent(this.id, "reject", participantId),
+      new BetRequestActionEvent(
+        this.id,
+        "reject",
+        participantId,
+        this._title,
+        this.getParticipantIds(),
+      ),
     );
   }
 
@@ -191,6 +221,10 @@ export abstract class AbstractBetRequest extends Entity {
       throw new DomainError(
         `Invalid creatorId=${creatorId}! Creator must be participant of bet request!`,
       );
+  }
+
+  protected getParticipantIds(): string[] {
+    return this.participants.map((participant) => participant.userId);
   }
 
   override toObject(): BetRequestType {
@@ -233,7 +267,15 @@ export class CommonBetRequest extends AbstractBetRequest {
     this.resetVotes(updatingId);
     this._updatedAt = new Date();
     this.addDomainEvent(
-      new BetRequestUpdatedEvent(this.id, "stake", oldValue, value, updatingId),
+      new BetRequestUpdatedEvent(
+        this.id,
+        "stake",
+        oldValue,
+        value,
+        updatingId,
+        this._title,
+        this.getParticipantIds(),
+      ),
     );
   }
 
@@ -316,6 +358,8 @@ export class IndividualBetRequest extends AbstractBetRequest {
           oldValue,
           stake,
           participantId,
+          this._title,
+          this.getParticipantIds(),
         ),
       );
     }

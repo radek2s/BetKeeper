@@ -20,4 +20,8 @@ export class UserCreatedEvent extends DomainEvent {
   getAggregateId(): string {
     return this.userId;
   }
+
+  override toLog(): string {
+    return `User[${this.userId}]::Created`;
+  }
 }

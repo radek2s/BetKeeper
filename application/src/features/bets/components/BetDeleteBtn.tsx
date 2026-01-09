@@ -48,7 +48,7 @@ export function BetRequestDeleteBtn({ betId, activeUser, creatorId }: Props) {
 }
 export function BetDeleteBtn({ betId, activeUser, creatorId }: Props) {
   const router = useRouter();
-  const { mutateAsync, isPending } = useBetDeleteMutation(betId);
+  const { mutateAsync, isPending, isError } = useBetDeleteMutation(betId);
 
   const handleDelete = async (results: boolean) => {
     if (!results) return;
@@ -73,7 +73,15 @@ export function BetDeleteBtn({ betId, activeUser, creatorId }: Props) {
         onClose={handleDelete}
         accept="Delete"
         isLoading={isPending}>
-        <IconButton icon="delete" isLoading={isPending} />
+        <div className="flex gap-1 items-center justify-end">
+          {isError && (
+            <p className="text-xs text-error">
+              Something went wrong. Try again.
+            </p>
+          )}
+
+          <IconButton icon="delete" isLoading={isPending} />
+        </div>
       </ConfirmationDialog>
     );
   }
