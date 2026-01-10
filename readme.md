@@ -56,6 +56,12 @@ The ready release candidate version  will be shared with a small test group. The
 
 - [Biome.js](https://biomejs.dev/) Performant toolchain for WebApplication
 
+- [Vercel](https://vercel.com/) Hosting for Next.js application
+- [Supabase](https://supabase.com/) PostgreSQL database provider
+- [Corbado](https://www.corbado.com/) Passwordless authentication provider
+- [Cypress](https://www.cypress.io/) E2E Test tool
+
+
 ### Sub modules
 
 - [Domain](./domain/readme.md)
@@ -63,6 +69,7 @@ The ready release candidate version  will be shared with a small test group. The
 - [E2E Tests](./e2e-tests/readme.md)
 
 # Development Quick Start
+Project runs on [Node.js](https://nodejs.org/en) environment and is required for development.
 
 Installation
 ```
@@ -87,13 +94,27 @@ There are two modes to run application:
 - Manual Authentication (via manual set of active user ID)
 - [Corbado Authentication](https://www.corbado.com/) requires creation of free open-source project and providing valid properties to `.env` variable
 
+**Prepare Corbado authentication project**  
+Provide required properties to local `.env.local` file.
+```properties
+DB_PRISMA_URL="file:./betKeeper.db"
+NEXT_PUBLIC_CORBADO_PROJECT_ID=pro-xxxxxxxxxxxxxxxxxxx
+CORBADO_API_SECRET=corbado1_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CORBADO_FRONTEND_API=https://pro-xxxxxxxxxxxxxxxxxxx.frontendapi.cloud.corbado.io
+CORBADO_BACKEND_API=https://backendapi.cloud.corbado.io
+```
+
+Create in Corbado panel a new user.
+
 **Starting BetKeeper in development mode**
 ```shell
 npm run dev:init # To initialize SQLite database (can be ommited when already created)
 npm run dev
 ```
 
+Replace providerId value in database in `user` table with userId from Corbado panel.
 
+Visit `localhost:3000` and login as created user.
 
 
 # License
