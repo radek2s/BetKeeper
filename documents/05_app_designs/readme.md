@@ -5,6 +5,9 @@ In this folder there are design graphics that helps to visualize BetKeeper Inter
 
 ![image](./dark/00%20-%20Main%20Page.jpg)
 
+Search when clicking on search input
+![image](./dark/00-01%20-%20Search.jpg)
+
 ### Bet Request Creation
 
 ![image](./dark/01%20-%20Create%20Bet.jpg)
