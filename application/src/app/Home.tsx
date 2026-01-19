@@ -1,18 +1,22 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 "use client";
 
+import { BetLoader } from "@app/features/bets/components/BetLoader";
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
 import BetBrowser from "@app/features/bets/components/browser";
 import { MissingFriends } from "@app/features/bets/components/MissingFriends";
+import BetSearch from "@app/features/bets/components/search/BetSearch";
 import { FriendLoader } from "@app/features/friends/components/FriendLoader";
 import { NotificationBtn } from "@app/features/notification/NotificationBtn";
 import { useUserContext } from "@app/features/users/UserProvider";
 
 import { IconButton } from "@app/ui/button/IconButton";
 import Link from "next/link";
+import { useState } from "react";
 
 export function Home() {
   const user = useUserContext();
+  const [isSearchActive, setSearchActive] = useState<boolean>(false);
   return (
     <FriendLoader>
       {(friendResponse) => (
@@ -44,12 +48,26 @@ export function Home() {
           <div>
             {friendResponse.friends.length > 0 ? (
               <>
-                <BetBrowser />
+                <BetLoader>
+                  {(bets) => (
+                    <BetSearch
+                      isActive={isSearchActive}
+                      onChange={setSearchActive}
+                      bets={bets}
+                    />
+                  )}
+                </BetLoader>
 
-                <BetRequestCreateBtn
-                  friends={friendResponse.friends}
-                  creator={user}
-                />
+                {!isSearchActive && (
+                  <>
+                    <BetBrowser />
+
+                    <BetRequestCreateBtn
+                      friends={friendResponse.friends}
+                      creator={user}
+                    />
+                  </>
+                )}
               </>
             ) : (
               <MissingFriends />

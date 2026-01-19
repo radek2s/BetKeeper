@@ -248,6 +248,14 @@ body {
   background-color: #fdd037;
   border-radius: 999px;
 }
+.avatar-search {
+  cursor: pointer;
+  background-color: var(--container);
+  border-radius: 999px;
+}
+.avatar-search.active {
+  background-color: var(--primary);
+}
 
 .avatar-preview.active {
   border: 2px solid #fdd037;
@@ -324,13 +332,20 @@ body {
   background-color: var(--container-hovered);
 }
 
+.ip > .icon path {
+  fill: var(--base-text-grayed);
+}
+
 .ta::placeholder,
 .ip::placeholder {
   color: var(--base-text-grayed);
 }
 
+.ip > input:focus-visible {
+  outline: none;
+}
 .ta:focus-visible,
-.ip:focus-visible {
+.ip:has(input:focus-visible) {
   outline: 2px solid var(--primary);
   border: none;
 }

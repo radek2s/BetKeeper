@@ -27,6 +27,7 @@ export type IconType =
   | "person"
   | "person-off"
   | "question-mark"
+  | "search"
   | "security-key"
   | "send"
   | "timeline"
