@@ -3,7 +3,7 @@ import type { CommonBetParticipantResponse } from "@app/features/bets/model/betD
 import { useUserContext } from "@app/features/users/UserProvider";
 import clsx from "clsx";
 import { useMemo } from "react";
-import { useBetSearchFilter } from "../BetSearchFilterProvider";
+import { useBetSearchFilter } from "../context/BetSearchFilterProvider";
 
 function SearchParticipantFilter() {
   const { id } = useUserContext();

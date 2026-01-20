@@ -2,7 +2,7 @@ import { Button } from "@app/ui/button/Button";
 import {
   type SearchInType,
   useBetSearchFilter,
-} from "../BetSearchFilterProvider";
+} from "../context/BetSearchFilterProvider";
 
 function SearchInFilter() {
   const { searchIn, setSearchIn } = useBetSearchFilter();

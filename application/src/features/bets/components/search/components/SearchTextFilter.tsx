@@ -1,6 +1,6 @@
 import { IconButton } from "@app/ui/button/IconButton";
 import { Input } from "@app/ui/input/Input";
-import { useBetSearchFilter } from "../BetSearchFilterProvider";
+import { useBetSearchFilter } from "../context/BetSearchFilterProvider";
 
 interface Props {
   isActive: boolean;

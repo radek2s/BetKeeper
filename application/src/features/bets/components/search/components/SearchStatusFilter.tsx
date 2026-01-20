@@ -1,6 +1,6 @@
 import { Button } from "@app/ui/button/Button";
 import type { BetStatus } from "@domain/bet";
-import { useBetSearchFilter } from "../BetSearchFilterProvider";
+import { useBetSearchFilter } from "../context/BetSearchFilterProvider";
 
 function SearchStatusFilter() {
   const { status, setStatus } = useBetSearchFilter();

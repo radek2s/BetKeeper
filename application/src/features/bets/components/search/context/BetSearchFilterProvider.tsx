@@ -5,12 +5,12 @@ import {
   useContext,
   useState,
 } from "react";
-import type { BetRequestResponse, BetResponse } from "../../model/betDto";
+import type { Bet } from "../filters/filter.interface";
 
 export type SearchInType = "CREATOR" | "INVITED";
 export type SearchStatusType = BetStatus;
 export type BetSearchFilterContextType = {
-  bets: (BetRequestResponse | BetResponse)[];
+  bets: Bet[];
   searchText: string | null;
   setSearchText: (text: string | null) => void;
   searchIn: SearchInType | null;
@@ -29,7 +29,7 @@ export const BetSearchFilterContext =
   createContext<BetSearchFilterContextType | null>(null);
 
 interface Props extends PropsWithChildren {
-  bets: (BetRequestResponse | BetResponse)[];
+  bets: Bet[];
 }
 export function BetSearchFilterProvider({ bets, children }: Props) {
   const [searchText, setSearchText] = useState<string | null>(null);

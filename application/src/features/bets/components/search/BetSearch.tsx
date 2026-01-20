@@ -1,11 +1,12 @@
 import type { BetRequestResponse, BetResponse } from "../../model/betDto";
-import { BetSearchFilterProvider } from "./BetSearchFilterProvider";
-import { BetSearchResults } from "./BetSearchResults";
-import SearchCreateFilter from "./filters/SearchCreateFilter";
-import SearchInFilter from "./filters/SearchInFilter";
-import SearchParticipantFilter from "./filters/SearchParticipantFilter";
-import SearchStatusFilter from "./filters/SearchStatusFilter";
-import SearchTextFilter from "./filters/SearchTextFilter";
+import { BetSearchResults } from "./components/BetSearchResults";
+
+import SearchCreateFilter from "./components/SearchCreateFilter";
+import SearchInFilter from "./components/SearchInFilter";
+import SearchParticipantFilter from "./components/SearchParticipantFilter";
+import SearchStatusFilter from "./components/SearchStatusFilter";
+import SearchTextFilter from "./components/SearchTextFilter";
+import { BetSearchFilterProvider } from "./context/BetSearchFilterProvider";
 
 interface Props {
   isActive: boolean;

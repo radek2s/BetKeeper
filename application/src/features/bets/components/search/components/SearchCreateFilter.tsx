@@ -1,6 +1,6 @@
 import { Input } from "@app/ui/input/Input";
 import type { ChangeEvent } from "react";
-import { useBetSearchFilter } from "../BetSearchFilterProvider";
+import { useBetSearchFilter } from "../context/BetSearchFilterProvider";
 
 function SearchCreateFilter() {
   const { createdAfter, setCreatedAfter, createdBefore, setCreatedBefore } =

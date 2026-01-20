@@ -1,5 +1,5 @@
-import { BetCard } from "../BetCard";
-import { useBetFilterResults } from "./useBetFilter";
+import { BetCard } from "../../BetCard";
+import { useBetFilterResults } from "../filters";
 
 export function BetSearchResults() {
   const filterResults = useBetFilterResults();
