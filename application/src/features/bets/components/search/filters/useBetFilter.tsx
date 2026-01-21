@@ -3,7 +3,7 @@ import { pipe } from "./filter.interface";
 import { useCreatedAfterFilter } from "./useCreatedAfterFilter";
 import { useCreatedBeforeFilter } from "./useCreatedBeforeFilter";
 import { useParticipantFilter } from "./useParticipantFilter";
-import { useSerchInFilter } from "./useSearchInFilter";
+import { useSearchInFilter } from "./useSearchInFilter";
 import { useStatusInFilter } from "./useStatusInFilter";
 import { useTextFilter } from "./useTextFilter";
 
@@ -11,7 +11,7 @@ export function useBetFilterResults() {
   const { bets } = useBetSearchFilter();
 
   const filterText = useTextFilter();
-  const filterSearchIn = useSerchInFilter();
+  const filterSearchIn = useSearchInFilter();
   const filterStatusIn = useStatusInFilter();
   const filterCreatedAfter = useCreatedAfterFilter();
   const filterCreatedBefore = useCreatedBeforeFilter();

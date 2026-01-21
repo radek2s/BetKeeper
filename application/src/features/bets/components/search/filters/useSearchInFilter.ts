@@ -2,7 +2,7 @@ import { useUserContext } from "@app/features/users/UserProvider";
 import { useBetSearchFilter } from "../context/BetSearchFilterProvider";
 import type { Bet, BetSearchFilterType } from "./filter.interface";
 
-export function useSerchInFilter(): BetSearchFilterType {
+export function useSearchInFilter(): BetSearchFilterType {
   const { id } = useUserContext();
   const { searchIn } = useBetSearchFilter();
 
