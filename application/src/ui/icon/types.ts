@@ -15,6 +15,7 @@ export type IconType =
   | "error"
   | "event"
   | "fact-check"
+  | "gift"
   | "group"
   | "group-add"
   | "groups"
@@ -35,5 +36,6 @@ export type IconType =
   | "send"
   | "timeline"
   | "timer"
+  | "trophy"
   | "verified"
   | "waving-hand";

@@ -103,6 +103,8 @@ export function isBetResponse(
   return Object.hasOwn(bet, "status");
 }
 
+export type BetResponseType = BetRequestResponse | BetResponse;
+
 export type BetSummary = Pick<
   BetRequestResponse,
   | "id"

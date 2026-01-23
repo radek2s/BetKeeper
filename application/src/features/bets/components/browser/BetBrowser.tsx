@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   type BetRequestResponse,
   type BetResponse,
+  type BetResponseType,
   isBetResponse,
 } from "../../model/betDto";
 import { BetCard } from "../BetCard";
@@ -12,10 +13,8 @@ import { BetTabIcon } from "./BetTabIcon";
 import { sortByCreatedAt, sortByUpdatedAt } from "./sortUtils";
 import type { SortType, TabName } from "./types";
 
-type Bet = BetRequestResponse | BetResponse;
-
 interface Props {
-  bets: Bet[];
+  bets: BetResponseType[];
 }
 function BetBrowser({ bets }: Props) {
   const [activeTab, setActiveTab] = useState<TabName>("requests");
@@ -56,7 +55,7 @@ function BetBrowser({ bets }: Props) {
     changeTab("requests");
   }, []);
 
-  const getSorted = (a: Bet, b: Bet) => {
+  const getSorted = (a: BetResponseType, b: BetResponseType) => {
     if (sortConfig.sortBy === "UPDATED") {
       return sortByUpdatedAt(a, b);
     }
@@ -84,8 +83,8 @@ function BetBrowser({ bets }: Props) {
         <BetTabIcon
           isActive={activeTab === "resolved"}
           onClick={() => changeTab("resolved")}
-          icon="timeline"
-          name="In progress"
+          icon="gift"
+          name="Unclaimed"
         />
         <BetTabIcon
           isActive={activeTab === "completed"}
@@ -117,7 +116,7 @@ function BetBrowser({ bets }: Props) {
   );
 }
 
-function groupBets(bets: (BetRequestResponse | BetResponse)[]) {
+function groupBets(bets: BetResponseType[]) {
   const requests: BetRequestResponse[] = [];
   const pending: BetResponse[] = [];
   const resolved: BetResponse[] = [];
