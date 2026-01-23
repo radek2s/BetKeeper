@@ -237,6 +237,28 @@ body {
   z-index: 100;
 }
 
+.dropdown--content {
+  /* background-color: var(--surface); */
+  /* padding: 4px 8px; */
+}
+
+.dropdown--label {
+  font-size: 12px;
+  padding-left: 16px;
+  color: var(--base-text-grayed);
+}
+
+.dropdown--item {
+  padding: 6px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+.dropdown--item:hover {
+  background-color: var(--container);
+}
+
 .dialog--title {
   font-size: 32px;
   text-align: center;
@@ -670,6 +692,11 @@ input[type="radio"]:checked::before {
   100% {
     transform: rotate(1turn);
   }
+}
+
+.chip {
+  border-radius: 8px;
+  @apply px-3 py-1;
 }
 
 @media (prefers-color-scheme: dark) {

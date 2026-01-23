@@ -26,6 +26,9 @@ import { QuestionMarkIcon } from "./question-mark";
 import { SearchIcon } from "./search";
 import { SecurityKeyIcon } from "./security-key";
 import { SendIcon } from "./send";
+import { SortIcon } from "./sort";
+import { SortDownIcon } from "./sort-down";
+import { SortUpIcon } from "./sort-up";
 import { TimelineIcon } from "./timeline";
 import { TimerIcon } from "./timer";
 import type { IconProps, IconType } from "./types";
@@ -59,6 +62,9 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   "question-mark": QuestionMarkIcon,
   search: SearchIcon,
   "security-key": SecurityKeyIcon,
+  sort: SortIcon,
+  "sort-down": SortDownIcon,
+  "sort-up": SortUpIcon,
   send: SendIcon,
   timeline: TimelineIcon,
   timer: TimerIcon,
