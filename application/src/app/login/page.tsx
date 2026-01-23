@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default async function LoginPage() {
   const user = await getAuthenticatedUserFromCookie();
   if (user) {
-    redirect("/profile");
+    redirect("/");
   }
   return <Login />;
 }

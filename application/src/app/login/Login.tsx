@@ -5,7 +5,7 @@ import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.
 import { useRouter } from "next/navigation";
 
 async function onSignIn(router: AppRouterInstance) {
-  router.push("/profile");
+  router.push("/");
 }
 
 export function Login() {
