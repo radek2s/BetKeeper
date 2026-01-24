@@ -372,6 +372,24 @@ body {
   border: none;
 }
 
+.checkbox__root {
+  background-color: var(--container);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox__indicator {
+  background-color: var(--primary);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--base-text);
+}
+
 .ta {
   height: unset;
   border-radius: 12px;
@@ -729,6 +747,7 @@ input[type="radio"]:checked::before {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .btn-icon--badge,
+  .checkbox__indicator,
   .btn.primary {
     color: var(--surface);
 

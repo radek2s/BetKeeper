@@ -15,6 +15,7 @@ export type IconType =
   | "error"
   | "event"
   | "fact-check"
+  | "filter"
   | "gift"
   | "group"
   | "group-add"

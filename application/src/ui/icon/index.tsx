@@ -11,6 +11,7 @@ import { DeleteIcon } from "./delete";
 import { ErrorIcon } from "./error";
 import { EventIcon } from "./event";
 import { FactCheckIcon } from "./fact-check";
+import { FilterIcon } from "./filter";
 import { GiftIcon } from "./gift";
 import { GroupIcon } from "./group";
 import { GroupAddIcon } from "./group-add";
@@ -50,6 +51,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   error: ErrorIcon,
   event: EventIcon,
   "fact-check": FactCheckIcon,
+  filter: FilterIcon,
   gift: GiftIcon,
   group: GroupIcon,
   "group-add": GroupAddIcon,
