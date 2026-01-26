@@ -17,6 +17,10 @@ export default function RootLayout({
     <>
       <Head>
         <meta property="og:title"></meta>
+        <meta
+          name="theme-color"
+          content="#000000"
+          media="(prefers-color-scheme: dark)"></meta>
         <style>
           @import
           url('https://fonts.googleapis.com/css2?family=Akatab:wght@400;500;600;700;800;900&family=Fira+Code:wght@300..700&display=swap');

@@ -66,7 +66,7 @@ function BetBrowser({ bets }: Props) {
     sortConfig.order === "ASC" ? sortedBets : sortedBets.reverse();
 
   return (
-    <div className="min-w-[400px]">
+    <div className="bet-browser">
       <div className="flex justify-between my-4">
         <BetTabIcon
           isActive={activeTab === "requests"}
@@ -98,12 +98,12 @@ function BetBrowser({ bets }: Props) {
           {activeBets.length === 0 ? (
             <BetEmptyList tabName={activeTab} />
           ) : (
-            <div>
+            <div className="mb-2">
               <div className="flex justify-end mb-3">
                 <BetSortBtn state={sortConfig} onChange={setSortConfig} />
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 items-center">
                 {orderedBets.map((request) => (
                   <BetCard key={request.id} bet={request} />
                 ))}

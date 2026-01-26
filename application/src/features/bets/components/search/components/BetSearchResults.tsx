@@ -8,9 +8,11 @@ export function BetSearchResults() {
       <span className="text-xs">Results</span>
       <hr />
       <div className="mt-4">
-        {filterResults.map((bet) => (
-          <BetCard key={bet.id} bet={bet} />
-        ))}
+        {filterResults.length === 0 ? (
+          <div className="text-center">No results found.</div>
+        ) : (
+          filterResults.map((bet) => <BetCard key={bet.id} bet={bet} />)
+        )}
       </div>
     </div>
   );

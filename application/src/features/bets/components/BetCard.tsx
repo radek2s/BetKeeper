@@ -1,7 +1,6 @@
 /** biome-ignore-all lint/performance/noImgElement: <explanation> */
 /** biome-ignore-all lint/a11y/useAltText: <explanation> */
 
-import { useUserContext } from "@app/features/users/UserProvider";
 import { toRelativeTime } from "@app/lib/utils/timeUtils";
 import { Icon } from "@app/ui/icon";
 import { Panel } from "@app/ui/layout/Panel";
@@ -21,7 +20,6 @@ interface Props {
 }
 export function BetCard({ bet }: Props) {
   const isBet = isBetResponse(bet);
-  const { id } = useUserContext();
   const betRequestStatus = (): ReactNode => {
     if (isBet) return null;
     return <RequestStatus variant="small" participants={bet.participants} />;

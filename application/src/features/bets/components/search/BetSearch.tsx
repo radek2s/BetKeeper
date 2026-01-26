@@ -15,7 +15,7 @@ interface Props {
 }
 function BetSearch({ isActive, onChange, bets }: Props) {
   return (
-    <div>
+    <div className="bet-search">
       <BetSearchFilterProvider bets={bets}>
         <SearchTextFilter isActive={isActive} onChange={onChange} />
         {isActive && (
