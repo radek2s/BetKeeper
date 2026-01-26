@@ -562,6 +562,36 @@ input[type="radio"]:checked::before {
 .bet-card__avatars .avatar.rejected {
   background-color: var(--error);
 }
+
+.bet-card__avatars .avatar_wrapper {
+  display: inline-block;
+  position: relative;
+  width: 32px;
+  height: 32px;
+}
+.bet-card__avatars .avatar_wrapper .avatar {
+  position: absolute;
+  left: 0;
+  height: 32px;
+  width: 32px;
+}
+.bet-card__avatars .avatar_wrapper:last-of-type {
+  left: -8px;
+}
+.bet-card__avatars .avatar_wrapper.winner {
+  z-index: 2;
+}
+
+.bet-card__avatars .avatar_wrapper .avatar_laurel {
+  position: relative;
+  height: 38px;
+  top: 2px;
+  filter: drop-shadow(2px 4px 6px black);
+  left: -9px;
+  min-width: fit-content;
+  z-index: -1;
+}
+
 .bet-card__created svg {
   height: 16px;
 }
@@ -575,15 +605,14 @@ input[type="radio"]:checked::before {
   min-width: 86px;
 }
 
+.bet-request__avatars .avatar {
+  position: absolute;
+}
 .bet-request__avatars .avatar,
 .bet-card__avatars .avatar {
-  position: absolute;
   outline: 3px solid var(--container);
 }
-.bet-card__avatars .avatar:last-of-type {
-  position: relative;
-  left: 24px;
-}
+
 .bet-request__avatars .avatar:last-of-type {
   position: relative;
   left: 32px;

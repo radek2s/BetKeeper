@@ -10,8 +10,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import {
   type BetParticipantResponse,
+  type BetResponse,
   type BetResponseType,
-  type BetSummary,
   isBetResponse,
 } from "../model/betDto";
 import { RequestStatus } from "./details/request/BetRequestDetails";
@@ -23,7 +23,7 @@ export function BetCard({ bet }: Props) {
   const isBet = isBetResponse(bet);
   const { id } = useUserContext();
   const betRequestStatus = (): ReactNode => {
-    if (isBet) return <BetWinnerStatus userId={id} winnerId={bet.winnerId} />;
+    if (isBet) return null;
     return <RequestStatus variant="small" participants={bet.participants} />;
   };
   return (
@@ -33,6 +33,7 @@ export function BetCard({ bet }: Props) {
         className="w-full text-left flex flex-col gap-1 pt-1">
         <header className="flex items-center">
           <ParticipantAvatars
+            winnerId={(bet as BetResponse)?.winnerId}
             creatorId={bet.creatorId}
             participants={bet.participants}
           />
@@ -50,10 +51,12 @@ export function BetCard({ bet }: Props) {
 
 interface ParticipantAvatarsProps {
   creatorId: string;
+  winnerId?: string;
   participants: BetParticipantResponse[];
 }
 function ParticipantAvatars({
   creatorId,
+  winnerId,
   participants,
 }: ParticipantAvatarsProps) {
   const sortedParticipants = participants.sort((a, b) => {
@@ -65,12 +68,21 @@ function ParticipantAvatars({
   return (
     <div className="bet-card__avatars">
       {sortedParticipants.map((participant) => (
-        <img
-          title={`${participant.firstName} ${participant.lastName}`}
+        <div
           key={participant.userId}
-          className={clsx(["w-[32px] avatar", participant.vote])}
-          src={participant.avatarUrl || "/avatars/avatar_00.png"}
-        />
+          className={clsx([
+            "avatar_wrapper",
+            { winner: winnerId === participant.userId },
+          ])}>
+          <img
+            title={`${participant.firstName} ${participant.lastName}`}
+            className={clsx(["w-[32px] avatar", participant.vote])}
+            src={participant.avatarUrl || "/avatars/avatar_00.png"}
+          />
+          {winnerId === participant.userId && (
+            <img className={clsx(["avatar_laurel"])} src={"/laurel.png"} />
+          )}
+        </div>
       ))}
     </div>
   );
