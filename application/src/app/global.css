@@ -547,6 +547,28 @@ input[type="radio"]:checked::before {
   width: clamp(10vw, 400px, 90vw);
 }
 
+.panel-loading {
+  margin: -2px;
+  border: 2px;
+  width: clamp(10vw, 400px, 90vw);
+  height: 600px;
+}
+
+.skeleton {
+  border-radius: 4px;
+  background: linear-gradient(
+    -45deg,
+    var(--container) 30%,
+    var(--container-hovered) 50%,
+    var(--container) 70%
+  );
+  background-size: 400%;
+  animation: skeleton-loader-anim 1.5s linear infinite;
+}
+.skeleton.rounded {
+  border-radius: 99px;
+}
+
 .bet-card {
   width: clamp(10vw, 400px, 90vw);
 }
@@ -591,7 +613,7 @@ input[type="radio"]:checked::before {
   position: relative;
   height: 38px;
   top: 2px;
-  filter: drop-shadow(2px 4px 6px black);
+  filter: drop-shadow(2px 4px 6px #aaa);
   left: -9px;
   min-width: fit-content;
   z-index: -1;
@@ -738,6 +760,15 @@ input[type="radio"]:checked::before {
       20px 0 #0002,
       -20px 0 #000;
     background: #000;
+  }
+}
+
+@keyframes skeleton-loader-anim {
+  0% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0 0;
   }
 }
 

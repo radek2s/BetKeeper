@@ -4,6 +4,9 @@
 import { BetLoader } from "@app/features/bets/components/BetLoader";
 import { BetRequestCreateBtn } from "@app/features/bets/components/BetRequestCreateBtn";
 import BetBrowser from "@app/features/bets/components/browser";
+import HomePageSkeleton, {
+  BetSearchSkeleton,
+} from "@app/features/bets/components/HomePageSkeleton";
 import { MissingFriends } from "@app/features/bets/components/MissingFriends";
 import BetSearch from "@app/features/bets/components/search/BetSearch";
 import { FriendLoader } from "@app/features/friends/components/FriendLoader";
@@ -18,7 +21,7 @@ export function Home() {
   const user = useUserContext();
   const [isSearchActive, setSearchActive] = useState<boolean>(false);
   return (
-    <FriendLoader>
+    <FriendLoader loader={<HomePageSkeleton />}>
       {(friendResponse) => (
         <>
           <header className="flex w-full justify-between items-center my-4 px-4">
@@ -48,7 +51,7 @@ export function Home() {
           <div>
             {friendResponse.friends.length > 0 ? (
               <>
-                <BetLoader>
+                <BetLoader loader={<BetSearchSkeleton />}>
                   {(bets) => (
                     <BetSearch
                       isActive={isSearchActive}

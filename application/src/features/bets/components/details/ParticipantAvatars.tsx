@@ -17,7 +17,7 @@ function ParticipantsAvatars({
         {participants.map((participant) => (
           <img
             key={participant.userId}
-            className="w-[36px] avatar"
+            className="w-[36px] h-[36px] avatar"
             src={participant.avatarUrl}
           />
         ))}
