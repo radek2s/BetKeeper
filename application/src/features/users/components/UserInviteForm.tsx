@@ -1,6 +1,6 @@
 "use client";
 
-import { createUserRequest } from "@app/features/users/actions";
+// import { createUserRequest } from "@app/features/users/actions";
 import { IconButton } from "@app/ui/button/IconButton";
 import { Input } from "@app/ui/input/Input";
 import { useCorbado } from "@corbado/react";
@@ -17,7 +17,7 @@ export function UserInviteForm() {
       if (!inputRef.current) return;
       const email = inputRef.current?.value.trim();
       if (!email) return;
-      await createUserRequest(email, sessionToken);
+      // await createUserRequest(email, sessionToken);
       inputRef.current.value = "";
     } catch (e) {
       if (e instanceof Error) {

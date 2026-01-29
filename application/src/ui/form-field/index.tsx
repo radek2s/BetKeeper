@@ -21,7 +21,13 @@ export const FormField = forwardRef(
           </label>
         )}
         <div className={clsx(["ip", className])}>
-          <input id={id ?? name} name={name} ref={ref} {...props} />
+          <input
+            id={id ?? name}
+            name={name}
+            ref={ref}
+            className={"w-full"}
+            {...props}
+          />
         </div>
       </div>
     );

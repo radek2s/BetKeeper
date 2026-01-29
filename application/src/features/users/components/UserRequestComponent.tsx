@@ -1,11 +1,8 @@
 "use client";
-import {
-  approveUserRequest,
-  rejectUserRequest,
-} from "@app/features/users/actions";
+
 import { IconButton } from "@app/ui/button/IconButton";
 import { ConfirmationDialog } from "@app/ui/confirm-dialog";
-import { useCorbado } from "@corbado/react";
+
 import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
 import { toRelativeTime } from "application/src/lib/utils/timeUtils";
 import {
@@ -17,29 +14,36 @@ interface Props {
   request: UserRequestWithRequester;
 }
 export function UserRequestComponent({ request }: Props) {
-  const { sessionToken } = useCorbado();
   const handleApproval = async (data: UserRequestData | null) => {
     if (data) {
-      await approveUserRequest(
-        request.id,
-        data.firstName,
-        data.lastName,
-        sessionToken,
-      );
+      try {
+        //TODO: Implement approve user request method
+        throw new Error("Method not implemented");
+        // await approveUserRequest(
+        //   request.id,
+        //   data.firstName,
+        //   data.lastName,
+        //   sessionToken,
+        // );
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
   const handleReject = async (performAction: boolean) => {
     if (!performAction) return;
     try {
-      await rejectUserRequest(request.id, sessionToken);
+      //TODO: Implement reject user request method
+      throw new Error("Method not implemented");
+      // await rejectUserRequest(request.id, sessionToken);
     } catch (e) {
       console.error(e);
     }
   };
 
   const relativeTime = () => {
-    const [value, unit] = toRelativeTime(request.createdAt);
+    const [value, unit] = toRelativeTime(new Date(request.createdAt));
     if (unit === "second(s)") return "now";
     return `${value} ${unit} ago`;
   };

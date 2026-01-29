@@ -1,5 +1,3 @@
-import { ManualSession } from "@app/server/auth/session/manualSession";
-
 export type RequestMethod = "POST" | "PUT" | "DELETE";
 
 export const AUTH_MODE = process.env.NEXT_PUBLIC_AUTH_MODE ?? "CORBADO";
@@ -17,7 +15,7 @@ export function sendRequest(url: string, method: RequestMethod, payload?: any) {
  * getRequest
  *
  * Send request to server API. When using manual mode it will
- * append to each request acitve user identifier from ManualSessionManager
+ * append to each request acitve user identifier from LocalStorage
  * @param url
  * @returns
  */
@@ -38,7 +36,13 @@ function getHeaders(): HeadersInit {
     return { "Content-Type": "application/json" };
   } else {
     const headers = new Headers({ "Content-Type": "application/json" });
-    headers.set("X-ACTIVE-USERID", ManualSession.userId);
+    const userId =
+      localStorage.getItem("active-user-id") ??
+      process.env.NEXT_PUBLIC_USER_ID ??
+      "";
+    if (!userId) throw new Error("UserId must not be null!");
+
+    headers.set("X-ACTIVE-USERID", userId);
     return headers;
   }
 }
