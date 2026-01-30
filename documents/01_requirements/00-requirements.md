@@ -54,14 +54,13 @@ Bet Request must contains details such as:
 
 
 
-- ... BKR_20 <span style="color: #DB9724">(Functional)</span> Bet list should have ability to filter bets by:
+- ✓ BKR_20 <span style="color: #DB9724">(Functional)</span> Bet list should have ability to filter bets by:
     - status field
     - participatns
     - creation date
-- ... BKR_21 <span style="color: #DB9724">(Functional)</span> Bet list should have ability to sort bets by:
+- ✓ BKR_21 <span style="color: #DB9724">(Functional)</span> Bet list should have ability to sort bets by:
     - status field
     - creation date
-    - due date
 - ✓ BKR_22 <span style="color: #DB9724">(Functional)</span> User should be able to add another user to his friend list by username (email is a username).
 - ✓ BKR_23 <span style="color: #DB9724">(Functional)</span> User should be able create new user invitation request to administrator.
 - ✓ BKR_24 <span style="color: #DB9724">(Functional)</span> Administrator should be able to approve invitation of new user.
@@ -73,7 +72,7 @@ Bet Request must contains details such as:
 - ✓ BKR_28 <span style="color: #2E5AD1">(Usability)</span> Application data should be in sync with other users.
 - ✓ BKR_29 <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to create a new bet.
 - ✓ BKR_30 <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to see the list of bets he need to complete.
-- ... BKR_31 <span style="color: #2E5AD1">(Usability)</span> Notification should be send as Push.
+- ... BKR_31 <span style="color: #2E5AD1">(Usability)</span> Notification should be send as notification emails.
 
 
 Check use cases:

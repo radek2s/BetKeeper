@@ -3,9 +3,28 @@
 
 ![](./documents/BetKeeper_Logo.png)
 
-[![Biome on board!](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
 
-[![codecov](https://codecov.io/gh/radek2s/BetKeeper/branch/main/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
+
+![Static Badge](https://img.shields.io/badge/Next.js-%23262c36.svg?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Prisma-%23262c36.svg?style=for-the-badge&logo=prisma&logoColor=white)
+![Static Badge](https://img.shields.io/badge/TypeScript-%23262c36.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Tailwind-%23262c36.svg?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Biome-%23262c36.svg?style=for-the-badge&logo=biome&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Figma-%23262c36.svg?style=for-the-badge&logo=figma&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Vercel-%23262c36.svg?style=for-the-badge&logo=vercel&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Supabase-%23262c36.svg?style=for-the-badge&logo=supabase&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Nx-%23262c36.svg?style=for-the-badge&logo=nx&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Vite-%23262c36.svg?style=for-the-badge&logo=vite&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Vitest-%23262c36.svg?style=for-the-badge&logo=vitest&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Cucumber-%23262c36.svg?style=for-the-badge&logo=cucumber&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Cypress-%23262c36.svg?style=for-the-badge&logo=cypress&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Pino.js-%23262c36.svg?style=for-the-badge&logo=pino&logoColor=white)
+![Static Badge](https://img.shields.io/badge/RadixUI-%23262c36.svg?style=for-the-badge&logo=radixui&logoColor=white)
+![Static Badge](https://img.shields.io/badge/TanStack%20Query-%23262c36.svg?style=for-the-badge&logo=tanstack&logoColor=white)
+
+
+
+
 
 # 🏗️ Project under construction...
 
@@ -36,6 +55,9 @@ During implementation, I will build each module of the application using good so
 - [Project plan](https://github.com/users/radek2s/projects/1)
 
 #### Verification Phase
+
+[![codecov](https://codecov.io/gh/radek2s/BetKeeper/branch/main/graph/badge.svg?token=VVZYBJRPUU)](https://codecov.io/gh/radek2s/BetKeeper)
+
 All parts of the application will be verified using unit tests and end‑to‑end tests. This will ensure that the system works correctly and meets the defined requirements. 
 
 - [Tests reports](https://github.com/radek2s/BetKeeper/actions/workflows/dev-branch-health.yml)

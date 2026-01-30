@@ -1,8 +1,4 @@
 import { OkResponse } from "@app/lib/utils/fetchUtils";
-import {
-  getAuthenticatedUserFromCookie,
-  validateToken,
-} from "@app/server/auth/authentication";
 import { getAuth } from "@app/server/auth/authenticatorFactory";
 import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";

@@ -16,6 +16,7 @@ interface Props {
 }
 export function UserRequestConfirmDialog({ onClose }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
@@ -37,6 +38,7 @@ export function UserRequestConfirmDialog({ onClose }: Props) {
     }
 
     try {
+      setIsLoading(true);
       await onClose({ firstName, lastName });
       setIsOpen(false);
     } catch (e) {
@@ -44,6 +46,7 @@ export function UserRequestConfirmDialog({ onClose }: Props) {
         setError(e.message);
       }
     }
+    setIsLoading(false);
   };
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -62,7 +65,10 @@ export function UserRequestConfirmDialog({ onClose }: Props) {
               <Dialog.Close asChild>
                 <Button>Cancel</Button>
               </Dialog.Close>
-              <Button variant="primary" onClick={(e) => handleCreate(e)}>
+              <Button
+                variant="primary"
+                isLoading={isLoading}
+                onClick={(e) => handleCreate(e)}>
                 Create
               </Button>
             </div>

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { type ForwardedRef, forwardRef } from "react";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -19,13 +20,15 @@ export const FormField = forwardRef(
             {required ? <span className="text-error">*</span> : ""}
           </label>
         )}
-        <input
-          id={id ?? name}
-          name={name}
-          ref={ref}
-          className={`ip ${className}`}
-          {...props}
-        />
+        <div className={clsx(["ip", className])}>
+          <input
+            id={id ?? name}
+            name={name}
+            ref={ref}
+            className={"w-full"}
+            {...props}
+          />
+        </div>
       </div>
     );
   },

@@ -22,6 +22,7 @@
       "@domain/*": ["domain/src/*"],
       "@bet-keeper/domain/test/*": ["domain/tests/*"],
       "@app/*": ["application/src/*"],
+      "@app-test/*": ["application/test/*"],
       "@db/*": ["application/generated/prisma"],
       "@test/*": ["./test/*"]
     },

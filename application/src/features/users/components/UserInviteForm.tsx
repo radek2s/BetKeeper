@@ -1,39 +1,35 @@
 "use client";
 
-import { createUserRequest } from "@app/features/users/actions";
 import { IconButton } from "@app/ui/button/IconButton";
 import { Input } from "@app/ui/input/Input";
-import { useCorbado } from "@corbado/react";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { useUserCreateMutation } from "../api/userQuery";
 
 export function UserInviteForm() {
-  const { sessionToken } = useCorbado();
-  const [error, setError] = useState<string | null>(null);
+  const { mutateAsync, isPending, error } = useUserCreateMutation();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const handleSend = async () => {
     try {
-      setError(null);
       if (!inputRef.current) return;
       const email = inputRef.current?.value.trim();
       if (!email) return;
-      await createUserRequest(email, sessionToken);
+      await mutateAsync(email);
       inputRef.current.value = "";
     } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      }
+      console.error(e);
     }
   };
   return (
     <div className="flex flex-col gap-1">
       <div className="flex gap-1">
         <Input ref={inputRef} type="email" placeholder="Give email..." />
-        <IconButton icon="send" onClick={handleSend} />
+        <IconButton icon="send" onClick={handleSend} isLoading={isPending} />
       </div>
       {error && (
         <span role="alert" className="text-error">
-          {error}
+          {error.message}
         </span>
       )}
     </div>

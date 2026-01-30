@@ -1,13 +1,14 @@
 "use client";
-import {
-  approveUserRequest,
-  rejectUserRequest,
-} from "@app/features/users/actions";
+
 import { IconButton } from "@app/ui/button/IconButton";
 import { ConfirmationDialog } from "@app/ui/confirm-dialog";
-import { useCorbado } from "@corbado/react";
+
 import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
 import { toRelativeTime } from "application/src/lib/utils/timeUtils";
+import {
+  useApproveUserRequest,
+  useRejectUserRequest,
+} from "../api/adminUserQuery";
 import {
   UserRequestConfirmDialog,
   type UserRequestData,
@@ -17,29 +18,32 @@ interface Props {
   request: UserRequestWithRequester;
 }
 export function UserRequestComponent({ request }: Props) {
-  const { sessionToken } = useCorbado();
+  const { mutateAsync: approve } = useApproveUserRequest(request.id);
+  const { mutateAsync: reject, isPending: isRejecting } = useRejectUserRequest(
+    request.id,
+  );
+
   const handleApproval = async (data: UserRequestData | null) => {
     if (data) {
-      await approveUserRequest(
-        request.id,
-        data.firstName,
-        data.lastName,
-        sessionToken,
-      );
+      try {
+        await approve({ firstName: data.firstName, lastName: data.lastName });
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
   const handleReject = async (performAction: boolean) => {
     if (!performAction) return;
     try {
-      await rejectUserRequest(request.id, sessionToken);
+      await reject();
     } catch (e) {
       console.error(e);
     }
   };
 
   const relativeTime = () => {
-    const [value, unit] = toRelativeTime(request.createdAt);
+    const [value, unit] = toRelativeTime(new Date(request.createdAt));
     if (unit === "second(s)") return "now";
     return `${value} ${unit} ago`;
   };
@@ -59,7 +63,7 @@ export function UserRequestComponent({ request }: Props) {
           onClose={handleReject}
           variant="error"
           accept="Reject">
-          <IconButton icon="close" variant="ghost" />
+          <IconButton icon="close" isLoading={isRejecting} variant="ghost" />
         </ConfirmationDialog>
       </div>
     </div>

@@ -16,7 +16,10 @@ import type { AuthenticationProvider } from "../authentication.interface";
 export class CorbadoAuthProvider implements AuthenticationProvider {
   static #instance: CorbadoAuthProvider;
 
+  public backendApi;
   private sdk;
+  private projectId;
+  private apiSecret;
 
   private constructor() {
     logger.info("Using Corbado Authentication Provider");
@@ -32,6 +35,10 @@ export class CorbadoAuthProvider implements AuthenticationProvider {
     const backendApi = process.env.CORBADO_BACKEND_API;
     if (!backendApi)
       throw new ConfigurationError("Corbado backend API is not defined!");
+
+    this.projectId = projectId;
+    this.apiSecret = apiSecret;
+    this.backendApi = backendApi;
 
     const configuration = new Config(
       projectId,
@@ -72,5 +79,11 @@ export class CorbadoAuthProvider implements AuthenticationProvider {
       }
       throw e;
     }
+  }
+
+  public get authHeader() {
+    return Buffer.from(`${this.projectId}:${this.apiSecret}`).toString(
+      "base64",
+    );
   }
 }

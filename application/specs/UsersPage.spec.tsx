@@ -1,66 +1,56 @@
-import { Email, RequestStatus, User, UserStatus } from "@domain/user";
-import { act, render, screen } from "@testing-library/react";
+import ClientUsersPage from "@app/app/users/UsersPage";
+import UsersManageClient from "@app/features/users/components/UsersManageClient";
+import { RequestStatus, UserStatus } from "@domain/user";
+import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-vi.mock("@app/features/users/actions", () => ({
-  getActiveUser: vi.fn(),
-  getAllActiveUsers: vi.fn(),
-  getPedingUserRequests: vi.fn(),
+vi.mock("@app/features/users/UserProvider", () => ({
+  useUserContext: vi.fn(),
 }));
 
-vi.mock("@app/server/auth/authentication", () => ({
-  getAuthenticatedUserFromCookie: vi.fn(),
-}));
-
-vi.mock("@corbado/react", () => ({
-  useCorbado: vi.fn().mockReturnValue({
-    loading: false,
-    isAuthenticated: true,
-  }),
-}));
-
-import UsersManagePage from "@app/app/users/page";
-
-import UsersManageClient from "@app/features/users/components/UsersManageClient";
-import { AuthorizedUser } from "@app/lib/user/AuthorizedUser";
-import { getAuthenticatedUserFromCookie } from "@app/server/auth/authentication";
-import { useCorbado } from "@corbado/react";
-import { Suspense } from "react";
+import { useUserContext } from "@app/features/users/UserProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 
 describe("UserPageTest", () => {
+  let queryClient: QueryClient;
+
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
+    vi.mocked(useUserContext).mockReturnValue({
+      id: "user-01",
+      avatarUrl: "avatar-01",
+      email: "email@test.com",
+      firstName: "Test",
+      lastName: "Mock",
+      status: UserStatus.ACTIVE,
+      role: "",
+    });
+  });
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it("Should not render page for non admin user", async () => {
-    (getAuthenticatedUserFromCookie as jest.Mock).mockResolvedValueOnce(
-      AuthorizedUser.reconstituteAuth(
-        "user-01",
-        new Email("user@mail.com"),
-        "Tester",
-        "User",
-        UserStatus.ACTIVE,
-        "",
-      ),
+  const renderWithQueryClient = (component: ReactNode) =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        {component}
+      </QueryClientProvider>,
     );
-    (useCorbado as jest.Mock).mockReturnValue({
-      loading: false,
-      isAuthenticated: true,
-    });
-    await act(async () => {
-      render(
-        <Suspense>
-          <UsersManagePage />
-        </Suspense>,
-      );
-    });
+
+  it("Should not render page for non admin user", async () => {
+    render(<ClientUsersPage />);
+
     expect(
       await screen.findByRole("heading", { name: "Missing privileges" }),
     ).toBeDefined();
   });
 
   it("Should display pending user requests", async () => {
-    render(
+    renderWithQueryClient(
       <UsersManageClient
         users={[]}
         pendingRequests={[

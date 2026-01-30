@@ -11,6 +11,8 @@ import { DeleteIcon } from "./delete";
 import { ErrorIcon } from "./error";
 import { EventIcon } from "./event";
 import { FactCheckIcon } from "./fact-check";
+import { FilterIcon } from "./filter";
+import { GiftIcon } from "./gift";
 import { GroupIcon } from "./group";
 import { GroupAddIcon } from "./group-add";
 import { GroupsIcon } from "./groups";
@@ -23,10 +25,15 @@ import { NotificationIcon } from "./notification";
 import { PersonIcon } from "./person";
 import { PersonOffIcon } from "./person-off";
 import { QuestionMarkIcon } from "./question-mark";
+import { SearchIcon } from "./search";
 import { SecurityKeyIcon } from "./security-key";
 import { SendIcon } from "./send";
+import { SortIcon } from "./sort";
+import { SortDownIcon } from "./sort-down";
+import { SortUpIcon } from "./sort-up";
 import { TimelineIcon } from "./timeline";
 import { TimerIcon } from "./timer";
+import { TrophyIcon } from "./trophy";
 import type { IconProps, IconType } from "./types";
 import { VerifiedIcon } from "./verified";
 import { WavingHandIcon } from "./waving-hand";
@@ -44,6 +51,8 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   error: ErrorIcon,
   event: EventIcon,
   "fact-check": FactCheckIcon,
+  filter: FilterIcon,
+  gift: GiftIcon,
   group: GroupIcon,
   "group-add": GroupAddIcon,
   groups: GroupsIcon,
@@ -56,10 +65,15 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   person: PersonIcon,
   "person-off": PersonOffIcon,
   "question-mark": QuestionMarkIcon,
+  search: SearchIcon,
   "security-key": SecurityKeyIcon,
+  sort: SortIcon,
+  "sort-down": SortDownIcon,
+  "sort-up": SortUpIcon,
   send: SendIcon,
   timeline: TimelineIcon,
   timer: TimerIcon,
+  trophy: TrophyIcon,
   verified: VerifiedIcon,
   "waving-hand": WavingHandIcon,
 };

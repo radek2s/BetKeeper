@@ -70,11 +70,11 @@
     --surface-hovered: #1f1f1f;
     --container: #292929;
     --container-hovered: #303030;
-    --primary: hsl(40, 100%, 65%);
+    --primary: #ffc44c;
     --primary-hovered: hsl(40, 100%, 70%);
     --secondary: #0295a9;
-    --error: hsl(2, 60%, 45%);
-    --error-hovered: hsl(2, 60%, 50%);
+    --error: #7e1e1b;
+    --error-hovered: hsl(2, 65%, 30%);
   }
 }
 
@@ -237,6 +237,28 @@ body {
   z-index: 100;
 }
 
+.dropdown--content {
+  /* background-color: var(--surface); */
+  /* padding: 4px 8px; */
+}
+
+.dropdown--label {
+  font-size: 12px;
+  padding-left: 16px;
+  color: var(--base-text-grayed);
+}
+
+.dropdown--item {
+  padding: 6px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+.dropdown--item:hover {
+  background-color: var(--container);
+}
+
 .dialog--title {
   font-size: 32px;
   text-align: center;
@@ -247,6 +269,14 @@ body {
 .avatar {
   background-color: #fdd037;
   border-radius: 999px;
+}
+.avatar-search {
+  cursor: pointer;
+  background-color: var(--container);
+  border-radius: 999px;
+}
+.avatar-search.active {
+  background-color: var(--primary);
 }
 
 .avatar-preview.active {
@@ -273,11 +303,11 @@ body {
 
 .btn-fab {
   position: fixed;
-  right: 10vw;
-  bottom: 5vh;
-  font-size: 24px;
+  right: 4vw;
+  bottom: 3vh;
+  font-size: 18px;
   .btn {
-    padding: 12px 24px;
+    padding: 10px 18px;
   }
 }
 
@@ -324,15 +354,40 @@ body {
   background-color: var(--container-hovered);
 }
 
+.ip > .icon path {
+  fill: var(--base-text-grayed);
+}
+
 .ta::placeholder,
 .ip::placeholder {
   color: var(--base-text-grayed);
 }
 
+.ip > input:focus-visible {
+  outline: none;
+}
 .ta:focus-visible,
-.ip:focus-visible {
+.ip:has(input:focus-visible) {
   outline: 2px solid var(--primary);
   border: none;
+}
+
+.checkbox__root {
+  background-color: var(--container);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox__indicator {
+  background-color: var(--primary);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--base-text);
 }
 
 .ta {
@@ -487,6 +542,33 @@ input[type="radio"]:checked::before {
   }
 }
 
+.bet-browser,
+.bet-search {
+  width: clamp(10vw, 400px, 90vw);
+}
+
+.panel-loading {
+  margin: -2px;
+  border: 2px;
+  width: clamp(10vw, 400px, 90vw);
+  height: 600px;
+}
+
+.skeleton {
+  border-radius: 4px;
+  background: linear-gradient(
+    -45deg,
+    var(--container) 30%,
+    var(--container-hovered) 50%,
+    var(--container) 70%
+  );
+  background-size: 400%;
+  animation: skeleton-loader-anim 1.5s linear infinite;
+}
+.skeleton.rounded {
+  border-radius: 99px;
+}
+
 .bet-card {
   width: clamp(10vw, 400px, 90vw);
 }
@@ -501,21 +583,63 @@ input[type="radio"]:checked::before {
   min-width: 64px;
 }
 
+.bet-card__avatars .avatar.unknown {
+  background-color: var(--container);
+}
+.bet-card__avatars .avatar.rejected {
+  background-color: var(--error);
+}
+
+.bet-card__avatars .avatar_wrapper {
+  display: inline-block;
+  position: relative;
+  width: 32px;
+  height: 32px;
+}
+.bet-card__avatars .avatar_wrapper .avatar {
+  position: absolute;
+  left: 0;
+  height: 32px;
+  width: 32px;
+}
+.bet-card__avatars .avatar_wrapper:last-of-type {
+  left: -8px;
+}
+.bet-card__avatars .avatar_wrapper.winner {
+  z-index: 2;
+}
+
+.bet-card__avatars .avatar_wrapper .avatar_laurel {
+  position: relative;
+  height: 38px;
+  top: 2px;
+  filter: drop-shadow(2px 4px 6px #aaa);
+  left: -9px;
+  min-width: fit-content;
+  z-index: -1;
+}
+
+.bet-card__created svg {
+  height: 16px;
+}
+.bet-card__created svg path {
+  fill: var(--base-text-grayed);
+}
+
 .bet-request__avatars {
   display: flex;
   width: 86px;
   min-width: 86px;
 }
 
+.bet-request__avatars .avatar {
+  position: absolute;
+}
 .bet-request__avatars .avatar,
 .bet-card__avatars .avatar {
-  position: absolute;
   outline: 3px solid var(--container);
 }
-.bet-card__avatars .avatar:last-of-type {
-  position: relative;
-  left: 24px;
-}
+
 .bet-request__avatars .avatar:last-of-type {
   position: relative;
   left: 32px;
@@ -544,7 +668,7 @@ input[type="radio"]:checked::before {
 
 .bet-request-status.resolved,
 .bet-request-status.pending {
-  background-color: var(--secondary);
+  background-color: var(--container);
 }
 
 .bet-request-status.completed,
@@ -639,6 +763,15 @@ input[type="radio"]:checked::before {
   }
 }
 
+@keyframes skeleton-loader-anim {
+  0% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
 /* HTML: <div class="loader"></div> */
 .loader-icon {
   width: 24px;
@@ -657,6 +790,15 @@ input[type="radio"]:checked::before {
   }
 }
 
+.chip {
+  border-radius: 8px;
+  @apply px-3 py-1;
+}
+
+.icon-primary path {
+  fill: var(--primary);
+}
+
 @media (prefers-color-scheme: dark) {
   .icon {
     fill: var(--base-text);
@@ -670,6 +812,7 @@ input[type="radio"]:checked::before {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .btn-icon--badge,
+  .checkbox__indicator,
   .btn.primary {
     color: var(--surface);
 

@@ -150,9 +150,13 @@ function BetTerms({ betRequest }: BetTermsProps) {
 
 interface ParticipantsAndStatusProps {
   participants: BetParticipantResponse[];
+  variant?: "default" | "small";
 }
 
-function RequestStatus({ participants }: ParticipantsAndStatusProps) {
+export function RequestStatus({
+  participants,
+  variant = "default",
+}: ParticipantsAndStatusProps) {
   const approved = participants.every(({ vote }) => vote === "approved");
   const rejected = participants.some(({ vote }) => vote === "rejected");
 
@@ -162,12 +166,14 @@ function RequestStatus({ participants }: ParticipantsAndStatusProps) {
     return "Pending";
   };
 
+  const size =
+    variant === "default"
+      ? "py-1 px-4 rounded-xl"
+      : "py-1 px-3 text-sm rounded-md";
+
   return (
     <div
-      className={clsx([
-        "py-1 px-4 rounded-xl bet-request-status",
-        getStatus().toLowerCase(),
-      ])}>
+      className={clsx([size, "bet-request-status", getStatus().toLowerCase()])}>
       {getStatus()}
     </div>
   );

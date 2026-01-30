@@ -1,10 +1,11 @@
 "use client";
 import { BetLoader } from "../BetLoader";
+import { BetBrowserSkeleton } from "../HomePageSkeleton";
 import BetBrowserComponent from "./BetBrowser";
 
 function BetBrowser() {
   return (
-    <BetLoader>
+    <BetLoader loader={<BetBrowserSkeleton />}>
       {(bets) => <BetBrowserComponent key={bets.length} bets={bets} />}
     </BetLoader>
   );

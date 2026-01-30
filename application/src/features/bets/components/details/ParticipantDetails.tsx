@@ -55,7 +55,7 @@ function ParticipantDetails({
   return (
     <div className="flex flex-col items-center w-full mx-1">
       <div className="my-2 flex flex-col items-center">
-        <img className="w-[32px] avatar" src={participant.avatarUrl} />
+        <img className="w-[32px] h-[32px] avatar" src={participant.avatarUrl} />
         <p>
           {participant.firstName} {participant.lastName}
         </p>
