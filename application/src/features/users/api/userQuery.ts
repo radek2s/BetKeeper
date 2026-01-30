@@ -1,5 +1,6 @@
 import type { UserType } from "@domain/user/entities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryKeys as adminQueryKeys } from "./adminUserQuery";
 import {
   createUserRequest,
   fetchUser,
@@ -31,6 +32,9 @@ export function useUserCreateMutation() {
     mutationFn: createUserRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      queryClient.invalidateQueries({
+        queryKey: [adminQueryKeys.usersRequests],
+      });
     },
   });
 }

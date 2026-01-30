@@ -38,3 +38,18 @@ export async function rejectUserRequest(requestId: string): Promise<void> {
 
   if (!res.ok) throw new Error("Failed to fetch user details");
 }
+
+export async function toggleUserStatus(userId: string): Promise<UserType> {
+  const url = `/api/v1/admin/user/${userId}`;
+  const res = await sendRequest(url, "PATCH");
+
+  if (!res.ok) throw new Error("Failed to toggle user status");
+  return res.json();
+}
+
+export async function suspendUser(userId: string): Promise<void> {
+  const url = `/api/v1/admin/user/${userId}`;
+  const res = await sendRequest(url, "DELETE");
+
+  if (!res.ok) throw new Error("Failed to suspend user");
+}

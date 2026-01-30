@@ -1,4 +1,4 @@
-export type RequestMethod = "POST" | "PUT" | "DELETE";
+export type RequestMethod = "POST" | "PATCH" | "PUT" | "DELETE";
 
 export const AUTH_MODE = process.env.NEXT_PUBLIC_AUTH_MODE ?? "CORBADO";
 
