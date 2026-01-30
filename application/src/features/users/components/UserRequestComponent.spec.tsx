@@ -2,16 +2,16 @@ import { RequestStatus } from "@domain/user";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-vi.mock("@app/features/users/actions", () => ({
-  approveUserRequest: vi.fn(),
-  rejectUserRequest: vi.fn(),
+vi.mock("../api/adminUserQuery", () => ({
+  useApproveUserRequest: vi.fn(),
+  useRejectUserRequest: vi.fn(),
 }));
 
-import {
-  approveUserRequest,
-  rejectUserRequest,
-} from "@app/features/users/actions";
 import type { UserRequestWithRequester } from "@app/lib/mappers/user";
+import {
+  useApproveUserRequest,
+  useRejectUserRequest,
+} from "../api/adminUserQuery";
 import { UserRequestComponent } from "./UserRequestComponent";
 
 const getUserRequestObject = (
@@ -32,6 +32,16 @@ const getUserRequestObject = (
 describe("UserRequestComponentTests", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    vi.mocked(useApproveUserRequest).mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue(undefined),
+
+      // biome-ignore lint/suspicious/noExplicitAny: This is for mocks
+    } as any);
+    vi.mocked(useRejectUserRequest).mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue(undefined),
+
+      // biome-ignore lint/suspicious/noExplicitAny: This is for mocks
+    } as any);
   });
   afterEach(() => {
     vi.useRealTimers();
@@ -51,6 +61,12 @@ describe("UserRequestComponentTests", () => {
   });
 
   it("Should approve request and create user", async () => {
+    const mockApprove = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(useApproveUserRequest).mockReturnValue({
+      mutateAsync: mockApprove,
+      // biome-ignore lint/suspicious/noExplicitAny: Mocked
+    } as any);
+
     const now = new Date(2000, 1, 1, 13);
     vi.setSystemTime(now);
     render(<UserRequestComponent request={getUserRequestObject()} />);
@@ -67,10 +83,16 @@ describe("UserRequestComponentTests", () => {
     fireEvent.change(lastNameInput, { target: { value: "User" } });
     await fireEvent.click(createButton);
 
-    expect(approveUserRequest).toHaveBeenCalledTimes(1);
+    expect(mockApprove).toHaveBeenCalledTimes(1);
   });
 
   it("Should reject user request", async () => {
+    const mockReject = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(useRejectUserRequest).mockReturnValue({
+      mutateAsync: mockReject,
+      // biome-ignore lint/suspicious/noExplicitAny: Mocked
+    } as any);
+
     const now = new Date(2000, 1, 1, 13);
     vi.setSystemTime(now);
     render(<UserRequestComponent request={getUserRequestObject()} />);
@@ -81,6 +103,6 @@ describe("UserRequestComponentTests", () => {
     const rejectConfirmButton = screen.getByRole("button", { name: "Reject" });
     await fireEvent.click(rejectConfirmButton);
 
-    expect(rejectUserRequest).toHaveBeenCalledTimes(1);
+    expect(mockReject).toHaveBeenCalledTimes(1);
   });
 });
