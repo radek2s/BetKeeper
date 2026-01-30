@@ -17,7 +17,7 @@
 ![Static Badge](https://img.shields.io/badge/Vite-%23262c36.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Vitest-%23262c36.svg?style=for-the-badge&logo=vitest&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Cucumber-%23262c36.svg?style=for-the-badge&logo=cucumber&logoColor=white)
-![Static Badge](https://img.shields.io/badge/Cypress-%23262c36.svg?style=for-the-badge&logo=cypress&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Playwright-%23262c36.svg?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/Pino.js-%23262c36.svg?style=for-the-badge&logo=pino&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/RadixUI-%23262c36.svg?style=for-the-badge&logo=radixui&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/TanStack%20Query-%23262c36.svg?style=for-the-badge&logo=tanstack&logoColor=white)
@@ -81,7 +81,7 @@ The ready release candidate version  will be shared with a small test group. The
 - [Vercel](https://vercel.com/) Hosting for Next.js application
 - [Supabase](https://supabase.com/) PostgreSQL database provider
 - [Corbado](https://www.corbado.com/) Passwordless authentication provider
-- [Cypress](https://www.cypress.io/) E2E Test tool
+- [Playwright](https://playwright.dev/) E2E Test tool
 
 
 ### Sub modules
@@ -137,6 +137,8 @@ npm run dev
 Replace providerId value in database in `user` table with userId from Corbado panel.
 
 Visit `localhost:3000` and login as created user.
+
+# E2E Tests Quick start
 
 
 # License
