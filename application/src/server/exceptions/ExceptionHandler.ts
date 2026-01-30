@@ -9,6 +9,7 @@ export type ExceptionHandlerI = (
 
 export function ExceptionHandler(e: unknown, handler?: ExceptionHandlerI) {
   if (e instanceof Error) {
+    console.error(e);
     logger.error(e.message);
 
     try {
