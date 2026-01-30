@@ -1,5 +1,5 @@
 import type { UserRequestWithRequester } from "@app/lib/mappers/user";
-import { getRequest } from "@app/lib/utils/fetchUtils";
+import { getRequest, sendRequest } from "@app/lib/utils/fetchUtils";
 import type { UserType } from "@domain/user/entities";
 
 export async function fetchActiveUsers(): Promise<UserType[]> {
@@ -18,4 +18,23 @@ export async function fetchPendingUserRequests(): Promise<
 
   if (!res.ok) throw new Error("Failed to fetch user details");
   return res.json();
+}
+
+export async function approveUserRequest(
+  requestId: string,
+  firstName: string,
+  lastName: string,
+): Promise<UserType> {
+  const url = `/api/v1/admin/request/${requestId}`;
+  const res = await sendRequest(url, "POST", { firstName, lastName });
+
+  if (!res.ok) throw new Error("Failed to fetch user details");
+  return res.json();
+}
+
+export async function rejectUserRequest(requestId: string): Promise<void> {
+  const url = `/api/v1/admin/request/${requestId}`;
+  const res = await sendRequest(url, "DELETE");
+
+  if (!res.ok) throw new Error("Failed to fetch user details");
 }

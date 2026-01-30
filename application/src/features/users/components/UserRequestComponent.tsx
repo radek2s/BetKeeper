@@ -6,6 +6,10 @@ import { ConfirmationDialog } from "@app/ui/confirm-dialog";
 import type { UserRequestWithRequester } from "application/src/lib/mappers/user";
 import { toRelativeTime } from "application/src/lib/utils/timeUtils";
 import {
+  useApproveUserRequest,
+  useRejectUserRequest,
+} from "../api/adminUserQuery";
+import {
   UserRequestConfirmDialog,
   type UserRequestData,
 } from "./UserRequestConfirmDialog";
@@ -14,17 +18,15 @@ interface Props {
   request: UserRequestWithRequester;
 }
 export function UserRequestComponent({ request }: Props) {
+  const { mutateAsync: approve } = useApproveUserRequest(request.id);
+  const { mutateAsync: reject, isPending: isRejecting } = useRejectUserRequest(
+    request.id,
+  );
+
   const handleApproval = async (data: UserRequestData | null) => {
     if (data) {
       try {
-        //TODO: Implement approve user request method
-        throw new Error("Method not implemented");
-        // await approveUserRequest(
-        //   request.id,
-        //   data.firstName,
-        //   data.lastName,
-        //   sessionToken,
-        // );
+        await approve({ firstName: data.firstName, lastName: data.lastName });
       } catch (e) {
         console.error(e);
       }
@@ -34,9 +36,7 @@ export function UserRequestComponent({ request }: Props) {
   const handleReject = async (performAction: boolean) => {
     if (!performAction) return;
     try {
-      //TODO: Implement reject user request method
-      throw new Error("Method not implemented");
-      // await rejectUserRequest(request.id, sessionToken);
+      await reject();
     } catch (e) {
       console.error(e);
     }
@@ -63,7 +63,7 @@ export function UserRequestComponent({ request }: Props) {
           onClose={handleReject}
           variant="error"
           accept="Reject">
-          <IconButton icon="close" variant="ghost" />
+          <IconButton icon="close" isLoading={isRejecting} variant="ghost" />
         </ConfirmationDialog>
       </div>
     </div>
