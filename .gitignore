@@ -7,6 +7,9 @@ betKeeperE2E.db
 
 migrations
 
+database/data
+database/generated
+
 application/node_modules
 application/generated
 
@@ -59,3 +62,5 @@ test-result/*
 tests-results.xml
 test-results/*
 playwright-report/*
+
+/generated/prisma

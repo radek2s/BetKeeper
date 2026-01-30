@@ -1,6 +1,4 @@
-const { PrismaClient } = require("./application/generated/prisma");
-
-const prisma = new PrismaClient();
+import { prisma } from "../../application/src/prisma";
 
 async function initE2E() {
   const adminUser = await prisma.userTable.create({
