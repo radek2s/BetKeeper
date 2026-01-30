@@ -6,11 +6,14 @@
   "tags": ["scope:e2e", "type:testing"],
   "targets": {
     "e2e": {
-      "executor": "@nx/cypress:cypress",
+      "executor": "@nx/playwright:playwright",
+      "options": {}
+    },
+    "ui": {
+      "executor": "@nx/playwright:playwright",
       "options": {
-        "cypressConfig": "./cypress.config.js"
-      },
-      "outputs": ["{workspaceRoot}/dist/.playwright"]
+        "ui": true
+      }
     }
   }
 }
