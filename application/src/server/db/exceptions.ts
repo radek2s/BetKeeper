@@ -1,4 +1,4 @@
-import { Prisma } from "@db/*";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import logger from "application/logger";
 
 export class DatabaseError extends Error {
@@ -12,7 +12,7 @@ export class DatabaseError extends Error {
 }
 
 export function handleDbError(e: unknown) {
-  if (e instanceof Prisma.PrismaClientKnownRequestError) {
+  if (e instanceof PrismaClientKnownRequestError) {
     logger.error(`${e.code}: ${e.message}`);
     return new DatabaseError(e.message, e.code);
   } else {

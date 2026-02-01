@@ -1,12 +1,12 @@
-datasource db {
-    provider    = "postgresql"
-    url         = env("DB_PRISMA_URL")
-}
-
 generator client {
     provider    = "prisma-client-js"
-    output = "./application/generated/prisma"
+    output = "./generated"
+    browser = false
 }
+datasource db {
+    provider    = "postgresql"
+}
+
 
 model UserTable {
     id          String @id @default(uuid())

@@ -4,10 +4,12 @@ const { loadEnvConfig } = require("@next/env");
 
 loadEnvConfig(process.cwd());
 
-const DATABASE_URL = process.env.DB_PRISMA_URL;
-const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION;
+const DATABASE_TYPE = process.env.DATABASE_SCHEMA;
+const AUTH_TYPE = process.env.NEXT_PUBLIC_AUTH_MODE;
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? "dev";
 console.log(`*** BetKeeper v${APP_VERSION} ***`);
-console.log(`Using SQLite file: ${DATABASE_URL}\n`);
+console.log(`- Authentication mode:\t ${AUTH_TYPE}`);
+console.log(`- Database type:\t ${DATABASE_TYPE}`);
 
 const nextConfig = {
   // eslint: {

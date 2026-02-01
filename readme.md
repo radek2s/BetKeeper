@@ -17,7 +17,7 @@
 ![Static Badge](https://img.shields.io/badge/Vite-%23262c36.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Vitest-%23262c36.svg?style=for-the-badge&logo=vitest&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Cucumber-%23262c36.svg?style=for-the-badge&logo=cucumber&logoColor=white)
-![Static Badge](https://img.shields.io/badge/Cypress-%23262c36.svg?style=for-the-badge&logo=cypress&logoColor=white)
+![Static Badge](https://img.shields.io/badge/Playwright-%23262c36.svg?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/Pino.js-%23262c36.svg?style=for-the-badge&logo=pino&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/RadixUI-%23262c36.svg?style=for-the-badge&logo=radixui&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/TanStack%20Query-%23262c36.svg?style=for-the-badge&logo=tanstack&logoColor=white)
@@ -81,43 +81,38 @@ The ready release candidate version  will be shared with a small test group. The
 - [Vercel](https://vercel.com/) Hosting for Next.js application
 - [Supabase](https://supabase.com/) PostgreSQL database provider
 - [Corbado](https://www.corbado.com/) Passwordless authentication provider
-- [Cypress](https://www.cypress.io/) E2E Test tool
+- [Playwright](https://playwright.dev/) E2E Test tool
 
 
 ### Sub modules
 
-- [Domain](./domain/readme.md)
-- [Application](./application/readme.md)
-- [E2E Tests](./e2e-tests/readme.md)
+- [Domain](./domain/readme.md) - bussiness logic and tests of core BetKeeper objects
+- [Application](./application/readme.md) - application layer that host an UI and wrap bussiness logic with database persistance and server logic
+- [E2E Tests](./e2e-tests/readme.md) - end-to-end tests for BetKeeper application that check if requirements are met using cucumber and playwright.
 
 # Development Quick Start
 Project runs on [Node.js](https://nodejs.org/en) environment and is required for development.
 
-Installation
+Dependencies installation and workspace initialization:
 ```
 npm i
 ```
 
-This project is running with NX tool that provide additional project graph where developer
-can check the dependencies betweeen modules.
+Sample environment variables are defined in `.env.dev` file.
 
-```
-npx nx graph
-```
+### Authentication preparation
 
-There are projects within this monorepo:
 
-- domain - bussiness logic and tests of core BetKeeper objects
-- application - application layer that host an UI and wrap bussiness logic with database
-  persistance and server logic
-- e2e-tests - end-to-end tests for BetKeeper application that check if requirements are met using cucumber and playwright.
+**Prepare Manual authentication project**  
+`MANUAL` Manual Authentication  (via manual set of active user ID - for tests or local development)  
 
-There are two modes to run application:
-- Manual Authentication (via manual set of active user ID)
-- [Corbado Authentication](https://www.corbado.com/) requires creation of free open-source project and providing valid properties to `.env` variable
+To change active logged user visit `http://localhost:3000/dev` and enter the user ID you want to switch to.
 
-**Prepare Corbado authentication project**  
-Provide required properties to local `.env.local` file.
+
+**Prepare Corbado authentication project [advanced]**  
+`CORBADO` [Corbado Authentication](https://www.corbado.com/) requires creation of free open-source project and providing valid properties to `.env` variable  
+
+
 ```properties
 DB_PRISMA_URL="file:./betKeeper.db"
 NEXT_PUBLIC_CORBADO_PROJECT_ID=pro-xxxxxxxxxxxxxxxxxxx
@@ -128,15 +123,46 @@ CORBADO_BACKEND_API=https://backendapi.cloud.corbado.io
 
 Create in Corbado panel a new user.
 
-**Starting BetKeeper in development mode**
+Replace providerId value in database in `user` table with userId from Corbado panel after performing `dev:init` command from next step.
+
+### Environment initialization
+
 ```shell
 npm run dev:init # To initialize SQLite database (can be ommited when already created)
+```
+
+### Development sever
+```shell
 npm run dev
 ```
 
-Replace providerId value in database in `user` table with userId from Corbado panel.
+Visit [http://localhost:3000](http://localhost:3000) and login as created user.
 
-Visit `localhost:3000` and login as created user.
+# E2E Tests Quick start
+Project use Playwright with TypeScript on [Node.js](https://nodejs.org/en) environment that is required for test development and execution.  
+Check [E2E Readme](./e2e-tests/readme.md) for more details
+
+
+Installation of packages
+```shell
+npm i
+```
+
+To prepare environment for E2E test you need to generate database. Given script prepares empty SQLite database with initial user.
+```shell
+npm run prepare-e2e
+```
+
+Playwright perform auto-start of Next.js application in `dev` mode that performs hot-swap during code changes.  
+To start developing your E2E tests with Playwright UI run:
+```shell
+npm run e2e:ui
+```
+
+To just exetute tests in headless mode:
+```shell
+npm run e2e
+```
 
 
 # License

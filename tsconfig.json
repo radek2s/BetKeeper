@@ -24,7 +24,8 @@
       "@app/*": ["application/src/*"],
       "@app-test/*": ["application/test/*"],
       "@db/*": ["application/generated/prisma"],
-      "@test/*": ["./test/*"]
+      "@test/*": ["./test/*"],
+      "@database/*": ["database/*"]
     },
     "moduleResolution": "node",
     "resolveJsonModule": true
