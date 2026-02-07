@@ -1,21 +1,15 @@
-import { APIRequestContext, APIResponse } from "@playwright/test";
-import { InviteUserResponse } from "../types"
-import { ApiError } from "../customErrors";
+import { APIResponse } from "@playwright/test";
+import { ApiError } from "e2e-tests/src/api/Errors";
 
-export async function inviteUser(requesterId: string, request: APIRequestContext, email: string): Promise<InviteUserResponse> {
-    const response = await request.post("api/v1/user", {
-        data: { email },
-        headers: {
-            "Content-Type": "application/json",
-            "x-active-userid": requesterId
-        }
-    });
+export function getHeaders(activeUserId: string) {
+  return {
+    "Content-Type": "application/json",
+    "x-active-userid": activeUserId,
+  };
+}
 
-    if (!response.ok()) {
-        const errorBody = await response.json();
-        throw new ApiError(response.status(), errorBody);
-    }
-
-
-    return await response.json() as InviteUserResponse;
+export async function handleResponse<T>(response: APIResponse): Promise<T> {
+  if (!response.ok())
+    throw new ApiError(response.status(), await response.json());
+  return await response.json();
 }

@@ -1,7 +1,7 @@
 import { test, expect, request, defineConfig } from '@playwright/test'
-import { inviteUser } from 'e2e-tests/src/utils/helpers/apiHelpers'
-import { ApiError } from 'e2e-tests/src/utils/customErrors'
-import { UserStatus } from 'e2e-tests/src/utils/enums';
+import { inviteUser } from 'e2e-tests/src/api/UserApi'
+import { ApiError } from 'e2e-tests/src/api/Errors';
+import { RequestStatus } from '@domain/user';
 
 const validEmails = [
     { email: "standard@domain.com", description: "standard email"},
@@ -34,9 +34,14 @@ test.describe('Email validation - API', () => {
         test(description, async ({ request }) => {
             const responseBody = await inviteUser(userId, request, email);
             
-            expect.soft(responseBody.inviteeEmail).toBe(email);
-            expect.soft(responseBody.requesterId).toBe(userId);
-            expect.soft(responseBody.status).toBe(UserStatus.PENDING_ACTIVATION);
+            expect.soft(responseBody).toMatchObject({
+                inviteeEmail: email,
+                requesterId: userId,
+                status: RequestStatus.PENDING,
+            })
+            expect.soft(responseBody.approvedAt).toBeUndefined();
+            expect.soft(responseBody.approvedById).toBeUndefined();
+            expect.soft(responseBody.createdAt).toBeDefined();
             expect.soft(responseBody.id).toBeDefined;
         })
     }
