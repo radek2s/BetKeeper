@@ -1,5 +1,4 @@
 import { APIResponse } from "@playwright/test";
-import { ApiError } from "e2e-tests/src/api/Errors";
 
 export function getHeaders(activeUserId: string) {
   return {
@@ -8,8 +7,6 @@ export function getHeaders(activeUserId: string) {
   };
 }
 
-export async function handleResponse<T>(response: APIResponse): Promise<T> {
-  if (!response.ok())
-    throw new ApiError(response.status(), await response.json());
+export async function getBody<T>(response: APIResponse): Promise<T> {
   return await response.json();
 }

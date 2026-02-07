@@ -1,7 +1,9 @@
-import { test, expect, request, defineConfig } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { inviteUser } from 'e2e-tests/src/api/UserApi'
-import { ApiError } from 'e2e-tests/src/api/Errors';
 import { RequestStatus } from '@domain/user';
+import { getBody } from 'e2e-tests/src/utils/helpers/apiHelpers';
+import { UserRequestType } from "@domain/user/entities";
+import { ApiErrorBody } from 'e2e-tests/src/api/Errors';
 
 const validEmails = [
     { email: "standard@domain.com", description: "standard email"},
@@ -10,7 +12,7 @@ const validEmails = [
 ];
 
 const invalidEmails = [
-    { email: "planaddress", description: "missing @ symbol"},
+    { email: "plainaddress", description: "missing @ symbol"},
     { email: "@no_local_part.test", description: "missing local part"},
     { email: "user@.com", description: "missing domain name"},
     { email: "user@com", description: "missing dot in domain"},
@@ -31,37 +33,34 @@ test.describe('Email validation - API', () => {
 
     test.describe('should accept a valid email', () => {
         for (const { email, description} of validEmails) {
-        test(description, async ({ request }) => {
-            const responseBody = await inviteUser(userId, request, email);
-            
-            expect.soft(responseBody).toMatchObject({
-                inviteeEmail: email,
-                requesterId: userId,
-                status: RequestStatus.PENDING,
-            })
-            expect.soft(responseBody.approvedAt).toBeUndefined();
-            expect.soft(responseBody.approvedById).toBeUndefined();
-            expect.soft(responseBody.createdAt).toBeDefined();
-            expect.soft(responseBody.id).toBeDefined;
-        })
-    }
+            test(description, async ({ request }) => {
+                const response = await inviteUser(userId, request, email);
+                expect(response.status(), "Status code should be 200").toBe(200);
+
+                const { inviteeEmail, requesterId, status, approvedAt, approvedById, createdAt, id } =
+                    await getBody<UserRequestType>(response);
+
+                expect.soft(inviteeEmail, "Validate inviteeEmail").toBe(email);
+                expect.soft(requesterId, "Validate requesterId").toBe(userId);
+                expect.soft(status, "Validate status").toBe(RequestStatus.PENDING);
+                expect.soft(approvedAt,"approvedAt should be undefined").toBeUndefined();
+                expect.soft(approvedById, "approvedById should be undefined").toBeUndefined();
+                expect.soft(createdAt, "createdAt should be defined").toBeDefined();
+                expect.soft(id, "id should be defined").toBeDefined();
+            });
+        }
     });
 
     test.describe('should reject invalid email', () => {
         for (const { email, description} of invalidEmails) {
             test(description, async ({ request }) => {
-                try {
-                    await inviteUser(userId, request, email);
-                    throw new Error("Expected ApiError to be thrown");
-                } catch (e) {
-                    if (e instanceof ApiError) {
-                        expect.soft(e.status).toBe(400);
-                        expect.soft(e.body.error).toBe("Business rules error");
-                        expect.soft(e.body.message).toBe("Invalid email format");
-                    } else {
-                        throw e;
-                    }
-                }
+                const response = await inviteUser(userId, request, email);
+                expect(response.status(), "Status code should be 400").toBe(400);
+
+                const {error, message } = await getBody<ApiErrorBody>(response);
+
+                expect(error, "Validate error").toBe("Business rules error");
+                expect(message, "Validate message").toBe("Invalid email format");
             });
         }
     });
