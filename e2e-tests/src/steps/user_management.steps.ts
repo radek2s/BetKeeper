@@ -7,21 +7,17 @@ import { getBody } from "../utils/helpers/apiHelpers";
 import { UserRequestType } from "@domain/user/entities/UserRequest";
 import { RequestStatus } from "@domain/user";
 import { generateRandomMail } from "../utils/helpers/testHelpers";
+import { assertExists } from "../utils/helpers/testHelpers";
 
 
-const invitedUserEmail = generateRandomMail("User_management_invite");
-const pendingUserEmail = generateRandomMail("User_management_pending");
-const pendingUserFirstName = "FirstName";
-const pendingUserLastName = "LastName";
-
-Given("Admin exists and is authenticated", async function (this: UserManagementWorld) {
+Given("admin exists and is authenticated", async function (this: UserManagementWorld) {
     const adminUserId = process.env.NEXT_PUBLIC_USER_ID || '';
-    expect(adminUserId).not.toBe("");
-    this.adminUserId = adminUserId;
+    expect(adminUserId, "Admin Id should be provided in environment variables").toBeTruthy();
+    this.adminUserId = adminUserId!;
 
-    if(!this.request) throw new Error("API request context is not initialized");
-    
-    const response = await getUserContext(adminUserId, this.request);
+    const request = assertExists(this.request, "API request context is not initialized")
+
+    const response = await getUserContext(adminUserId, request);
     expect(response.status(), "Status code should be 200").toBe(200);
 
     const { id, role } = await getBody<User>(response)
@@ -29,52 +25,98 @@ Given("Admin exists and is authenticated", async function (this: UserManagementW
     expect(role, "Validate user has ADMINISTRATOR role").toBe("ADMINISTRATOR");
 });
 
-When("Admin invites new user with valid email", async function ( this: UserManagementWorld) {
-    const response = await inviteUser(this.adminUserId!, this.request!, invitedUserEmail);
+When("admin invites new user with valid email", async function (this: UserManagementWorld) {
+    const invitedUserEmail = generateRandomMail("User_management_invite");
+    this.inviteUserRequest = { inviteeEmail: invitedUserEmail };
+
+    const adminUserId = assertExists(this.adminUserId, "Admin Id must be set");
+    const request = assertExists(this.request, "API request context is not initialized");
+
+    const response = await inviteUser( adminUserId, request, invitedUserEmail);
     expect(response.status(), "Status code should be 200").toBe(200);
-    
-    const { id, status, inviteeEmail } =  await getBody<UserRequestType>(response);
-    expect(id, "id should be defined").toBeDefined();
-    this.invitedUser = { id, status, inviteeEmail };
+
+    this.inviteUserResponse = await getBody<UserRequestType>(response);
 });
 
-Then("The user is in pending state", function (this: UserManagementWorld) {
-    expect(this.invitedUser).toBeDefined();
-    expect(this.invitedUser?.inviteeEmail, "Validate invited email").toBe(invitedUserEmail);
-    expect(this.invitedUser?.status, "User should be in pending state").toBe(RequestStatus.PENDING);
-});
-
-Given('A user in pending state exists', async function (this: UserManagementWorld) {
-    const response = await inviteUser(this.adminUserId!, this.request!, pendingUserEmail);
-    expect(response.status(), "Status code should be 200").toBe(200);
-    
-    const { id, status, inviteeEmail } =  await getBody<UserRequestType>(response);
-    expect(id, "id should be defined").toBeDefined();
-    
-    this.pendingUser = { id, status, inviteeEmail };
-    expect(inviteeEmail, "Validate invited email").toBe(pendingUserEmail);
-    expect(status, "User should be in pending state").toBe(RequestStatus.PENDING);
-});
-
-When("Admin accepts user Request", async function (this: UserManagementWorld) {
-    const response = await acceptUserInvitation(
-        this.adminUserId!,
-        this.request!,
-        this.pendingUser!.id!,
-        "FirstName",
-        "LastName",
+Then("the user is in pending state", function (this: UserManagementWorld) {
+    const inviteUserResponse = assertExists(
+        this.inviteUserResponse, 
+        "Invite user response must exist"
     );
-    expect(response.status(), "Status code should be 200").toBe(200);
+    const inviteUserRequest = assertExists(
+        this.inviteUserRequest, 
+        "Invite user request must exist"
+    );
 
-    const { id, status, email, firstName, lastName } =  await getBody<User>(response);
-    expect(id, "is should be defined").toBeDefined();
+    expect(inviteUserResponse.inviteeEmail, "Validate invited user email")
+        .toBe(inviteUserRequest.inviteeEmail);
 
-    this.activeUser = { id, status, email, firstName, lastName };
+    expect(inviteUserResponse.status, "User should be in pending state")
+        .toBe(RequestStatus.PENDING);
 });
 
-Then("User is active with assigned first and last name", function () {
-    expect(this.activeUser).toBeDefined();
-    expect(this.activeUser?.status).toBe(UserStatus.ACTIVE);
-    expect(this.activeUser?.firstName).toBe(pendingUserFirstName);
-    expect(this.activeUser?.lastName).toBe(pendingUserLastName);
-});  
+Given('a user in pending state exists', async function (this: UserManagementWorld) {
+    const pendingUserEmail = generateRandomMail("User_management_pending");
+    this.pendingUserRequest = { inviteeEmail: pendingUserEmail };
+
+    const adminUserId = assertExists(this.adminUserId, "Admin ID must be set");
+    const request = assertExists(this.request, "API request context must be initialized");
+    
+    const response = await inviteUser(adminUserId, request, pendingUserEmail);
+    expect(response.status(), "Status code should be 200").toBe(200);
+
+    this.pendingUserResponse = await getBody<UserRequestType>(response);
+    expect(this.pendingUserResponse.inviteeEmail, "Validate invited email")
+        .toBe(pendingUserEmail);
+
+    expect(this.pendingUserResponse.status, "User should be in pending state")
+        .toBe(RequestStatus.PENDING);
+});
+
+When("admin accepts user Request", async function (this: UserManagementWorld) {
+    const pendingUserResponse = assertExists(
+        this.pendingUserResponse, 
+        "Pending user response must exist"
+    );
+
+    this.acceptUserRequest = {
+        id: pendingUserResponse.id,
+        firstName: "FirstName",
+        lastName: "LastName"
+    };
+
+    const adminUserId = assertExists(this.adminUserId, "Admin ID must be set");
+    const request = assertExists(this.request, "API request context must be initialized");
+    const { id, firstName, lastName } = this.acceptUserRequest;
+
+    const response = await acceptUserInvitation( adminUserId, request, id, firstName, lastName);
+    expect(response.status(), "Status code should be 200").toBe(200);
+
+    const responseBody = await getBody<User>(response);
+
+    this.acceptUserResponse = { 
+        status: responseBody.status,
+        firstName: responseBody.firstName,
+        lastName: responseBody.lastName
+    };
+});
+
+Then("user is active with assigned first and last name", function () {
+    const acceptUserResponse = assertExists(
+        this.acceptUserResponse, 
+        "Accept user response must exist"
+    );
+    const acceptUserRequest = assertExists(
+        this.acceptUserRequest, 
+        "Accept request must exist"
+    );
+    
+    expect(acceptUserResponse.status, "User should be in active state")
+        .toBe(UserStatus.ACTIVE);
+
+    expect(acceptUserResponse.firstName, "Validate first name")
+        .toBe(acceptUserRequest.firstName);
+
+    expect(acceptUserResponse.lastName, "Validate last name")
+        .toBe(acceptUserRequest.lastName);
+});

@@ -1,23 +1,37 @@
-import { Email, RequestStatus, UserStatus } from "@domain/user";
+import { RequestStatus, UserStatus } from "@domain/user";
 import { BaseWorld } from "./base.world";
 
 export class UserManagementWorld extends BaseWorld {
     adminUserId?: string;
-    invitedUser?: {
-        id?: string;
-        status?: RequestStatus;
-        inviteeEmail?: string;
+
+    inviteUserRequest?: {
+        inviteeEmail: string;
     };
-    pendingUser?: {
-        id?: string;
-        status?: RequestStatus;
-        inviteeEmail?: string;
+
+    inviteUserResponse?: {
+        status: RequestStatus;
+        inviteeEmail: string;
+    }
+
+    pendingUserRequest?: {
+        inviteeEmail: string;
     };
-    activeUser?: {
-        id?: string;
-        status?: UserStatus;
-        email?: Email;
-        firstName?: string;
-        lastName?: string;
+
+    pendingUserResponse?: {
+        id: string;
+        status: RequestStatus;
+        inviteeEmail: string;
+    }
+
+    acceptUserRequest?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+    }
+
+    acceptUserResponse?: {
+        status: UserStatus;
+        firstName: string;
+        lastName: string;
     };
 }
