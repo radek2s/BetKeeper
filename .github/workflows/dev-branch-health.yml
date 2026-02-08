@@ -60,7 +60,7 @@ jobs:
         uses: dorny/test-reporter@v2
         if: ${{ !cancelled() }}
         with:
-          name: Development Health - Unit Tests
+          name: Unit Test Results
           path: test-report.xml
           reporter: jest-junit
           fail-on-error: false
@@ -110,6 +110,15 @@ jobs:
         env:
           PROJECT_DIR: /home/runner/work/BetKeeper/BetKeeper/
         run: npm run e2e:ci
+      
+      - name: Generate comprehensive test report
+        uses: dorny/test-reporter@v2
+        if: ${{ !cancelled() }}
+        with:
+          name: E2E Test Results
+          path: test-report-e2e.xml
+          reporter: jest-junit
+          fail-on-error: false
       
       - name: Upload Playwright report 
         if: always() 

@@ -41,6 +41,7 @@ yarn-error.log*
 
 junit.xml
 test-report.xml
+test-report-e2e.xml
 
 # vercel
 .vercel

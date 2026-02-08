@@ -5,7 +5,7 @@ export default defineConfig({
   forbidOnly: !!process.env["CI"],
   retries: process.env["CI"] ? 2 : 0,
   workers: process.env["CI"] ? 1 : undefined,
-  reporter: [["html"], ["junit", { outputFile: "test-result/junit.xml" }]],
+  reporter: [["html"], ["junit", { outputFile: "test-report-e2e.xml" }]],
   timeout: 30000,
   expect: {
     timeout: 5000,
@@ -36,7 +36,7 @@ export default defineConfig({
     {
       name: "api",
       testDir: "./e2e-tests/tests/api",
-    }
+    },
   ],
 
   webServer: {
