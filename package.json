@@ -23,6 +23,7 @@
     "build:ci": "CI=false && tsc && vite build",
     "e2e": "dotenv -e .env.e2e -- npx nx run e2e-tests:e2e",
     "e2e:ui": "dotenv -e .env.e2e -- npx nx run e2e-tests:ui",
+    "e2e:ci": "npm run prepare-e2e && npm run e2e",
     "e2e:db:reset": "dotenv -e .env.e2e -- npx prisma migrate reset --force",
     "e2e:db:migrate": "dotenv -e .env.e2e -- npx prisma migrate dev --name=init",
     "e2e:db:generate": "dotenv -e .env.e2e -- npx prisma generate",

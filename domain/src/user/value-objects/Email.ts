@@ -7,7 +7,8 @@ import { DomainError } from "@domain/shared/DomainError";
  */
 export class Email {
   private readonly _value: string;
-  private static readonly EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  private static readonly EMAIL_REGEX =
+    /^[^\s@]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/;
 
   constructor(value: string) {
     if (!value || value.trim().length === 0) {
