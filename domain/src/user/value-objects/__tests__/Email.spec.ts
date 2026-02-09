@@ -35,6 +35,12 @@ describe("Email", () => {
       expect(() => new Email("test@")).toThrow("Invalid email format");
       expect(() => new Email("@example.com")).toThrow("Invalid email format");
       expect(() => new Email("test@example")).toThrow("Invalid email format");
+      expect(() => new Email("test@example..com")).toThrow(
+        "Invalid email format",
+      );
+      expect(() => new Email("user@domain.com');")).toThrow(
+        "Invalid email format",
+      );
       expect(() => new Email("test.example.com")).toThrow(
         "Invalid email format",
       );
