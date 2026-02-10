@@ -6,6 +6,17 @@ import type { ExceptionResponseBody } from "@app/server/exceptions/exception.int
 import NextBetService from "@app/server/services/NextBetService";
 import logger from "application/logger";
 
+type ResolveSchema = {
+  winnerId: string;
+};
+/**
+ * Resolve bet
+ * @tag Bet
+ * @description Resolve bet - define who won
+ * @body ResolveSchema
+ * @response null
+ * @openapi
+ */
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } },

@@ -1,6 +1,10 @@
 import { ServerEventStream } from "@app/server/events/ServerSideEventDispatcher";
 import type { NextRequest } from "next/server";
 
+/**
+ * Register for Server Side Events
+ * @ignore
+ */
 export async function GET(req: NextRequest) {
   const watcherId = req.nextUrl.searchParams.get("wid");
 

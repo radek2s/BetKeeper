@@ -4,6 +4,17 @@ import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import logger from "application/logger";
 
+type ProfileImageSchema = {
+  avatarUrl: string;
+};
+/**
+ * Update user profile image
+ * @tag Profle
+ * @description Update user profile image
+ * @body ProfileImageSchema
+ * @response UserType
+ * @openapi
+ */
 export async function PUT(req: Request) {
   try {
     const body = await req.json();

@@ -3,6 +3,13 @@ import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import { NextUserService } from "@app/server/services/NextUserService";
 import logger from "application/logger";
 
+/**
+ * Remove friend
+ * @tag Friends
+ * @description Remove friend
+ * @response null
+ * @openapi
+ */
 export async function DELETE(
   req: Request,
   { params }: { params: { friendId: string } },

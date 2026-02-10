@@ -28,7 +28,8 @@
     "e2e:db:migrate": "dotenv -e .env.e2e -- npx prisma migrate dev --name=init",
     "e2e:db:generate": "dotenv -e .env.e2e -- npx prisma generate",
     "e2e:db:populate": "dotenv -e .env.e2e -- npx tsx ./database/init/schema_e2e.seed.ts",
-    "prepare-e2e": "npm run e2e:db:reset && npm run e2e:db:migrate && npm run e2e:db:generate && npm run e2e:db:populate"
+    "prepare-e2e": "npm run e2e:db:reset && npm run e2e:db:migrate && npm run e2e:db:generate && npm run e2e:db:populate",
+    "openapi:generate": "npx next-openapi-gen generate"
   },
   "dependencies": {
     "@corbado/node-sdk": "^3.0.5",
@@ -36,6 +37,7 @@
     "@prisma/adapter-better-sqlite3": "^7.3.0",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "~7.3.0",
+    "@scalar/api-reference-react": "^0.8.52",
     "@tanstack/react-query": "^5.90.20",
     "axios": "1.13.1",
     "clsx": "^2.1.1",
@@ -47,7 +49,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tslib": "2.8.1",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
@@ -75,7 +78,7 @@
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.18",
-    "ajv": "^8.0.0",
+    "ajv": "^8.17.1",
     "autoprefixer": "10.4.24",
     "babel-jest": "^29.7.0",
     "baseline-browser-mapping": "^2.9.19",
@@ -85,6 +88,7 @@
     "jiti": "2.6.1",
     "jsdom": "~27.4.0",
     "jsonc-eslint-parser": "^2.4.2",
+    "next-openapi-gen": "^0.10.0",
     "nx": "22.4.3",
     "pino-pretty": "^13.1.2",
     "postcss": "8.5.6",

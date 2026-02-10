@@ -24,6 +24,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate OpenApi
+        run: npm run openapi:generate
+
+      - name: Upload OpenAPI Schema 
+        uses: actions/upload-artifact@v4 
+        with: 
+          name: openapi.json
+          path: application/public/ 
+
       - name: Cache node_modules
         uses: actions/cache@v4
         with:

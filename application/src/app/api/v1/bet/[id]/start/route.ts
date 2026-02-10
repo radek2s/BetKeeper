@@ -5,6 +5,13 @@ import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import NextBetService from "@app/server/services/NextBetService";
 import logger from "application/logger";
 
+/**
+ * Start bet
+ * @tag Bet
+ * @description Start bet - make bet request immutable
+ * @response null
+ * @openapi
+ */
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } },

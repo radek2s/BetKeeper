@@ -6,6 +6,13 @@ import { NextUserService } from "@app/server/services/NextUserService";
 import { Email } from "@domain/user";
 import logger from "application/logger";
 
+/**
+ * Get user profile
+ * @tag Profle
+ * @description Get user profile
+ * @response UserType
+ * @openapi
+ */
 export async function GET(req: Request) {
   try {
     const user = await getAuth().getUser(req);
@@ -14,6 +21,15 @@ export async function GET(req: Request) {
     return ExceptionHandler(e);
   }
 }
+
+/**
+ * Create user request
+ * @tag Friends
+ * @description Create user request
+ * @request InviteSchema
+ * @response UserRequestType
+ * @openapi
+ */
 export async function POST(req: Request) {
   try {
     const user = await getAuth().getUser(req);

@@ -6,6 +6,13 @@ import NextBetService from "@app/server/services/NextBetService";
 import logger from "application/logger";
 import { NextResponse } from "next/server";
 
+/**
+ * Get signle Bet
+ * @tag Bet
+ * @description Get single bet
+ * @response BetRequestResponse | BetResponse
+ * @openapi
+ */
 export async function GET(
   req: Request,
   { params }: { params: { id: string } },
@@ -21,6 +28,12 @@ export async function GET(
   }
 }
 
+/**
+ * Delete bet
+ * @tag Bet
+ * @description Delete bet
+ * @openapi
+ */
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } },

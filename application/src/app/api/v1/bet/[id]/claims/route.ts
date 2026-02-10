@@ -6,6 +6,17 @@ import type { ExceptionResponseBody } from "@app/server/exceptions/exception.int
 import NextBetService from "@app/server/services/NextBetService";
 import logger from "application/logger";
 
+type ClaimsSchema = {
+  claims: string;
+};
+/**
+ * Change bet claims
+ * @tag Bet
+ * @description Change bet claims
+ * @body ClaimsSchema
+ * @response null
+ * @openapi
+ */
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } },

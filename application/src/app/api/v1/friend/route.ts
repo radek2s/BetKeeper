@@ -10,6 +10,13 @@ import { NextUserService } from "@app/server/services/NextUserService";
 import { Email, type FriendRequest } from "@domain/user";
 import type { UserType } from "@domain/user/entities";
 
+/**
+ * Get friend list
+ * @tag Friends
+ * @description Get friend list
+ * @response FriendsResponse
+ * @openapi
+ */
 export async function GET(req: Request) {
   try {
     const user = await getAuth().getUser(req);
@@ -58,6 +65,20 @@ export async function GET(req: Request) {
   }
 }
 
+type InviteSchema = {
+  email: string;
+};
+type InviteFriendResponseSchema = {
+  result: "invite" | "create";
+};
+/**
+ * Invite user to friend list
+ * @tag Friends
+ * @description Invite new friend by email
+ * @body InviteSchema
+ * @response InviteFriendResponseSchema
+ * @openapi
+ */
 export async function POST(req: Request) {
   try {
     const user = await getAuth().getUser(req);

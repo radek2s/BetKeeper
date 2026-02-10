@@ -4,6 +4,18 @@ import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import logger from "application/logger";
 
+type ProfileDataSchema = {
+  firstName: string;
+  lastName: string;
+};
+/**
+ * Update user data
+ * @tag Profle
+ * @description Update user data
+ * @body ProfileDataSchema
+ * @response UserType
+ * @openapi
+ */
 export async function PUT(req: Request) {
   try {
     const body = await req.json();

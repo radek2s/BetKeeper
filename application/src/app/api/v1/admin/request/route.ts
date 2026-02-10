@@ -1,4 +1,7 @@
-import { mapUserRequestWithRequester } from "@app/lib/mappers/user";
+import {
+  mapUserRequestWithRequester,
+  type UserRequestWithRequester,
+} from "@app/lib/mappers/user";
 import { OkResponse } from "@app/lib/utils/fetchUtils";
 import { getAuth } from "@app/server/auth/authenticatorFactory";
 import { AuthenticationError } from "@app/server/exceptions/AuthenticationError";
@@ -8,6 +11,13 @@ import { NextUserRequestRepository } from "@app/server/repositories/NextUserRequ
 import type { UserType } from "@domain/user/entities";
 import logger from "application/logger";
 
+/**
+ * Get all user requests
+ * @tag Admin
+ * @description Get all user requests
+ * @response UserRequestWithRequester
+ * @openapi
+ */
 export async function GET(req: Request) {
   try {
     const user = await getAuth().getUser(req);
@@ -36,7 +46,7 @@ export async function GET(req: Request) {
       }
     });
 
-    const result = pending
+    const result: UserRequestWithRequester[] = pending
       .map((request) => request.toObject())
       .map((request) =>
         mapUserRequestWithRequester(

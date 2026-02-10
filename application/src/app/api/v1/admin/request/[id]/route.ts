@@ -18,6 +18,19 @@ const AUTH_MODE: AuthModeType = (process.env.NEXT_PUBLIC_AUTH_MODE ??
 interface RouteParams {
   id: string;
 }
+
+type CreateUserBodySchema = {
+  firstName: string;
+  lastName: string;
+};
+/**
+ * Create new user
+ * @tag Admin
+ * @description Create new user
+ * @body CreateUserBodySchema
+ * @response UserType
+ * @openapi
+ */
 export async function POST(req: Request, { params }: { params: RouteParams }) {
   try {
     const user = await getAuth().getUser(req);
@@ -100,6 +113,13 @@ export async function POST(req: Request, { params }: { params: RouteParams }) {
     return ExceptionHandler(e);
   }
 }
+
+/**
+ * Reject user request
+ * @tag Admin
+ * @description Reject user request
+ * @openapi
+ */
 export async function DELETE(
   req: Request,
   { params }: { params: RouteParams },

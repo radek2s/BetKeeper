@@ -2,10 +2,20 @@ import { OkResponse } from "@app/lib/utils/fetchUtils";
 import { getAuth } from "@app/server/auth/authenticatorFactory";
 import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import type { ExceptionResponseBody } from "@app/server/exceptions/exception.interface";
-import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import NextBetService from "@app/server/services/NextBetService";
 import logger from "application/logger";
 
+type TermsSchema = {
+  claims: string;
+};
+/**
+ * Change bet terms
+ * @tag Bet
+ * @description Change bet terms
+ * @body TermsSchema
+ * @response null
+ * @openapi
+ */
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } },

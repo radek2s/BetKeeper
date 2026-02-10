@@ -1,4 +1,8 @@
-import { mapToResponse } from "@app/features/bets/model/betDto";
+import {
+  type BetRequestResponse,
+  type BetResponse,
+  mapToResponse,
+} from "@app/features/bets/model/betDto";
 import { userIdToUserType } from "@app/features/users/model/userDto";
 import { OkResponse } from "@app/lib/utils/fetchUtils";
 import { getAuth } from "@app/server/auth/authenticatorFactory";
@@ -8,6 +12,27 @@ import NextBetService from "@app/server/services/NextBetService";
 import type { UserType } from "@domain/user/entities";
 import logger from "application/logger";
 
+type BetResponseSchema = BetRequestResponse | BetResponse;
+type BetParticipantSchema = {
+  userId: string;
+  claim: string;
+  stake?: string;
+};
+type BetCreateSchema = {
+  title: string;
+  terms: string;
+  creatorId: string;
+  participants: BetParticipantSchema[];
+  stake?: string;
+};
+
+/**
+ * Get All bets
+ * @tag Bet
+ * @description Fetch list of all user bets
+ * @response BetResponseSchema[]
+ * @openapi
+ */
 export async function GET(req: Request) {
   try {
     const user = await getAuth().getUser(req);
@@ -34,6 +59,14 @@ export async function GET(req: Request) {
   }
 }
 
+/**
+ * Create Bet
+ * @tag Bet
+ * @description Create Bet
+ * @body BetCreateSchema
+ * @response BetResponseSchema[]
+ * @openapi
+ */
 export async function POST(req: Request) {
   try {
     const body = await req.json();

@@ -5,8 +5,17 @@ import type { ExceptionResponseBody } from "@app/server/exceptions/exception.int
 import { NextUserService } from "@app/server/services/NextUserService";
 import logger from "application/logger";
 
+type FriendRespondBodySchema = {
+  action: "accept" | "reject";
+};
+
 /**
- * Accept or reject received FriendRequest
+ * Respond to friend invite
+ * @tag Friends
+ * @description Accept or reject invitation to friend list
+ * @body FriendRespondBodySchema
+ * @response null
+ * @openapi
  */
 export async function PUT(
   req: Request,
@@ -41,7 +50,11 @@ export async function PUT(
 }
 
 /**
- * Cancel sending FriendRequest
+ * Cancel friend invite
+ * @tag Friends
+ * @description Cancel invitation to friend list
+ * @response null
+ * @openapi
  */
 export async function DELETE(
   req: Request,

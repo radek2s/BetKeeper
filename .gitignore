@@ -12,6 +12,7 @@ database/generated
 
 application/node_modules
 application/generated
+application/public/openapi.json
 
 # dependencies
 /node_modules

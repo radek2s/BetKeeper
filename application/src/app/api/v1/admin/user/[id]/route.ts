@@ -5,12 +5,20 @@ import { AuthenticationError } from "@app/server/exceptions/AuthenticationError"
 import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
 import type { ExceptionResponseBody } from "@app/server/exceptions/exception.interface";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
+import { UserType } from "@domain/user/entities";
 import logger from "application/logger";
 
 interface RouteParams {
   id: string;
 }
 
+/**
+ * Toggle user status
+ * @tag Admin
+ * @description Toggle user status
+ * @response UserType
+ * @openapi
+ */
 export async function PATCH(req: Request, { params }: { params: RouteParams }) {
   try {
     const user = await getAuth().getUser(req);
@@ -48,6 +56,12 @@ export async function PATCH(req: Request, { params }: { params: RouteParams }) {
   }
 }
 
+/**
+ * Suspend user
+ * @tag Admin
+ * @description Suspend user
+ * @openapi
+ */
 export async function DELETE(
   req: Request,
   { params }: { params: RouteParams },
