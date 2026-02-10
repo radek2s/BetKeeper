@@ -30,8 +30,8 @@ jobs:
       - name: Upload OpenAPI Schema 
         uses: actions/upload-artifact@v4 
         with: 
-          name: openapi.json
-          path: application/public/ 
+          name: betkeeper_openapi
+          path: application/public/openapi.json
 
       - name: Cache node_modules
         uses: actions/cache@v4
