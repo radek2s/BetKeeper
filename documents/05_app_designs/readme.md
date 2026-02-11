@@ -43,3 +43,7 @@ Bet creation wizzard:
 
 ![image](./dark/06%20-%20Manage%20Users.jpg)
 
+# Notifications settings page
+
+![image](./dark/07%20-%20Notification%20settings.jpg)
+

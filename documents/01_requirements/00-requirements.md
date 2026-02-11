@@ -40,7 +40,7 @@ Bet Request must contains details such as:
 - ✓ BKR_08 <span style="color: #DB9724">(Functional)</span> Each change of terms, claims and stakes in bet request should send a notifications to participants.
 
 - ✓ BKR_09 <span style="color: #DB9724">(Functional)</span> Bet creator should be able to delete bet request.
-- ... BKR_10 <span style="color: #DB9724">(Functional)</span> User should be able to block Bet Request to hide it from his dashboard and block unwanted notifications.
+- ✗ <strike>BKR_10 <span style="color: #DB9724">(Functional)</span> User should be able to block Bet Request to hide it from his dashboard and block unwanted notifications.</strike> Rejected bet requests should be hidden by default in Main Menu view but user should be able to show rejected items.
 - ✓ BKR_11 <span style="color: #DB9724">(Functional)</span> User should be able to see bets that he participate (including pending, resolved, completed etc.).
 - ✓ BKR_12 <span style="color: #DB9724">(Functional)</span> Bet participant should be able to resolve bet (who won).
 - ✓ BKR_13 <span style="color: #DB9724">(Functional)</span> Bet participant should be able to mark bet as completed.
@@ -48,9 +48,9 @@ Bet Request must contains details such as:
 - ✓ BKR_15 <span style="color: #DB9724">(Functional)</span> Creator should be able to delete bet.
 - ✓ BKR_16 <span style="color: #DB9724">(Functional)</span> Administrator should be able to delete any bet.
 - ✓ BKR_17 <span style="color: #DB9724">(Functional)</span> User should be notified when bet is Finished.
-- ... BKR_18 <span style="color: #DB9724">(Functional)</span> User should be notified when bet deadline is approaching (if bet is not Finished) (3 days left).
+- ✗ <strike>BKR_18 <span style="color: #DB9724">(Functional)</span> User should be notified when bet deadline is approaching (if bet is not Finished) (3 days left).</strike> 
 
-- ... BKR_19 <span style="color: #DB9724">(Functional)</span> User should be notified when bet is still in Pending state for longer than 1 week. (Pending is after creation state before resolved or rejected)
+- ✗ <strike>BKR_19 <span style="color: #DB9724">(Functional)</span> User should be notified when bet is still in Pending state for longer than 1 week. (Pending is after creation state before resolved or rejected)</strike>
 
 
 
@@ -68,11 +68,13 @@ Bet Request must contains details such as:
 
 - ... BKR_26 <span style="color: #DB9724">(Functional)</span> User should be able to browse, create, modify and delete his stake ideas (for future bet stakes) as simple list of text notes.
 
+- ✗ <strike>BKR_19 <span style="color: #DB9724">(Functional)</span> User should be notified when bet is still in Pending state for longer than 1 week. (Pending is after creation state before resolved or rejected)</strike>
+
 - ✓ BKR_27 <span style="color: #2E5AD1">(Usability)</span> Application should be mobile-friendly.
 - ✓ BKR_28 <span style="color: #2E5AD1">(Usability)</span> Application data should be in sync with other users.
 - ✓ BKR_29 <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to create a new bet.
 - ✓ BKR_30 <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to see the list of bets he need to complete.
-- ... BKR_31 <span style="color: #2E5AD1">(Usability)</span> Notification should be send as notification emails.
+- ... BKR_31 <span style="color: #2E5AD1">(Usability)</span> Notification should be send as notification emails. User should be notified about new friend invitation and new bet request. User should be able to turn off the notifications. When user will be invited to use application should receive welcome email and also when his account will be suspended also should be notified about this.
 
 
 Check use cases:
