@@ -1,6 +1,6 @@
 import { Page, Locator } from '@playwright/test'
-import { AbstractPage } from '../AbstractPage'
-import { HeaderComponent } from './HeaderComponent';
+import { AbstractPage } from '../../shared/AbstractPage'
+import { HeaderComponent } from './Components/HeaderComponent';
 
 export class MainPage extends AbstractPage {
     protected readonly path = "/";
@@ -10,7 +10,7 @@ export class MainPage extends AbstractPage {
 
     constructor(page: Page) {
         super(page);
-        
+
         this.uniquePageLocator = page.getByRole("button", { name: "notification" });
 
         const headerRoot = page.locator('header.flex.w-full.justify-between.items-center.my-4.px-4');

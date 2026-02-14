@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test'
 import { AbstractComponent } from 'e2e-tests/src/shared/components/AbstractComponent';
-import { ProfilePage } from '../ProfilePage/ProfilePage';
+import { ProfilePage } from '../../ProfilePage/ProfilePage';
 
 export class HeaderComponent extends AbstractComponent {
     readonly profileButton: Locator;
@@ -17,11 +17,12 @@ export class HeaderComponent extends AbstractComponent {
         await this.profileButton.click();
         const profilePage = new ProfilePage(this.page);
         await profilePage.validatePageLoaded();
-        
+
         return profilePage;
     }
 
     async openFriendsPage(): Promise<void> {
         await this.friendsButton.click();
+        //TODO: implement friends page and return its instance
     }
 }

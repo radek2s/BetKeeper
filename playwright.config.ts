@@ -15,6 +15,10 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     actionTimeout: 10000,
+    // headless: false, // Uncomment if you want to see the browser during test execution
+    // launchOptions: {
+    //   slowMo: 300,  // Uncomment to slow down actions for better observation
+    // },
   },
 
   projects: [

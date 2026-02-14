@@ -28,4 +28,8 @@ export abstract class AbstractComponent {
         await this.rootLocator.click();
         return this;
     }
+
+    async waitToDisappear(): Promise<void> {
+        await this.rootLocator.waitFor({ state: "detached" });
+    }
 }
