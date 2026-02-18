@@ -78,4 +78,4 @@ Both Cloudflare R2 and Netlify are great solutions.
 Both are modern, developer-friendly object storage solutions with generous free tiers and CDN integration. Netlify can be setup fater but **Cloudflare R2** is better solution to save images from application hosted on Vercel. It will be working with SDK and there is no egress fees when accessing to Cloudflare CDN. Users will be able to fetch profile images via public URLs. 
 
 [Back to top](./readme.md)  
-[Previous](./03-application.md)  
+[Previous](./03-application.md)  | [Next](./05-mailing.md)
