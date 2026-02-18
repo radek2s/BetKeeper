@@ -1,16 +1,19 @@
-import { Locator, Page } from "@playwright/test";
-import { AbstractComponent } from "./AbstractComponent";
+import { Locator } from "@playwright/test";
 
-export abstract class AbstractDialogComponent extends AbstractComponent {
+export abstract class AbstractDialogComponent {
     
+    protected readonly rootLocator: Locator;
     protected readonly confirmButton: Locator;
     protected readonly cancelButton: Locator;
     
-    constructor(page: Page, rootLocator: Locator, confirmLabel = "Confirm", cancelLabel = "Cancel") {
-        super(page, rootLocator);
-
+    constructor(rootLocator: Locator, confirmLabel = "Confirm", cancelLabel = "Cancel") {
+        this.rootLocator = rootLocator;
         this.confirmButton = rootLocator.getByRole("button", { name: confirmLabel });
         this.cancelButton = rootLocator.getByRole("button", { name: cancelLabel });
+    }
+
+    get locator(): Locator {
+        return this.rootLocator
     }
 
     protected async confirm(): Promise<void> {

@@ -1,145 +1,125 @@
 import { expect, test } from "@playwright/test";
 import { MainPage } from "e2e-tests/src/pages/MainPage/MainPage";
-import { ProfilePage } from "e2e-tests/src/pages/ProfilePage/ProfilePage";
-import { UsersManagementPage } from "e2e-tests/src/pages/UsersManagementPage/UsersManagementPage";
 import { generateRandomMail } from "e2e-tests/src/utils/helpers/testHelpers";
 
-test.describe("Invite new user to system", () => {
-    test("should access main page", async ({ page }) => {
-        const mainPage = new MainPage(page);
-        await mainPage.navigate();
-    });
 
-    test("should open profile page", async ({ page }) => {
-        const mainPage = new MainPage(page);
-        await mainPage.navigate();
-        await mainPage.header.openProfilePage();
-    });
+test("Administrator should invite new user to system and activate his account", async ({ page }) => {
+    //As admimistrator access main page
+    const mainPage = new MainPage(page);
+    await mainPage.navigate();
 
-    test("should open users management page", async ({ page }) => {
-        const profilePage = new ProfilePage(page);
-        await profilePage.navigate();
-        await profilePage.openUsersManagementPage();
-    });
+    await mainPage.validatePageLoaded();
+    
+    //Open profile page by clicking profile avatar
+    const profilePage = await mainPage.header.openProfilePage();
 
-    test("should fail to invite user with invalid email and display error message", async ({ page }) => {
-        const userManagementPage = new UsersManagementPage(page);
-        await userManagementPage.navigate();
+    await profilePage.validatePageLoaded();
 
-        await expect(userManagementPage.inviteNewUserComponent
-            .inviteUserByEmailExpectingError("invalid-email"),
-            "Should throw error message"
-        ).rejects.toThrow("Failed to create user request");
-    });
+    //Open users management page
+    const userManagementPage = await profilePage.openUsersManagementPage();
 
-    test("should invite new user and display it in pending requests", async ({ page }) => {
-        const userEmail = generateRandomMail("invite");
-        const userManagementPage = new UsersManagementPage(page);
-        await userManagementPage.navigate();
-        
-        await userManagementPage.inviteNewUserComponent
-            .inviteUserByEmail(userEmail);
+    await userManagementPage.validatePageLoaded();
 
-        const pendingRequest = await userManagementPage.pendingRequestsComponent
-            .getRequestByEmail(userEmail);
+    //Make attempt to invite new user using invalid email
+    await userManagementPage.inviteNewUserComponent
+        .inviteUserByEmail("invalid-email")
+    const inviteErrorAlert = userManagementPage.inviteNewUserComponent.errorAlert;
 
-        await pendingRequest.validateLoaded();
-        await expect(pendingRequest.getEmail(), 
-            "Pending request email should match the invited user email"
-        ).resolves.toBe(userEmail);
-    });
+    await expect(inviteErrorAlert, "Error message should be visible")
+        .toBeVisible();
+    expect(await inviteErrorAlert.textContent(), "Validate error message")
+        .toBe("Failed to create user request");
 
-    test("should reject pending request and remove it from the list", async ({ page }) => {
-        const userEmail = generateRandomMail("reject_request");
-        const userManagementPage = new UsersManagementPage(page);
-        await userManagementPage.navigate();
+    //Invite new user using valid email
+    const userToRejectEmail = generateRandomMail("invite");
 
-        await userManagementPage.inviteNewUserComponent
-            .inviteUserByEmail(userEmail);
+    await userManagementPage.inviteNewUserComponent
+        .inviteUserByEmail(userToRejectEmail);
 
-        const pendingRequest = await userManagementPage.pendingRequestsComponent
-            .getRequestByEmail(userEmail);
+    const requestToReject = await userManagementPage.pendingRequestsComponent
+        .getRequestByEmail(userToRejectEmail);
+    await expect(requestToReject.locator, "Pending request should be visible")
+        .toBeVisible();
+    expect(await requestToReject.getEmail(), "Pending request email should match the invited user email")
+        .toBe(userToRejectEmail)
 
-        const rejectDialog = await pendingRequest.rejectRequest();
-        await rejectDialog.confirmRejection();
+    //Reject pending user invitation
+    const rejectDialog = await requestToReject.rejectRequest();
+    await rejectDialog.confirmRejection();
 
-        await pendingRequest.waitToDisappear();
+    await expect(requestToReject.locator, "Confirm request rejection dialog should dissapear")
+        .not.toBeVisible()
 
-        const allRequestedUserEmails = await Promise.all(
-                (await userManagementPage.pendingRequestsComponent.getAllRequests())
-                    .map(async request => await request.getEmail())
-        );
+    const allRequestedUserEmailsAfterReject = await Promise.all(
+            (await userManagementPage.pendingRequestsComponent.getAllRequests())
+                .map(async request => await request.getEmail())
+    );
 
-        expect(allRequestedUserEmails, "Should not contain rejected user email").not.toContain(userEmail);
-    });
+    expect(allRequestedUserEmailsAfterReject, "Should not contain rejected user email")
+        .not.toContain(userToRejectEmail);
+    
+    //Once again invite new user using valid email
+    const userToAcceptEmail = generateRandomMail("invite");
 
-    test("should not activate user without setting his first name", async ({ page }) => {
-        const userEmail = generateRandomMail("no_first_name");
-        const userManagementPage = new UsersManagementPage(page);
-        await userManagementPage.navigate();
+    await userManagementPage.inviteNewUserComponent
+        .inviteUserByEmail(userToAcceptEmail);
 
-        await userManagementPage.inviteNewUserComponent
-            .inviteUserByEmail(userEmail);
+    const requestToAccept = await userManagementPage.pendingRequestsComponent
+        .getRequestByEmail(userToAcceptEmail);
+    await expect(requestToAccept.locator, "Pending request should be visible")
+        .toBeVisible();
+    expect(await requestToAccept.getEmail(), "Pending request email should match the invited user email")
+        .toBe(userToAcceptEmail);
 
-        const pendingRequest = await userManagementPage.pendingRequestsComponent
-            .getRequestByEmail(userEmail);
+    //Accept user invitation and make attempt to create user without first or last name
+    const setupUserDialog = await requestToAccept.acceptRequest();
+    await expect(setupUserDialog.locator, "User creation dialog should be visible")
+        .toBeVisible();
+    await setupUserDialog.create();
 
-        const setupUserDialog = await pendingRequest.acceptRequest();
-        await expect(setupUserDialog.create(), 
-            "Should throw error message"
-        ).rejects.toThrow("First name must not be blank!");
-    });
+    const noFirstNameErrorAlert = setupUserDialog.errorAlert
+    await expect(noFirstNameErrorAlert, "Error message should be visible")
+        .toBeVisible();
+    expect(await noFirstNameErrorAlert.textContent(),"Validate error message")
+        .toBe("First name must not be blank!");
 
-    test("should not activate user without setting his last name", async ({ page }) => {
-        const userEmail = generateRandomMail("no_last_name");
-        const userFirstName = "FirstNameOnly";
-        const userManagementPage = new UsersManagementPage(page);
-        await userManagementPage.navigate();
+    //Make attempt to create user by setting a valid first name but without setting his last name
+    const userFirstName = "FirstName";
 
-        await userManagementPage.inviteNewUserComponent
-            .inviteUserByEmail(userEmail);
+    await setupUserDialog.firstNameInput.fill(userFirstName);
+    expect(setupUserDialog.firstNameInput,`Input field should contain ${userFirstName}`)
+        .toHaveValue(userFirstName);
+    await setupUserDialog.create();
 
-        const pendingRequest = await userManagementPage.pendingRequestsComponent
-            .getRequestByEmail(userEmail);
+    const noLastNameErrorAlert = setupUserDialog.errorAlert
+    await expect(noLastNameErrorAlert, "Error message should be visible")
+        .toBeVisible();
+    expect(await noLastNameErrorAlert.textContent(),"Validate error message")
+        .toBe("Last name must not be blank!");
 
-        const setupUserDialog = await pendingRequest.acceptRequest();
-        await setupUserDialog.fillFirstName(userFirstName);
-        await expect(setupUserDialog.create(), 
-            "Should throw error message"
-        ).rejects.toThrow("Last name must not be blank!");
-    });
+    //Create user by setting a valid first name and last name
+    const userLastName = "LastName";
 
-    test("should accept pending request and move it to active accounts", async ({ page }) => {
-        const userEmail = generateRandomMail("accept_request");
-        const userFirstName = "Active";
-        const userLastName = "User";
-        const userManagementPage = new UsersManagementPage(page);
-        await userManagementPage.navigate();
+    await setupUserDialog.lastNameInput.fill(userLastName);
+    expect(setupUserDialog.lastNameInput,`Input field should contain ${userLastName}`)
+        .toHaveValue(userLastName);
+    await setupUserDialog.create();
 
-        await userManagementPage.inviteNewUserComponent
-            .inviteUserByEmail(userEmail);
+    const activeUser = await userManagementPage.activeAccountsComponent
+            .getActiveAccountByEmail(userToAcceptEmail);
 
-        const pendingRequest = await userManagementPage.pendingRequestsComponent
-            .getRequestByEmail(userEmail);
+    await expect(activeUser.locator, "Active user should be visible").toBeVisible();
+    expect(await activeUser.getName(), "Validate active user name").toBe(`${userFirstName} ${userLastName}`);
+    expect(await activeUser.getEmail(), "Validate active user email").toBe(userToAcceptEmail);
 
-        const setupUserDialog = await pendingRequest.acceptRequest();
-        await setupUserDialog.fillFirstName(userFirstName);
-        await setupUserDialog.fillLastName(userLastName);
-        await setupUserDialog.create();
+    await expect(requestToAccept.locator, "Request should be removed from Pending Requests")
+        .not.toBeVisible()
 
-        const activeUser = await userManagementPage.activeAccountsComponent
-            .getActiveAccountByEmail(userEmail);
+    const allRequestedUserEmailsAfterAccept = await Promise.all(
+            (await userManagementPage.pendingRequestsComponent.getAllRequests())
+                .map(async request => await request.getEmail())
+    );
 
-        expect(await activeUser.getName(), "Validate active user name").toBe(`${userFirstName} ${userLastName}`);
-        expect(await activeUser.getEmail(), "Validate active user email").toBe(userEmail);
-
-        await pendingRequest.waitToDisappear();
-
-        const allRequestedUserEmails = await Promise.all(
-                (await userManagementPage.pendingRequestsComponent.getAllRequests())
-                    .map(async request => await request.getEmail())
-        );
-
-        expect(allRequestedUserEmails, "Should not contain accepted user email").not.toContain(userEmail);
-    });
+    expect(allRequestedUserEmailsAfterAccept, "Should not contain accepted user email")
+        .not.toContain(userToAcceptEmail);
 })

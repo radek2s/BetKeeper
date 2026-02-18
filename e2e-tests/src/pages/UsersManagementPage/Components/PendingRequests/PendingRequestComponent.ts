@@ -1,12 +1,17 @@
-import { Locator, Page } from "@playwright/test";
-import { AbstractComponent } from "e2e-tests/src/shared/components/AbstractComponent";
+import { Locator } from "@playwright/test";
 import { RejectUserRequestDialogComponent } from "./Dialogs/RejectInvitationRequestDialogComponent";
 import { SetupUserDialogComponent } from "./Dialogs/SetupUserDialogComponent";
 
-export class PendingRequestComponent extends AbstractComponent {
+export class PendingRequestComponent {
 
-    constructor(page: Page, rootLocator: Locator) {
-        super(page, rootLocator);
+    private readonly rootLocator: Locator;
+
+    constructor(rootLocator: Locator) {
+        this.rootLocator = rootLocator
+    }
+
+    get locator(): Locator {
+        return this.rootLocator
     }
 
     async acceptRequest(): Promise<SetupUserDialogComponent> {
@@ -15,11 +20,10 @@ export class PendingRequestComponent extends AbstractComponent {
             .click();
 
         const dialog = new SetupUserDialogComponent(
-            this.page,
-            this.page.getByRole("dialog", { name: "Setup user" })
+            this.rootLocator.page()
+            .getByRole("dialog", { name: "Setup user" })
         );
 
-        await dialog.validateLoaded();
         return dialog;
     }
 
@@ -29,22 +33,17 @@ export class PendingRequestComponent extends AbstractComponent {
             .click();
 
         const dialog = new RejectUserRequestDialogComponent(
-            this.page,
-            this.page.getByRole("dialog", { name: "Reject user request" })
+            this.rootLocator.page()
+            .getByRole("dialog", { name: "Reject user request" })
         )
 
-        await dialog.validateLoaded();
         return dialog;
     }
 
-    async getEmail(): Promise<string> {
-        const email = await this.rootLocator
+    async getEmail(): Promise<string | null> {
+        return this.rootLocator
             .locator("div.flex.flex-col > span")
             .first()
             .textContent();
-
-        if (!email) throw new Error("Email not found in pending request row");
-
-        return email;
     }
 }

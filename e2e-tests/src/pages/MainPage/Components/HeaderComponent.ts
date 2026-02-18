@@ -1,14 +1,11 @@
-import { Locator, Page } from '@playwright/test'
-import { AbstractComponent } from 'e2e-tests/src/shared/components/AbstractComponent';
+import { Locator, Page } from '@playwright/test';
 import { ProfilePage } from '../../ProfilePage/ProfilePage';
 
-export class HeaderComponent extends AbstractComponent {
+export class HeaderComponent {
     readonly profileButton: Locator;
     readonly friendsButton: Locator;
 
-    constructor(page: Page, rootLocator: Locator) {
-        super(page, rootLocator);
-
+    constructor(private readonly page: Page, rootLocator: Locator) {
         this.profileButton = rootLocator.getByRole("link", { name: "Profile avatar" });
         this.friendsButton = rootLocator.getByRole("button", { name: "group" });
     }

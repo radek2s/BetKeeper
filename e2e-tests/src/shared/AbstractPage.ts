@@ -11,7 +11,7 @@ export abstract class AbstractPage {
 
     async navigate(): Promise<this> {
         await this.page.goto(this.path);
-        return this.validatePageLoaded();
+        return this
     }
 
     async validatePageLoaded(): Promise<this> {

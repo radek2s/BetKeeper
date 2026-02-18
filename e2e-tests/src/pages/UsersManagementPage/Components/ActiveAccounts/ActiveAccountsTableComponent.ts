@@ -1,34 +1,38 @@
 import { Locator, Page } from "@playwright/test";
-import { AbstractComponent } from "e2e-tests/src/shared/components/AbstractComponent";
 import { ActiveAccountComponent } from "./ActiveAccountComponent";
 
-export class ActiveAccountsTableComponent extends AbstractComponent {
+export class ActiveAccountsTableComponent {
 
-    constructor(page: Page, rootLocator: Locator) {
-        super(page, rootLocator);
+    private readonly rootLocator: Locator;
+
+    constructor( rootLocator: Locator) {
+        this.rootLocator = rootLocator;
+    }
+
+    get locator(): Locator {
+        return this.rootLocator
+    }
+
+    get rows(): Locator {
+        return this.rootLocator.locator("div.actions-wrapper");
     }
 
     async getActiveAccountByEmail(email: string): Promise<ActiveAccountComponent> {
-        await this.validateLoaded();
-        const rowLocator = this.rootLocator.locator(
-            "div.actions-wrapper").filter({
-                has: this.page.locator("span", { hasText: email })
-            });
+        const row = this.rows
+            .filter({ hasText: email });
 
-        const activeUser = new ActiveAccountComponent(this.page, rowLocator);
-        await activeUser.validateLoaded();
-        return activeUser;
+        await row.waitFor({ state: "visible"});
+
+        return new ActiveAccountComponent(row);
     }
 
     async getAllActiveAccounts(): Promise<ActiveAccountComponent[]> {
-        await this.validateLoaded();
-        const rows = this.rootLocator.locator("div.actions-wrapper");
-        const count = await rows.count();
+        const count = await this.rows.count();
+
         const activeAccounts: ActiveAccountComponent[] = [];
 
         for (let i = 0; i < count; i++) {
-            const rowLocator = rows.nth(i);
-            activeAccounts.push(new ActiveAccountComponent(this.page, rowLocator));
+            activeAccounts.push(new ActiveAccountComponent(this.rows.nth(i)));
         }
 
         return activeAccounts

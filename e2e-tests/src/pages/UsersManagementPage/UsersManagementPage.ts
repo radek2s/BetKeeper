@@ -15,15 +15,15 @@ export class UsersManagementPage extends AbstractPage {
         super(page);
 
         this.uniquePageLocator = page.getByRole("heading", { name: "Users management" });
-        this.pendingRequestsComponent = new PendingRequestsTableComponent(page, page.locator("section", {
+        this.pendingRequestsComponent = new PendingRequestsTableComponent(page.locator("section", {
             has: page.getByRole("heading", { name: "Pending requests" })
         }));
 
-        this.activeAccountsComponent = new ActiveAccountsTableComponent(page, page.locator("section", {
+        this.activeAccountsComponent = new ActiveAccountsTableComponent(page.locator("section", {
             has: page.getByRole("heading", { name: "Active accounts" })
         }));
 
-        this.inviteNewUserComponent = new InviteNewUserComponent(page, page.locator("section", {
+        this.inviteNewUserComponent = new InviteNewUserComponent( page.locator("section", {
             has: page.getByRole("heading", { name: "Invite new" })
         }));
     }

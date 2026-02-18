@@ -1,34 +1,37 @@
-import { Locator, Page } from "@playwright/test";
-import { AbstractComponent } from "e2e-tests/src/shared/components/AbstractComponent";
+import { Locator } from "@playwright/test";
 import { PendingRequestComponent } from "./PendingRequestComponent";
 
-export class PendingRequestsTableComponent extends AbstractComponent {
+export class PendingRequestsTableComponent {
 
-    constructor(page: Page, rootLocator: Locator) {
-        super(page, rootLocator);
+    private readonly rootLocator: Locator
+
+    constructor(rootLocator: Locator) {
+        this.rootLocator = rootLocator;
+    }
+    
+    get locator(): Locator {
+        return this.rootLocator
+    }
+
+    get rows(): Locator {
+        return this.rootLocator.locator("div.actions-wrapper");
     }
 
     async getRequestByEmail(email: string): Promise<PendingRequestComponent> {
-        await this.validateLoaded();
-        const rowLocator = this.rootLocator.locator(
-            "div.actions-wrapper").filter({
-                has: this.page.locator("span", { hasText: email })
-            });
+        const row = this.rows
+            .filter({ hasText: email });
 
-        const pendingRequest = new PendingRequestComponent(this.page, rowLocator);
-        await pendingRequest.validateLoaded();
-        return pendingRequest;
+        await row.waitFor({ state: "visible"});
+
+        return new PendingRequestComponent(row);
     }
 
     async getAllRequests(): Promise<PendingRequestComponent[]> {
-        await this.validateLoaded();
-        const rows = this.rootLocator.locator("div.actions-wrapper");
-        const count = await rows.count();
+        const count = await this.rows.count();
         const pendingRequests: PendingRequestComponent[] = [];
 
         for (let i = 0; i < count; i++) {
-            const rowLocator = rows.nth(i);
-            pendingRequests.push(new PendingRequestComponent(this.page, rowLocator));
+            pendingRequests.push(new PendingRequestComponent(this.rows.nth(i)));
         }
 
         return pendingRequests;

@@ -1,31 +1,30 @@
 import { Locator, Page } from "@playwright/test";
-import { AbstractComponent } from "e2e-tests/src/shared/components/AbstractComponent";
 
-export class ActiveAccountComponent extends AbstractComponent {
+export class ActiveAccountComponent {
 
-    constructor(page: Page, rootLocator: Locator) {
-        super(page, rootLocator);
+    private readonly rootLocator: Locator;
+
+    constructor( rootLocator: Locator) {
+        this.rootLocator = rootLocator
     }
 
-    async getName(): Promise<string> {
-        const name = await this.rootLocator
-            .locator("div.flex.flex-col > span")
-            .first()
-            .textContent();
-
-        if (!name) throw new Error("Name not found in ActiveAccountComponent");
-
-        return name;
+    get locator(): Locator {
+        return this.rootLocator
     }
 
-    async getEmail(): Promise<string> {
-        const email = await this.rootLocator
-            .locator("div.flex.flex-col > span")
-            .nth(1)
-            .textContent();
+    get name(): Locator {
+        return this.rootLocator.locator("div.flex.flex-col > span").first();
+    }
 
-        if (!email) throw new Error("Email not found in ActiveAccountComponent");
+    get email(): Locator {
+        return this.rootLocator.locator("div.flex.flex-col > span").nth(1) //TODO fix with a better one after ui changes
+    }
 
-        return email;
+    async getName(): Promise<string | null> {
+        return this.name.textContent();
+    }
+
+    async getEmail(): Promise<string | null> {
+        return this.email.textContent();
     }
 }
