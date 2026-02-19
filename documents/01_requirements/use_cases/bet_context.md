@@ -1,10 +1,10 @@
 ### Bet context
-User with at least one friend he is able to create new bet request. **Bet request** is a draft of **Bet** where participants must define common version of terms, claims and stakes that are accepted by both participants. Any participant can approve or reject given terms, claims and stakes. When participant reject request it disappears from his pending bet request list but still is able to find it from bet requests rejected list view.
+User with at least one friend he is able to create new bet request. **Bet request** is a draft of **Bet** where participants must define common version of terms, claims and stakes that are accepted by both participants. When somebody is invited to bet request firend should be informed about new item via email (if has enabled specific settings). Any participant can approve or reject given terms, claims and stakes. When participant reject request it disappears from his pending bet request list but still is able to find it from bet requests rejected list view.
 
-Each update of terms, claims or stakes within bet request reset the participants votes. It is not approved nor rejected - its just in pending state. Each participants must again decide if they are rejecting or approving bet terms and stakes. If someone will change the content of bet it might cause the notification flood or other unwanted items on users dashboard so there is a possibility to block given bet request and given bet will not appear in pending list and user will not receive notifications.
+Each update of terms, claims or stakes within bet request reset the participants votes. It is not approved nor rejected - its just in pending state. Each participants must again decide if they are rejecting or approving bet terms and stakes. 
 CREATOR should be able to delete given bet request and this removes this item from system completly and forever.
 
-When both participants approved terms, claims and stakes Bet Request produces a Bet instance that has immutable terms, claims and stakes. When bet is created any participant can resolve bet which means that person who win must receive the "stake". When it will be done bet participant should mark bet as completed. Completed bets should not be visible on user bets in progress list. In participated bets completed bets should be moved to separate view.
+When both participants approved terms, claims and stakes Bet Request produces a Bet instance that has immutable terms, claims and stakes. When bet is created any participant can resolve bet which means that person who win must receive the "stake". When it will be done bet winner should mark bet as completed. Completed bets should not be visible on user bets in progress list. In participated bets completed bets should be moved to separate view. There might be problem do resolve bet because of invalid terms or imprecise claims. Those bets should be marked as unresolved that users does not have to realise stake.
 
 
 ```mermaid
@@ -13,10 +13,10 @@ title: Bet Use Cases
 ---
 flowchart TB
     USER ---> BET_VIEW(["Show participated bets"])
-    BET_VIEW ---> BET_VIEW_PENDING(["Show bets in progress"]) & BET_VIEW_RESOLVED(["Show completed bets"])
-    USER -- assigining friend user defines terms, claims and stakes ---> BET_REQUEST[/"Bet Request"/]
+    BET_VIEW ---> BET_VIEW_PENDING(["Show unresolved bets"]) & BET_VIEW_RESOLVED(["Show unclaimed bets"]) & BET_VIEW_COMPLETED(["Show completed bets"])
+    USER -- assigining friend user defines terms, claims and stakes ---> BET_REQUEST_EVENT{{Send email notification to friend if has enabled this option enabled}} --> BET_REQUEST[/"Bet Request"/]
     USER["User"] ---> BET_REQUESTS(["Show Bet requests"])
-    BET_REQUESTS(["Show Bet requests"]) --> BET_REQUESTS_PENDING(["Show unknown"])
+    BET_REQUESTS(["Show Bet requests"]) --> BET_REQUESTS_PENDING(["Show pending"])
     BET_REQUESTS(["Show Bet requests"]) --> BET_REQUESTS_REJECTED(["Show rejected"])
     BET_REQUEST -- only creator or admin --> BET_REQUEST_DELETE(["Delete"])
     BET_REQUEST -- any participant --> BET_REQUEST_UPDATE(["Update terms, claims and stakes"])
@@ -27,7 +27,8 @@ flowchart TB
     
     BET_APPROVED(["Approve"]) -- terms, claims and stakes becomes immutable --> BET[/"Bet"/]
     BET --> BET_RESOLVE(["Resolve"])
-    BET_RESOLVE -- (optional) define due date --> BET_COMPLETE(["Complete"])
+    BET_RESOLVE -- only winner or admin--> BET_COMPLETE(["Complete"])
+    BET -- unable to establish winner --> BET_UNRESOLVED(["Mark as unresolved"])
     BET -- only creator or admin --> BET_DELETE(["Delete"])
 
 
@@ -50,6 +51,7 @@ flowchart TB
 
     subgraph Bet
     PENDING("Pending") --> RESOLVED("Resolved")
+    PENDING -- Tie or unable to establish winner --> UNRESOLVED("Unresolved")
     RESOLVED --> COMPLETED("Completed")
     end
     

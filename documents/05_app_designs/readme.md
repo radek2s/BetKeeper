@@ -38,6 +38,8 @@ Bet creation wizzard:
 
 ![image](./dark/05%20-%20Profile%20Page.jpg)
 
+![image](./dark/05-01%20-%20Feedback%20Dialog.jpg)
+
 
 # Manage users page
 
