@@ -8,13 +8,10 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": true
   },
   "files": [],
-  "include": [
-    "domain/src/**/*.ts",
-    "domain/tests/**/*.ts"
-  ],
+  "include": ["domain/src/**/*.ts", "domain/tests/**/*.ts"],
   "references": [
     {
       "path": "./tsconfig.lib.json"
