@@ -1,38 +1,22 @@
 import { BetRequestCreatedEvent } from "@domain/bet";
 import type { DomainEvent } from "@domain/shared";
-import type { MailtrapClient } from "mailtrap";
 import { BaseEventHandler } from "../events/eventHandler";
-import { mailtrapClinet } from "./emailProvider";
+import type { EmailProvider } from "./emailProvider.interface";
+import getEmailProvider from "./providers";
 
 export class EmailDispatcherHandler extends BaseEventHandler {
-  private client: MailtrapClient | null;
+  private client: EmailProvider | null;
 
   constructor() {
     super();
-    this.client = mailtrapClinet;
-    if (this.client == null) {
-      console.log(
-        "EmailDispatcher does not have attached client. Emails will not be sent.",
-      );
-    }
+    this.client = getEmailProvider();
   }
 
   protected async process(event: DomainEvent): Promise<void> {
     if (!this.client) return;
 
     if (event instanceof BetRequestCreatedEvent) {
-      try {
-        await this.client.send({
-          from: { name: "NoReply", email: "no-reply@betkeeper.ovh" },
-          to: [{ email: "..." }],
-          subject: "New bet request created",
-          text: `Bet request about: ${event.title} has been creted.`,
-        });
-      } catch (e) {
-        console.error(e);
-      }
+      this.client.sendBetRequestCreatedNotification(event);
     }
-
-    return;
   }
 }
