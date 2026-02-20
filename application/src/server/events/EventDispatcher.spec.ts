@@ -3,6 +3,10 @@ import { vi } from "vitest";
 import { ServerEventDispatcher } from "./EventDispatcher";
 import { BaseEventHandler } from "./eventHandler";
 
+vi.mock("../email/providers", () => {
+  return { default: vi.fn().mockReturnValue(null) };
+});
+
 class FalkyHanlder extends BaseEventHandler {
   protected process(): Promise<void> | void {
     throw new Error("Falky Hanlder Process");
