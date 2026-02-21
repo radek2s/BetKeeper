@@ -98,7 +98,9 @@ Dependencies installation and workspace initialization:
 npm i
 ```
 
-Sample environment variables are defined in `.env.dev` file.
+Environment variables are described in `.env` file.  
+Create `.env.local` file to override environment variables without adding to git stash area and keep your secrets away from version control.
+
 
 ### Authentication preparation
 
@@ -110,7 +112,7 @@ To change active logged user visit `http://localhost:3000/dev` and enter the use
 
 
 **Prepare Corbado authentication project [advanced]**  
-`CORBADO` [Corbado Authentication](https://www.corbado.com/) requires creation of free open-source project and providing valid properties to `.env` variable  
+`CORBADO` [Corbado Authentication](https://www.corbado.com/) requires creation of free open-source project and providing valid properties to `.env.local` variable  
 
 
 ```properties
@@ -150,7 +152,7 @@ npm i
 
 To prepare environment for E2E test you need to generate database. Given script prepares empty SQLite database with initial user.
 ```shell
-npm run prepare-e2e
+npm run e2e:init
 ```
 
 Playwright perform auto-start of Next.js application in `dev` mode that performs hot-swap during code changes.  
@@ -163,6 +165,8 @@ To just exetute tests in headless mode:
 ```shell
 npm run e2e
 ```
+
+You can modify the E2E test environment in `.env.test.local` file by overriding available variables. This file is excluded from version control system.
 
 
 # License

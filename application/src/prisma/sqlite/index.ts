@@ -13,7 +13,12 @@ function normalizeSqliteUrl(raw: string | undefined) {
     filePart.startsWith("./") ||
     filePart.startsWith("../") ||
     !path.isAbsolute(filePart);
-  const base = process.env.PROJECT_DIR || process.cwd();
+  const processRoot = process.cwd();
+  const processPath = processRoot.includes("application")
+    ? path.join(process.cwd(), "..")
+    : process.cwd();
+
+  const base = process.env.PROJECT_DIR || processPath;
 
   let abs = filePart;
   if (isRelative) {

@@ -4,7 +4,6 @@
 
 Tech stack:
 - [Playwright](https://playwright.dev/) E2E test framework for testing async Server Components
-- [Cucumber](https://cucumber.io/) Behaviour-Driven Development framework for testing requirements
 
 ## Commands
 
@@ -19,7 +18,7 @@ npm i
 
 To prepare environment for E2E test you need to generate database. Given script prepares empty SQLite database with initial user.
 ```shell
-npm run prepare-e2e
+npm run e2e:init
 ```
 
 Playwright perform auto-start of Next.js application in `dev` mode that performs hot-swap during code changes.  
@@ -32,11 +31,3 @@ To just exetute tests in headless mode:
 ```shell
 npm run e2e
 ```
-
----
-
-Run Cucumber Behaviour-Driven Development tests that verifies requirements
-```shell
-npx nx run bet-keeper:test:bdd
-```
-Then you can open [cucumber-report.html](./test-result/cucumber-report.html) to visit what requriements are met.
