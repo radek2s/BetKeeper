@@ -722,6 +722,15 @@ input[type="radio"]:checked::before {
   transform: translateX(-50%);
 }
 
+.notification-settings-panel {
+  min-width: 400px;
+}
+.notification-settings-panel .checkbox__wrapper {
+  color: var(--base-text-grayed);
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
 .vertical-line {
   display: block;
   min-height: 24px;

@@ -42,9 +42,11 @@ export default function ClientProfilePage() {
           <li className="flex items-center gap-2 disabled">
             <Icon name="note" /> Bet Ideas and notes (Soon)
           </li>
-          <li className="flex items-center gap-2 disabled">
-            <Icon name="mail" /> Notification settings (Soon)
-          </li>
+          <Link href={"/profile/notifications"}>
+            <li className="flex items-center gap-2">
+              <Icon name="mail" /> Notification settings
+            </li>
+          </Link>
 
           <li className="flex items-center gap-2 disabled">
             <Icon name="bug" /> Report problem (Soon)

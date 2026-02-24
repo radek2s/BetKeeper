@@ -15,18 +15,20 @@ export function Checkbox({
   children,
 }: Props) {
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center checkbox__wrapper">
       <RadixCheckbox.Root
         checked={checked}
         onCheckedChange={onCheckedChange}
         id={id}
         defaultChecked={defaultChecked}
-        className="checkbox__root">
+        className="checkbox__root cursor-pointer">
         <RadixCheckbox.Indicator className="checkbox__indicator">
           ✓
         </RadixCheckbox.Indicator>
       </RadixCheckbox.Root>
-      <label htmlFor={id}>{children}</label>
+      <label htmlFor={id} className="cursor-pointer">
+        {children}
+      </label>
     </div>
   );
 }

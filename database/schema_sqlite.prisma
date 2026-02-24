@@ -1,7 +1,7 @@
 generator client {
   provider = "prisma-client-js"
   output   = "./generated"
-  browser = false
+  browser  = false
 }
 
 datasource db {
@@ -17,8 +17,20 @@ model UserTable {
   status     String
   avatarUrl  String?
   role       String?
+  language   String?
 
   @@map("user")
+}
+
+model UserNotifications {
+  id                   String  @id
+  friendInvitation     Boolean @default(true)
+  betRequestInvitation Boolean @default(true)
+  betRequestAggreed    Boolean @default(false)
+  betResolved          Boolean @default(false)
+  betCompleted         Boolean @default(false)
+
+  @@map("user_notifications")
 }
 
 model UserRequestTable {
@@ -48,7 +60,7 @@ model BetTable {
   id          String    @id @default(uuid())
   creatorId   String
   status      String?
-  title       String
+  title       String?
   terms       String
   stakeType   String
   stake       String?
@@ -68,7 +80,7 @@ model BetParticipantTable {
   betId  String
   userId String
   vote   String
-  claim  String
+  claim  String?
   stake  String?
 
   @@id([betId, userId], name: "participantId")
