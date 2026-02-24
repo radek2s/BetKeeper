@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test'
-import { AbstractPage } from '../../shared/AbstractPage'
+import { AbstractPage } from '../AbstractPage'
 import { MainPage } from '../MainPage/MainPage';
 import { UsersManagementPage } from '../UsersManagementPage/UsersManagementPage';
 
@@ -21,7 +21,6 @@ export class ProfilePage extends AbstractPage {
     async returnToMainPage(): Promise<MainPage> {
         await this.returnButton.click();
         const mainPage = new MainPage(this.page);
-        await mainPage.validatePageLoaded();
 
         return mainPage;
     }
@@ -29,7 +28,6 @@ export class ProfilePage extends AbstractPage {
     async openUsersManagementPage(): Promise<UsersManagementPage> {
         await this.applicationUsersButton.click();
         const userManagementPage = new UsersManagementPage(this.page);
-        await userManagementPage.validatePageLoaded();
 
         return userManagementPage;
     }

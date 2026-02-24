@@ -8,17 +8,17 @@ test("Administrator should invite new user to system and activate his account", 
     const mainPage = new MainPage(page);
     await mainPage.navigate();
 
-    await mainPage.validatePageLoaded();
+    expect (await mainPage.isLoaded(),"Main page should be visible").toBe(true);
     
     //Open profile page by clicking profile avatar
     const profilePage = await mainPage.header.openProfilePage();
 
-    await profilePage.validatePageLoaded();
+    expect (await profilePage.isLoaded(), "Profile page should be visible").toBe(true);
 
     //Open users management page
     const userManagementPage = await profilePage.openUsersManagementPage();
 
-    await userManagementPage.validatePageLoaded();
+    expect (await userManagementPage.isLoaded(), "Users management page should be visible").toBe(true);
 
     //Make attempt to invite new user using invalid email
     await userManagementPage.inviteNewUserComponent
@@ -122,4 +122,14 @@ test("Administrator should invite new user to system and activate his account", 
 
     expect(allRequestedUserEmailsAfterAccept, "Should not contain accepted user email")
         .not.toContain(userToAcceptEmail);
+
+    //Make attempt to invite another user using same email address
+    await userManagementPage.inviteNewUserComponent
+        .inviteUserByEmail(userToAcceptEmail)
+    const inviteByExistingMailErrorAlert = userManagementPage.inviteNewUserComponent.errorAlert;
+
+    await expect(inviteByExistingMailErrorAlert, "Error message should be visible")
+        .toBeVisible();
+    expect(await inviteByExistingMailErrorAlert.textContent(), "Validate error message")
+        .toBe("Failed to create user request");
 })

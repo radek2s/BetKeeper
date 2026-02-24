@@ -13,7 +13,6 @@ export class HeaderComponent {
     async openProfilePage(): Promise<ProfilePage> {
         await this.profileButton.click();
         const profilePage = new ProfilePage(this.page);
-        await profilePage.validatePageLoaded();
 
         return profilePage;
     }

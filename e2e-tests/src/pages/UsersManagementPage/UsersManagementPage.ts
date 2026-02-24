@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test'
-import { AbstractPage } from '../../shared/AbstractPage'
+import { AbstractPage } from '../AbstractPage'
 import { ActiveAccountsTableComponent } from './Components/ActiveAccounts/ActiveAccountsTableComponent';
 import { PendingRequestsTableComponent } from './Components/PendingRequests/PendingRequestsTableComponent';
 import { InviteNewUserComponent } from './Components/InviteNewUser/InviteNewUserComponent';

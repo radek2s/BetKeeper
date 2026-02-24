@@ -14,11 +14,12 @@ export abstract class AbstractPage {
         return this
     }
 
-    async validatePageLoaded(): Promise<this> {
-        await expect(this.uniquePageLocator,
-            `Validate page ${this.constructor.name} is loaded`
-        ).toBeVisible();
-
-        return this;
+    async isLoaded(): Promise<boolean> {
+        try {
+            await this.uniquePageLocator.waitFor({ state: "visible" });
+            return true;
+        } catch {
+            return false;
+        }
     }
 }

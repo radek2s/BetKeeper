@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test'
-import { AbstractPage } from '../../shared/AbstractPage'
+import { AbstractPage } from '../AbstractPage'
 import { HeaderComponent } from './Components/HeaderComponent';
 
 export class MainPage extends AbstractPage {
