@@ -1,4 +1,6 @@
-import type { BetRequestCreatedEvent } from "@domain/bet";
+import type { UserNotificationSettings } from "@app/features/notification/user/model";
+import type NextUserNotificationRepository from "@app/server/repositories/NextUserNotificationRepository";
+import type { BetParticipant, BetRequestCreatedEvent } from "@domain/bet";
 import {
   Email,
   type FriendRequestSentEvent,
@@ -13,10 +15,15 @@ import type { EmailProvider } from "../emailProvider.interface";
 class MailtrapProvider implements EmailProvider {
   private client: MailtrapClient;
   private userRepository: IUserRepository;
+  private userSettingsRepository: NextUserNotificationRepository;
   private administratorUser?: User;
   private readonly fromAddress: Address;
 
-  constructor(userRepository: IUserRepository, administrator?: User) {
+  constructor(
+    userRepository: IUserRepository,
+    userSettingsRepository: NextUserNotificationRepository,
+    administrator?: User,
+  ) {
     logger.info("Using Mailtrap Email Provider");
 
     const token = process.env.EMAIL_MAILTRAP_API_KEY;
@@ -29,7 +36,25 @@ class MailtrapProvider implements EmailProvider {
     });
     this.administratorUser = administrator;
     this.userRepository = userRepository;
+    this.userSettingsRepository = userSettingsRepository;
     this.fromAddress = { name: "NoReply", email: "no-reply@betkeeper.ovh" };
+  }
+
+  private async filterWithActiveSetting(
+    participants: BetParticipant[],
+    setting: keyof UserNotificationSettings,
+  ): Promise<string[]> {
+    const result = await Promise.all(
+      participants.map(async ({ userId }) => {
+        try {
+          const settings = await this.userSettingsRepository.findById(userId);
+          return settings[setting] ? userId : null;
+        } catch {
+          return null;
+        }
+      }),
+    );
+    return result.filter((value) => value !== null);
   }
 
   async sendBetRequestCreatedNotification(event: BetRequestCreatedEvent) {
@@ -38,10 +63,15 @@ class MailtrapProvider implements EmailProvider {
         ({ userId }) => userId !== event.creatorId,
       );
 
+      const enabledRecipientIds = await this.filterWithActiveSetting(
+        recipients,
+        "betRequestInvitation",
+      );
+
       const recipientData = (
         await Promise.all(
-          recipients.map(
-            async ({ userId }) => await this.userRepository.findById(userId),
+          enabledRecipientIds.map(
+            async (userId) => await this.userRepository.findById(userId),
           ),
         )
       ).filter((user) => !!user);

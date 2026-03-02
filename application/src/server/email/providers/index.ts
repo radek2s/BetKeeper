@@ -1,3 +1,4 @@
+import NextUserNotificationRepository from "@app/server/repositories/NextUserNotificationRepository";
 import NextUserRepository from "@app/server/repositories/NextUserRepository";
 import logger from "application/logger";
 import type { EmailProvider } from "../emailProvider.interface";
@@ -7,7 +8,10 @@ const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER;
 
 function getEmailProvider(): EmailProvider | null {
   if (EMAIL_PROVIDER && EMAIL_PROVIDER === "MAILTRAP") {
-    return new MailtrapProvider(new NextUserRepository());
+    return new MailtrapProvider(
+      new NextUserRepository(),
+      new NextUserNotificationRepository(),
+    );
   }
 
   logger.info("Email provider not configured. Emails will not be sent.");
