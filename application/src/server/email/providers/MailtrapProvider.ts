@@ -1,6 +1,12 @@
 import type { UserNotificationSettings } from "@app/features/notification/user/model";
 import type NextUserNotificationRepository from "@app/server/repositories/NextUserNotificationRepository";
-import type { BetParticipant, BetRequestCreatedEvent } from "@domain/bet";
+import type {
+  BetActionEvent,
+  BetActionEventType,
+  BetCreatedEvent,
+  BetParticipant,
+  BetRequestCreatedEvent,
+} from "@domain/bet";
 import {
   Email,
   type FriendRequestSentEvent,
@@ -38,23 +44,6 @@ class MailtrapProvider implements EmailProvider {
     this.userRepository = userRepository;
     this.userSettingsRepository = userSettingsRepository;
     this.fromAddress = { name: "NoReply", email: "no-reply@betkeeper.ovh" };
-  }
-
-  private async filterWithActiveSetting(
-    participants: BetParticipant[],
-    setting: keyof UserNotificationSettings,
-  ): Promise<string[]> {
-    const result = await Promise.all(
-      participants.map(async ({ userId }) => {
-        try {
-          const settings = await this.userSettingsRepository.findById(userId);
-          return settings[setting] ? userId : null;
-        } catch {
-          return null;
-        }
-      }),
-    );
-    return result.filter((value) => value !== null);
   }
 
   async sendBetRequestCreatedNotification(event: BetRequestCreatedEvent) {
@@ -121,6 +110,9 @@ class MailtrapProvider implements EmailProvider {
       if (!recipient || !sender)
         throw new Error("Recipient or sender was not found in database");
 
+      if (!(await this.hasActiveSetting(recipient.id, "friendInvitation")))
+        return;
+
       this.client.send({
         from: this.fromAddress,
         to: [{ email: recipient.email.value }],
@@ -131,6 +123,84 @@ class MailtrapProvider implements EmailProvider {
       if (e instanceof Error) {
         logger.error(`Unable to send email - ${e.message}`);
       }
+    }
+  }
+
+  async sendBetCreatedNotification(event: BetCreatedEvent): Promise<void> {
+    try {
+      const enabledRecipientIds = await this.filterWithActiveSetting(
+        event.watchers,
+        "betRequestAggreed",
+      );
+
+      const recipientData = (
+        await Promise.all(
+          enabledRecipientIds.map(
+            async (userId) => await this.userRepository.findById(userId),
+          ),
+        )
+      ).filter((user) => !!user);
+
+      recipientData.forEach((recipient) => {
+        this.client.send({
+          from: this.fromAddress,
+          to: [{ email: recipient.email.value }],
+          subject: "Bet has been agreed",
+          text: `Bet ${event.title} you participate has been agreed.`,
+        });
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        logger.error(`Unable to send email - ${e.message}`);
+      }
+    }
+  }
+
+  async sendBetUpdateNotification(event: BetActionEvent): Promise<void> {
+    try {
+      const setting = this.mapEventToSetting(event.action);
+
+      //Guard against unsupported event actions
+      if (!setting) return;
+
+      const enabledRecipientIds = await this.filterWithActiveSetting(
+        event.watchers,
+        setting,
+      );
+
+      const recipientData = (
+        await Promise.all(
+          enabledRecipientIds.map(
+            async (userId) => await this.userRepository.findById(userId),
+          ),
+        )
+      ).filter((user) => !!user);
+
+      recipientData.forEach((recipient) => {
+        this.client.send({
+          from: this.fromAddress,
+          to: [{ email: recipient.email.value }],
+          subject: `Bet has been marked as ${event.action}`,
+          text: `Bet ${event.title} you participate has been marked as ${event.action}.`,
+        });
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        logger.error(`Unable to send email - ${e.message}`);
+      }
+    }
+  }
+
+  private mapEventToSetting(
+    eventActionType: BetActionEventType,
+  ): keyof UserNotificationSettings | null {
+    switch (eventActionType) {
+      case "complete":
+        return "betCompleted";
+      case "resolve":
+        return "betResolved";
+      case "delete":
+        return null;
     }
   }
 
@@ -147,6 +217,42 @@ class MailtrapProvider implements EmailProvider {
     if (!administrator || administrator?.role !== "ADMINISTRATOR")
       throw new Error("Invalid administrator email");
     return administrator;
+  }
+
+  private async filterWithActiveSetting(
+    participants: BetParticipant[] | string[],
+    setting: keyof UserNotificationSettings,
+  ): Promise<string[]> {
+    const result = await Promise.all(
+      participants.map(async (user) => {
+        const userId = typeof user === "string" ? user : user.userId;
+        try {
+          const settings = await this.userSettingsRepository.findById(userId);
+          return settings[setting] ? userId : null;
+        } catch {
+          return null;
+        }
+      }),
+    );
+    return result.filter((value) => value !== null);
+  }
+
+  private async hasActiveSetting(
+    userId: string,
+    setting: keyof UserNotificationSettings,
+  ): Promise<boolean> {
+    try {
+      const settings = await this.userSettingsRepository.findById(userId);
+      const result = settings[setting];
+      if (typeof result === "boolean") {
+        return result;
+      } else {
+        throw new Error(`Unsupported setting ${setting}`);
+      }
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
 }
 
