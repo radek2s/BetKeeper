@@ -25,6 +25,11 @@ class MailtrapProvider implements EmailProvider {
   private administratorUser?: User;
   private readonly fromAddress: Address;
 
+  private readonly friendInviteTemplateId: string;
+  private readonly betInviteTemplateId: string;
+  private readonly betAgreedTemplateId: string;
+  private readonly betStatusTemplateId: string;
+
   constructor(
     userRepository: IUserRepository,
     userSettingsRepository: NextUserNotificationRepository,
@@ -37,13 +42,42 @@ class MailtrapProvider implements EmailProvider {
       throw new Error(
         "Can't create MailtrapProvider - EMAIL_MAILTRAP_API_KEY is not provided!",
       );
+
+    const friendInviteTemplateId = process.env.EMAIL_MAILTRAP_FRIEND_INVITE;
+    if (!friendInviteTemplateId)
+      throw new Error(
+        "Can't create MailtrapProvider - Template ID is not provided! [EMAIL_MAILTRAP_FRIEND_INVITE]",
+      );
+    this.friendInviteTemplateId = friendInviteTemplateId;
+
+    const betInviteTemplateId = process.env.EMAIL_MAILTRAP_BET_INVITE;
+    if (!betInviteTemplateId)
+      throw new Error(
+        "Can't create MailtrapProvider - Template ID is not provided! [EMAIL_MAILTRAP_BET_INVITE]",
+      );
+    this.betInviteTemplateId = betInviteTemplateId;
+
+    const betAgreedTemplateId = process.env.EMAIL_MAILTRAP_BET_AGREED;
+    if (!betAgreedTemplateId)
+      throw new Error(
+        "Can't create MailtrapProvider - Template ID is not provided! [EMAIL_MAILTRAP_BET_AGREED]",
+      );
+    this.betAgreedTemplateId = betAgreedTemplateId;
+
+    const betStatusTemplateId = process.env.EMAIL_MAILTRAP_BET_STATUS;
+    if (!betStatusTemplateId)
+      throw new Error(
+        "Can't create MailtrapProvider - Template ID is not provided! [EMAIL_MAILTRAP_BET_STATUS]",
+      );
+    this.betStatusTemplateId = betStatusTemplateId;
+
     this.client = new MailtrapClient({
       token,
     });
     this.administratorUser = administrator;
     this.userRepository = userRepository;
     this.userSettingsRepository = userSettingsRepository;
-    this.fromAddress = { name: "NoReply", email: "no-reply@betkeeper.ovh" };
+    this.fromAddress = { name: "BetKeeper", email: "no-reply@betkeeper.ovh" };
   }
 
   async sendBetRequestCreatedNotification(event: BetRequestCreatedEvent) {
@@ -70,8 +104,12 @@ class MailtrapProvider implements EmailProvider {
         this.client.send({
           from: this.fromAddress,
           to: [{ email: recipient.email.value }],
-          subject: "New bet request create",
-          text: `You have been invited to bet reqest ${event.title} created by ${creatorData?.name}.`,
+          template_uuid: this.betInviteTemplateId,
+          template_variables: {
+            creatorName: `${creatorData?.name}`,
+            betTitle: `${event.title}`,
+            betId: event.betId,
+          },
         });
       });
     } catch (e) {
@@ -116,8 +154,10 @@ class MailtrapProvider implements EmailProvider {
       this.client.send({
         from: this.fromAddress,
         to: [{ email: recipient.email.value }],
-        subject: "New pending friend request",
-        text: `${sender.name} invited you to be a friend. Check your Friend list in application to approve or reject invitation`,
+        template_uuid: this.friendInviteTemplateId,
+        template_variables: {
+          senderName: sender.name,
+        },
       });
     } catch (e) {
       if (e instanceof Error) {
@@ -145,8 +185,11 @@ class MailtrapProvider implements EmailProvider {
         this.client.send({
           from: this.fromAddress,
           to: [{ email: recipient.email.value }],
-          subject: "Bet has been agreed",
-          text: `Bet ${event.title} you participate has been agreed.`,
+          template_uuid: this.betAgreedTemplateId,
+          template_variables: {
+            betTitle: event.title,
+            betId: event.betId,
+          },
         });
       });
     } catch (e) {
@@ -180,8 +223,12 @@ class MailtrapProvider implements EmailProvider {
         this.client.send({
           from: this.fromAddress,
           to: [{ email: recipient.email.value }],
-          subject: `Bet has been marked as ${event.action}`,
-          text: `Bet ${event.title} you participate has been marked as ${event.action}.`,
+          template_uuid: this.betStatusTemplateId,
+          template_variables: {
+            betId: event.betId,
+            betStatus: event.action,
+            betTitle: event.title,
+          },
         });
       });
     } catch (e) {
