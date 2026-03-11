@@ -1,5 +1,6 @@
 import type { UserNotificationSettings } from "@app/features/notification/user/model";
 import type NextUserNotificationRepository from "@app/server/repositories/NextUserNotificationRepository";
+import type { IUserNotificationRepository } from "@app/server/repositories/NextUserNotificationRepository";
 import type {
   BetActionEvent,
   BetActionEventType,
@@ -21,7 +22,7 @@ import type { EmailProvider } from "../emailProvider.interface";
 class MailtrapProvider implements EmailProvider {
   private client: MailtrapClient;
   private userRepository: IUserRepository;
-  private userSettingsRepository: NextUserNotificationRepository;
+  private userSettingsRepository: IUserNotificationRepository;
   private administratorUser?: User;
   private readonly fromAddress: Address;
 
@@ -32,7 +33,7 @@ class MailtrapProvider implements EmailProvider {
 
   constructor(
     userRepository: IUserRepository,
-    userSettingsRepository: NextUserNotificationRepository,
+    userSettingsRepository: IUserNotificationRepository,
     administrator?: User,
   ) {
     logger.info("Using Mailtrap Email Provider");

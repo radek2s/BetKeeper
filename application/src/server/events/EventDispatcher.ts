@@ -1,5 +1,6 @@
 import type { DomainEvent, IEventDispatcher } from "@domain/shared";
 import { EmailDispatcherHandler } from "../email/emailDispatcher";
+import getEmailProvider from "../email/providers";
 import type { BaseEventHandler, DomainEventHandler } from "./eventHandler";
 import { ServerSideEventDispatcherHandler } from "./ServerSideEventHandler";
 
@@ -31,5 +32,5 @@ export class ServerEventDispatcher implements IEventDispatcher {
 
 export const ServerDispatcher = new ServerEventDispatcher([
   new ServerSideEventDispatcherHandler(),
-  new EmailDispatcherHandler(),
+  new EmailDispatcherHandler(getEmailProvider()),
 ]);

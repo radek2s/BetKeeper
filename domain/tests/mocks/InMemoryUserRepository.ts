@@ -1,7 +1,7 @@
-import { User } from "../../src/user/entities/User";
-import { Email } from "../../src/user/value-objects/Email";
-import { IUserRepository } from "../../src/user/services/UserService";
-import { UUID } from "../../src/shared/Uuid";
+import type { UUID } from "../../src/shared/Uuid";
+import type { User } from "../../src/user/entities/User";
+import type { IUserRepository } from "../../src/user/services/UserService";
+import type { Email } from "../../src/user/value-objects/Email";
 
 export class InMemoryUserRepository implements IUserRepository {
   private users: User[] = [];

@@ -3,7 +3,13 @@ import type { UUID } from "@domain/shared";
 import prisma from "../db";
 import { handleDbError } from "../db/exceptions";
 
-class NextUserNotificationRepository {
+export interface IUserNotificationRepository {
+  findById(userId: UUID): Promise<UserNotificationSettings>;
+  save(settings: UserNotificationSettings): Promise<void>;
+}
+export class NextUserNotificationRepository
+  implements IUserNotificationRepository
+{
   private table = prisma.userNotifications;
 
   async findById(userId: UUID): Promise<UserNotificationSettings> {

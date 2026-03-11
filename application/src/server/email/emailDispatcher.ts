@@ -10,14 +10,13 @@ import {
 } from "@domain/user";
 import { BaseEventHandler } from "../events/eventHandler";
 import type { EmailProvider } from "./emailProvider.interface";
-import getEmailProvider from "./providers";
 
 export class EmailDispatcherHandler extends BaseEventHandler {
   private client: EmailProvider | null;
 
-  constructor() {
+  constructor(emailProvider: EmailProvider | null = null) {
     super();
-    this.client = getEmailProvider();
+    this.client = emailProvider;
   }
 
   protected async process(event: DomainEvent): Promise<void> {

@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/complexity/useArrowFunction: To mock constructor I need to use function instead of arrow function */
+
+import { InMemoryUserSettingsRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserNotificationsRepository";
 import { InMemoryUserRepository } from "@bet-keeper/domain/test/mocks/InMemoryUserRepository";
 import { BetRequestCreatedEvent } from "@domain/bet";
 import { Email, User, UserStatus } from "@domain/user";
@@ -20,6 +22,10 @@ vi.mock("mailtrap", () => {
 describe("MailtrapProvider Tests", () => {
   beforeEach(() => {
     vi.stubEnv("EMAIL_MAILTRAP_API_KEY", "temporary-key");
+    vi.stubEnv("EMAIL_MAILTRAP_FRIEND_INVITE", "temporary-key");
+    vi.stubEnv("EMAIL_MAILTRAP_BET_INVITE", "temporary-key");
+    vi.stubEnv("EMAIL_MAILTRAP_BET_AGREED", "temporary-key");
+    vi.stubEnv("EMAIL_MAILTRAP_BET_STATUS", "temporary-key");
   });
 
   afterEach(() => {
@@ -28,6 +34,15 @@ describe("MailtrapProvider Tests", () => {
   });
   test("send bet request created notification to participant", async () => {
     const inMemoryUserRepository = new InMemoryUserRepository();
+    const inMemoryUserSettingsRepository = new InMemoryUserSettingsRepository();
+    const administrator = new User(
+      new Email("admin@test.com"),
+      "Administrator",
+      "Mock",
+      UserStatus.ACTIVE,
+      "",
+      "user-01",
+    );
     sendMock.mockResolvedValue({ success: true });
 
     const creator = User.reconstitute(
@@ -48,7 +63,11 @@ describe("MailtrapProvider Tests", () => {
     await inMemoryUserRepository.save(creator);
     await inMemoryUserRepository.save(friend);
 
-    const provider = new MailtrapProvider(inMemoryUserRepository);
+    const provider = new MailtrapProvider(
+      inMemoryUserRepository,
+      inMemoryUserSettingsRepository,
+      administrator,
+    );
 
     const event = new BetRequestCreatedEvent(
       "bet-01",
@@ -75,10 +94,14 @@ describe("MailtrapProvider Tests", () => {
 
     expect(sendMock).toHaveBeenCalledTimes(1);
     expect(sendMock).toHaveBeenCalledWith({
-      from: { name: "NoReply", email: "no-reply@betkeeper.ovh" },
+      from: { name: "BetKeeper", email: "no-reply@betkeeper.ovh" },
       to: [{ email: "recipient@mock.tech" }],
-      subject: "New bet request create",
-      text: `You have been invited to bet reqest Simple Title created by Creator Bet.`,
+      template_uuid: "temporary-key",
+      template_variables: {
+        betId: "bet-01",
+        betTitle: "Simple Title",
+        creatorName: "Creator Bet",
+      },
     });
   });
 });
