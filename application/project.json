@@ -9,7 +9,8 @@
     "build": {
       "executor": "@nx/next:build",
       "options": {
-        "outputPath": "dist/application"
+        "outputPath": "dist/application",
+        "webpack": true
       }
     },
     "preview": {
