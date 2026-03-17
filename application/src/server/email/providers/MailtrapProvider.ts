@@ -1,5 +1,4 @@
 import type { UserNotificationSettings } from "@app/features/notification/user/model";
-import type NextUserNotificationRepository from "@app/server/repositories/NextUserNotificationRepository";
 import type { IUserNotificationRepository } from "@app/server/repositories/NextUserNotificationRepository";
 import type {
   BetActionEvent,
