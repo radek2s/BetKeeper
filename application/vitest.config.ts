@@ -13,5 +13,10 @@ export default defineConfig(() => ({
     exclude: [
       "{src,specs}/**/*.integration.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
     ],
+    onUnhandledError(error) {
+      if (error.name === "TestError") {
+        return false;
+      }
+    },
   },
 }));

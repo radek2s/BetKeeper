@@ -1,6 +1,5 @@
 import { Button } from "@app/ui/button/Button";
 import { Checkbox } from "@app/ui/checkbox";
-import { Panel } from "@app/ui/layout/Panel";
 import { useState } from "react";
 import type { UserNotificationSettingsType } from "../../model";
 

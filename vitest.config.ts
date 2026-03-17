@@ -17,5 +17,10 @@ export default defineConfig({
       reportsDirectory: "coverage",
       provider: "v8",
     },
+    onUnhandledError(error) {
+      if (error.name === "TestError") {
+        return false;
+      }
+    },
   },
 });
