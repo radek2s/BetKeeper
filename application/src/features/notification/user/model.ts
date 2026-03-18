@@ -1,3 +1,5 @@
+import type { UserNotificationSettingsType } from "./schema";
+
 export class UserNotificationSettings {
   userId: string;
   friendInvitation: boolean = true;
@@ -38,10 +40,6 @@ export class UserNotificationSettings {
     };
   }
 }
-
-export type UserNotificationSettingsType = ReturnType<
-  UserNotificationSettings["toObject"]
->;
 
 export function toUserNotificationSettings(
   settings: UserNotificationSettingsType,

@@ -1,7 +1,7 @@
 import { Panel } from "@app/ui/layout/Panel";
 import type { PropsWithChildren, ReactNode } from "react";
 import { useUserNotificationSettings } from "../../api/notificationUserQuery";
-import type { UserNotificationSettingsType } from "../../model";
+import type { UserNotificationSettingsType } from "../../schema";
 
 interface Props {
   children: (settings: UserNotificationSettingsType) => ReactNode;

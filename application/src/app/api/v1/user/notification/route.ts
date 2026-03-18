@@ -1,4 +1,5 @@
 import { UserNotificationSettings } from "@app/features/notification/user/model";
+import { UserNotificationSettingsSchema } from "@app/features/notification/user/schema";
 import { OkResponse } from "@app/lib/utils/fetchUtils";
 import { getAuth } from "@app/server/auth/authenticatorFactory";
 import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";
@@ -34,7 +35,7 @@ export async function GET(req: Request) {
  */
 export async function PUT(req: Request) {
   try {
-    const body = await req.json();
+    const body = UserNotificationSettingsSchema.parse(await req.json());
     const user = await getAuth().getUser(req);
     const repository = new NextUserNotificationRepository();
     const settings = UserNotificationSettings.reconstitute(

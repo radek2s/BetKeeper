@@ -1,5 +1,6 @@
 import { DomainError } from "@domain/shared/DomainError";
 import logger from "application/logger";
+import z from "zod";
 import { AuthenticationError } from "./AuthenticationError";
 import type { ExceptionResponseBody } from "./exception.interface";
 
@@ -19,6 +20,14 @@ export function ExceptionHandler(e: unknown, handler?: ExceptionHandlerI) {
           return Response.json(response.body, { status: response.status });
       }
     } catch {}
+    if (e instanceof z.ZodError) {
+      const body: ExceptionResponseBody & { issues: z.core.$ZodIssue[] } = {
+        error: "Invalid request data",
+        message: e.message,
+        issues: e.issues,
+      };
+      return Response.json(body, { status: 400 });
+    }
     if (e instanceof AuthenticationError) {
       return AuthExceptionHandler(e);
     }

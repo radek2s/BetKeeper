@@ -1,5 +1,6 @@
 import { getRequest, sendRequest } from "@app/lib/utils/fetchUtils";
-import type { UserNotificationSettingsType } from "../model";
+import { handleErrorResponse } from "@app/ui/api-handler/ApiErrorHandler";
+import type { UserNotificationSettingsType } from "../schema";
 
 export async function fetchUserNotificationSettings(): Promise<UserNotificationSettingsType> {
   const url = "/api/v1/user/notification";
@@ -15,6 +16,8 @@ export async function saveUserNotificationSettings(
   const url = "/api/v1/user/notification";
   const res = await sendRequest(url, "PUT", settings);
 
-  if (!res.ok) throw new Error("Failed to fetch user notification settings");
+  if (!res.ok) {
+    await handleErrorResponse(res);
+  }
   return res.json();
 }
