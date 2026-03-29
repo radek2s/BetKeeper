@@ -1,76 +1,88 @@
 generator client {
-    provider    = "prisma-client-js"
-    output = "./generated"
-    browser = false
-}
-datasource db {
-    provider    = "postgresql"
+    provider = "prisma-client-js"
+    output   = "./generated"
+    browser  = false
 }
 
+datasource db {
+    provider = "postgresql"
+}
 
 model UserTable {
-    id          String @id @default(uuid())
-    providerId  String? @unique
-    email       String @unique
-    firstName   String
-    lastName    String
-    status      String
-    avatarUrl   String?
-    role        String?
+    id         String  @id @default(uuid())
+    providerId String? @unique
+    email      String  @unique
+    firstName  String
+    lastName   String
+    status     String
+    avatarUrl  String?
+    role       String?
+    language   String?
 
     @@map("user")
 }
 
+model UserNotifications {
+    id                   String  @id
+    friendInvitation     Boolean
+    betRequestInvitation Boolean
+    betRequestAggreed    Boolean
+    betResolved          Boolean
+    betCompleted         Boolean
+
+    @@map("user_notifications")
+}
+
 model UserRequestTable {
-    id              String @id @default(uuid())
-    requesterId     String 
-    inviteeEmail    String
-    status          String
-    createdAt       DateTime 
-    approvedById    String? 
-    approvedAt      DateTime? 
+    id           String    @id @default(uuid())
+    requesterId  String
+    inviteeEmail String
+    status       String
+    createdAt    DateTime
+    approvedById String?
+    approvedAt   DateTime?
 
     @@map("user_request")
 }
 
 model FriendRequestTable {
-    id              String @id @default(uuid())
-    senderId        String 
-    reciverId       String 
-    status          String
-    createdAt       DateTime 
-    expiresAt       DateTime? 
+    id        String    @id @default(uuid())
+    senderId  String
+    reciverId String
+    status    String
+    createdAt DateTime
+    expiresAt DateTime?
 
     @@map("friend_request")
 }
 
 model BetTable {
-    id                  String @id @default(uuid())
-    creatorId           String 
-    status              String?
-    title               String 
-    terms               String
-    stakeType           String
-    stake               String?
-    createdAt           DateTime 
-    updatedAt           DateTime 
-    resolvedAt          DateTime? 
-    resolvedBy          String? 
-    winnerId            String? 
-    dueDate             DateTime? 
-    completedAt         DateTime? 
-    completedBy         String? 
+    id          String    @id @default(uuid())
+    creatorId   String
+    status      String?
+    title       String?
+    terms       String
+    stakeType   String
+    stake       String?
+    createdAt   DateTime
+    updatedAt   DateTime
+    resolvedAt  DateTime?
+    resolvedBy  String?
+    winnerId    String?
+    dueDate     DateTime?
+    completedAt DateTime?
+    completedBy String?
 
     @@map("bet")
 }
 
 model BetParticipantTable {
-    betId               String
-    userId              String 
-    vote                String 
-    claim               String
-    stake               String?
-    
+    betId  String
+    userId String
+    vote   String
+    claim  String?
+    stake  String?
+
     @@id(name: "participantId", [betId, userId])
     @@map("bet_participant")
 }

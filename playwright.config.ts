@@ -44,7 +44,10 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "nx run application:dev",
+    command: "npm run e2e:dev",
+    env: {
+      DATABASE_URL: "file:./database/data/betKeeperE2E.db",
+    },
     url: "http://localhost:3000",
     reuseExistingServer: !process.env["CI"],
     timeout: 120000,
