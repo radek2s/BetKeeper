@@ -2,7 +2,6 @@ name: Suggest Improvement
 description: Propose an enhancement or idea to make the project better
 title: "[Improvement]: "
 labels: ["improvement idea"]
-type: enhancement
 
 body:
   - type: textarea

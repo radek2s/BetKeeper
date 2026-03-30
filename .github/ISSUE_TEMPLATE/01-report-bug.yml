@@ -2,7 +2,6 @@ name: Report Bug
 description: Report a bug to help us improve
 title: "[Bug]: "
 labels: ["bug"]
-type: bug
 body:
   - type: textarea
     id: result-actual
