@@ -83,6 +83,6 @@ model BetParticipantTable {
     claim  String?
     stake  String?
 
-    @@id(name: "participantId", [betId, userId])
+    @@id([betId, userId], name: "participantId")
     @@map("bet_participant")
 }
