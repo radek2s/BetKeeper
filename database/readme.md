@@ -29,3 +29,19 @@ npx dotenv -e .env.e2e -- <YOUR_COMMAND>
 Using SQLite files just delete `*.db` file in `/data` directory.
 
 When there is an issue with migration delete content of `/migrations` directory.
+
+### Production migrations
+
+Check connection with database using:
+```shell
+npm run prod:studio
+```
+This will open prisma database browser.
+
+
+Configure `.env.local` file and use given command to perform database migratition.
+Use DIRECT_URL as DATABASE_URL to perform migrations.
+```shell
+npm run prod:migrate:dev
+```
+
