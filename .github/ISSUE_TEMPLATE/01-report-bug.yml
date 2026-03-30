@@ -1,0 +1,92 @@
+name: Report Bug
+description: Report a bug to help us improve
+title: "[Bug]: "
+labels: ["bug"]
+type: bug
+body:
+  - type: textarea
+    id: result-actual
+    attributes:
+      label: Actual behavior (bug)
+      description: How the application behaves now
+    validations:
+      required: true
+
+  - type: textarea
+    id: result-expected
+    attributes:
+      label: Expected behavior (correct)
+      description: How should it behave instead?
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        **Critical** - Core application flow blocked 
+        **Major** - Workflow is broken, but you can still function - significant disruption
+        **Moderate** - Application can be used with workarounds
+        **Low** - Small inconvenience, cosmetic issue, or a general question.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Bug severity
+      description: "How severe is the issue?"
+      options:
+        - Critical
+        - Major
+        - Moderate
+        - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce the issue
+      description: Provide clear steps so we can reproduce the issue.
+      placeholder: |
+        1. Go to...
+        2. Click on...
+        3. Observe...
+
+  - type: dropdown
+    id: version-platform
+    attributes:
+      label: Operating System
+      description: On which system you spotted the issue?
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Android
+        - iOS
+        - Other
+    
+  - type: dropdown
+    id: version-browsers
+    attributes:
+      label: Which browsers are affected?
+      multiple: true
+      options:
+        - Chrome
+        - Microsoft Edge
+        - Firefox
+        - Safari
+        - Opera
+        - Other
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Upload screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    
