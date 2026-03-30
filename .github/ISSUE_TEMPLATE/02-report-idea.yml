@@ -16,7 +16,7 @@ body:
     attributes:
       label: Your suggested improvement
       description: What would you like to see changed or added?
-      placeholder: "Example: Add color‑coded sections or grouping to improve readability."
+      placeholder: "Example: Add color-coded sections or grouping to improve readability."
     validations:
       required: true
 
@@ -36,7 +36,6 @@ body:
         - High – Significant usability or workflow improvement
         - Medium – Helpful but not urgent
         - Low – Nice to have
-      default: Medium
 
   - type: upload
     id: screenshots
