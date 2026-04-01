@@ -4,6 +4,7 @@ export type IconProps = {
 
 export type IconType =
   | "add"
+  | "app-add"
   | "arrow-left"
   | "arrow-dropdown"
   | "bug"
@@ -17,6 +18,7 @@ export type IconType =
   | "fact-check"
   | "filter"
   | "gift"
+  | "github"
   | "group"
   | "group-add"
   | "groups"

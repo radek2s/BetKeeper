@@ -1,5 +1,6 @@
 "use client";
 
+import FeedbackDialog from "@app/features/profile/components/FeedbackDialog";
 import LogoutButton from "@app/features/profile/components/Logout";
 import { ProfileImage } from "@app/features/profile/components/ProfileImage";
 import { UserNameEditor } from "@app/features/profile/components/UserNameEditor";
@@ -10,7 +11,10 @@ import PageHeader from "@app/ui/layout/Header";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
 import Link from "next/link";
 
-export default function ClientProfilePage() {
+interface Props {
+  emailProviderAvailable?: boolean;
+}
+export default function ClientProfilePage({ emailProviderAvailable }: Props) {
   const user = useUserContext();
 
   return (
@@ -48,9 +52,8 @@ export default function ClientProfilePage() {
             </li>
           </Link>
 
-          <li className="flex items-center gap-2 disabled">
-            <Icon name="bug" /> Report problem (Soon)
-          </li>
+          <FeedbackDialog emailProviderAvailable={emailProviderAvailable} />
+
           <LogoutButton />
         </ul>
       </div>

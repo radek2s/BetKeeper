@@ -1,5 +1,6 @@
 import type { FunctionComponent } from "react";
 import { AddIcon } from "./add";
+import { AppAddIcon } from "./app-add";
 import { ArrowDropdownIcon } from "./arrow-dropdown";
 import { ArrowLeftIcon } from "./arrow-left";
 import { BugIcon } from "./bug";
@@ -13,6 +14,7 @@ import { EventIcon } from "./event";
 import { FactCheckIcon } from "./fact-check";
 import { FilterIcon } from "./filter";
 import { GiftIcon } from "./gift";
+import { GithubIcon } from "./github";
 import { GroupIcon } from "./group";
 import { GroupAddIcon } from "./group-add";
 import { GroupsIcon } from "./groups";
@@ -40,6 +42,7 @@ import { WavingHandIcon } from "./waving-hand";
 
 const iconMap: Record<IconType, React.FC<IconProps>> = {
   add: AddIcon,
+  "app-add": AppAddIcon,
   "arrow-left": ArrowLeftIcon,
   "arrow-dropdown": ArrowDropdownIcon,
   bug: BugIcon,
@@ -53,6 +56,7 @@ const iconMap: Record<IconType, React.FC<IconProps>> = {
   "fact-check": FactCheckIcon,
   filter: FilterIcon,
   gift: GiftIcon,
+  github: GithubIcon,
   group: GroupIcon,
   "group-add": GroupAddIcon,
   groups: GroupsIcon,

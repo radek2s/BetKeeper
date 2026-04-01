@@ -845,3 +845,16 @@ input[type="radio"]:checked::before {
     border-color: hsla(60, 45%, 98%, 0.1);
   }
 }
+
+.feedback-btn {
+  cursor: pointer;
+}
+.feedback-btn svg {
+  height: 36px;
+  width: 36px;
+}
+.feedback-btn.active,
+.feedback-btn.active svg path {
+  color: var(--primary);
+  fill: var(--primary);
+}
