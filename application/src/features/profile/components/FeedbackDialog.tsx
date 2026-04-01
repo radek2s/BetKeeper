@@ -1,17 +1,23 @@
 import { Button } from "@app/ui/button/Button";
 import { Icon } from "@app/ui/icon";
+import { TextArea } from "@app/ui/input/TextArea";
 import clsx from "clsx";
 import { Dialog } from "radix-ui";
 import { type ReactNode, useMemo, useState } from "react";
+import type {
+  FeedbackIssueType,
+  UserFeedbackRequestType,
+} from "../UserFeedbackSchema";
 
-type FeedbackTopicType = "IMPROVEMENT" | "BUG";
 type FeedbackProviderType = "GITHUB" | "EMAIL";
 
 interface Props {
-  emailProviderAvailable?: boolean;
+  onSave: (feedback: UserFeedbackRequestType) => Promise<void>;
 }
-function FeedbackDialog({ emailProviderAvailable }: Props) {
-  const [topic, setTopic] = useState<FeedbackTopicType>("IMPROVEMENT");
+function FeedbackDialog({ onSave }: Props) {
+  const [isOpen, setOpen] = useState<boolean>(false);
+  const [topic, setTopic] = useState<FeedbackIssueType>("IMPROVEMENT");
+  const [message, setMessage] = useState<string>();
   const [provider, setProvider] = useState<FeedbackProviderType>("GITHUB");
 
   const getLink = useMemo(() => {
@@ -25,10 +31,26 @@ function FeedbackDialog({ emailProviderAvailable }: Props) {
     }
   }, [topic]);
 
+  const handleSend = async () => {
+    if (!topic) return;
+    if (!message) return;
+    try {
+      await onSave({ issueType: topic, message });
+      setMessage(undefined);
+      setProvider("GITHUB");
+      setTopic("IMPROVEMENT");
+      setOpen(false);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
-    <Dialog.Root>
+    <Dialog.Root open={isOpen} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button type="button" className="flex items-center gap-2">
+        <button
+          type="button"
+          className="flex items-center gap-2 cursor-pointer">
           <Icon name="bug" /> Send feedback
         </button>
       </Dialog.Trigger>
@@ -54,32 +76,48 @@ function FeedbackDialog({ emailProviderAvailable }: Props) {
                 />
               </div>
             </div>
-            {emailProviderAvailable && (
-              <div className="flex flex-col items-center gap-2 w-full">
-                <p>Feedback form</p>
-                <div className="flex w-full">
-                  <FeedbackButton
-                    title="GitHub Issues"
-                    icon={<Icon name="github" />}
-                    active={provider === "GITHUB"}
-                    onClick={() => setProvider("GITHUB")}
-                  />
-                  <FeedbackButton
-                    title="Private feedback"
-                    icon={<Icon name="mail" />}
-                    active={provider === "EMAIL"}
-                    onClick={() => setProvider("EMAIL")}
-                  />
-                </div>
+
+            <div className="flex flex-col items-center gap-2 w-full">
+              <p>Feedback form</p>
+              <div className="flex w-full">
+                <FeedbackButton
+                  title="GitHub Issues"
+                  icon={<Icon name="github" />}
+                  active={provider === "GITHUB"}
+                  onClick={() => setProvider("GITHUB")}
+                />
+                <FeedbackButton
+                  title="Private feedback"
+                  icon={<Icon name="mail" />}
+                  active={provider === "EMAIL"}
+                  onClick={() => setProvider("EMAIL")}
+                />
+              </div>
+            </div>
+
+            {provider === "EMAIL" && (
+              <div className="w-full flex flex-col gap-1">
+                <label htmlFor="message-content" className="text-sm">
+                  Message
+                </label>
+                <TextArea
+                  id="message-content"
+                  className="w-full"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
               </div>
             )}
+
             <Dialog.Close asChild>
               {provider === "GITHUB" ? (
                 <a href={getLink} target="_blank" rel="noopener">
                   <Button variant={"primary"}>Open</Button>
                 </a>
               ) : (
-                <Button variant={"primary"}>Send</Button>
+                <Button variant={"primary"} onClick={handleSend}>
+                  Send
+                </Button>
               )}
             </Dialog.Close>
           </div>

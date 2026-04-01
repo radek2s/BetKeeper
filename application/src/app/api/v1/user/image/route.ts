@@ -9,7 +9,7 @@ type ProfileImageSchema = {
 };
 /**
  * Update user profile image
- * @tag Profle
+ * @tag Profile
  * @description Update user profile image
  * @body ProfileImageSchema
  * @response UserType

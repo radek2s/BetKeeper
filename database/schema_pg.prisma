@@ -86,3 +86,14 @@ model BetParticipantTable {
     @@id([betId, userId], name: "participantId")
     @@map("bet_participant")
 }
+
+model UserFeedbackTable {
+    feedbackId String   @id @default(uuid())
+    userId     String
+    createdAt  DateTime
+    issueType  String
+    message    String
+    seen       Boolean  @default(true)
+
+    @@map("user_feedback")
+}

@@ -8,7 +8,7 @@ import logger from "application/logger";
 
 /**
  * Get user profile
- * @tag Profle
+ * @tag Profile
  * @description Get user profile
  * @response UserType
  * @openapi

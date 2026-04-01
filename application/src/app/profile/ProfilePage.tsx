@@ -1,9 +1,11 @@
 "use client";
 
+import { useSaveUserFeedback } from "@app/features/profile/api/feedback.query";
 import FeedbackDialog from "@app/features/profile/components/FeedbackDialog";
 import LogoutButton from "@app/features/profile/components/Logout";
 import { ProfileImage } from "@app/features/profile/components/ProfileImage";
 import { UserNameEditor } from "@app/features/profile/components/UserNameEditor";
+import type { UserFeedbackRequestType } from "@app/features/profile/UserFeedbackSchema";
 import { useUserContext } from "@app/features/users/UserProvider";
 
 import { Icon } from "@app/ui/icon";
@@ -11,11 +13,13 @@ import PageHeader from "@app/ui/layout/Header";
 import { PageWrapper } from "@app/ui/layout/PageWrapper";
 import Link from "next/link";
 
-interface Props {
-  emailProviderAvailable?: boolean;
-}
-export default function ClientProfilePage({ emailProviderAvailable }: Props) {
+export default function ClientProfilePage() {
   const user = useUserContext();
+  const { mutateAsync } = useSaveUserFeedback();
+
+  const handleFeedbackSend = async (feedback: UserFeedbackRequestType) => {
+    await mutateAsync(feedback);
+  };
 
   return (
     <PageWrapper>
@@ -52,7 +56,7 @@ export default function ClientProfilePage({ emailProviderAvailable }: Props) {
             </li>
           </Link>
 
-          <FeedbackDialog emailProviderAvailable={emailProviderAvailable} />
+          <FeedbackDialog onSave={handleFeedbackSend} />
 
           <LogoutButton />
         </ul>

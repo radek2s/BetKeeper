@@ -8,7 +8,7 @@ import logger from "application/logger";
 
 /**
  * Get user email notification settings
- * @tag Profle
+ * @tag Profile
  * @description Get user notification settings
  * @response UserNotificationSettingsType
  * @openapi
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
 
 /**
  * Update user notification settings
- * @tag Profle
+ * @tag Profile
  * @description Update user mailing notification settings
  * @body UserNotificationSettingsType
  * @response UserNotificationSettingsType
