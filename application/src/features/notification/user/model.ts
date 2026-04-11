@@ -4,7 +4,7 @@ export class UserNotificationSettings {
   userId: string;
   friendInvitation: boolean = true;
   betRequestInvitation: boolean = true;
-  betRequestAggreed: boolean = false;
+  betRequestAgreed: boolean = false;
   betResolved: boolean = false;
   betCompleted: boolean = false;
 
@@ -16,14 +16,14 @@ export class UserNotificationSettings {
     userId: string,
     friendInvitation: boolean,
     betRequestInvitation: boolean,
-    betRequestAggreed: boolean,
+    betRequestAgreed: boolean,
     betResolved: boolean,
     betCompleted: boolean,
   ) {
     const settings = new UserNotificationSettings(userId);
     settings.friendInvitation = friendInvitation;
     settings.betRequestInvitation = betRequestInvitation;
-    settings.betRequestAggreed = betRequestAggreed;
+    settings.betRequestAgreed = betRequestAgreed;
     settings.betResolved = betResolved;
     settings.betCompleted = betCompleted;
     return settings;
@@ -34,7 +34,7 @@ export class UserNotificationSettings {
       userId: this.userId,
       friendInvitation: this.friendInvitation,
       betRequestInvitation: this.betRequestInvitation,
-      betRequestAggreed: this.betRequestAggreed,
+      betRequestAgreed: this.betRequestAgreed,
       betResolved: this.betResolved,
       betCompleted: this.betCompleted,
     };
@@ -48,7 +48,7 @@ export function toUserNotificationSettings(
     settings.userId,
     settings.friendInvitation,
     settings.betRequestInvitation,
-    settings.betRequestAggreed,
+    settings.betRequestAgreed,
     settings.betResolved,
     settings.betCompleted,
   );

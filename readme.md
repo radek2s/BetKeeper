@@ -32,7 +32,7 @@ Project enters final phase before release of version 3.0 according to [BetKeeper
 
 # About
 
-Bet Keeper is an IT solution designed to manage bet among group of friends or anyone who enjoys making light-hearted bets and competitions with ther circle. This platform simplify the process of recording, tracking and resolving bets ensuring that all participants stays up-to date with their ventures.  
+Bet Keeper is an IT solution designed to manage bet among group of friends or anyone who enjoys making light-hearted bets and competitions with their circle. This platform simplify the process of recording, tracking and resolving bets ensuring that all participants stays up-to date with their ventures.  
 [read more...](./documents/01_requirements/00-requirements.md)
 
 ## Development plan
@@ -46,8 +46,8 @@ In this phase, I will define the requirements and prepare sketches and interface
 - [Bet Use Cases](./documents/01_requirements/use_cases/bet_context.md)
 - [Friend Use Cases](./documents/01_requirements/use_cases/friend_context.md)
 - [Architecture Design](./documents/03_architecture/01-context.md)
-- [Concept graphics | Wireframes](./documents/04_concept_designs/readme.md)
-- [Mockups more detailed desing](./documents/05_app_designs/readme.md)
+- [Concept graphics | Wireframe](./documents/04_concept_designs/readme.md)
+- [Mockups more detailed design](./documents/05_app_designs/readme.md)
 
 #### Implementation Phase
 During implementation, I will build each module of the application using good software development practices. The code will be clean, maintainable, and easy to extend.
@@ -70,10 +70,10 @@ The ready release candidate version  will be shared with a small test group. The
 
 # Technology
 
-- [NX](https://nx.dev/) - Build platform to manage codebase and organizae modules within
+- [NX](https://nx.dev/) - Build platform to manage codebase and organize modules within
   BetKeeper monorepo.
 - [Vite](https://vite.dev/) - Build Tool.
-- [Next.js](https://nextjs.org/) - React Framework for full stack expirience for
+- [Next.js](https://nextjs.org/) - React Framework for full stack experience for
   web-application.
 
 - [Biome.js](https://biomejs.dev/) Performant toolchain for WebApplication
@@ -86,8 +86,8 @@ The ready release candidate version  will be shared with a small test group. The
 
 ### Sub modules
 
-- [Domain](./domain/readme.md) - bussiness logic and tests of core BetKeeper objects
-- [Application](./application/readme.md) - application layer that host an UI and wrap bussiness logic with database persistance and server logic
+- [Domain](./domain/readme.md) - business logic and tests of core BetKeeper objects
+- [Application](./application/readme.md) - application layer that host an UI and wrap business logic with database persistence and server logic
 - [E2E Tests](./e2e-tests/readme.md) - end-to-end tests for BetKeeper application that check if requirements are met using cucumber and playwright.
 
 # Development Quick Start
@@ -130,7 +130,7 @@ Replace providerId value in database in `user` table with userId from Corbado pa
 ### Environment initialization
 
 ```shell
-npm run dev:init # To initialize SQLite database (can be ommited when already created)
+npm run dev:init # To initialize SQLite database (can be omitted when already created)
 ```
 
 ### Development sever
@@ -161,7 +161,7 @@ To start developing your E2E tests with Playwright UI run:
 npm run e2e:ui
 ```
 
-To just exetute tests in headless mode:
+To just execute tests in headless mode:
 ```shell
 npm run e2e
 ```

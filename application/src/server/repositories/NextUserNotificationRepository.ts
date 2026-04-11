@@ -23,7 +23,7 @@ export class NextUserNotificationRepository
         settings.id,
         settings.friendInvitation,
         settings.betRequestInvitation,
-        settings.betRequestAggreed,
+        settings.betRequestAgreed,
         settings.betResolved,
         settings.betCompleted,
       );
@@ -39,7 +39,7 @@ export class NextUserNotificationRepository
         update: {
           friendInvitation: settings.friendInvitation,
           betRequestInvitation: settings.betRequestInvitation,
-          betRequestAggreed: settings.betRequestAggreed,
+          betRequestAgreed: settings.betRequestAgreed,
           betResolved: settings.betResolved,
           betCompleted: settings.betCompleted,
         },
@@ -47,7 +47,7 @@ export class NextUserNotificationRepository
           id: settings.userId,
           friendInvitation: settings.friendInvitation,
           betRequestInvitation: settings.betRequestInvitation,
-          betRequestAggreed: settings.betRequestAggreed,
+          betRequestAgreed: settings.betRequestAgreed,
           betResolved: settings.betResolved,
           betCompleted: settings.betCompleted,
         },

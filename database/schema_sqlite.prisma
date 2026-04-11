@@ -26,7 +26,7 @@ model UserNotifications {
   id                   String  @id
   friendInvitation     Boolean @default(true)
   betRequestInvitation Boolean @default(true)
-  betRequestAggreed    Boolean @default(false)
+  betRequestAgreed     Boolean @default(false)
   betResolved          Boolean @default(false)
   betCompleted         Boolean @default(false)
 

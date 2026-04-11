@@ -42,7 +42,7 @@ export async function PUT(req: Request) {
       user.id,
       body.friendInvitation,
       body.betRequestInvitation,
-      body.betRequestAggreed,
+      body.betRequestAgreed,
       body.betResolved,
       body.betCompleted,
     );
