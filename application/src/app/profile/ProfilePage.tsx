@@ -56,6 +56,14 @@ export default function ClientProfilePage() {
             </li>
           </Link>
 
+          {user.role === "ADMINISTRATOR" && (
+            <Link href={"/profile/feedback"}>
+              <li className="flex items-center gap-2">
+                <Icon name="error" /> Show feedback list
+              </li>
+            </Link>
+          )}
+
           <FeedbackDialog onSave={handleFeedbackSend} />
 
           <LogoutButton />
