@@ -1,26 +1,34 @@
-import { Locator } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export abstract class AbstractDialogComponent {
-    
-    protected readonly rootLocator: Locator;
-    protected readonly confirmButton: Locator;
-    protected readonly cancelButton: Locator;
-    
-    constructor(rootLocator: Locator, confirmLabel = "Confirm", cancelLabel = "Cancel") {
-        this.rootLocator = rootLocator;
-        this.confirmButton = rootLocator.getByRole("button", { name: confirmLabel });
-        this.cancelButton = rootLocator.getByRole("button", { name: cancelLabel });
-    }
+  protected readonly rootLocator: Locator | Page;
+  protected readonly confirmButton: Locator;
+  protected readonly cancelButton: Locator;
+  readonly baseLocator: Locator;
 
-    get locator(): Locator {
-        return this.rootLocator
-    }
+  constructor(
+    rootLocator: Locator | Page,
+    confirmLabel = "Confirm",
+    cancelLabel = "Cancel",
+    title?: string,
+  ) {
+    this.rootLocator = rootLocator;
+    this.confirmButton = rootLocator.getByRole("button", {
+      name: confirmLabel,
+    });
+    this.cancelButton = rootLocator.getByRole("button", { name: cancelLabel });
+    this.baseLocator =
+      rootLocator.getByRole("dialog", { name: title }) ??
+      rootLocator.getByRole("dialog");
+  }
 
-    protected async confirm(): Promise<void> {
-        await this.confirmButton.click();
-    }
+  protected async confirm(): Promise<void> {
+    await this.confirmButton.click();
+    this.baseLocator.waitFor({ state: "hidden" });
+  }
 
-    async cancel(): Promise<void> {
-        await this.cancelButton.click();
-    }
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+    this.baseLocator.waitFor({ state: "hidden" });
+  }
 }
