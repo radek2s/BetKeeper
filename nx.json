@@ -50,5 +50,6 @@
     "application": {},
     "domain": {},
     "e2e-tests": {}
-  }
+  },
+  "analytics": false
 }

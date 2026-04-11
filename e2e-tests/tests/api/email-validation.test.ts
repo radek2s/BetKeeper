@@ -1,8 +1,8 @@
 import { RequestStatus } from "@domain/user";
 import type { UserRequestType } from "@domain/user/entities";
 import { expect, test } from "@playwright/test";
-import type { ApiErrorBody } from "e2e-tests/src/api/Errors";
-import { inviteUser } from "e2e-tests/src/api/UserApi";
+import type { ApiErrorBody } from "e2e-tests/src/api/schema/Errors";
+import { inviteUser } from "e2e-tests/src/api/client/UserApi";
 import { getBody } from "e2e-tests/src/utils/helpers/apiHelpers";
 
 const validEmails = [

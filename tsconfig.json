@@ -25,6 +25,7 @@
       "@app-test/*": ["application/test/*"],
       "@db/*": ["application/generated/prisma"],
       "@test/*": ["./test/*"],
+      "@e2e-tests/*": ["./e2e-tests/*"],
       "@database/*": ["database/*"]
     },
     "moduleResolution": "node",
