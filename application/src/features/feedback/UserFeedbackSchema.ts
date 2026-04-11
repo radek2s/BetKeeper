@@ -20,3 +20,24 @@ export const UserFeedbackResponseSchema = z.object({
 export type UserFeedbackResponseType = z.infer<
   typeof UserFeedbackResponseSchema
 >;
+
+export const UserProfileSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+});
+
+export type UserProfileSchemaType = z.infer<typeof UserProfileSchema>;
+
+export const UserFeedbackAdminResponseSchema = z.object({
+  id: z.string(),
+  createdAt: z.string(),
+  createdBy: UserProfileSchema,
+  issueType: FeedbackIssueTypeSchema,
+  message: z.string(),
+  seen: z.boolean(),
+});
+
+export type UserFeedbackAdminResponseSchemaType = z.infer<
+  typeof UserFeedbackAdminResponseSchema
+>;

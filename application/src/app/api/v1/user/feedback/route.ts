@@ -1,5 +1,5 @@
-import { UserFeedback } from "@app/features/profile/UserFeedback";
-import { UserFeedbackRequestSchema } from "@app/features/profile/UserFeedbackSchema";
+import { UserFeedback } from "@app/features/feedback/UserFeedback";
+import { UserFeedbackRequestSchema } from "@app/features/feedback/UserFeedbackSchema";
 import { OkResponse } from "@app/lib/utils/fetchUtils";
 import { getAuth } from "@app/server/auth/authenticatorFactory";
 import { ExceptionHandler } from "@app/server/exceptions/ExceptionHandler";

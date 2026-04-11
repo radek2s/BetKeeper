@@ -5,7 +5,7 @@ export type BetTableRecord = {
   id: UUID;
   creatorId: UUID;
   status?: BetStatus;
-  title: string;
+  title?: string | null;
   terms: string;
   stakeType: StakeType;
   stake?: string;

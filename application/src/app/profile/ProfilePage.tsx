@@ -1,11 +1,11 @@
 "use client";
 
-import { useSaveUserFeedback } from "@app/features/profile/api/feedback.query";
-import FeedbackDialog from "@app/features/profile/components/FeedbackDialog";
+import { useSaveUserFeedback } from "@app/features/feedback/api/feedback.query";
+import FeedbackDialog from "@app/features/feedback/components/FeedbackDialog";
+import type { UserFeedbackRequestType } from "@app/features/feedback/UserFeedbackSchema";
 import LogoutButton from "@app/features/profile/components/Logout";
 import { ProfileImage } from "@app/features/profile/components/ProfileImage";
 import { UserNameEditor } from "@app/features/profile/components/UserNameEditor";
-import type { UserFeedbackRequestType } from "@app/features/profile/UserFeedbackSchema";
 import { useUserContext } from "@app/features/users/UserProvider";
 
 import { Icon } from "@app/ui/icon";
