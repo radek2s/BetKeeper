@@ -170,7 +170,7 @@ class MailtrapProvider implements EmailProvider {
     try {
       const enabledRecipientIds = await this.filterWithActiveSetting(
         event.watchers,
-        "betRequestAggreed",
+        "betRequestAgreed",
       );
 
       const recipientData = (

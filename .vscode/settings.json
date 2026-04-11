@@ -2,5 +2,5 @@
   "vitest.enable": true,
   "editor.formatOnSave": true,
   "vitest.shellType": "terminal",
-  "cSpell.words": ["corbado", "Passwordless", "Supabase"]
+  "cSpell.words": ["corbado", "Passwordless", "Supabase", "unstub"]
 }

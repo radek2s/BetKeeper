@@ -30,7 +30,7 @@ describe("UserNotificationSettings route", () => {
         userId: "user-123",
         friendInvitation: true,
         betRequestInvitation: false,
-        betRequestAggreed: true,
+        betRequestAgreed: true,
         betResolved: false,
         betCompleted: true,
       }),
@@ -44,7 +44,7 @@ describe("UserNotificationSettings route", () => {
       userId: "user-123",
       friendInvitation: true,
       betRequestInvitation: false,
-      betRequestAggreed: true,
+      betRequestAgreed: true,
       betResolved: false,
       betCompleted: true,
     });
@@ -59,7 +59,7 @@ describe("UserNotificationSettings route", () => {
       userId: "user-123",
       friendInvitation: false,
       betRequestInvitation: true,
-      betRequestAggreed: false,
+      betRequestAgreed: false,
       betResolved: true,
       betCompleted: false,
     };
