@@ -10,7 +10,7 @@ type ProfileDataSchema = {
 };
 /**
  * Update user data
- * @tag Profle
+ * @tag Profile
  * @description Update user data
  * @body ProfileDataSchema
  * @response UserType

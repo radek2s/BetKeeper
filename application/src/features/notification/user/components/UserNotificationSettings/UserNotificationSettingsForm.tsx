@@ -1,7 +1,7 @@
 import { Button } from "@app/ui/button/Button";
 import { Checkbox } from "@app/ui/checkbox";
 import { useState } from "react";
-import type { UserNotificationSettingsType } from "../../model";
+import type { UserNotificationSettingsType } from "../../schema";
 
 interface Props {
   settings: UserNotificationSettingsType;
@@ -45,7 +45,7 @@ function UserNotificationSettingsForm({ settings, onSave }: Props) {
             onCheckedChange={(checked) => {
               change("friendInvitation", checked);
             }}>
-            Recived invitation
+            Received invitation
           </Checkbox>
         </div>
       </section>
@@ -62,9 +62,9 @@ function UserNotificationSettingsForm({ settings, onSave }: Props) {
           </Checkbox>
           <Checkbox
             id="bet-request-agreed"
-            checked={userSettings.betRequestAggreed}
+            checked={userSettings.betRequestAgreed}
             onCheckedChange={(checked) => {
-              change("betRequestAggreed", checked);
+              change("betRequestAgreed", checked);
             }}>
             Bet marked as agreed
           </Checkbox>

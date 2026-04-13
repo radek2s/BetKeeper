@@ -1,14 +1,14 @@
 import { TestError } from "@app-test/TestError";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
-import type { UserNotificationSettingsType } from "../../model";
+import type { UserNotificationSettingsType } from "../../schema";
 import UserNotificationSettingsForm from "./UserNotificationSettingsForm";
 
 const defaultSettings: UserNotificationSettingsType = {
   userId: "user-01",
   friendInvitation: true,
   betRequestInvitation: true,
-  betRequestAggreed: false,
+  betRequestAgreed: false,
   betResolved: false,
   betCompleted: false,
 };
@@ -22,7 +22,7 @@ describe("UserNotificationSettingsFormTests", () => {
       />,
     );
 
-    expect(screen.getByLabelText(/Recived invitation/i)).toBeDefined();
+    expect(screen.getByLabelText(/Received invitation/i)).toBeDefined();
     expect(
       screen.getByLabelText(/Invitation to new bet request/i),
     ).toBeDefined();
@@ -40,7 +40,7 @@ describe("UserNotificationSettingsFormTests", () => {
     );
 
     const checkbox: HTMLInputElement =
-      screen.getByLabelText(/Recived invitation/i);
+      screen.getByLabelText(/Received invitation/i);
     await fireEvent.click(checkbox);
     expect(checkbox.ariaChecked).toBe(`${!defaultSettings.friendInvitation}`);
 
@@ -60,7 +60,7 @@ describe("UserNotificationSettingsFormTests", () => {
       />,
     );
 
-    const checkbox = screen.getByLabelText(/Recived invitation/i);
+    const checkbox = screen.getByLabelText(/Received invitation/i);
     await fireEvent.click(checkbox);
 
     const saveButton: HTMLButtonElement = screen.getByRole("button", {
@@ -87,7 +87,7 @@ describe("UserNotificationSettingsFormTests", () => {
     );
 
     const checkbox: HTMLInputElement =
-      screen.getByLabelText(/Recived invitation/i);
+      screen.getByLabelText(/Received invitation/i);
     await fireEvent.click(checkbox);
     expect(checkbox.ariaChecked).toBe("false");
 
@@ -111,7 +111,7 @@ describe("UserNotificationSettingsFormTests", () => {
       />,
     );
 
-    const checkbox = screen.getByLabelText(/Recived invitation/i);
+    const checkbox = screen.getByLabelText(/Received invitation/i);
     await fireEvent.click(checkbox);
 
     const saveButton: HTMLButtonElement = screen.getByRole("button", {

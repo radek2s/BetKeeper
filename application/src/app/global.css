@@ -845,3 +845,37 @@ input[type="radio"]:checked::before {
     border-color: hsla(60, 45%, 98%, 0.1);
   }
 }
+
+.feedback-btn {
+  cursor: pointer;
+}
+.feedback-btn svg {
+  height: 36px;
+  width: 36px;
+}
+.feedback-btn.active,
+.feedback-btn.active svg path {
+  color: var(--primary);
+  fill: var(--primary);
+}
+
+.feedback-table {
+  border-collapse: collapse;
+}
+
+.feedback-table th,
+.feedback-table td {
+  padding: 4px 8px;
+}
+
+.feedback-table-cell button {
+  cursor: pointer;
+}
+
+.feedback-table-cell button:hover svg path {
+  fill: var(--error-hovered);
+}
+
+.feedback-table-row:has(.feedback-table-cell button:hover) {
+  color: var(--base-text-grayed);
+}

@@ -1,5 +1,8 @@
 "use client";
 
+import { useSaveUserFeedback } from "@app/features/feedback/api/feedback.query";
+import FeedbackDialog from "@app/features/feedback/components/FeedbackDialog";
+import type { UserFeedbackRequestType } from "@app/features/feedback/UserFeedbackSchema";
 import LogoutButton from "@app/features/profile/components/Logout";
 import { ProfileImage } from "@app/features/profile/components/ProfileImage";
 import { UserNameEditor } from "@app/features/profile/components/UserNameEditor";
@@ -12,6 +15,11 @@ import Link from "next/link";
 
 export default function ClientProfilePage() {
   const user = useUserContext();
+  const { mutateAsync } = useSaveUserFeedback();
+
+  const handleFeedbackSend = async (feedback: UserFeedbackRequestType) => {
+    await mutateAsync(feedback);
+  };
 
   return (
     <PageWrapper>
@@ -48,9 +56,16 @@ export default function ClientProfilePage() {
             </li>
           </Link>
 
-          <li className="flex items-center gap-2 disabled">
-            <Icon name="bug" /> Report problem (Soon)
-          </li>
+          {user.role === "ADMINISTRATOR" && (
+            <Link href={"/profile/feedback"}>
+              <li className="flex items-center gap-2">
+                <Icon name="error" /> Show feedback list
+              </li>
+            </Link>
+          )}
+
+          <FeedbackDialog onSave={handleFeedbackSend} />
+
           <LogoutButton />
         </ul>
       </div>

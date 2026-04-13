@@ -15,7 +15,7 @@ import {
   User,
   UserStatus,
 } from "@domain/user";
-import { vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import MailtrapProvider from "./MailtrapProvider";
 
 const sendMock = vi.fn();
