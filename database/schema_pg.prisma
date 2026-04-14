@@ -97,3 +97,13 @@ model UserFeedbackTable {
 
     @@map("user_feedback")
 }
+
+model BetIdeaTable {
+    id        String   @id @default(uuid())
+    userId    String
+    createdAt DateTime
+    updatedAt DateTime
+    content   String
+
+    @@map("bet_idea")
+}
