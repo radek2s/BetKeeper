@@ -808,6 +808,26 @@ input[type="radio"]:checked::before {
   fill: var(--primary);
 }
 
+.bet-idea-panel {
+  width: min(500px, 80vw);
+}
+.bet-idea-card {
+  border-top: 1px solid var(--container);
+  padding-top: 6px;
+  margin-top: 6px;
+}
+
+.bet-idea-card__updated {
+  svg path {
+    fill: var(--base-text-grayed);
+  }
+  color: var(--base-text-grayed);
+}
+
+.idea-content.editor textarea {
+  width: 100%;
+}
+
 @media (prefers-color-scheme: dark) {
   .icon {
     fill: var(--base-text);

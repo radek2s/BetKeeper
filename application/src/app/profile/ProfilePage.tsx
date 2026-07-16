@@ -47,9 +47,11 @@ export default function ClientProfilePage() {
               <Icon name="security-key" /> Manage passkeys
             </li>
           </Link>
-          <li className="flex items-center gap-2 disabled">
-            <Icon name="note" /> Bet Ideas and notes (Soon)
-          </li>
+          <Link href={"/profile/ideas"}>
+            <li className="flex items-center gap-2">
+              <Icon name="note" /> Bet Ideas and notes
+            </li>
+          </Link>
           <Link href={"/profile/notifications"}>
             <li className="flex items-center gap-2">
               <Icon name="mail" /> Notification settings
