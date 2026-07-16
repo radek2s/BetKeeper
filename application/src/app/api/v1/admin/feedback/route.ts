@@ -43,7 +43,7 @@ export async function GET(req: Request) {
         };
         return {
           id: feedback.id,
-          createdAt: feedback.createdAt.toLocaleString(),
+          createdAt: feedback.createdAt.toISOString(),
           createdBy: creatorProfile,
           issueType: feedback.issueType,
           message: feedback.message,
