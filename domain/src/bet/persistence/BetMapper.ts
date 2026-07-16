@@ -70,7 +70,7 @@ export async function getBetRequestFromRecord(
       return CommonBetRequest.reconstitute({
         id: record.id,
         creatorId: record.creatorId,
-        title: record.title,
+        title: record.title ?? "",
         terms: record.terms,
         participants: participants.map(participantRecordToCommon),
         stakeType: "COMMON",
@@ -83,7 +83,7 @@ export async function getBetRequestFromRecord(
       return IndividualBetRequest.reconstitute({
         id: record.id,
         creatorId: record.creatorId,
-        title: record.title,
+        title: record.title ?? "",
         terms: record.terms,
         participants: participants.map(participantRecordToIndividual),
         stakeType: "INDIVIDUAL",
@@ -105,7 +105,7 @@ export async function getBetFromRecord(
       return CommonBet.reconstitute({
         id: record.id,
         creatorId: record.creatorId,
-        title: record.title,
+        title: record.title ?? "",
         terms: record.terms,
         status: record.status,
         participants: participants.map(participantRecordToCommon),
@@ -125,7 +125,7 @@ export async function getBetFromRecord(
       return IndividualBet.reconstitute({
         id: record.id,
         creatorId: record.creatorId,
-        title: record.title,
+        title: record.title ?? "",
         terms: record.terms,
         status: record.status,
         participants: participants.map(participantRecordToIndividual),
