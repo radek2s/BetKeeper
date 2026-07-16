@@ -19,8 +19,8 @@ export type BetIdeaRequestType = z.infer<typeof BetIdeaRequestSchema>;
 export const BetIdeaSchema = z.object({
   id: z.string(),
   content: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export type BetIdeaType = z.infer<typeof BetIdeaSchema>;
