@@ -1,37 +1,37 @@
 # Bet Keeper project
 
-Bet Keeper is an IT solution designed to manage bet among group of friends or anyone who enjoys making light-hearted bets and competitions with ther circle. This platform simplify the process of recording, tracking and resolving bets ensuring that all participants stays up-to date with their ventures.
+Bet Keeper is an IT solution designed to manage bet among group of friends or anyone who enjoys making light-hearted bets and competitions with their circle. This platform simplify the process of recording, tracking and resolving bets ensuring that all participants stays up-to date with their ventures.
 
-Main objective is to easily create and store bets with details such as participants, terms, claims, stakes and deadlines. There must be a bet resolution mechanism where user can resolve bet (optionaly upload evidence to support their claims). Platform should have possibility to invite friends to participate in challenges.
+Main objective is to easily create and store bets with details such as participants, terms, claims, stakes and deadlines. There must be a bet resolution mechanism where user can resolve bet (optionally upload evidence to support their claims). Platform should have possibility to invite friends to participate in challenges.
 
 Additionally users should be reminded about upcoming bet deadlines or be notified when bet is resolved. 
 
-Ensuring transparancy that reduce confusion and enhance accountability casual bets are transformed to enjoyable experience where friends can focus on fun without worriyng about logistics. 
+Ensuring transparency that reduce confusion and enhance accountability casual bets are transformed to enjoyable experience where friends can focus on fun without worrying about logistics. 
 
-In the future from collected data platfrom will be able to show statistics related to bets such as number of bets won, lost or participated. When platform will have more users there is a possiblity to create a leaderboards to track the most active bet-makers and provide additional gamification mechanism such as levels, badges or avatars to personalize your profile.
+In the future from collected data platform will be able to show statistics related to bets such as number of bets won, lost or participated. When platform will have more users there is a possibility to create a leaderboards to track the most active bet-makers and provide additional gamification mechanism such as levels, badges or avatars to personalize your profile.
 
 # Planning
 
-Application is intended to use by narrow group of users but it might grow up to 50 registered user accounts. This project is mostly focused to present on development process from the idea, through design phase then with organized development to application deploy and publish. Main goal is to share expirience how to conduct software project.
+Application is intended to use by narrow group of users but it might grow up to 50 registered user accounts. This project is mostly focused to present on development process from the idea, through design phase then with organized development to application deploy and publish. Main goal is to share experience how to conduct software project.
 
 ## Requirements
 
 
 
-<span style="color: #E11E39">Bussines requirements</span> - without this functionalites application will not achieve the project goal. 
+<span style="color: #E11E39">Business requirements</span> - without this functionalities application will not achieve the project goal. 
 <span style="color: #DB9724">Functional requirements</span> - additional application functionalities support core processes.  
-<span style="color: #2E5AD1">Usability requirements</span> - requirements related with use envionment and expected use cases.
+<span style="color: #2E5AD1">Usability requirements</span> - requirements related with use environment and expected use cases.
 
-- ✓ BKR_01 <span style="color: #E11E39">(Bussines)</span> Provide a platform to manage bets between friends to reduce the issue with remebering the terms, claims and stakes.
-- ✓ BKR_02 <span style="color: #E11E39">(Bussines)</span> Provide a space to establish and refine bets with friends regardless of distance and location.
+- ✓ BKR_01 <span style="color: #E11E39">(Business)</span> Provide a platform to manage bets between friends to reduce the issue with remembering the terms, claims and stakes.
+- ✓ BKR_02 <span style="color: #E11E39">(Business)</span> Provide a space to establish and refine bets with friends regardless of distance and location.
 - ✓ BKR_03 <span style="color: #DB9724">(Functional)</span> User should be able to create bet request  
 Bet Request must contains details such as:
     - participants
     - claims
     - terms
-    - stakes (there are 2 wariants of stakes)
+    - stakes (there are 2 variants of stakes)
         - common stake (all participants has has the same stake to deal with)
-        - individual stakes (each participant defines what he want to 'recive' when he wins)
+        - individual stakes (each participant defines what he want to 'receive' when he wins)
     - deadlines to complete stake (optional)
 - ✓ BKR_04 <span style="color: #DB9724">(Functional)</span> During bet request creation creator should be able to select one friend from his friend list to be participate of the bet. 
 - ✓ BKR_05 <span style="color: #DB9724">(Functional)</span> User should be able to see pending bet requests and vote to accept or reject them.
@@ -56,7 +56,7 @@ Bet Request must contains details such as:
 
 - ✓ BKR_20 <span style="color: #DB9724">(Functional)</span> Bet list should have ability to filter bets by:
     - status field
-    - participatns
+    - participants
     - creation date
 - ✓ BKR_21 <span style="color: #DB9724">(Functional)</span> Bet list should have ability to sort bets by:
     - status field
@@ -66,7 +66,7 @@ Bet Request must contains details such as:
 - ✓ BKR_24 <span style="color: #DB9724">(Functional)</span> Administrator should be able to approve invitation of new user.
 - ✓ BKR_25 <span style="color: #DB9724">(Functional)</span> There should be an audit event logs for each bet and it should contains details related with state changes, who, when and what did in this change. 
 
-- ... BKR_26 <span style="color: #DB9724">(Functional)</span> User should be able to browse, create, modify and delete his stake ideas (for future bet stakes) as simple list of text notes.
+- ✓ BKR_26 <span style="color: #DB9724">(Functional)</span> User should be able to browse, create, modify and delete his stake ideas (for future bet stakes) as simple list of text notes.
 
 - ✗ <strike>BKR_19 <span style="color: #DB9724">(Functional)</span> User should be notified when bet is still in Pending state for longer than 1 week. (Pending is after creation state before resolved or rejected)</strike>
 
@@ -74,7 +74,7 @@ Bet Request must contains details such as:
 - ✓ BKR_28 <span style="color: #2E5AD1">(Usability)</span> Application data should be in sync with other users.
 - ✓ BKR_29 <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to create a new bet.
 - ✓ BKR_30 <span style="color: #2E5AD1">(Usability)</span> In a few clicks (max 10) user should be able to see the list of bets he need to complete.
-- ... BKR_31 <span style="color: #2E5AD1">(Usability)</span> Notification should be send as notification emails. User should be notified about new friend invitation and new bet request. User should be able to turn off the notifications. When user will be invited to use application should receive welcome email and also when his account will be suspended also should be notified about this.
+- ✓ BKR_31 <span style="color: #2E5AD1">(Usability)</span> Notification should be send as notification emails. User should be notified about new friend invitation and new bet request. User should be able to turn off the notifications. When user will be invited to use application should receive welcome email and also when his account will be suspended also should be notified about this.
 
 
 Check use cases:
