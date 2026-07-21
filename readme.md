@@ -65,7 +65,7 @@ All parts of the application will be verified using unit tests and end‑to‑en
 #### Validation Phase
 The ready release candidate version  will be shared with a small test group. Their feedback will help evaluate the usability of the application and guide improvements for the next release.
 
-... Current phase ...
+[... Current phase ...](./documents/07_validation)
 
 
 # Technology
