@@ -63,7 +63,7 @@ All parts of the application will be verified using unit tests and end‑to‑en
 - [Tests reports](https://github.com/radek2s/BetKeeper/actions/workflows/dev-branch-health.yml)
 
 #### Validation Phase
-The ready release candidate version  will be shared with a small test group. Their feedback will help evaluate the usability of the application and guide improvements for the next release.
+The ready release candidate version will be shared with a small test group. Their feedback will help evaluate the requirements and real user needs. Feedback collected during validation will be considered for further improvements for the next release.
 
 [... Current phase ...](./documents/07_validation)
 
