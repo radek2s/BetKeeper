@@ -1,19 +1,29 @@
-import { Page, Locator } from '@playwright/test'
-import { AbstractPage } from '../AbstractPage'
-import { HeaderComponent } from './Components/HeaderComponent';
+import { Page, Locator } from "@playwright/test";
+import { AbstractPage } from "../AbstractPage";
+import { HeaderComponent } from "./Components/HeaderComponent";
+import { BetBrowserComponent } from "./Components/BetBrowserComponent";
+import { BetSearchComponent } from "./Components/BetSearchComponent";
 
 export class MainPage extends AbstractPage {
-    protected readonly path = "/";
-    protected readonly uniquePageLocator: Locator;
+  protected readonly path = "/";
+  protected readonly uniquePageLocator: Locator;
 
-    readonly header: HeaderComponent;
+  readonly header: HeaderComponent;
+  readonly betSearch: BetSearchComponent;
+  readonly betBrowserComponent: BetBrowserComponent;
 
-    constructor(page: Page) {
-        super(page);
+  constructor(page: Page) {
+    super(page);
 
-        this.uniquePageLocator = page.getByRole("button", { name: "notification" });
+    this.uniquePageLocator = page.getByRole("button", { name: "notification" });
 
-        const headerRoot = page.locator('header.flex.w-full.justify-between.items-center.my-4.px-4');
-        this.header = new HeaderComponent(page, headerRoot);
-    }
+    this.header = new HeaderComponent(page);
+    this.betSearch = new BetSearchComponent(page);
+    this.betBrowserComponent = new BetBrowserComponent(page);
+  }
+
+  async navigate(): Promise<this> {
+    await this.page.goto(this.path);
+    return this;
+  }
 }

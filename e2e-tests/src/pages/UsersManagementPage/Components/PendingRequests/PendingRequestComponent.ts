@@ -21,7 +21,6 @@ export class PendingRequestComponent {
 
         const dialog = new SetupUserDialogComponent(
             this.rootLocator.page()
-            .getByRole("dialog", { name: "Setup user" })
         );
 
         return dialog;

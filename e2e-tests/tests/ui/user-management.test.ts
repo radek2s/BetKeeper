@@ -103,7 +103,7 @@ test("Administrator should invite new user to system and activate his account", 
   //Accept user invitation and make attempt to create user without first or last name
   const setupUserDialog = await requestToAccept.acceptRequest();
   await expect(
-    setupUserDialog.locator,
+    setupUserDialog.baseLocator,
     "User creation dialog should be visible",
   ).toBeVisible();
   await setupUserDialog.create();
