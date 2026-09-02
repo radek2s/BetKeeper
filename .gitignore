@@ -67,3 +67,7 @@ test-results/*
 playwright-report/*
 
 /generated/prisma
+
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs
