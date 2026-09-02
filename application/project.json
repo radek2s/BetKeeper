@@ -1,10 +1,9 @@
 {
   "name": "application",
-  "projectType": "application",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
   "sourceRoot": "src",
   "tags": ["score:application", "type:nextjs"],
-
   "targets": {
     "build": {
       "executor": "@nx/next:build",
@@ -23,17 +22,17 @@
       }
     },
     "test:unit": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "options": {
         "configFile": "{projectRoot}/vitest.config.ts"
       }
     },
     "test:integration": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["prisma-reset"],
       "options": {
         "configFile": "{projectRoot}/vitest.config.integaration.ts"
-      },
-      "dependsOn": ["prisma-reset"]
+      }
     },
     "prisma-reset": {
       "executor": "nx:run-commands",
